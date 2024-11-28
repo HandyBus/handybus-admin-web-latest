@@ -1,4 +1,4 @@
-import BlueLink from '@/components/link/BlueLink';
+import Link from 'next/link';
 import LoginPage from '../login/page';
 import { accessToken } from '@/utils/auth.util';
 import type { ReactNode } from 'react';
@@ -19,7 +19,7 @@ const Layout = async ({ children }: Props) => {
       ) : (
         <div className=" w-fit overflow-hidden rounded-lg border border-grey-100">
           <pre className="border-b border-b-grey-100 bg-grey-50 p-8">
-            <BlueLink href="/login">{'/login'}</BlueLink>
+            <Link href="/login">{'/login'}</Link>
           </pre>
           <div className="p-8">
             <LoginPage />
