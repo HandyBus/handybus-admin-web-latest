@@ -1,53 +1,42 @@
 import { AUTH_TOKEN_COOKIE_NAME } from '@/constants/auth';
 import { NextResponse, type NextRequest } from 'next/server';
+import { instance } from '@/services/config';
+import { formToJSON } from 'axios';
 
 export const POST = async (request: NextRequest) => {
   try {
-    const formData = await request.formData();
-
-    const body = new URLSearchParams(
-      Array.from(formData, ([key, value]): [string, string] => {
-        if (typeof value === 'string') {
-          return [key, value];
-        } else {
-          return [key, value.name];
-        }
-      }),
+    const apiResponse = await instance.post<LoginResponse>(
+      '/auth/admin/login',
+      formToJSON(await request.formData()),
     );
 
-    const apiResponse = await fetch(
-      new URL('/auth/admin/login', process.env.BASE_URL),
-      {
-        method: 'POST',
-        body,
-      },
-    );
+    // ASSERT : apiResponse.status === 200
+    const issuedToken = (await apiResponse).data.token;
 
-    if (apiResponse.status === 200) {
-      const token = (await apiResponse.json()).token;
+    if (issuedToken) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/';
+      const response = NextResponse.redirect(url);
 
-      if (token) {
-        const url = request.nextUrl.clone();
-        url.pathname = '/';
+      response.cookies.set(AUTH_TOKEN_COOKIE_NAME, issuedToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+      });
 
-        const response = NextResponse.redirect(url);
-        response.cookies.set(AUTH_TOKEN_COOKIE_NAME, token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict',
-        });
-
-        return response;
-      }
+      return response;
+    } else {
+      throw new Error('Token not found in response');
     }
-
+  } catch {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
-  } catch (error) {
-    console.error(error);
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    return NextResponse.redirect('/login');
   }
 };
+
+interface LoginResponse {
+  statusCode: number;
+  ok: boolean;
+  token: string;
+}
