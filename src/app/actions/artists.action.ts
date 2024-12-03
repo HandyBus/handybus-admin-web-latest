@@ -1,6 +1,7 @@
 'use server';
 
 import { instance } from '@/services/config';
+import { revalidatePath } from 'next/cache';
 
 export const addArtist = async (name: string) => {
   const response = (
@@ -8,10 +9,6 @@ export const addArtist = async (name: string) => {
       name,
     })
   ).data;
-
-  if (response.ok) {
-    return JSON.parse(JSON.stringify(response));
-  } else {
-    return Promise.reject('');
-  }
+  revalidatePath('/artists', 'layout');
+  return response;
 };
