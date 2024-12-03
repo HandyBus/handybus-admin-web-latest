@@ -1,7 +1,7 @@
 import { AUTH_TOKEN_COOKIE_NAME } from '@/constants/auth';
 import { cookies } from 'next/headers';
 import { ArtistsSchema } from '@/types/artist.type';
-import ArtistsTable from './table.page';
+import ArtistsTable from './components/ArtistTable';
 
 async function getArtists() {
   try {

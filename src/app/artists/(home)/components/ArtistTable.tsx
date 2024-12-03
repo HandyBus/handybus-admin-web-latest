@@ -10,7 +10,7 @@ interface Props {
   artists: ArtistType[];
 }
 
-const ArtistsTable = ({ artists }: Props) => {
+const ArtistTable = ({ artists }: Props) => {
   const [data] = useState([...artists]);
 
   // Columns and data are defined in a stable reference, will not cause infinite loop!
@@ -66,7 +66,7 @@ const ArtistsTable = ({ artists }: Props) => {
   );
 };
 
-export default ArtistsTable;
+export default ArtistTable;
 
 const columnHelper = createColumnHelper<ArtistType>();
 
