@@ -4,6 +4,7 @@ import '@/app/fonts/pretendard/font.css';
 import Provider from '@/components/Provider';
 import { ReactNode } from 'react';
 import ToastContainer from '@/components/toast-container/ToastContainer';
+import TopLevelLayout from '@/components/layout/TopLevelLayout';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -19,7 +20,7 @@ export default function RootLayout({
     <html lang="ko">
       <body>
         <Provider>
-          {children}
+          <TopLevelLayout>{children}</TopLevelLayout>
           <div id="bottom-sheet" />
           <ToastContainer />
         </Provider>
