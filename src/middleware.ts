@@ -1,8 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { accessToken } from './utils/auth.util';
+import { getAccessToken } from './utils/auth.util';
 
 export const middleware = async (req: NextRequest) => {
-  const session = await accessToken();
+  const session = await getAccessToken();
   if (!session) {
     return NextResponse.rewrite(new URL('/login', req.url));
   }
