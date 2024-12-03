@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
-import { addArtist } from './fetch.util';
+import { addArtist } from '../../actions/artists.action';
 import { useCallback } from 'react';
 
 import { useForm } from 'react-hook-form';
