@@ -27,11 +27,11 @@ async function getArtists() {
 
 const ArtistPage = async () => {
   try {
-    const a = await getArtists();
+    const artists = await getArtists();
     return (
       <div>
         <h2 className="text-[24px] font-500">아티스트 목록</h2>
-        <ArtistsTable artists={a} />
+        <ArtistsTable artists={artists} />
       </div>
     );
   } catch (e) {

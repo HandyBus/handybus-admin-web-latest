@@ -1,11 +1,9 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-
-import { addArtist } from '../../actions/artists.action';
-import { useCallback } from 'react';
-
+import { useCallback, type FormEventHandler } from 'react';
 import { useForm } from 'react-hook-form';
+import { addArtist } from '@/app/actions/artists.action';
 import TextInput from '@/components/text-input/TextInput';
 
 const NewArtistPage = () => {
@@ -16,7 +14,7 @@ const NewArtistPage = () => {
     },
   });
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = useCallback(
+  const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     (e) => {
       e.preventDefault();
       const { name } = getValues();
@@ -26,7 +24,7 @@ const NewArtistPage = () => {
           if (!isStepValid) {
             return;
           }
-          await addArtist(name)
+          addArtist(name)
             .then(() => {
               alert('아티스트가 추가되었습니다.');
             })
