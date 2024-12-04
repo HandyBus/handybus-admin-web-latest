@@ -2,6 +2,7 @@ import Link from 'next/link';
 import LoginPage from '../login/page';
 import { getAccessToken } from '@/utils/auth.util';
 import type { ReactNode } from 'react';
+import LogoutButton from './components/LogoutButton';
 
 interface Props {
   children: ReactNode;
@@ -13,7 +14,7 @@ const Layout = async ({ children }: Props) => {
       <h1 className="text-[32px] font-500">핸디버스 관리자 대시보드</h1>
       {(await getAccessToken()) ? (
         <>
-          <a href="/logout">로그아웃</a>
+          <LogoutButton />
           <div>{children}</div>
         </>
       ) : (
