@@ -1,7 +1,10 @@
 'use client';
 
 import { useForm, useFieldArray } from 'react-hook-form';
-import { CreateShuttleRouteRequestFormType } from '@/types/route.type';
+import {
+  CreateShuttleRouteRequestFormType,
+  CreateShuttleRouteRequestType,
+} from '@/types/route.type';
 import { addRoute } from '@/app/actions/route.action';
 import { useRouter } from 'next/navigation';
 import tw from 'tailwind-styled-components';
@@ -77,8 +80,8 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
         ...data,
         shuttleRouteHubs: data.shuttleRouteHubs.filter(
           (h) => h.type !== '__MARKER_DESINATION_NOT_A_REAL_ROUTE__',
-        ),
-      };
+        ) as CreateShuttleRouteRequestType['shuttleRouteHubs'],
+      } satisfies CreateShuttleRouteRequestType;
       await addRoute(Number(shuttle_id), Number(daily_id), request);
       router.push(`/shuttles/${shuttle_id}/dates/${daily_id}`);
     } catch (error) {
