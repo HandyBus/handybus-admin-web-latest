@@ -63,7 +63,7 @@ const NewShuttlePage = () => {
         const formattedData = conform(data);
         await addShuttle(formattedData);
         alert('셔틀이 추가되었습니다.');
-        router.push('/shuttle');
+        router.push('/shuttles');
       } catch (error) {
         if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
           throw error;
