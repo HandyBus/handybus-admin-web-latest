@@ -24,14 +24,7 @@ const dateTransformer: AxiosRequestTransformer = function (
   if (data instanceof Date) {
     const date = dayjs(data);
 
-    const isJustDate =
-      date.isValid() &&
-      date.hour() === 0 &&
-      date.minute() === 0 &&
-      date.second() === 0 &&
-      date.millisecond() === 0;
-
-    if (isJustDate) {
+    if (date.startOf('day').isSame(date)) {
       return date.format('YYYY-MM-DD');
     }
 
