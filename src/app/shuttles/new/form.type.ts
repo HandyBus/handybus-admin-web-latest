@@ -24,23 +24,23 @@ export const conform = (
   if (data.type === 'CONCERT') {
     return {
       ...rest,
-      regionID: Number(rest.regionID),
-      regionHubID: Number(rest.regionHubID),
+      regionId: Number(rest.regionID),
+      regionHubId: Number(rest.regionHubID),
       type: 'CONCERT' as const,
       concert: {
         ...detail,
-        concertArtistIDs: detail.artistIDs.map((a) => a.id),
+        concertArtistIds: detail.artistIDs.map((a) => a.id),
       },
     } satisfies CreateShuttleRequestType;
   } else {
     return {
       ...rest,
-      regionID: Number(rest.regionID),
-      regionHubID: Number(rest.regionHubID),
+      regionId: Number(rest.regionID),
+      regionHubId: Number(rest.regionHubID),
       type: 'FESTIVAL' as const,
       festival: {
         ...detail,
-        festivalArtistIDs: detail.artistIDs.map((a) => a.id),
+        festivalArtistIds: detail.artistIDs.map((a) => a.id),
       },
     } satisfies CreateShuttleRequestType;
   }

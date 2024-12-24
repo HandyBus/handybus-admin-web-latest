@@ -73,7 +73,7 @@ export default ShuttleTable;
 const columnHelper = createColumnHelper<ShuttleType>();
 
 const columns = [
-  columnHelper.accessor('shuttleID', {
+  columnHelper.accessor('shuttleId', {
     header: () => 'ID',
     cell: (info) => info.getValue(),
   }),
@@ -131,7 +131,7 @@ const columns = [
     id: 'actions  ',
     header: () => '액션',
     cell: (props) => (
-      <BlueLink href={`/shuttles/${props.row.original.shuttleID}`}>
+      <BlueLink href={`/shuttles/${props.row.original.shuttleId}`}>
         자세히 보기
       </BlueLink>
     ),

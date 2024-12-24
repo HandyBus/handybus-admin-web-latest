@@ -17,7 +17,7 @@ const DailyShuttleTable = ({ shuttleID, dailyShuttles }: Props) => {
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor('id', {
+      columnHelper.accessor('dailyShuttleId', {
         header: () => 'ID',
         cell: (info) => info.getValue(),
       }),
@@ -34,7 +34,7 @@ const DailyShuttleTable = ({ shuttleID, dailyShuttles }: Props) => {
         header: () => '액션',
         cell: (props) => (
           <BlueLink
-            href={`/shuttles/${shuttleID}/dates/${props.row.original.id}`}
+            href={`/shuttles/${shuttleID}/dates/${props.row.original.dailyShuttleId}`}
           >
             자세히 보기
           </BlueLink>

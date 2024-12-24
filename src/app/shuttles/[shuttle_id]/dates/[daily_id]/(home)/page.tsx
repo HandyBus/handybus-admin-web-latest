@@ -15,7 +15,7 @@ const Page = async ({ params: { shuttle_id, daily_id } }: Props) => {
   ]);
 
   const thisDailyShuttle = shuttle.dailyShuttles.find(
-    (d) => d.id === Number(daily_id),
+    (d) => d.dailyShuttleId === Number(daily_id),
   );
 
   if (!thisDailyShuttle) {

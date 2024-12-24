@@ -38,7 +38,7 @@ const defaultValues: CreateShuttleRouteRequestFormType = {
   },
   shuttleRouteHubs: [
     {
-      regionHubID: 0,
+      regionHubId: 0,
       type: '__MARKER_DESINATION_NOT_A_REAL_ROUTE__',
       sequence: 0,
       arrivalTime: new Date(),
@@ -224,7 +224,7 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
           type="button"
           onClick={() =>
             appendHub({
-              regionHubID: 0,
+              regionHubId: 0,
               sequence: Math.abs(
                 findDividerIndex(hubFields) - hubFields.length,
               ),
@@ -283,7 +283,7 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
                     <Input
                       type="number"
                       {...register(
-                        `shuttleRouteHubs.${index}.regionHubID` as const,
+                        `shuttleRouteHubs.${index}.regionHubId` as const,
                         {
                           valueAsNumber: true,
                         },
