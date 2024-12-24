@@ -10,6 +10,6 @@ export const getHubs = async (regionID: number) => {
   return HubListSchema.parse(regionHubs);
 };
 
-export const addHub = async (regionID: number, input: CreateHubRequestType) => {
-  return await instance.post(`/location/admin/regions/${regionID}/hubs`, input);
+export const addHub = async (regionId: number, input: CreateHubRequestType) => {
+  return await instance.post(`/location/admin/regions/${regionId}/hubs`, input);
 };

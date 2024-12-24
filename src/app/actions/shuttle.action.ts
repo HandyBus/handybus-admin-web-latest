@@ -3,6 +3,7 @@
 import { instance } from '@/services/config';
 import {
   ShuttleSchema,
+  ShuttleListSchema,
   CreateShuttleRequestSchema,
   type CreateShuttleRequestType,
 } from '@/types/shuttle.type';
@@ -30,10 +31,16 @@ export const addShuttle = async (request: CreateShuttleRequestType) => {
   }
 };
 
-export const getShuttle = async (shuttleID: number) => {
+export const getAllShuttles = async () => {
+  const response = await instance.get('/shuttle-operation/admin/shuttles');
+
+  return ShuttleListSchema.parse(response.data.shuttleDetails);
+};
+
+export const getShuttle = async (shuttleId: number) => {
   try {
     const response = await instance.get(
-      `/shuttle-operation/shuttles/${shuttleID}`,
+      `/shuttle-operation/admin/shuttles/${shuttleId}`,
     );
 
     if (!response.data.ok) {

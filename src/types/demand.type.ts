@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
 export const ShuttleDemand = z.object({
-  ID: z.number().int(),
-  userID: z.number().int(),
-  regionID: z.number().int(),
-  shuttleID: z.number().int(),
-  dailyShuttleID: z.number().int(),
+  shuttleDemandId: z.number().int(),
+  userId: z.number().int(),
+  regionId: z.number().int(),
+  shuttleId: z.number().int(),
+  dailyShuttleId: z.number().int(),
   type: z.unknown(),
   passengerCount: z.number().int(),
 });

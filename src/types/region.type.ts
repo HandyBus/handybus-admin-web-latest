@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
 export const RegionSchema = z.object({
-  ID: z.number().int(),
+  regionId: z.number().int(),
   provinceFullName: z.string(),
   provinceShortName: z.string(),
   cityFullName: z.string(),
   cityShortName: z.string(),
-  relatedRegionIDs: z.array(z.number().int()),
+  relatedRegionIds: z.array(z.number().int()),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
@@ -18,8 +18,8 @@ export const RegionListSchema = z.array(RegionSchema);
 export const RegionList = z.array(RegionSchema);
 
 export const Hub = z.object({
-  ID: z.number().int(),
-  regionID: z.number().int(),
+  regionHubId: z.number().int(),
+  regionId: z.number().int(),
   name: z.string(),
   address: z.string(),
   latitude: z.number(),

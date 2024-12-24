@@ -18,7 +18,7 @@ export const CreateShuttleRouteRequestFormSchema = z.object({
   maxPassengerCount: z.number(),
   shuttleRouteHubs: z.array(
     z.object({
-      regionHubID: z.number(),
+      regionHubId: z.number(),
       type: z.enum([
         'TO_DESTINATION',
         'FROM_DESTINATION',
@@ -52,7 +52,7 @@ export const CreateShuttleRouteRequestSchema = z.object({
   maxPassengerCount: z.number(),
   shuttleRouteHubs: z.array(
     z.object({
-      regionHubID: z.number(),
+      regionHubId: z.number(),
       type: z.enum(['TO_DESTINATION', 'FROM_DESTINATION']),
       sequence: z.number(),
       arrivalTime: z.coerce.date(),
@@ -67,9 +67,9 @@ export type CreateShuttleRouteRequestType = z.infer<
 ////////////////////////////////////////////////////////
 
 export const RouteDetailsSchema = z.object({
-  shuttleRouteID: z.number().int(),
-  shuttleID: z.number().int(),
-  dailyShuttleID: z.number().int(),
+  shuttleRouteId: z.number().int(),
+  shuttleId: z.number().int(),
+  dailyShuttleId: z.number().int(),
   name: z.number().int(),
   status: z.unknown(),
   hasEarlyBird: z.boolean(),
