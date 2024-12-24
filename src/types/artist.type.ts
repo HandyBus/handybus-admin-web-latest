@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const ArtistSchema = z.object({
-  ID: z.number().int(),
+  artistId: z.number().int(),
   name: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),

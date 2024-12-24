@@ -71,7 +71,7 @@ export default ArtistTable;
 const columnHelper = createColumnHelper<ArtistType>();
 
 const columns = [
-  columnHelper.accessor('id', {
+  columnHelper.accessor('artistId', {
     header: () => 'ID',
     cell: (info) => info.getValue(),
   }),
