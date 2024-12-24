@@ -13,7 +13,7 @@ const ParticipantSchema = z.object({
 });
 
 export const ShuttleSchema = z.object({
-  shuttleID: z.number().int(),
+  shuttleId: z.number().int(),
   name: z.string(),
   dailyShuttles: z.array(DailyShuttleSchema),
   image: z.string().url(),
@@ -24,7 +24,7 @@ export const ShuttleSchema = z.object({
   totalDemandCount: z.number().int(),
 });
 
-export const ShuttlesSchema = z.array(ShuttleSchema);
+export const ShuttleListSchema = z.array(ShuttleSchema);
 
 export type ShuttleType = z.infer<typeof ShuttleSchema>;
 
@@ -32,27 +32,27 @@ export type ShuttleType = z.infer<typeof ShuttleSchema>;
 
 const CreateConcertShuttleRequestSchema = z.object({
   name: z.string(),
-  regionID: z.number().int(),
-  regionHubID: z.number().int(),
+  regionId: z.number().int(),
+  regionHubId: z.number().int(),
   dailyShuttles: z.array(z.object({ date: z.coerce.date() })),
   type: z.enum(['CONCERT']),
   concert: z.object({
     image: z.string().url(),
     name: z.string(),
-    concertArtistIDs: z.array(z.number().int()),
+    concertArtistIds: z.array(z.number().int()),
   }),
 });
 
 const CreateFestivalShuttleRequestSchema = z.object({
   name: z.string(),
-  regionID: z.number().int(),
-  regionHubID: z.number().int(),
+  regionId: z.number().int(),
+  regionHubId: z.number().int(),
   dailyShuttles: z.array(z.object({ date: z.coerce.date() })),
   type: z.enum(['FESTIVAL']),
   festival: z.object({
     image: z.string().url(),
     name: z.string(),
-    festivalArtistIDs: z.array(z.number().int()),
+    festivalArtistIds: z.array(z.number().int()),
   }),
 });
 

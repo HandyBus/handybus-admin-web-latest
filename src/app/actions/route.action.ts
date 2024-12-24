@@ -5,14 +5,14 @@ import { instance } from '@/services/config';
 import { AxiosError } from 'axios';
 
 export const addRoute = async (
-  shuttleID: number,
-  dailyShuttleID: number,
+  shuttleId: number,
+  dailyShuttleId: number,
   input: CreateShuttleRouteRequestType,
 ) => {
   try {
     console.log('input', JSON.stringify(input, null, 2));
     const response = await instance.post(
-      `/shuttle-operation/admin/shuttles/${shuttleID}/dates/${dailyShuttleID}/routes`,
+      `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes`,
       input,
     );
     return response.data;
@@ -25,12 +25,12 @@ export const addRoute = async (
 };
 
 export const getAllRoutes = async (
-  shuttleID: string,
-  dailyShuttleID: string,
+  shuttleId: string,
+  dailyShuttleId: string,
 ) => {
   try {
     const response = await instance.get(
-      `/shuttle-operation/shuttles/${shuttleID}/dates/${dailyShuttleID}/routes`,
+      `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes`,
     );
     return response.data;
   } catch (e) {

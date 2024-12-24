@@ -1,6 +1,6 @@
 import { AUTH_TOKEN_COOKIE_NAME } from '@/constants/auth';
 import { cookies } from 'next/headers';
-import { ArtistsSchema } from '@/types/artist.type';
+import { ArtistListSchema } from '@/types/artist.type';
 import ArtistsTable from './components/ArtistTable';
 
 async function getArtists() {
@@ -19,7 +19,7 @@ async function getArtists() {
 
     const json = await response.json();
 
-    return ArtistsSchema.parse(json.artists);
+    return ArtistListSchema.parse(json.artists);
   } catch (e) {
     return Promise.reject(e);
   }

@@ -8,7 +8,7 @@ export const DailyShuttleStateSchema = z.enum([
 ]);
 
 export const DailyShuttleSchema = z.object({
-  id: z.number().int(),
+  dailyShuttleId: z.number().int(),
   date: z.coerce.date(),
   status: DailyShuttleStateSchema,
 });
