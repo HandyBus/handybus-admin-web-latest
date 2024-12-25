@@ -1,39 +1,5 @@
 import { z } from 'zod';
 
-export const CreateShuttleRouteRequestFormSchema = z.object({
-  name: z.string(),
-  reservationDeadline: z.coerce.date(),
-  hasEarlybird: z.boolean(),
-  earlybirdPrice: z.object({
-    toDestination: z.number(),
-    fromDestination: z.number(),
-    roundTrip: z.number(),
-  }),
-  regularPrice: z.object({
-    toDestination: z.number(),
-    fromDestination: z.number(),
-    roundTrip: z.number(),
-  }),
-  earlybirdDeadline: z.coerce.date(),
-  maxPassengerCount: z.number(),
-  shuttleRouteHubs: z.array(
-    z.object({
-      regionHubId: z.number(),
-      type: z.enum([
-        'TO_DESTINATION',
-        'FROM_DESTINATION',
-        '__MARKER_DESINATION_NOT_A_REAL_ROUTE__',
-      ]),
-      sequence: z.number(),
-      arrivalTime: z.coerce.date(),
-    }),
-  ),
-});
-
-export type CreateShuttleRouteRequestFormType = z.infer<
-  typeof CreateShuttleRouteRequestFormSchema
->;
-
 export const CreateShuttleRouteRequestSchema = z.object({
   name: z.string(),
   reservationDeadline: z.coerce.date(),
@@ -66,11 +32,11 @@ export type CreateShuttleRouteRequestType = z.infer<
 
 ////////////////////////////////////////////////////////
 
-export const RouteDetailsSchema = z.object({
+export const ShuttleRouteDetailSchema = z.object({
   shuttleRouteId: z.number().int(),
   shuttleId: z.number().int(),
   dailyShuttleId: z.number().int(),
-  name: z.number().int(),
+  name: z.string(),
   status: z.unknown(),
   hasEarlyBird: z.boolean(),
   earlybirdDeadline: z.unknown(),
@@ -91,3 +57,5 @@ export const RouteDetailsSchema = z.object({
   }),
   shuttle: z.object({}),
 });
+
+export type ShuttleRouteDetailType = z.infer<typeof ShuttleRouteDetailSchema>;
