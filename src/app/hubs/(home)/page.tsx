@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { getHubs } from '@/app/actions/hub.action';
 import RegionInput from '@/components/input/RegionInput';
 import BlueLink from '@/components/link/BlueLink';
-import { columns } from './table.type';
+import { columns } from './types/table.type';
 
 const Page = () => {
   const [regionId, setRegionId] = useState<number | null>(null);
