@@ -11,5 +11,7 @@ export const getHubs = async (regionId: number) => {
 };
 
 export const addHub = async (regionId: number, input: CreateHubRequestType) => {
-  return await instance.post(`/location/admin/regions/${regionId}/hubs`, input);
+  return (
+    await instance.post(`/location/admin/regions/${regionId}/hubs`, input)
+  ).data;
 };
