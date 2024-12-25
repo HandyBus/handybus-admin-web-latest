@@ -14,7 +14,7 @@ import ImageFileInput from '@/components/input/ImageFileInput';
 import HubInput from '@/components/input/HubInput';
 import Input from '@/components/input/Input';
 import dayjs from 'dayjs';
-import { today } from '@/utils/date.util';
+import { today, toDateOnly } from '@/utils/date.util';
 
 const defaultValues = {
   name: '',
@@ -67,13 +67,7 @@ const ShuttleForm = () => {
     async (data: CreateShuttleFormType) => {
       if (confirm('셔틀을 추가하시겠습니까?') === false) return;
       try {
-        const formattedData = conform(data);
-        console.log(
-          'formattedData.dailyShuttles.at(0).date',
-          formattedData.dailyShuttles.at(0)?.date,
-          typeof formattedData.dailyShuttles.at(0)?.date,
-        );
-        await addShuttle(formattedData);
+        await addShuttle(conform(data));
         alert('셔틀이 추가되었습니다.');
         router.push('/shuttles');
       } catch (error) {
@@ -154,7 +148,8 @@ const ShuttleForm = () => {
                       type="date"
                       className="w-full"
                       value={dayjs(value).format('YYYY-MM-DD')}
-                      setValue={(str) => onChange(new Date(str))}
+                      // TODO check timezone issue
+                      setValue={(str) => onChange(toDateOnly(new Date(str)))}
                     />
                     <button type="button" onClick={() => removeDaily(index)}>
                       <XIcon />
