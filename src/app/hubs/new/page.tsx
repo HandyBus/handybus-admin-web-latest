@@ -112,7 +112,6 @@ const NewHubPage = () => {
                   {recommended.cityFullName}
                 </button>
               )}
-              {value}
               <RegionInput value={value} setValue={onChange} />
             </div>
           )}
