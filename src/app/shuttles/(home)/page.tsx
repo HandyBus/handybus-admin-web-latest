@@ -1,15 +1,20 @@
-import { ShuttleListSchema } from '@/types/shuttle.type';
-import ShuttleTable from './components/ShuttleTable';
-import { instance } from '@/services/config';
+import BlueLink from '@/components/link/BlueLink';
+import DataTable from '@/components/table/DataTable';
+import { columns } from './types/table.type';
+import { getAllShuttles } from '@/app/actions/shuttle.action';
 
-async function getShuttles() {
-  const response = await instance.get('/shuttle-operation/shuttles');
-  return ShuttleListSchema.parse(response.data.shuttleDetails);
-}
+const Page = async () => {
+  const shuttles = await getAllShuttles();
 
-const ShuttlePage = async () => {
-  const shuttles = await getShuttles();
-  return <ShuttleTable shuttles={shuttles} />;
+  return (
+    <main className="flex h-full w-full flex-col gap-16 bg-white">
+      <header className="flex flex-row justify-between">
+        <h1 className="text-[32px] font-500">셔틀 대시보드</h1>
+        <BlueLink href="shuttles/new">추가하기</BlueLink>
+      </header>
+      <DataTable data={shuttles} columns={columns} />;
+    </main>
+  );
 };
 
-export default ShuttlePage;
+export default Page;
