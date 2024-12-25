@@ -133,7 +133,7 @@ interface Coord {
 }
 
 const toAddress = async (latitude: number, longitude: number) =>
-  new Promise((resolve, reject) => {
+  new Promise<string>((resolve, reject) => {
     if (!window.kakao?.maps?.services) reject('Geocoder is not available');
 
     const geocoder = new window.kakao.maps.services.Geocoder();
