@@ -1,20 +1,42 @@
+'use client';
+
 import BlueLink from '@/components/link/BlueLink';
 import Guide from '@/components/guide/Guide';
-import DailyShuttleTable from './components/DailyShuttleTable';
+import { columns } from './types/table.type';
 import Shuttle from './components/Shuttle';
 import { getShuttle } from '@/app/actions/shuttle.action';
+import DataTable from '@/components/table/DataTable';
+import { useQuery } from '@tanstack/react-query';
+import { Loader2Icon } from 'lucide-react';
+import { useMemo } from 'react';
 
 interface Props {
   params: { shuttle_id: string };
 }
 
-const Page = async ({ params: { shuttle_id } }: Props) => {
-  const shuttle = await getShuttle(Number(shuttle_id));
+const Page = ({ params: { shuttle_id } }: Props) => {
+  const { data: shuttle } = useQuery({
+    queryKey: ['shuttles', shuttle_id],
+    queryFn: () => getShuttle(Number(shuttle_id)),
+  });
+
+  const columnsForThisShuttleId = useMemo(
+    () => columns(Number(shuttle_id)),
+    [shuttle_id],
+  );
+
+  if (!shuttle)
+    return (
+      <div>
+        <Loader2Icon className="animate-spin" size={64} />
+      </div>
+    );
 
   return (
     <div className="flex flex-col gap-16">
       <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
         <BlueLink href={`${shuttle_id}/raw`}>raw (json)</BlueLink>
+        <BlueLink href={`${shuttle_id}/edit`}>수정</BlueLink>
       </div>
       <Shuttle shuttle={shuttle} />
       <header className="flex flex-row justify-between pt-32  ">
@@ -30,9 +52,9 @@ const Page = async ({ params: { shuttle_id } }: Props) => {
         같은, 버스가 <strong>0대 이상 제공될 가능성이 있는</strong> 이벤트를
         의미합니다. 다음은 현재 셔틀에 딸린 일자별 셔틀 목록입니다.
       </Guide>
-      <DailyShuttleTable
-        shuttleID={shuttle_id}
-        dailyShuttles={shuttle.dailyShuttles}
+      <DataTable
+        columns={columnsForThisShuttleId}
+        data={shuttle.dailyShuttles}
       />
     </div>
   );
