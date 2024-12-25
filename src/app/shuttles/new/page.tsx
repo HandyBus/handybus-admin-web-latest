@@ -73,7 +73,6 @@ const ShuttleForm = () => {
           formattedData.dailyShuttles.at(0)?.date,
           typeof formattedData.dailyShuttles.at(0)?.date,
         );
-        alert(JSON.stringify(formattedData, null, 2));
         await addShuttle(formattedData);
         alert('셔틀이 추가되었습니다.');
         router.push('/shuttles');
