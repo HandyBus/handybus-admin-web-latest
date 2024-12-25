@@ -102,34 +102,27 @@ const ShuttleForm = () => {
       "
       onSubmit={handleSubmit(onSubmit)}
     >
-      <label>
-        셔틀 이름
-        <Controller
-          control={control}
-          name="name"
-          render={({ field: { onChange, value } }) => (
-            <Input
-              type="text"
-              value={value}
-              placeholder="셔틀 이름"
-              setValue={onChange}
-            />
-          )}
-        />
-      </label>
-      <label>
-        장소
-        <Controller
-          control={control}
-          name="regionId"
-          render={({ field: { onChange, value } }) => (
-            <RegionInput
-              value={value}
-              setValue={(id) => onChange(id || null)}
-            />
-          )}
-        />
-      </label>
+      <label>셔틀 이름</label>
+      <Controller
+        control={control}
+        name="name"
+        render={({ field: { onChange, value } }) => (
+          <Input
+            type="text"
+            value={value}
+            placeholder="셔틀 이름"
+            setValue={onChange}
+          />
+        )}
+      />
+      <label>장소</label>
+      <Controller
+        control={control}
+        name="regionId"
+        render={({ field: { onChange, value } }) => (
+          <RegionInput value={value} setValue={(id) => onChange(id || null)} />
+        )}
+      />
       <label>거점지</label>
       <Controller
         control={control}
