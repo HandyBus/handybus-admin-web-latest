@@ -36,12 +36,13 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
           conform(data),
         )
           .then(() => {
+            alert('버스가 추가되었습니다.');
             router.push(
               `/shuttles/${shuttle_id}/dates/${daily_id}/routes/${route_id}`,
             );
           })
           .catch((e) => {
-            alert('실패했습니다');
+            alert('버스 추가에 실패했습니다');
             console.error(e);
           });
       }
