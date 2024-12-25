@@ -1,29 +1,5 @@
-import { AUTH_TOKEN_COOKIE_NAME } from '@/constants/auth';
-import { cookies } from 'next/headers';
-import { ArtistListSchema } from '@/types/artist.type';
 import ArtistsTable from './components/ArtistTable';
-
-async function getArtists() {
-  try {
-    const token = cookies().get(AUTH_TOKEN_COOKIE_NAME)?.value;
-
-    const response = await fetch(
-      new URL('/shuttle-operation/admin/artists', process.env.BASE_URL),
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        cache: 'no-cache',
-      },
-    );
-
-    const json = await response.json();
-
-    return ArtistListSchema.parse(json.artists);
-  } catch (e) {
-    return Promise.reject(e);
-  }
-}
+import { getArtists } from '@/app/actions/artists.action';
 
 const ArtistPage = async () => {
   try {

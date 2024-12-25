@@ -2,13 +2,14 @@
 
 import { useRouter } from 'next/navigation';
 import { useCallback, type FormEventHandler } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { addArtist } from '@/app/actions/artists.action';
-import TextInput from '@/components/text-input/TextInput';
+import { PlusIcon } from 'lucide-react';
+import Input from '@/components/input/Input';
 
 const NewArtistPage = () => {
   const router = useRouter();
-  const { trigger, setValue, control, getValues } = useForm<{ name: string }>({
+  const { trigger, control, getValues } = useForm<{ name: string }>({
     defaultValues: {
       name: '',
     },
@@ -43,12 +44,14 @@ const NewArtistPage = () => {
   return (
     <main className="h-full w-full bg-white flex flex-col gap-16">
       <h2 className="text-24 font-500">아티스트 정보</h2>
-      <form onSubmit={handleSubmit} method="post">
-        <TextInput
-          name="name"
+      <form
+        className="flex flex-col gap-4"
+        onSubmit={handleSubmit}
+        method="post"
+      >
+        <Controller
           control={control}
-          setValue={setValue}
-          placeholder="아티스트 이름을 입력해주세요."
+          name="name"
           rules={{
             required: '필수 입력',
             pattern: {
@@ -56,11 +59,17 @@ const NewArtistPage = () => {
               message: '공백으로만 이루어진 입력은 허용되지 않습니다.',
             },
           }}
-        >
-          이름
-        </TextInput>
+          render={({ field: { onChange, value } }) => (
+            <Input
+              value={value}
+              setValue={onChange}
+              placeholder="아티스트 이름을 입력해주세요."
+            />
+          )}
+        />
+
         <button type="submit" className="rounded-lg bg-blue-500 p-8 text-white">
-          추가
+          <PlusIcon />
         </button>
       </form>
     </main>
