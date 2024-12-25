@@ -8,18 +8,13 @@ import { useRouter } from 'next/navigation';
 import ArtistInput from '@/components/input/ArtistInput';
 import { Controller } from 'react-hook-form';
 import RegionInput from '@/components/input/RegionInput';
-import {
-  CheckIcon,
-  MessageSquareWarningIcon,
-  PlusIcon,
-  XIcon,
-} from 'lucide-react';
+import { CheckIcon, PlusIcon, XIcon } from 'lucide-react';
 import { Button, Field, Label, RadioGroup, Radio } from '@headlessui/react';
 import ImageFileInput from '@/components/input/ImageFileInput';
 import HubInput from '@/components/input/HubInput';
 import Input from '@/components/input/Input';
 import dayjs from 'dayjs';
-import { diffInDays, today } from '@/utils/date.util';
+import { today } from '@/utils/date.util';
 
 const defaultValues = {
   name: '',
@@ -166,13 +161,6 @@ const ShuttleForm = () => {
                       <XIcon />
                     </button>
                   </div>
-                  {diffInDays(value, today()) < 21 && (
-                    <span className="text-red-500 text-12 flex flex-row justify-start items-center font-700">
-                      <MessageSquareWarningIcon size={16} /> 경고: 너무 가까운
-                      날짜입니다. 이 날짜는 스케줄러에 의해 즉시 닫힐 수
-                      있습니다. 자세한 사항은 백엔드 관리자에게 문의하세요.
-                    </span>
-                  )}
                 </div>
               )}
             />
