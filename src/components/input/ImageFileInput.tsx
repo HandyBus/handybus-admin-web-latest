@@ -73,8 +73,8 @@ const ImageFileInput = ({ type, value, setValue }: Props) => {
 
 export default ImageFileInput;
 
-import { clientInstance } from '@/services/client';
 import Image from 'next/image';
+import { getPresignedUrl } from '@/app/actions/common.action';
 
 const addImageFile = async (
   key: 'concerts' | 'users/profiles' | 'reviews',
@@ -88,12 +88,9 @@ const addImageFile = async (
   const extension =
     image.type === 'image/svg+xml' ? 'svg' : image.type.split('/').at(1) || '';
 
-  const presigned = await clientInstance.get('/common/image/presigned-url', {
-    params: { key, extension },
-  });
-
-  const presignedUrl = presigned.data.presignedUrl;
-  const cdnUrl = presigned.data.cdnUrl;
+  const presigned = await getPresignedUrl(key, extension);
+  const presignedUrl = presigned.presignedUrl;
+  const cdnUrl = presigned.cdnUrl;
 
   const buffer = await image.arrayBuffer();
 

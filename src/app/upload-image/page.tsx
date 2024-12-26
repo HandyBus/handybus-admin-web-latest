@@ -72,20 +72,18 @@ const UploadImagePage = () => {
 
 export default UploadImagePage;
 
-import { clientInstance } from '@/services/client';
 import Guide from '@/components/guide/Guide';
+import { getPresignedUrl } from '../actions/common.action';
 
 const addImageFile = async (
   key: 'concerts' | 'users/profiles' | 'reviews',
   extension: string,
   image: File,
 ) => {
-  const presigned = await clientInstance.get('/common/image/presigned-url', {
-    params: { key, extension },
-  });
+  const presigned = await getPresignedUrl(key, extension);
 
-  const presignedUrl = presigned.data.presignedUrl;
-  const cdnUrl = presigned.data.cdnUrl;
+  const presignedUrl = presigned.presignedUrl;
+  const cdnUrl = presigned.cdnUrl;
 
   const buffer = await image.arrayBuffer();
 
