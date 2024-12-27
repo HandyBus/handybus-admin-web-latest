@@ -5,6 +5,7 @@ import { conform, type CreateShuttleRouteFormType } from './form.type';
 import { addRoute } from '@/app/actions/route.action';
 import { useRouter } from 'next/navigation';
 import tw from 'tailwind-styled-components';
+import { useEffect } from 'react';
 
 interface Props {
   params: { shuttle_id: string; daily_id: string };
@@ -51,6 +52,7 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
     watch,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<CreateShuttleRouteFormType>({
     // resolver: zodResolver(CreateShuttleRouteRequestSchema),
     defaultValues,
@@ -69,13 +71,32 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
     name: 'shuttleRouteHubs',
   });
 
-  const onSubmit = async (data: CreateShuttleRouteFormType) => {
-    alert(JSON.stringify(data, null, 2));
+  useEffect(() => {
+    hubFields.forEach((field, index) => {
+      const dividerIndex = findDividerIndex(hubFields);
+      setValue(
+        `shuttleRouteHubs.${index}.sequence`,
+        dividerIndex - index > 0 ? index + 1 : Math.abs(dividerIndex - index),
+      );
+      setValue(
+        `shuttleRouteHubs.${index}.type`,
+        index === dividerIndex
+          ? '__MARKER_DESINATION_NOT_A_REAL_ROUTE__'
+          : index < dividerIndex
+            ? 'TO_DESTINATION'
+            : 'FROM_DESTINATION',
+      );
+    });
+  }, [hubFields, setValue]);
 
+  const onSubmit = async (data: CreateShuttleRouteFormType) => {
+    if (!confirm('등록하시겠습니까?')) return;
     try {
       await addRoute(Number(shuttle_id), Number(daily_id), conform(data));
+      alert('등록에 성공했습니다.');
       router.push(`/shuttles/${shuttle_id}/dates/${daily_id}`);
     } catch (error) {
+      alert('오류가 발생했습니다.');
       console.error(error);
     }
   };
@@ -288,10 +309,6 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
                       `shuttleRouteHubs.${index}.sequence` as const,
                       {
                         valueAsNumber: true,
-                        value:
-                          findDividerIndex(hubFields) - index > 0
-                            ? index + 1
-                            : Math.abs(findDividerIndex(hubFields) - index),
                       },
                     )}
                     placeholder="Order"
@@ -300,14 +317,7 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
 
                   <label>
                     타입
-                    <select
-                      {...register(`shuttleRouteHubs.${index}.type`, {
-                        value:
-                          index < findDividerIndex(hubFields)
-                            ? 'TO_DESTINATION'
-                            : 'FROM_DESTINATION',
-                      })}
-                    >
+                    <select {...register(`shuttleRouteHubs.${index}.type`)}>
                       <option
                         value="TO_DESTINATION"
                         disabled={index >= findDividerIndex(hubFields)}
