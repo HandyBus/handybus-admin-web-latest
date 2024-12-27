@@ -19,7 +19,7 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
   const { control, handleSubmit } = useForm<CreateBusFormType>({
     defaultValues: {
       type: 'BUS_45',
-      name: '00가 0000',
+      name: '',
       number: '',
       phoneNumber: '',
       openChatLink: '',
@@ -36,12 +36,13 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
           conform(data),
         )
           .then(() => {
+            alert('버스가 추가되었습니다.');
             router.push(
               `/shuttles/${shuttle_id}/dates/${daily_id}/routes/${route_id}`,
             );
           })
           .catch((e) => {
-            alert('실패했습니다');
+            alert('버스 추가에 실패했습니다');
             console.error(e);
           });
       }
@@ -70,7 +71,7 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
           control={control}
           name="number"
           render={({ field: { onChange, value } }) => (
-            <Input value={value} setValue={onChange} />
+            <Input value={value} placeholder="00가 0000" setValue={onChange} />
           )}
         />
         <label>전화번호</label>
@@ -78,7 +79,11 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
           control={control}
           name="phoneNumber"
           render={({ field: { onChange, value } }) => (
-            <Input value={value} setValue={onChange} />
+            <Input
+              value={value}
+              placeholder="010-0000-0000"
+              setValue={onChange}
+            />
           )}
         />
         <label>오픈채팅 링크</label>
@@ -86,7 +91,11 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
           control={control}
           name="openChatLink"
           render={({ field: { onChange, value } }) => (
-            <Input value={value} setValue={onChange} />
+            <Input
+              value={value}
+              placeholder="https://open.kakao.com/..."
+              setValue={onChange}
+            />
           )}
         />
 

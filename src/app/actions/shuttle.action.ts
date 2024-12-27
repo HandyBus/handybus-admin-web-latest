@@ -14,12 +14,10 @@ import { revalidatePath } from 'next/cache';
 export const addShuttle = async (request: CreateShuttleRequestType) => {
   try {
     CreateShuttleRequestSchema.parse(request);
-    console.log('request', JSON.stringify(request, null, 2));
     const response = await instance.post(
       '/shuttle-operation/admin/shuttles',
       request,
     );
-    console.log(response.request);
     revalidatePath('/shuttles');
     return response.data;
   } catch (e) {
