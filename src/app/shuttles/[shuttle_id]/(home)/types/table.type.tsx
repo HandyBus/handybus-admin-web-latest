@@ -12,7 +12,7 @@ export const columns = (shuttleId: number) => [
   }),
   columnHelper.accessor('date', {
     header: () => '날짜',
-    cell: (info) => info.getValue().toLocaleDateString(),
+    cell: (info) => info.getValue().toLocaleDateString('ko-KR'),
   }),
   columnHelper.accessor('status', {
     header: () => '상태',
