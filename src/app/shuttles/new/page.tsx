@@ -8,18 +8,13 @@ import { useRouter } from 'next/navigation';
 import ArtistInput from '@/components/input/ArtistInput';
 import { Controller } from 'react-hook-form';
 import RegionInput from '@/components/input/RegionInput';
-import {
-  CheckIcon,
-  MessageSquareWarningIcon,
-  PlusIcon,
-  XIcon,
-} from 'lucide-react';
+import { CheckIcon, PlusIcon, XIcon } from 'lucide-react';
 import { Button, Field, Label, RadioGroup, Radio } from '@headlessui/react';
 import ImageFileInput from '@/components/input/ImageFileInput';
 import HubInput from '@/components/input/HubInput';
 import Input from '@/components/input/Input';
 import dayjs from 'dayjs';
-import { diffInDays, today } from '@/utils/date.util';
+import { today, toDateOnly } from '@/utils/date.util';
 
 const defaultValues = {
   name: '',
@@ -72,14 +67,7 @@ const ShuttleForm = () => {
     async (data: CreateShuttleFormType) => {
       if (confirm('셔틀을 추가하시겠습니까?') === false) return;
       try {
-        const formattedData = conform(data);
-        console.log(
-          'formattedData.dailyShuttles.at(0).date',
-          formattedData.dailyShuttles.at(0)?.date,
-          typeof formattedData.dailyShuttles.at(0)?.date,
-        );
-        alert(JSON.stringify(formattedData, null, 2));
-        await addShuttle(formattedData);
+        await addShuttle(conform(data));
         alert('셔틀이 추가되었습니다.');
         router.push('/shuttles');
       } catch (error) {
@@ -102,34 +90,27 @@ const ShuttleForm = () => {
       "
       onSubmit={handleSubmit(onSubmit)}
     >
-      <label>
-        셔틀 이름
-        <Controller
-          control={control}
-          name="name"
-          render={({ field: { onChange, value } }) => (
-            <Input
-              type="text"
-              value={value}
-              placeholder="셔틀 이름"
-              setValue={onChange}
-            />
-          )}
-        />
-      </label>
-      <label>
-        장소
-        <Controller
-          control={control}
-          name="regionId"
-          render={({ field: { onChange, value } }) => (
-            <RegionInput
-              value={value}
-              setValue={(id) => onChange(id || null)}
-            />
-          )}
-        />
-      </label>
+      <label>셔틀 이름</label>
+      <Controller
+        control={control}
+        name="name"
+        render={({ field: { onChange, value } }) => (
+          <Input
+            type="text"
+            value={value}
+            placeholder="셔틀 이름"
+            setValue={onChange}
+          />
+        )}
+      />
+      <label>장소</label>
+      <Controller
+        control={control}
+        name="regionId"
+        render={({ field: { onChange, value } }) => (
+          <RegionInput value={value} setValue={(id) => onChange(id || null)} />
+        )}
+      />
       <label>거점지</label>
       <Controller
         control={control}
@@ -167,19 +148,13 @@ const ShuttleForm = () => {
                       type="date"
                       className="w-full"
                       value={dayjs(value).format('YYYY-MM-DD')}
-                      setValue={(str) => onChange(new Date(str))}
+                      // TODO check timezone issue
+                      setValue={(str) => onChange(toDateOnly(new Date(str)))}
                     />
                     <button type="button" onClick={() => removeDaily(index)}>
                       <XIcon />
                     </button>
                   </div>
-                  {diffInDays(value, today()) < 21 && (
-                    <span className="text-red-500 text-12 flex flex-row justify-start items-center font-700">
-                      <MessageSquareWarningIcon size={16} /> 경고: 너무 가까운
-                      날짜입니다. 이 날짜는 스케줄러에 의해 즉시 닫힐 수
-                      있습니다. 자세한 사항은 백엔드 관리자에게 문의하세요.
-                    </span>
-                  )}
                 </div>
               )}
             />
