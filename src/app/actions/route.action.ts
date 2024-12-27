@@ -40,3 +40,21 @@ export const getAllRoutes = async (
     throw e;
   }
 };
+
+export const getRoute = async (
+  shuttleId: string,
+  dailyShuttleId: string,
+  routeId: string,
+) => {
+  try {
+    const response = await instance.get(
+      `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${routeId}`,
+    );
+    return response.data;
+  } catch (e) {
+    if (e instanceof AxiosError && e.response) {
+      throw e.response.data;
+    }
+    throw e;
+  }
+};

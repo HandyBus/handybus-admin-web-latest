@@ -21,7 +21,7 @@ const dateTransformer: AxiosRequestTransformer = function (
   data,
   headers,
 ) {
-  if (data instanceof Date) {
+  if (data instanceof Date || dayjs.isDayjs(data)) {
     const date = dayjs(data);
 
     if (date.startOf('day').isSame(date)) {

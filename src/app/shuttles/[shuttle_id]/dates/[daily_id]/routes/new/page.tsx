@@ -1,10 +1,7 @@
 'use client';
 
 import { useForm, useFieldArray } from 'react-hook-form';
-import {
-  CreateShuttleRouteRequestFormType,
-  CreateShuttleRouteRequestType,
-} from '@/types/route.type';
+import { conform, type CreateShuttleRouteFormType } from './form.type';
 import { addRoute } from '@/app/actions/route.action';
 import { useRouter } from 'next/navigation';
 import tw from 'tailwind-styled-components';
@@ -20,7 +17,7 @@ const Input = tw.input`
   p-8
 `;
 
-const defaultValues: CreateShuttleRouteRequestFormType = {
+const defaultValues: CreateShuttleRouteFormType = {
   name: '',
   maxPassengerCount: 0,
   earlybirdDeadline: new Date(),
@@ -54,7 +51,7 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
     watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateShuttleRouteRequestFormType>({
+  } = useForm<CreateShuttleRouteFormType>({
     // resolver: zodResolver(CreateShuttleRouteRequestSchema),
     defaultValues,
   });
@@ -72,17 +69,11 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
     name: 'shuttleRouteHubs',
   });
 
-  const onSubmit = async (data: CreateShuttleRouteRequestFormType) => {
+  const onSubmit = async (data: CreateShuttleRouteFormType) => {
     alert(JSON.stringify(data, null, 2));
 
     try {
-      const request = {
-        ...data,
-        shuttleRouteHubs: data.shuttleRouteHubs.filter(
-          (h) => h.type !== '__MARKER_DESINATION_NOT_A_REAL_ROUTE__',
-        ) as CreateShuttleRouteRequestType['shuttleRouteHubs'],
-      } satisfies CreateShuttleRouteRequestType;
-      await addRoute(Number(shuttle_id), Number(daily_id), request);
+      await addRoute(Number(shuttle_id), Number(daily_id), conform(data));
       router.push(`/shuttles/${shuttle_id}/dates/${daily_id}`);
     } catch (error) {
       console.error(error);
@@ -90,7 +81,7 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
   };
 
   const findDividerIndex = (
-    fields: CreateShuttleRouteRequestFormType['shuttleRouteHubs'],
+    fields: CreateShuttleRouteFormType['shuttleRouteHubs'],
   ) => {
     return fields.findIndex(
       (field) => field.type === '__MARKER_DESINATION_NOT_A_REAL_ROUTE__',
