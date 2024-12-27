@@ -50,10 +50,11 @@ const NewHubPage = () => {
 
   const onSubmit = useCallback(
     (data: CreateHubFormType) => {
+      const target = regions?.find((r) => r.regionId === data.regionId);
       const confirmMessage =
         recommended?.regionId === data.regionId || false
           ? `거점지를 추가하시겠습니까?`
-          : `선택한 주소 "${data.coord.address}"가 지역 "${recommended?.provinceFullName} ${recommended?.cityFullName}"에 등록됩니다. 거점지를 추가하시겠습니까?`;
+          : `선택한 주소 "${data.coord.address}"가 지역 "${target ? `${target.cityFullName} ${target.cityShortName}` : '<오류: 알수 없는 위치>'}에 등록됩니다. 거점지를 추가하시겠습니까?`;
       if (confirm(confirmMessage)) {
         addHub(data.regionId, conform(data))
           .then(() => {
@@ -67,7 +68,7 @@ const NewHubPage = () => {
           .finally(() => router.push('/hubs'));
       }
     },
-    [recommended, router],
+    [recommended, router, regions],
   );
 
   return (
@@ -112,7 +113,6 @@ const NewHubPage = () => {
                   {recommended.cityFullName}
                 </button>
               )}
-              {value}
               <RegionInput value={value} setValue={onChange} />
             </div>
           )}
