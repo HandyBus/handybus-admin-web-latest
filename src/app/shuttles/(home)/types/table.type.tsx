@@ -43,7 +43,7 @@ export const columns = [
       return (
         <div>
           {dates.map((date, index) => (
-            <div key={index}>{date.toLocaleDateString()}</div>
+            <div key={index}>{date.toLocaleDateString('ko-KR')}</div>
           ))}
         </div>
       );

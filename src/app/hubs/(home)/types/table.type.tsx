@@ -19,10 +19,10 @@ export const columns = [
   }),
   columnHelper.accessor('createdAt', {
     header: () => '생성일',
-    cell: (info) => info.getValue().toLocaleDateString(),
+    cell: (info) => info.getValue().toLocaleDateString('ko-KR'),
   }),
   columnHelper.accessor('updatedAt', {
     header: () => '수정일',
-    cell: (info) => info.getValue().toLocaleDateString(),
+    cell: (info) => info.getValue().toLocaleDateString('ko-KR'),
   }),
 ];

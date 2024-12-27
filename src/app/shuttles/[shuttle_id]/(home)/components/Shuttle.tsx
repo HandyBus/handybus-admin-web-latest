@@ -24,7 +24,7 @@ const Shuttle = ({ shuttle }: Props) => {
             <p>
               날짜:{' '}
               {shuttle.dailyShuttles
-                .map((ds) => ds.date.toLocaleDateString())
+                .map((ds) => ds.date.toLocaleDateString('ko-KR'))
                 .join(', ')}
             </p>
             <p>상태: {shuttle.status}</p>
