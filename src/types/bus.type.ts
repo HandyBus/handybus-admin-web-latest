@@ -24,7 +24,7 @@ export const BusSchema = z.object({
   shuttleBusId: z.number().int(),
   shuttleRouteId: z.number().int(),
   handyUserId: z.number().int().nullable(), // is this nullable?
-  type: z.enum(['SEATER_12', 'SEATER_28', 'BUS_45']),
+  type: z.enum(['SEATER_12', 'SEATER_28', 'SEATER_45']),
   name: z.string(),
   number: z.unknown(), // zodCarNumber.optional(),
   phoneNumber: z.unknown(), //zodPhoneNumber.optional(),
@@ -37,7 +37,7 @@ export type BusType = z.infer<typeof BusSchema>;
 ////////////// create bus action ///////////////
 
 export const CreateBusRequestSchema = z.object({
-  type: z.enum(['SEATER_12', 'SEATER_28', 'BUS_45']),
+  type: z.enum(['SEATER_12', 'SEATER_28', 'SEATER_45']),
   name: z.string(),
   number: z.string(),
   phoneNumber: z

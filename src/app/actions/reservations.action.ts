@@ -6,10 +6,10 @@ import type { PaginationState } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
 import { PaginationResponseSchema } from '@/types/meta/pagination.type';
 
-const ReservationResponse = PaginationResponseSchema<
-  typeof ReservationSchema,
-  'reservations'
->(ReservationSchema, 'reservations');
+const ReservationResponse = PaginationResponseSchema(
+  ReservationSchema.array(),
+  'reservations',
+);
 
 export const getReservations = async (
   page: PaginationState,

@@ -1,4 +1,4 @@
-import { CreateHubRequestType } from '@/types/hub.type';
+import { CreateHubRequestType } from '@/types/regionHub.type';
 import { z } from 'zod';
 
 export const CreateHubFormSchema = z.object({

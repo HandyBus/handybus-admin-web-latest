@@ -1,6 +1,9 @@
 'use server';
 
-import { CreateShuttleRouteRequestType } from '@/types/route.type';
+import {
+  CreateShuttleRouteRequestType,
+  ShuttleRouteDetailSchema,
+} from '@/types/route.type';
 import { instance } from '@/services/config';
 import { AxiosError } from 'axios';
 
@@ -50,7 +53,8 @@ export const getRoute = async (
     const response = await instance.get(
       `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${routeId}`,
     );
-    return response.data;
+
+    return ShuttleRouteDetailSchema.parse(response.data.shuttleRouteDetail);
   } catch (e) {
     if (e instanceof AxiosError && e.response) {
       throw e.response.data;
