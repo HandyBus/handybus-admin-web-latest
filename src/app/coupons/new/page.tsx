@@ -51,7 +51,12 @@ const Page = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="py-20 max-w-[500px] flex flex-col gap-8"
       >
-        <label>쿠폰 코드</label>
+        <label>
+          쿠폰 코드{' '}
+          <span className="text-red-500 text-12">
+            쿠폰 코드는 중복될 수 없습니다.
+          </span>
+        </label>
         <Controller
           control={control}
           name="code"

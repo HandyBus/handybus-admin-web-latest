@@ -53,7 +53,7 @@ const Page = ({ searchParams }: Props) => {
       value.length > stringToCompare.length
         ? matches(stringToCompare, value)
         : matches(value, stringToCompare);
-    return score > 0;
+    return isFilteredByStatus && score > 0;
   };
 
   return (
