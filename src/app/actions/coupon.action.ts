@@ -2,7 +2,7 @@
 
 import { instance } from '@/services/config';
 import {
-  CouponSchema,
+  CouponListSchema,
   CouponType,
   CreateCouponSchema,
 } from '@/types/coupon.type';
@@ -15,5 +15,5 @@ export const addCoupon = async (request: CouponType) => {
 
 export const getAllCoupons = async () => {
   const response = await instance.get('/billing/admin/coupons');
-  return CouponSchema.parse(response.data.coupons);
+  return CouponListSchema.parse(response.data.coupons);
 };

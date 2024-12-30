@@ -1,9 +1,14 @@
 import { getAllCoupons } from '@/app/actions/coupon.action';
+import DataTable from '@/components/table/DataTable';
+import { columns } from './types/table.type';
 
 const Page = async () => {
   const coupons = await getAllCoupons();
-  console.log(coupons);
-  return <div>coupons</div>;
+  return (
+    <main>
+      <DataTable data={coupons} columns={columns} />
+    </main>
+  );
 };
 
 export default Page;
