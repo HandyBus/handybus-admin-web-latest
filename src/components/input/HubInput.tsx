@@ -12,7 +12,7 @@ import {
 } from '@headlessui/react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { getHubs } from '@/app/actions/hub.action';
-import { HubType } from '@/types/hub.type';
+import { HubType } from '@/types/regionHub.type';
 
 interface Props {
   regionId: number | undefined;
