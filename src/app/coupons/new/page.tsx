@@ -31,7 +31,6 @@ const Page = () => {
 
   const router = useRouter();
   const onSubmit = async (data: CreateCouponFormType) => {
-    console.log(data);
     try {
       await addCoupon(data);
       if (confirm('쿠폰이 생성되었습니다. 목록으로 돌아가시겠습니까?')) {
@@ -124,6 +123,14 @@ const Page = () => {
         <Controller
           control={control}
           name="maxDiscountAmount"
+          render={({ field: { onChange, value } }) => (
+            <NumberInput value={value} setValue={onChange} />
+          )}
+        />
+        <label>발행 개수</label>
+        <Controller
+          control={control}
+          name="maxCouponUsage"
           render={({ field: { onChange, value } }) => (
             <NumberInput value={value} setValue={onChange} />
           )}
