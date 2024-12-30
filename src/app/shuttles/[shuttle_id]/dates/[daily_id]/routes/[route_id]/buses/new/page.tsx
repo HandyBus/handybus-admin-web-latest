@@ -18,7 +18,7 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
 
   const { control, handleSubmit } = useForm<CreateBusFormType>({
     defaultValues: {
-      type: 'BUS_45',
+      type: 'SEATER_45',
       name: '',
       number: '',
       phoneNumber: '',
