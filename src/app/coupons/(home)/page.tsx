@@ -92,7 +92,9 @@ const Page = ({ searchParams }: Props) => {
           </div>
         ) : (
           <DataTable
-            data={coupons}
+            data={coupons.sort(
+              (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
+            )}
             columns={columns}
             globalFilter={{ value, status: searchParams.filter }}
             globalFilterFn={filterCoupons}
