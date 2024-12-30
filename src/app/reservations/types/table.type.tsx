@@ -3,6 +3,7 @@
 import { ReservationType } from '@/types/reservation.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
+import dayjs from 'dayjs';
 
 const columnHelper = createColumnHelper<ReservationType>();
 
@@ -11,113 +12,69 @@ export const columns = [
     header: () => 'ID',
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor('type', {
-    header: () => 'type',
-    cell: (info) => {
-      switch (info.getValue()) {
-        case 'TO_DESTINATION':
-          return '목적지행';
-        case 'FROM_DESTINATION':
-          return '귀가';
-        case 'ROUND_TRIP':
-          return '왕복';
-      }
+  columnHelper.accessor('createdAt', {
+    header: () => '생성일',
+    cell: (info) => dayjs(info.getValue()).format('YYYY-MM-DD HH:mm:ss'),
+  }),
+  columnHelper.display({
+    id: 'user',
+    header: () => '고객 정보',
+    cell: (props) => (
+      <span>
+        <span>{props.row.original.user.nickname}</span>
+        <br />
+        <span>({props.row.original.user.phoneNumber || '전화번호 없음'})</span>
+      </span>
+    ),
+  }),
+  columnHelper.display({
+    id: 'shuttleRoute',
+    header: () => '이용 노선',
+    cell: (props) => {
+      const reservation = props.row.original;
+      // TODO
+      return <span>노선 이름: {reservation.shuttleRoute.name}</span>;
     },
   }),
   columnHelper.accessor('handyStatus', {
-    header: () => 'handyStatus',
+    header: () => '핸디 지원 유무',
     cell: (info) => {
       switch (info.getValue()) {
         case 'ACCEPTED':
-          return '승인됨';
+          return <b className="text-green-500">승인됨</b>;
         case 'DECLINED':
-          return '거절됨';
+          return <b className="text-red-500">거절됨</b>;
         case 'NOT_SUPPORTED':
-          return '-';
+          return '지원하지 않음';
         case 'SUPPORTED':
-          return '지원';
+          return <b>지원함</b>;
       }
     },
   }),
-  columnHelper.accessor('cancelStatus', {
-    header: () => 'cancelStatus',
-    cell: (info) => {
-      switch (info.getValue()) {
-        case 'CANCEL_COMPLETE':
-          return '취소 완료';
-        case 'CANCEL_REQUEST':
-          return '취소 요청';
-        case 'NONE':
-          return '-';
-      }
-    },
-  }),
-  columnHelper.accessor('createdAt', {
-    header: () => '생성일',
-    cell: (info) => info.getValue().toLocaleDateString(),
-  }),
-  columnHelper.accessor('updatedAt', {
-    header: () => '수정일',
-    cell: (info) => info.getValue().toLocaleDateString(),
-  }),
-  columnHelper.accessor('reservationStatus', {
-    header: () => 'reservationStatus',
-    cell: (info) => {
-      switch (info.getValue()) {
-        case 'COMPLETE_PAYMENT':
-          return '결제 완료';
-        case 'NOT_PAYMENT':
-          return '결제 안됨';
-        case 'RESERVATION_CONFIRMED':
-          return '예약 확정';
-        case 'CANCEL':
-          return '취소됨';
-      }
-    },
-  }),
-  columnHelper.accessor('payment.paymentId', {
-    header: () => 'paymentId',
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor('payment.paymentAmount', {
-    header: () => 'paymentAmount',
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor('user', {
-    header: () => 'user',
-    cell: (info) => JSON.stringify(info.getValue(), null, 2),
-  }),
-  columnHelper.accessor('passengers', {
-    header: () => 'passengers.length',
-    cell: (info) => info.getValue().length,
-  }),
-  columnHelper.accessor('toDestinationShuttleRouteHubId', {
-    header: () => 'toDestination',
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor('fromDestinationShuttleRouteHubId', {
-    header: () => 'fromDestination',
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor('shuttleRoute.shuttleId', {
-    header: () => 'shuttleId',
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor('shuttleRoute.dailyShuttleId', {
-    header: () => 'dailyShuttleId',
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor('shuttleRoute.shuttleRouteId', {
-    header: () => 'r', //'shuttleRouteId',
-    cell: (info) => info.getValue(),
+  columnHelper.display({
+    id: 'handyActions',
+    header: () => '핸디 승인',
+    cell: (props) =>
+      props.row.original.handyStatus === 'SUPPORTED' && (
+        <>
+          <BlueLink href={`/reservations/${props.row.original.reservationId}`}>
+            승인하기
+          </BlueLink>
+          <BlueLink href={`/reservations/${props.row.original.reservationId}`}>
+            거절하기
+          </BlueLink>
+        </>
+      ),
   }),
   columnHelper.display({
     id: 'actions',
     header: () => '액션',
     cell: (props) => (
-      <BlueLink href={`/reservations/${props.row.original.reservationId}`}>
-        상세보기
-      </BlueLink>
+      <>
+        <BlueLink href={`/reservations/${props.row.original.reservationId}`}>
+          상세보기
+        </BlueLink>
+      </>
     ),
   }),
 ];
