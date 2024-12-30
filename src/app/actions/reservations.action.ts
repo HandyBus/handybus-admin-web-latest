@@ -3,16 +3,13 @@
 import { instance } from '@/services/config';
 import { ReservationSchema } from '@/types/reservation.type';
 import type { PaginationState } from '@tanstack/react-table';
-
-import { z } from 'zod';
-
-const ReservationResponse = z.object({
-  reservations: ReservationSchema.array(),
-  totalCount: z.number(),
-  nextPage: z.number().nullable(),
-});
-
 import { AxiosError } from 'axios';
+import { PaginationResponseSchema } from '@/types/meta/pagination.type';
+
+const ReservationResponse = PaginationResponseSchema<
+  typeof ReservationSchema,
+  'reservations'
+>(ReservationSchema, 'reservations');
 
 export const getReservations = async (
   page: PaginationState,
