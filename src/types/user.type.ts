@@ -19,3 +19,5 @@ export const UserSchema = z.object({
   profileImage: z.string().url().or(z.string().length(0)), // TODO nullable?
   regionId: z.number().int().nullable(), // TODO nullable?
 });
+
+export type UserType = z.infer<typeof UserSchema>;

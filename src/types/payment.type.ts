@@ -6,3 +6,14 @@ export const PaymentSchema = z.object({
   paymentAmount: z.number().int().nonnegative(),
   discountAmount: z.number().int().nonnegative(),
 });
+
+export type PaymentType = z.infer<typeof PaymentSchema>;
+
+export const PaymentDetailSchema = z
+  .object({
+    refundRequests: z.array(z.unknown()),
+    tossPayments: z.array(z.unknown()),
+  })
+  .merge(PaymentSchema);
+
+export type PaymentDetailType = z.infer<typeof PaymentDetailSchema>;

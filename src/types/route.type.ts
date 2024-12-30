@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { RouteHubSchema } from './routeHub.type';
+import { BusSchema } from './bus.type';
 
 export const CreateShuttleRouteRequestSchema = z.object({
   name: z.string(),
@@ -32,14 +34,12 @@ export type CreateShuttleRouteRequestType = z.infer<
 
 ////////////////////////////////////////////////////////
 
-export const ShuttleRouteDetailSchema = z.object({
+export const ShuttleRouteDetailSchemaBase = z.object({
   shuttleRouteId: z.number().int(),
   shuttleId: z.number().int(),
   dailyShuttleId: z.number().int(),
   name: z.string(),
-  status: z.unknown(),
-  hasEarlyBird: z.boolean(),
-  earlybirdDeadline: z.unknown(),
+  status: z.string(), // TODO
   reservationDeadline: z.coerce.date(),
   earlybirdPriceToDestination: z.number().int().nullable(),
   earlybirdPriceFromDestination: z.number().int().nullable(),
@@ -52,10 +52,26 @@ export const ShuttleRouteDetailSchema = z.object({
   remainingSeatType: z.unknown(),
   // TODO
   hubs: z.object({
-    pickup: z.array(z.unknown()),
-    dropoff: z.array(z.unknown()),
+    toDestination: z.array(RouteHubSchema),
+    fromDestination: z.array(RouteHubSchema),
   }),
-  shuttle: z.object({}),
+  // shuttle: z.object({}),
+  shuttleBuses: z.array(BusSchema),
 });
+
+export const ShuttleRouteDetailSchema = z.discriminatedUnion('hasEarlyBird', [
+  ShuttleRouteDetailSchemaBase.merge(
+    z.object({
+      hasEarlyBird: z.literal(false),
+      earlybirdDeadline: z.unknown(),
+    }),
+  ),
+  ShuttleRouteDetailSchemaBase.merge(
+    z.object({
+      hasEarlyBird: z.literal(true),
+      earlybirdDeadline: z.coerce.date(),
+    }),
+  ),
+]);
 
 export type ShuttleRouteDetailType = z.infer<typeof ShuttleRouteDetailSchema>;
