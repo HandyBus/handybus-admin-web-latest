@@ -30,7 +30,7 @@ export const CreateCouponSchema = z.object({
   name: z.string(),
   discountType: z.enum(DISCOUNT_TYPES),
   discountAmount: z.number().int().optional(),
-  discountRate: z.number().int().optional(),
+  discountRate: z.number().int().min(0).max(100).optional(),
   maxDiscountAmount: z.number().int(),
   maxApplicablePeople: z.number().int(),
   maxCouponUsage: z.number().int(),
