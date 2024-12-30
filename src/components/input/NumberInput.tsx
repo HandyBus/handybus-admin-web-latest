@@ -11,24 +11,25 @@ interface Props
     InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   > {
-  value: string;
-  setValue: (value: string) => void;
+  value: number;
+  setValue: (value: number) => void;
   placeholder?: string;
 }
 
-const Input = (
+const NumberInput = (
   { value, setValue, ...props }: Props,
   ref: Ref<HTMLInputElement>,
 ) => {
   return (
     <input
       ref={ref}
+      type="number"
       {...props}
       value={value}
-      onChange={(e) => setValue(e.target.value)}
+      onChange={(e) => setValue(Number(e.target.value))}
       className="w-full p-8 border border-grey-200 rounded-lg focus:outline-blue-400"
     />
   );
 };
 
-export default forwardRef(Input);
+export default forwardRef(NumberInput);

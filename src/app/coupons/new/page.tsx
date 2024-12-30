@@ -2,6 +2,7 @@
 
 import { addCoupon } from '@/app/actions/coupon.action';
 import Input from '@/components/input/Input';
+import NumberInput from '@/components/input/NumberInput';
 import { CreateCouponFormType } from '@/types/coupon.type';
 import { Label, Radio } from '@headlessui/react';
 import { Field } from '@headlessui/react';
@@ -108,7 +109,7 @@ const Page = () => {
           control={control}
           name="discountRate"
           render={({ field: { onChange, value } }) => (
-            <Input type="number" value={value ?? 0} setValue={onChange} />
+            <NumberInput value={value ?? 0} setValue={onChange} />
           )}
         />
         <label>정량 시 할인 값</label>
@@ -116,7 +117,7 @@ const Page = () => {
           control={control}
           name="discountAmount"
           render={({ field: { onChange, value } }) => (
-            <Input type="number" value={value ?? 0} setValue={onChange} />
+            <NumberInput value={value ?? 0} setValue={onChange} />
           )}
         />
         <label>비율 할인 시 최대 정량적 할인 값</label>
@@ -124,7 +125,7 @@ const Page = () => {
           control={control}
           name="maxDiscountAmount"
           render={({ field: { onChange, value } }) => (
-            <Input type="number" value={value} setValue={onChange} />
+            <NumberInput value={value} setValue={onChange} />
           )}
         />
         <label>최대 허용 가능 인원</label>
@@ -132,7 +133,7 @@ const Page = () => {
           control={control}
           name="maxApplicablePeople"
           render={({ field: { onChange, value } }) => (
-            <Input type="number" value={value} setValue={onChange} />
+            <NumberInput value={value} setValue={onChange} />
           )}
         />
         <label>유효 기간</label>
