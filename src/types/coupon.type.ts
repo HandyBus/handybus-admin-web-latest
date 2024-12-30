@@ -37,3 +37,5 @@ export const CreateCouponSchema = z.object({
   validFrom: z.string(),
   validTo: z.string(),
 });
+
+export type CreateCouponFormType = z.infer<typeof CreateCouponSchema>;

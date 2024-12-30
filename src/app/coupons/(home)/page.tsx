@@ -11,6 +11,7 @@ import { CouponType } from '@/types/coupon.type';
 import { FilterFnOption } from '@tanstack/react-table';
 import { matches } from 'kled';
 import DebouncedInput from '@/components/input/DebouncedInput';
+import BlueLink from '@/components/link/BlueLink';
 
 const FILTER_LIST = ['전체', '진행중', '만료'] as const;
 type FilterType = (typeof FILTER_LIST)[number];
@@ -55,15 +56,12 @@ const Page = ({ searchParams }: Props) => {
     return score > 0;
   };
 
-  if (isFetching)
-    return (
-      <div>
-        <Loader2Icon className="animate-spin" size={64} />
-      </div>
-    );
-
   return (
-    <main>
+    <main className="flex h-full w-full flex-col gap-16 bg-white">
+      <header className="flex items-center justify-between">
+        <h1 className="text-[32px] font-500">쿠폰 관리</h1>
+        <BlueLink href="/coupons/new">쿠폰 추가</BlueLink>
+      </header>
       <nav className="flex gap-40 text-20 font-600">
         {FILTER_LIST.map((filter) => (
           <Link
@@ -88,12 +86,18 @@ const Page = ({ searchParams }: Props) => {
         />
       </div>
       <section>
-        <DataTable
-          data={coupons}
-          columns={columns}
-          globalFilter={{ value, status: searchParams.filter }}
-          globalFilterFn={filterCoupons}
-        />
+        {isFetching ? (
+          <div>
+            <Loader2Icon className="animate-spin" size={64} />
+          </div>
+        ) : (
+          <DataTable
+            data={coupons}
+            columns={columns}
+            globalFilter={{ value, status: searchParams.filter }}
+            globalFilterFn={filterCoupons}
+          />
+        )}
       </section>
     </main>
   );

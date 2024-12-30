@@ -11,8 +11,8 @@ interface Props
     InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   > {
-  value: string;
-  setValue: (value: string) => void;
+  value: string | number;
+  setValue: (value: string | number) => void;
   placeholder?: string;
 }
 
@@ -25,7 +25,11 @@ const Input = (
       ref={ref}
       {...props}
       value={value}
-      onChange={(e) => setValue(e.target.value)}
+      onChange={(e) =>
+        setValue(
+          props.type === 'number' ? Number(e.target.value) : e.target.value,
+        )
+      }
       className="w-full p-8 border border-grey-200 rounded-lg focus:outline-blue-400"
     />
   );

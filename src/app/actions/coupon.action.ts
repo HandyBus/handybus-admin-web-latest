@@ -3,11 +3,11 @@
 import { instance } from '@/services/config';
 import {
   CouponListSchema,
-  CouponType,
+  CreateCouponFormType,
   CreateCouponSchema,
 } from '@/types/coupon.type';
 
-export const addCoupon = async (request: CouponType) => {
+export const addCoupon = async (request: CreateCouponFormType) => {
   CreateCouponSchema.parse(request);
   const response = await instance.post('/billing/admin/coupons', request);
   return response.data;
