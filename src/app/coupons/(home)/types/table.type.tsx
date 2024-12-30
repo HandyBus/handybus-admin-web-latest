@@ -60,13 +60,17 @@ export const columns = [
       },
     },
   ),
+  columnHelper.accessor('maxCouponUsage', {
+    header: () => '최대 인원 수',
+    cell: (info) => (info.getValue() === 0 ? '무제한' : info.getValue()),
+  }),
   columnHelper.accessor((row) => ({ from: row.validFrom, to: row.validTo }), {
     id: 'validDateRange',
     header: () => '사용기간',
     cell: (info) => {
       const { from, to } = info.getValue();
       return (
-        <span className="white-space">
+        <span className="white-space text-14">
           {from.toLocaleString('ko-KR')}부터
           <br />
           {to.toLocaleString('ko-KR')}까지
@@ -76,10 +80,14 @@ export const columns = [
   }),
   columnHelper.accessor('createdAt', {
     header: () => '생성일',
-    cell: (info) => info.getValue().toLocaleString('ko-KR'),
+    cell: (info) => (
+      <span className="text-14">{info.getValue().toLocaleString('ko-KR')}</span>
+    ),
   }),
   columnHelper.accessor('updatedAt', {
     header: () => '수정일',
-    cell: (info) => info.getValue().toLocaleString('ko-KR'),
+    cell: (info) => (
+      <span className="text-14">{info.getValue().toLocaleString('ko-KR')}</span>
+    ),
   }),
 ];
