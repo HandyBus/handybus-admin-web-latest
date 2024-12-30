@@ -2,9 +2,9 @@
 
 import { instance } from '@/services/config';
 import { ReservationSchema } from '@/types/reservation.type';
-import type { PaginationState } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
 import { PaginationResponseSchema } from '@/types/meta/pagination.type';
+import { PAGINATION_LIMIT } from '@/constants/config';
 
 const ReservationResponse = PaginationResponseSchema(
   ReservationSchema.array(),
@@ -12,7 +12,7 @@ const ReservationResponse = PaginationResponseSchema(
 );
 
 export const getReservations = async (
-  page: PaginationState,
+  pageIndex: number | undefined,
   shuttleId: number | undefined,
   dailyShuttleId: number | undefined,
   shuttleRouteId: number | undefined,
@@ -20,7 +20,9 @@ export const getReservations = async (
   passengerName: string | undefined,
 ) => {
   try {
-    let url = `/shuttle-operation/admin/reservations?limit=${page.pageSize}&page=${page.pageIndex}`;
+    let url = `/shuttle-operation/admin/reservations?limit=${PAGINATION_LIMIT}`;
+    if (pageIndex !== undefined && pageIndex !== null)
+      url = url.concat(`&page=${pageIndex}`);
     if (shuttleId !== undefined && shuttleId !== null)
       url = url.concat(`&shuttleId=${shuttleId}`);
     if (dailyShuttleId !== undefined && dailyShuttleId !== null)

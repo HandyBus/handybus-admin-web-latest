@@ -24,7 +24,7 @@ const Page = () => {
   const queryFn = useCallback(
     ({ pageParam }: { pageParam: number }) => {
       return getReservations(
-        { pageIndex: pageParam, pageSize: 4 },
+        pageParam,
         shuttleId,
         dailyShuttleId,
         shuttleRouteId,
