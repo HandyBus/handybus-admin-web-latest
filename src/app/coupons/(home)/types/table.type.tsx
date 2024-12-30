@@ -60,7 +60,7 @@ export const columns = [
       },
     },
   ),
-  columnHelper.accessor('maxCouponUsage', {
+  columnHelper.accessor('maxApplicablePeople', {
     header: () => '최대 인원 수',
     cell: (info) => (info.getValue() === 0 ? '무제한' : info.getValue()),
   }),

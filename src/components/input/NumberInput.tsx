@@ -27,6 +27,7 @@ const NumberInput = (
       {...props}
       value={value}
       onChange={(e) => setValue(Number(e.target.value))}
+      onWheel={(e) => e.target instanceof HTMLElement && e.target.blur()}
       className="w-full p-8 border border-grey-200 rounded-lg focus:outline-blue-400"
     />
   );
