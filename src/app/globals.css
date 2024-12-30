@@ -52,6 +52,17 @@
   --blue-800: 3 69 139;
   --blue-900: 3 53 106;
 
+  --green-50: 230 246 230;
+  --green-100: 193 230 193;
+  --green-200: 156 215 156;
+  --green-300: 119 199 119;
+  --green-400: 95 184 95;
+  --green-500: 57 150 57;
+  --green-600: 51 135 51;
+  --green-700: 41 107 41;
+  --green-800: 33 85 33;
+  --green-900: 26 64 26;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-smooth: never;
