@@ -25,7 +25,7 @@ export const addShuttle = async (request: CreateShuttleRequestType) => {
       throw e;
     }
     if (e instanceof AxiosError && e.response) {
-      console.error(e.request);
+      console.log('AXIOS ERROR DATA', e.config?.data);
       console.error(e.response.data);
       throw e.response.data;
     }
