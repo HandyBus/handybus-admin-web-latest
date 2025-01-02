@@ -19,7 +19,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getShuttle } from '@/app/actions/shuttle.action';
 import { getRoute } from '@/app/actions/route.action';
 import ShuttleRouteInput from '@/components/input/ShuttleRouteInput';
-import usePrevious from '@/hooks/usePrevious';
+import usePrevious, { isFirst } from '@/hooks/usePrevious';
 
 function Filter() {
   const [shuttleId, setShuttleId] = useParamState<number | undefined>(
@@ -48,20 +48,18 @@ function Filter() {
     optionalStringOpt,
   );
 
-  const { current: prevShuttleId, hasPrevious: hasPrevShuttleId } =
-    usePrevious(shuttleId);
-  const { current: prevDailyShuttleId, hasPrevious: hasPrevDailyShuttleId } =
-    usePrevious(dailyShuttleId);
+  const prevShuttleId = usePrevious(shuttleId);
+  const prevDailyShuttleId = usePrevious(dailyShuttleId);
 
   useEffect(() => {
-    if (hasPrevShuttleId && prevShuttleId !== shuttleId) {
+    if (!isFirst(prevDailyShuttleId) && prevShuttleId !== shuttleId) {
       setDailyShuttleId(undefined);
       setShuttleRouteId(undefined);
     }
   }, [shuttleId]);
 
   useEffect(() => {
-    if (hasPrevDailyShuttleId && prevDailyShuttleId !== dailyShuttleId) {
+    if (!isFirst(prevDailyShuttleId) && prevDailyShuttleId !== dailyShuttleId) {
       setShuttleRouteId(undefined);
     }
   }, [dailyShuttleId]);
