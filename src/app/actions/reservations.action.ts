@@ -1,10 +1,15 @@
 'use server';
 
 import { instance } from '@/services/config';
-import { ReservationSchema } from '@/types/reservation.type';
+import {
+  ReservationDetailSchema,
+  ReservationSchema,
+  type UpdateReservationRequestType,
+} from '@/types/reservation.type';
 import { AxiosError } from 'axios';
 import { PaginationResponseSchema } from '@/types/meta/pagination.type';
 import { PAGINATION_LIMIT } from '@/constants/config';
+import { revalidatePath } from 'next/cache';
 
 const ReservationResponse = PaginationResponseSchema(
   ReservationSchema.array(),
@@ -49,7 +54,27 @@ export const getReservation = async (id: number) => {
     const ret = await instance.get(
       `/shuttle-operation/admin/reservations/${id}`,
     );
-    return ReservationSchema.parse(ret.data.shuttleReservation);
+    return ReservationDetailSchema.parse(ret.data.shuttleReservation);
+  } catch (e) {
+    if (e instanceof AxiosError && e.response) {
+      throw e.response.data;
+    }
+    throw e;
+  }
+};
+
+export const updateReservation = async (
+  reservationId: number,
+  input: UpdateReservationRequestType,
+) => {
+  try {
+    console.log(JSON.stringify(input, null, 2));
+    const ret = await instance.put(
+      `/shuttle-operation/admin/reservations/${reservationId}`,
+      input,
+    );
+    revalidatePath(`/reservations/${reservationId}`, 'layout');
+    return ret.data;
   } catch (e) {
     if (e instanceof AxiosError && e.response) {
       throw e.response.data;
