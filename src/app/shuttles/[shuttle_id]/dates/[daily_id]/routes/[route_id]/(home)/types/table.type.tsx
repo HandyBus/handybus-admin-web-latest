@@ -18,16 +18,16 @@ export const busColumns = [
     cell: (info) => info.getValue(),
   }),
   busColumnHelper.accessor('name', {
-    header: () => '이름',
+    header: () => '호차',
     cell: (info) => info.getValue(),
   }),
   busColumnHelper.accessor('phoneNumber', {
-    header: () => '상태',
+    header: () => '기사님 전화번호',
     cell: (info) => info.getValue(),
   }),
   busColumnHelper.display({
     id: 'actions',
-    header: () => '액션',
+    header: () => '오픈채팅방 링크',
     cell: () => (
       // TODO: href={props.row.original.openChatLink}>
       <BlueLink href="TODO">오픈채팅 링크 열기</BlueLink>
