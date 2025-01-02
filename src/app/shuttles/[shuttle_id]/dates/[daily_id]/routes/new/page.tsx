@@ -5,7 +5,6 @@ import { conform, type CreateShuttleRouteFormType } from './form.type';
 import { addRoute } from '@/app/actions/route.action';
 import { useRouter } from 'next/navigation';
 import tw from 'tailwind-styled-components';
-import { useEffect } from 'react';
 
 interface Props {
   params: { shuttle_id: string; daily_id: string };
@@ -34,11 +33,15 @@ const defaultValues: CreateShuttleRouteFormType = {
     fromDestination: 1000000,
     roundTrip: 1000000,
   },
-  shuttleRouteHubs: [
+  shuttleRouteHubsFromDestination: [
     {
       regionHubId: 0,
-      type: '__MARKER_DESINATION_NOT_A_REAL_ROUTE__',
-      sequence: 0,
+      arrivalTime: new Date(),
+    },
+  ],
+  shuttleRouteHubsToDestination: [
+    {
+      regionHubId: 0,
       arrivalTime: new Date(),
     },
   ],
@@ -52,7 +55,6 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
     watch,
     handleSubmit,
     formState: { errors },
-    setValue,
   } = useForm<CreateShuttleRouteFormType>({
     // resolver: zodResolver(CreateShuttleRouteRequestSchema),
     defaultValues,
@@ -61,33 +63,26 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
   const watchHasEarlybird = watch('hasEarlybird');
 
   const {
-    fields: hubFields,
-    append: appendHub,
-    remove: removeHub,
+    fields: fromDestHubFields,
+    append: appendFromDestHub,
+    remove: removeFromDestHub,
     // update: updateHub,
-    swap: swapHub,
+    swap: swapFromDestHub,
   } = useFieldArray({
     control,
-    name: 'shuttleRouteHubs',
+    name: 'shuttleRouteHubsFromDestination',
   });
 
-  useEffect(() => {
-    hubFields.forEach((field, index) => {
-      const dividerIndex = findDividerIndex(hubFields);
-      setValue(
-        `shuttleRouteHubs.${index}.sequence`,
-        dividerIndex - index > 0 ? index + 1 : Math.abs(dividerIndex - index),
-      );
-      setValue(
-        `shuttleRouteHubs.${index}.type`,
-        index === dividerIndex
-          ? '__MARKER_DESINATION_NOT_A_REAL_ROUTE__'
-          : index < dividerIndex
-            ? 'TO_DESTINATION'
-            : 'FROM_DESTINATION',
-      );
-    });
-  }, [hubFields, setValue]);
+  const {
+    fields: toDestHubFields,
+    append: appendToDestHub,
+    remove: removeToDestHub,
+    // update: updateHub,
+    swap: swapToDestHub,
+  } = useFieldArray({
+    control,
+    name: 'shuttleRouteHubsToDestination',
+  });
 
   const onSubmit = async (data: CreateShuttleRouteFormType) => {
     if (!confirm('등록하시겠습니까?')) return;
@@ -101,21 +96,11 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
     }
   };
 
-  const findDividerIndex = (
-    fields: CreateShuttleRouteFormType['shuttleRouteHubs'],
-  ) => {
-    return fields.findIndex(
-      (field) => field.type === '__MARKER_DESINATION_NOT_A_REAL_ROUTE__',
-    );
-  };
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="space-y-4 flex flex-col gap-16 bg-grey-50 rounded-lg p-16  "
     >
-      <h1 className="text-2xl font-bold">새 경로 추가</h1>
-
       <div className="space-y-2">
         <label htmlFor="name" className="block">
           경로 이름
@@ -231,16 +216,12 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
       </div>
 
       <div className="space-y-2">
-        <h3>경유지</h3>
+        <h3>경유지 목적지행</h3>
         <button
           type="button"
           onClick={() =>
-            appendHub({
+            appendFromDestHub({
               regionHubId: 0,
-              sequence: Math.abs(
-                findDividerIndex(hubFields) - hubFields.length,
-              ),
-              type: 'FROM_DESTINATION',
               arrivalTime: new Date(),
             })
           }
@@ -249,53 +230,16 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
           추가
         </button>
         <div className="space-y-2">
-          {hubFields.map((field, index) => {
-            if (field.type === '__MARKER_DESINATION_NOT_A_REAL_ROUTE__') {
-              return (
-                <div
-                  key={field.id}
-                  className="bg-primary-main rounded-lg text-white p-8 justify-center flex-row gap-8 flex"
-                >
-                  ~~ 셔틀 목적지 ~~
-                  <button
-                    type="button"
-                    onClick={() => index > 0 && swapHub(index, index - 1)}
-                    disabled={index === 0}
-                    className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-                  >
-                    위로
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      index < hubFields.length - 1 && swapHub(index, index + 1)
-                    }
-                    disabled={index === hubFields.length - 1}
-                    className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-                  >
-                    아래로
-                  </button>
-                </div>
-              );
-            }
-
+          {fromDestHubFields.map((field, index) => {
             return (
               <div key={field.id}>
-                {index === findDividerIndex(hubFields) && (
-                  <div className="my-4 border-t-2 border-gray-300 relative">
-                    <span className="absolute -top-3 left-4 bg-white px-2 text-sm text-gray-500">
-                      귀가 경로
-                    </span>
-                  </div>
-                )}
-
                 <div className="flex items-center gap-2">
                   <label>
                     경유지 ID
                     <Input
                       type="number"
                       {...register(
-                        `shuttleRouteHubs.${index}.regionHubId` as const,
+                        `shuttleRouteHubsFromDestination.${index}.regionHubId` as const,
                         {
                           valueAsNumber: true,
                         },
@@ -303,49 +247,24 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
                       placeholder="Hub ID"
                     />
                   </label>
-                  <Input
-                    type="number"
-                    {...register(
-                      `shuttleRouteHubs.${index}.sequence` as const,
-                      {
-                        valueAsNumber: true,
-                      },
-                    )}
-                    placeholder="Order"
-                    readOnly
-                  />
 
-                  <label>
-                    타입
-                    <select {...register(`shuttleRouteHubs.${index}.type`)}>
-                      <option
-                        value="TO_DESTINATION"
-                        disabled={index >= findDividerIndex(hubFields)}
-                      >
-                        목적지로
-                      </option>
-                      <option
-                        value="FROM_DESTINATION"
-                        disabled={index < findDividerIndex(hubFields)}
-                      >
-                        귀가
-                      </option>
-                    </select>
-                  </label>
+                  <label>타입 : 목적지행</label>
 
                   <label>
                     시간
                     <Input
                       type="datetime-local"
                       {...register(
-                        `shuttleRouteHubs.${index}.arrivalTime` as const,
+                        `shuttleRouteHubsFromDestination.${index}.arrivalTime` as const,
                       )}
                     />
                   </label>
 
                   <button
                     type="button"
-                    onClick={() => index > 0 && swapHub(index, index - 1)}
+                    onClick={() =>
+                      index > 0 && swapFromDestHub(index, index - 1)
+                    }
                     disabled={index === 0}
                     className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
                   >
@@ -354,16 +273,95 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
                   <button
                     type="button"
                     onClick={() =>
-                      index < hubFields.length - 1 && swapHub(index, index + 1)
+                      index < fromDestHubFields.length - 1 &&
+                      swapFromDestHub(index, index + 1)
                     }
-                    disabled={index === hubFields.length - 1}
+                    disabled={index === fromDestHubFields.length - 1}
                     className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
                   >
                     아래로
                   </button>
                   <button
                     type="button"
-                    onClick={() => removeHub(index)}
+                    onClick={() => removeFromDestHub(index)}
+                    className="text-red-500"
+                  >
+                    삭제
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <h3>경유지 귀가행</h3>
+        <button
+          type="button"
+          onClick={() =>
+            appendToDestHub({
+              regionHubId: 0,
+              arrivalTime: new Date(),
+            })
+          }
+          className="text-blue-500 px-2 py-1 rounded text-sm"
+        >
+          추가
+        </button>
+        <div className="space-y-2">
+          {toDestHubFields.map((field, index) => {
+            return (
+              <div key={field.id}>
+                <div className="flex items-center gap-2">
+                  <label>
+                    경유지 ID
+                    <Input
+                      type="number"
+                      {...register(
+                        `shuttleRouteHubsToDestination.${index}.regionHubId` as const,
+                        {
+                          valueAsNumber: true,
+                        },
+                      )}
+                      placeholder="Hub ID"
+                    />
+                  </label>
+
+                  <label>타입 : 귀가행</label>
+
+                  <label>
+                    시간
+                    <Input
+                      type="datetime-local"
+                      {...register(
+                        `shuttleRouteHubsToDestination.${index}.arrivalTime` as const,
+                      )}
+                    />
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={() => index > 0 && swapToDestHub(index, index - 1)}
+                    disabled={index === 0}
+                    className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
+                  >
+                    위로
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      index < toDestHubFields.length - 1 &&
+                      swapToDestHub(index, index + 1)
+                    }
+                    disabled={index === toDestHubFields.length - 1}
+                    className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
+                  >
+                    아래로
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeToDestHub(index)}
                     className="text-red-500"
                   >
                     삭제

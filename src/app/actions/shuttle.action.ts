@@ -13,7 +13,7 @@ import { revalidatePath } from 'next/cache';
 
 export const addShuttle = async (request: CreateShuttleRequestType) => {
   try {
-    CreateShuttleRequestSchema.parse(request);
+    console.log(JSON.stringify(CreateShuttleRequestSchema.parse(request)));
     const response = await instance.post(
       '/shuttle-operation/admin/shuttles',
       request,
@@ -25,6 +25,8 @@ export const addShuttle = async (request: CreateShuttleRequestType) => {
       throw e;
     }
     if (e instanceof AxiosError && e.response) {
+      console.log('AXIOS ERROR DATA', e.config?.data);
+      console.error(e.response.data);
       throw e.response.data;
     }
     throw e;

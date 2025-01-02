@@ -1,6 +1,6 @@
 export const today = () => {
   const now = new Date();
-  now.setHours(0, 0, 0, 0);
+  now.setUTCHours(0, 0, 0, 0);
   return now;
 };
 
@@ -11,6 +11,6 @@ export const diffInDays = (date1: Date, date2: Date) => {
 
 export const toDateOnly = (date: Date) => {
   const ret = new Date(date);
-  ret.setHours(0, 0, 0, 0);
+  ret.setUTCHours(0, 0, 0, 0);
   return ret;
 };

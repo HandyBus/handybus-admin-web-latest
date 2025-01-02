@@ -1,7 +1,10 @@
 'use server';
 
 import { instance } from '@/services/config';
-import { type CreateHubRequestType, HubListSchema } from '@/types/hub.type';
+import {
+  type CreateHubRequestType,
+  HubListSchema,
+} from '@/types/regionHub.type';
 
 export const getHubs = async (regionId: number) => {
   const { regionHubs } = (

@@ -1,4 +1,7 @@
 import { z } from 'zod';
+import { RouteHubSchema } from './routeHub.type';
+import { BusSchema } from './bus.type';
+import { nullableDate } from './meta/date.type';
 
 export const CreateShuttleRouteRequestSchema = z.object({
   name: z.string(),
@@ -37,9 +40,9 @@ export const ShuttleRouteDetailSchema = z.object({
   shuttleId: z.number().int(),
   dailyShuttleId: z.number().int(),
   name: z.string(),
-  status: z.unknown(),
-  hasEarlyBird: z.boolean(),
-  earlybirdDeadline: z.unknown(),
+  status: z.string(), // TODO
+  hasEarlybird: z.boolean(),
+  earlybirdDeadline: nullableDate,
   reservationDeadline: z.coerce.date(),
   earlybirdPriceToDestination: z.number().int().nullable(),
   earlybirdPriceFromDestination: z.number().int().nullable(),
@@ -50,12 +53,11 @@ export const ShuttleRouteDetailSchema = z.object({
   maxPassengerCount: z.number().int(),
   remainingSeatCount: z.number().int(),
   remainingSeatType: z.unknown(),
-  // TODO
   hubs: z.object({
-    pickup: z.array(z.unknown()),
-    dropoff: z.array(z.unknown()),
+    toDestination: z.array(RouteHubSchema),
+    fromDestination: z.array(RouteHubSchema),
   }),
-  shuttle: z.object({}),
+  shuttleBuses: BusSchema.array(),
 });
 
 export type ShuttleRouteDetailType = z.infer<typeof ShuttleRouteDetailSchema>;

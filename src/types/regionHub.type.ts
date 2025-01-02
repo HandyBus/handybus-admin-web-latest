@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const HubSchema = z.object({
+export const RegionHubSchema = z.object({
   regionHubId: z.number().int(),
   regionId: z.number().int(),
   name: z.string(),
@@ -11,9 +11,9 @@ export const HubSchema = z.object({
   updatedAt: z.coerce.date(),
 });
 
-export type HubType = z.infer<typeof HubSchema>;
+export type HubType = z.infer<typeof RegionHubSchema>;
 
-export const HubListSchema = z.array(HubSchema);
+export const HubListSchema = z.array(RegionHubSchema);
 
 export type HubListType = z.infer<typeof HubListSchema>;
 

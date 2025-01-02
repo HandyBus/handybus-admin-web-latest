@@ -85,6 +85,18 @@ const config: Config = {
         800: 'rgb(var(--blue-800) / <alpha-value>)',
         900: 'rgb(var(--blue-900) / <alpha-value>)',
       },
+      green: {
+        50: 'rgb(var(--green-50) / <alpha-value>)',
+        100: 'rgb(var(--green-100) / <alpha-value>)',
+        200: 'rgb(var(--green-200) / <alpha-value>)',
+        300: 'rgb(var(--green-300) / <alpha-value>)',
+        400: 'rgb(var(--green-400) / <alpha-value>)',
+        500: 'rgb(var(--green-500) / <alpha-value>)',
+        600: 'rgb(var(--green-600) / <alpha-value>)',
+        700: 'rgb(var(--green-700) / <alpha-value>)',
+        800: 'rgb(var(--green-800) / <alpha-value>)',
+        900: 'rgb(var(--green-900) / <alpha-value>)',
+      },
     },
     fontSize: {
       10: '10px',
