@@ -34,8 +34,8 @@ const HubInput = ({ regionId, value, setValue }: Props) => {
   });
 
   const setSelectedHub = useCallback(
-    (hub: HubType) => {
-      setValue(hub?.regionHubId);
+    (hub: HubType | null) => {
+      setValue(hub?.regionHubId ?? null);
     },
     [setValue],
   );
