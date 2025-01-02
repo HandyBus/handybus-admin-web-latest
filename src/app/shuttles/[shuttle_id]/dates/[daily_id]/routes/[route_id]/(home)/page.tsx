@@ -8,7 +8,11 @@ interface Props {
 }
 
 const Page = async ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
-  const route = await getRoute(shuttle_id, daily_id, route_id);
+  const route = await getRoute(
+    Number(shuttle_id),
+    Number(daily_id),
+    Number(route_id),
+  );
 
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
@@ -31,11 +35,11 @@ const Page = async ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
             <li>최대 승객 수: {route.maxPassengerCount}</li>
           </ul>
           <ul>
-            <li>얼리버드 여부: {route.hasEarlyBird ? 'O' : 'X'}</li>
-            {route.hasEarlyBird && (
+            <li>얼리버드 여부: {route.hasEarlybird ? 'O' : 'X'}</li>
+            {route.hasEarlybird && (
               <>
                 <li>
-                  예약 마감일: {route.earlybirdDeadline.toLocaleDateString()}
+                  예약 마감일: {route.earlybirdDeadline?.toLocaleDateString()}
                 </li>
                 <li>
                   귀가행 얼리버드 가격: {route.earlybirdPriceFromDestination}

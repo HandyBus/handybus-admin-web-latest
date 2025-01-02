@@ -18,15 +18,15 @@ export const CreateShuttleRouteFormSchema = z.object({
   }),
   earlybirdDeadline: z.coerce.date(),
   maxPassengerCount: z.number(),
-  shuttleRouteHubs: z.array(
+  shuttleRouteHubsToDestination: z.array(
     z.object({
       regionHubId: z.number(),
-      type: z.enum([
-        'TO_DESTINATION',
-        'FROM_DESTINATION',
-        '__MARKER_DESINATION_NOT_A_REAL_ROUTE__',
-      ]),
-      sequence: z.number(),
+      arrivalTime: z.coerce.date(),
+    }),
+  ),
+  shuttleRouteHubsFromDestination: z.array(
+    z.object({
+      regionHubId: z.number(),
       arrivalTime: z.coerce.date(),
     }),
   ),
@@ -39,10 +39,22 @@ export type CreateShuttleRouteFormType = z.infer<
 export const conform = (
   data: CreateShuttleRouteFormType,
 ): CreateShuttleRouteRequestType => {
+  const froms: CreateShuttleRouteRequestType['shuttleRouteHubs'] =
+    data.shuttleRouteHubsFromDestination.map((v, idx) => ({
+      ...v,
+      sequence: idx + 1,
+      type: 'FROM_DESTINATION',
+    }));
+
+  const tos: CreateShuttleRouteRequestType['shuttleRouteHubs'] =
+    data.shuttleRouteHubsToDestination.map((v, idx) => ({
+      ...v,
+      sequence: idx + 1,
+      type: 'TO_DESTINATION',
+    }));
+
   return {
     ...data,
-    shuttleRouteHubs: data.shuttleRouteHubs.filter(
-      (h) => h.type !== '__MARKER_DESINATION_NOT_A_REAL_ROUTE__',
-    ) as CreateShuttleRouteRequestType['shuttleRouteHubs'],
+    shuttleRouteHubs: froms.concat(tos),
   } satisfies CreateShuttleRouteRequestType;
 };

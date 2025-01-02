@@ -13,7 +13,7 @@ interface Props {
 const Page = async ({ params: { shuttle_id, daily_id } }: Props) => {
   const [shuttle, routes] = await Promise.all([
     getShuttle(Number(shuttle_id)),
-    getAllRoutes(shuttle_id, daily_id),
+    getAllRoutes(Number(shuttle_id), Number(daily_id)),
   ]);
 
   const thisDailyShuttle = shuttle.dailyShuttles.find(
@@ -40,7 +40,7 @@ const Page = async ({ params: { shuttle_id, daily_id } }: Props) => {
           <h1 className="text-[24px] font-500">노선 목록</h1>
           <BlueLink href={`${daily_id}/routes/new`}>추가하기</BlueLink>
         </header>
-        <DataTable data={routes.shuttleRouteDetails} columns={columns} />
+        <DataTable data={routes} columns={columns} />
       </div>
     </main>
   );

@@ -110,7 +110,7 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
               onChange={(s) => onChange(s)}
               aria-label="Server size"
             >
-              {['BUS_45', 'SEATER_12', 'SEATER_28'].map((plan) => (
+              {['SEATER_45', 'SEATER_12', 'SEATER_28'].map((plan) => (
                 <Field key={plan} className="flex items-center gap-2">
                   <Radio
                     value={plan}
