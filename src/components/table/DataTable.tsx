@@ -6,11 +6,18 @@ import {
   flexRender,
   getCoreRowModel,
   ColumnDef,
+  FilterFnOption,
+  getFilteredRowModel,
 } from '@tanstack/react-table';
 
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  globalFilterFn?: FilterFnOption<TData>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  globalFilter?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onGlobalFilterChange?: (value: any) => void;
 }
 
 /**
@@ -24,8 +31,9 @@ interface Props<TData, TValue> {
 const DataTable = <TData,>({
   columns,
   data: dataSource,
-  /* any type이 있지만 columns가 createColumnHelper로 생성된 경우에는 문제 없습니다.
-  더 강력한 타입 체크가 필요한 경우 columns와 useReactTable을 같은 파일에서 정의하세요. */
+  globalFilterFn,
+  globalFilter,
+  onGlobalFilterChange,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: Props<TData, any>) => {
   const [data] = useState([...dataSource]);
@@ -34,6 +42,12 @@ const DataTable = <TData,>({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    globalFilterFn: globalFilterFn,
+    state: {
+      globalFilter,
+    },
+    onGlobalFilterChange: onGlobalFilterChange,
   });
 
   return (
