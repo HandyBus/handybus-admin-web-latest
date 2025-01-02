@@ -28,14 +28,16 @@ export const addRoute = async (
 };
 
 export const getAllRoutes = async (
-  shuttleId: string,
-  dailyShuttleId: string,
+  shuttleId: number,
+  dailyShuttleId: number,
 ) => {
   try {
     const response = await instance.get(
       `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes`,
     );
-    return response.data;
+    return ShuttleRouteDetailSchema.array().parse(
+      response.data.shuttleRouteDetails,
+    );
   } catch (e) {
     if (e instanceof AxiosError && e.response) {
       throw e.response.data;
@@ -45,9 +47,9 @@ export const getAllRoutes = async (
 };
 
 export const getRoute = async (
-  shuttleId: string,
-  dailyShuttleId: string,
-  routeId: string,
+  shuttleId: number,
+  dailyShuttleId: number,
+  routeId: number,
 ) => {
   try {
     const response = await instance.get(
@@ -60,5 +62,23 @@ export const getRoute = async (
       throw e.response.data;
     }
     throw e;
+  }
+};
+
+export const confirmRoute = async (
+  shuttleId: number,
+  dailyShuttleId: number,
+  routeId: number,
+) => {
+  try {
+    const response = await instance.put(
+      `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${routeId}/confirm`,
+    );
+    return response.data;
+  } catch (e) {
+    if (e instanceof AxiosError && e.response) {
+      return Promise.reject(e.response.data.error);
+    }
+    return Promise.reject(e);
   }
 };
