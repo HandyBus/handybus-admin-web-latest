@@ -1,8 +1,5 @@
 'use client';
-import { useQuery } from '@tanstack/react-query';
-import { getRegions } from '@/app/actions/regions.action';
-// import { Autocomplete, TextField, CircularProgress, Stack } from '@mui/material';
-import { RegionType } from '@/types/region.type';
+
 import {
   Combobox,
   ComboboxInput,
@@ -13,6 +10,13 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { ChevronDown } from 'lucide-react';
+import {
+  BIG_REGIONS,
+  BigRegionsType,
+  ID_TO_REGION,
+  REGION_TO_ID,
+  SMALL_REGIONS,
+} from '@/constants/regions';
 
 interface Props {
   value: number | null;
@@ -23,65 +27,59 @@ const RegionInput = ({ value, setValue }: Props) => {
   const [queryBig, setQueryBig] = useState('');
   const [querySmall, setQuerySmall] = useState('');
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['regions'],
-    queryFn: async () => await getRegions(),
-  });
-
-  // Get unique provinces
-  const provinces = Array.from(
-    new Set(data?.map((region) => region.provinceFullName) || []),
+  const [selectedBigRegion, setSelectedBigRegion] =
+    useState<BigRegionsType | null>(null);
+  const [selectedSmallRegion, setSelectedSmallRegion] = useState<string | null>(
+    null,
   );
 
-  // Get cities for selected province
-  const cities = useMemo(() => data || [], [data]);
+  const filteredBigRegions = useMemo(
+    () =>
+      queryBig ? filterByFuzzy(BIG_REGIONS, queryBig, (x) => x) : BIG_REGIONS,
+    [queryBig],
+  );
 
-  const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
-
-  const filteredCities = useMemo(() => {
-    const contained = cities.filter(
-      (city) => city.provinceFullName === selectedProvince,
-    );
+  const filteredSmallRegions = useMemo(() => {
+    if (!selectedBigRegion) {
+      return [];
+    }
+    const smallRegions = SMALL_REGIONS[selectedBigRegion];
     return querySmall
-      ? filterByFuzzy(contained, querySmall, (x) => x.cityFullName)
-      : contained;
-  }, [cities, selectedProvince, querySmall]);
-
-  const selectedCity = useMemo(() => {
-    return cities.find((city) => city.regionId === value) || null;
-  }, [cities, value]);
-
-  const filteredProvinces = useMemo(
-    () => (queryBig ? filterByFuzzy(provinces, queryBig, (x) => x) : provinces),
-    [provinces, queryBig],
-  );
+      ? filterByFuzzy(smallRegions, querySmall, (x) => x)
+      : smallRegions;
+  }, [selectedBigRegion, querySmall]);
 
   useEffect(() => {
     // value가 초기화 또는 변경되었을 때
     // 값이 있으면
     if (value) {
-      setSelectedProvince(
-        cities.find((city) => city.regionId === value)?.provinceFullName ||
-          null,
-      );
+      const region = ID_TO_REGION?.[value];
+      setSelectedBigRegion(region?.bigRegion || null);
+      setSelectedSmallRegion(region?.smallRegion || null);
     }
-  }, [cities, value]);
+  }, [value]);
 
-  if (error) return <div>Failed to load regions</div>;
+  useEffect(() => {
+    if (selectedBigRegion && selectedSmallRegion) {
+      setValue(REGION_TO_ID[selectedBigRegion][selectedSmallRegion] || null);
+    }
+  }, [selectedBigRegion, selectedSmallRegion]);
+
   return (
     <div className="flex flex-col justify-start items-start w-full">
       <Combobox
         immediate
-        value={selectedProvince}
+        value={selectedBigRegion}
         onChange={(value) => {
-          if (selectedCity?.cityFullName !== value) {
+          if (selectedBigRegion !== value) {
             setValue(null);
+            setSelectedSmallRegion(null);
           }
 
-          if (value && provinces.includes(value)) {
-            setSelectedProvince(value);
+          if (value && BIG_REGIONS.includes(value)) {
+            setSelectedBigRegion(value);
           } else {
-            setSelectedProvince(null);
+            setSelectedBigRegion(null);
           }
         }}
         onClose={() => {
@@ -94,7 +92,7 @@ const RegionInput = ({ value, setValue }: Props) => {
            border border-grey-200 rounded-t-lg size-full
            focus:outline-blue-400"
             aria-label="Assignee"
-            placeholder={isLoading ? '로딩 중…' : '도/광역시 선택'}
+            placeholder={'도/광역시 선택'}
             defaultValue={null}
             displayValue={(province) => (province === null ? '' : province)}
             onChange={(event) => setQueryBig(event.target.value)}
@@ -106,7 +104,7 @@ const RegionInput = ({ value, setValue }: Props) => {
             anchor="bottom"
             className="w-[var(--input-width)] shadow-md bg-white rounded-lg empty:invisible mt-4"
           >
-            {filteredProvinces.map((province) => (
+            {filteredBigRegions.map((province) => (
               <ComboboxOption
                 key={province}
                 value={province}
@@ -121,9 +119,9 @@ const RegionInput = ({ value, setValue }: Props) => {
 
       <Combobox
         immediate
-        value={selectedCity}
+        value={selectedSmallRegion}
         onChange={(value) => {
-          setValue(value?.regionId || null);
+          setSelectedSmallRegion(value);
         }}
         onClose={() => setQuerySmall('')}
       >
@@ -136,24 +134,22 @@ const RegionInput = ({ value, setValue }: Props) => {
             border border-grey-200 rounded-b-lg size-full
             border-t-transparent"
             aria-label="Assignee"
-            placeholder={isLoading ? '로딩 중…' : '시/군/구 선택'}
+            placeholder={'시/군/구 선택'}
             defaultValue={null}
-            displayValue={(city: RegionType | null) =>
-              city === null ? '' : city.cityFullName
-            }
+            displayValue={(smallRegion: string | null) => smallRegion ?? ''}
             onChange={(event) => setQuerySmall(event.target.value)}
           />
           <ComboboxOptions
             anchor="bottom"
             className="w-[var(--input-width)] shadow-md bg-white rounded-lg empty:invisible mt-4"
           >
-            {filteredCities.map((city) => (
+            {filteredSmallRegions.map((smallRegion) => (
               <ComboboxOption
-                key={city.regionId}
-                value={city}
+                key={smallRegion}
+                value={smallRegion}
                 className="data-[focus]:bg-blue-100 p-8"
               >
-                {city.cityFullName}
+                {smallRegion}
               </ComboboxOption>
             ))}
           </ComboboxOptions>

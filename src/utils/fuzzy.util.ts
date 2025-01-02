@@ -1,7 +1,7 @@
 import { matches } from 'kled';
 
 export const filterByFuzzy = <T>(
-  list: T[],
+  list: readonly T[],
   query: string,
   accessor: (t: T) => string,
   threshold: number = 0,
