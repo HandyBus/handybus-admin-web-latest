@@ -21,9 +21,9 @@ export const columns = [
     header: () => '고객 정보',
     cell: (props) => (
       <span>
-        <span>{props.row.original.user.nickname}</span>
+        <span>{props.row.original.userNickname}</span>
         <br />
-        <span>({props.row.original.user.phoneNumber || '전화번호 없음'})</span>
+        <span>({props.row.original.userPhoneNumber || '전화번호 없음'})</span>
       </span>
     ),
   }),
@@ -33,7 +33,7 @@ export const columns = [
     cell: (props) => {
       const reservation = props.row.original;
       // TODO
-      return <span>노선 이름: {reservation.shuttleRoute.name}</span>;
+      return <span>노선 이름: {reservation.shuttleRoute?.name}</span>;
     },
   }),
   columnHelper.accessor('handyStatus', {
