@@ -3,7 +3,7 @@
 import { getReservations } from '../actions/reservations.action';
 import { columns } from './types/table.type';
 import { useCallback, useMemo } from 'react';
-import ManuallyFilteredInfiniteTable from '@/components/table/PaginatedTable';
+import ManuallyFilteredInfiniteTable from '@/components/table/ManuallyFilteredInfiniteTable';
 import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import { LoaderCircleIcon } from 'lucide-react';
