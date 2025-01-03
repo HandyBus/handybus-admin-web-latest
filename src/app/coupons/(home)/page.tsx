@@ -12,7 +12,7 @@ import DebouncedInput from '@/components/input/DebouncedInput';
 import BlueLink from '@/components/link/BlueLink';
 import ManuallyFilteredInfiniteTable from '@/components/table/ManuallyFilteredInfiniteTable';
 
-const FILTER_LIST = ['전체', '진행중', '만료'] as const;
+const FILTER_LIST = ['전체', '진행중', '대기', '만료'] as const;
 type FilterType = (typeof FILTER_LIST)[number];
 
 interface Props {
@@ -34,13 +34,15 @@ const Page = ({ searchParams }: Props) => {
     filter: { value: string; status: FilterType },
   ) => {
     const { value, status } = filter;
-
+    const now = new Date();
     const isFilteredByStatus =
       status === '전체' || !status
         ? true
         : status === '진행중'
-          ? coupon.isActive
-          : !coupon.isActive;
+          ? coupon.isActive && now > coupon.validFrom
+          : status === '대기'
+            ? !coupon.isActive && now < coupon.validFrom
+            : !coupon.isActive && now > coupon.validFrom;
     if (!value) {
       return isFilteredByStatus;
     }

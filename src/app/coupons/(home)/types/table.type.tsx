@@ -36,15 +36,27 @@ export const columns = [
     header: () => '쿠폰 코드',
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor('isActive', {
-    header: () => '상태',
-    cell: (info) =>
-      info.getValue() ? (
-        <span className="text-primary-600">진행중</span>
-      ) : (
-        <span className="text-red-600">만료</span>
-      ),
-  }),
+  columnHelper.accessor(
+    (row) => ({
+      isActive: row.isActive,
+      validFrom: row.validFrom,
+    }),
+    {
+      id: 'status',
+      header: () => '상태',
+      cell: (info) => {
+        const { isActive, validFrom } = info.getValue();
+        const now = new Date();
+        return isActive ? (
+          <span className="text-primary-600">진행중</span>
+        ) : now < validFrom ? (
+          <span className="text-grey-700">대기</span>
+        ) : (
+          <span className="text-red-600">만료</span>
+        );
+      },
+    },
+  ),
   columnHelper.accessor('discountType', {
     header: () => '쿠폰 형식',
     cell: (info) => (info.getValue() === 'AMOUNT' ? '정량' : '비율'),
@@ -53,16 +65,16 @@ export const columns = [
     (row) => ({ used: row.currentCouponUsage, issued: row.maxCouponUsage }),
     {
       id: 'usageStatus',
-      header: () => '사용/발행',
+      header: () => '발급/발행',
       cell: (info) => {
         const { used, issued } = info.getValue();
-        return `${used}/${issued}`;
+        return `${used}/${issued || '∞'}`;
       },
     },
   ),
   columnHelper.accessor('maxApplicablePeople', {
     header: () => '최대 인원 수',
-    cell: (info) => (info.getValue() === 0 ? '무제한' : info.getValue()),
+    cell: (info) => (info.getValue() === 0 ? '∞' : info.getValue()),
   }),
   columnHelper.accessor((row) => ({ from: row.validFrom, to: row.validTo }), {
     id: 'validDateRange',
