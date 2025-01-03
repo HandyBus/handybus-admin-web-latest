@@ -2,8 +2,7 @@
 
 import { instance } from '@/services/config';
 import {
-  ShuttleSchema,
-  ShuttleListSchema,
+  ShuttleWithDemandSchema,
   CreateShuttleRequestSchema,
   type CreateShuttleRequestType,
 } from '@/types/shuttle.type';
@@ -36,7 +35,7 @@ export const addShuttle = async (request: CreateShuttleRequestType) => {
 export const getAllShuttles = async () => {
   const response = await instance.get('/shuttle-operation/admin/shuttles');
 
-  return ShuttleListSchema.parse(response.data.shuttleDetails);
+  return ShuttleWithDemandSchema.array().parse(response.data.shuttleDetails);
 };
 
 export const getShuttle = async (shuttleId: number) => {
@@ -49,7 +48,7 @@ export const getShuttle = async (shuttleId: number) => {
       throw response;
     }
 
-    return ShuttleSchema.parse(response.data.shuttleDetail);
+    return ShuttleWithDemandSchema.parse(response.data.shuttleDetail);
   } catch (e) {
     if (e instanceof Error && e.message === 'NEXT_REDIRECT') {
       throw e;

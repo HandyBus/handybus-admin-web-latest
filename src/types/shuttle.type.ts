@@ -12,21 +12,27 @@ const ParticipantSchema = z.object({
   name: z.string(),
 });
 
-export const ShuttleSchema = z.object({
-  shuttleId: z.number().int(),
-  name: z.string(),
-  dailyShuttles: z.array(DailyShuttleSchema),
-  image: z.string().url(),
-  status: z.enum(['OPEN', 'CLOSED', 'ENDED', 'INACTIVE']),
-  destination: DestinationSchema,
-  type: z.enum(['CONCERT', 'FESTIVAL']),
-  participants: z.array(ParticipantSchema),
-  totalDemandCount: z.number().int(),
-});
+export const ShuttleSchema = z
+  .object({
+    shuttleId: z.number().int(),
+    name: z.string(),
+    dailyShuttles: z.array(DailyShuttleSchema),
+    image: z.string().url(),
+    status: z.enum(['OPEN', 'CLOSED', 'ENDED', 'INACTIVE']),
+    destination: DestinationSchema,
+    type: z.enum(['CONCERT', 'FESTIVAL']),
+    participants: z.array(ParticipantSchema),
+  })
+  .strict();
 
-export const ShuttleListSchema = z.array(ShuttleSchema);
+export const ShuttleWithDemandSchema = ShuttleSchema.merge(
+  z.object({
+    totalDemandCount: z.number().int(),
+  }),
+);
 
 export type ShuttleType = z.infer<typeof ShuttleSchema>;
+export type ShuttleWithDemandType = z.infer<typeof ShuttleWithDemandSchema>;
 
 //////////////// create shuttle action ///////////////
 
