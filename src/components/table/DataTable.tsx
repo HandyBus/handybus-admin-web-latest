@@ -6,18 +6,12 @@ import {
   flexRender,
   getCoreRowModel,
   ColumnDef,
-  FilterFnOption,
   getFilteredRowModel,
 } from '@tanstack/react-table';
 
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  globalFilterFn?: FilterFnOption<TData>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  globalFilter?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onGlobalFilterChange?: (value: any) => void;
 }
 
 /**
@@ -31,9 +25,6 @@ interface Props<TData, TValue> {
 const DataTable = <TData,>({
   columns,
   data: dataSource,
-  globalFilterFn,
-  globalFilter,
-  onGlobalFilterChange,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: Props<TData, any>) => {
   const [data] = useState([...dataSource]);
@@ -43,11 +34,6 @@ const DataTable = <TData,>({
     data,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    globalFilterFn: globalFilterFn,
-    state: {
-      globalFilter,
-    },
-    onGlobalFilterChange: onGlobalFilterChange,
   });
 
   return (
