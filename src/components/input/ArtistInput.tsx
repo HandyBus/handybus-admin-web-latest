@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getArtists } from '@/app/actions/artists.action';
+import { getArtists } from '@/services/api/artists.services';
 
 import {
   Combobox,

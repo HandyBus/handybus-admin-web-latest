@@ -18,7 +18,7 @@ interface Props {
 }
 
 import { ChevronDown } from 'lucide-react';
-import { getAllShuttles } from '@/app/actions/shuttle.action';
+import { getAllShuttles } from '@/services/api/shuttle.services';
 import { ShuttleType } from '@/types/shuttle.type';
 import Image from 'next/image';
 
