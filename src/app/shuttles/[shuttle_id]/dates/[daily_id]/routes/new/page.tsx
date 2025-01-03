@@ -230,6 +230,84 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
           추가
         </button>
         <div className="space-y-2">
+          {toDestHubFields.map((field, index) => {
+            return (
+              <div key={field.id}>
+                <div className="flex items-center gap-2">
+                  <label>
+                    경유지 ID
+                    <Input
+                      type="number"
+                      {...register(
+                        `shuttleRouteHubsToDestination.${index}.regionHubId` as const,
+                        {
+                          valueAsNumber: true,
+                        },
+                      )}
+                      placeholder="Hub ID"
+                    />
+                  </label>
+
+                  <label>타입 : 목적지행</label>
+
+                  <label>
+                    시간
+                    <Input
+                      type="datetime-local"
+                      {...register(
+                        `shuttleRouteHubsToDestination.${index}.arrivalTime` as const,
+                      )}
+                    />
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={() => index > 0 && swapToDestHub(index, index - 1)}
+                    disabled={index === 0}
+                    className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
+                  >
+                    위로
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      index < toDestHubFields.length - 1 &&
+                      swapToDestHub(index, index + 1)
+                    }
+                    disabled={index === toDestHubFields.length - 1}
+                    className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
+                  >
+                    아래로
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeToDestHub(index)}
+                    className="text-red-500"
+                  >
+                    삭제
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <h3>경유지 귀가행</h3>
+        <button
+          type="button"
+          onClick={() =>
+            appendToDestHub({
+              regionHubId: 0,
+              arrivalTime: new Date(),
+            })
+          }
+          className="text-blue-500 px-2 py-1 rounded text-sm"
+        >
+          추가
+        </button>
+        <div className="space-y-2">
           {fromDestHubFields.map((field, index) => {
             return (
               <div key={field.id}>
@@ -248,7 +326,7 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
                     />
                   </label>
 
-                  <label>타입 : 목적지행</label>
+                  <label>타입 : 귀가행</label>
 
                   <label>
                     시간
@@ -284,84 +362,6 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
                   <button
                     type="button"
                     onClick={() => removeFromDestHub(index)}
-                    className="text-red-500"
-                  >
-                    삭제
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <h3>경유지 귀가행</h3>
-        <button
-          type="button"
-          onClick={() =>
-            appendToDestHub({
-              regionHubId: 0,
-              arrivalTime: new Date(),
-            })
-          }
-          className="text-blue-500 px-2 py-1 rounded text-sm"
-        >
-          추가
-        </button>
-        <div className="space-y-2">
-          {toDestHubFields.map((field, index) => {
-            return (
-              <div key={field.id}>
-                <div className="flex items-center gap-2">
-                  <label>
-                    경유지 ID
-                    <Input
-                      type="number"
-                      {...register(
-                        `shuttleRouteHubsToDestination.${index}.regionHubId` as const,
-                        {
-                          valueAsNumber: true,
-                        },
-                      )}
-                      placeholder="Hub ID"
-                    />
-                  </label>
-
-                  <label>타입 : 귀가행</label>
-
-                  <label>
-                    시간
-                    <Input
-                      type="datetime-local"
-                      {...register(
-                        `shuttleRouteHubsToDestination.${index}.arrivalTime` as const,
-                      )}
-                    />
-                  </label>
-
-                  <button
-                    type="button"
-                    onClick={() => index > 0 && swapToDestHub(index, index - 1)}
-                    disabled={index === 0}
-                    className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-                  >
-                    위로
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      index < toDestHubFields.length - 1 &&
-                      swapToDestHub(index, index + 1)
-                    }
-                    disabled={index === toDestHubFields.length - 1}
-                    className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-                  >
-                    아래로
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => removeToDestHub(index)}
                     className="text-red-500"
                   >
                     삭제
