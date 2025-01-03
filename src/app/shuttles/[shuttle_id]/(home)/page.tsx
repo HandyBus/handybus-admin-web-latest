@@ -9,6 +9,7 @@ import DataTable from '@/components/table/DataTable';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2Icon } from 'lucide-react';
 import { useMemo } from 'react';
+import JSONViewer from '@/components/json/JSONViewer';
 
 interface Props {
   params: { shuttle_id: string };
@@ -35,7 +36,7 @@ const Page = ({ params: { shuttle_id } }: Props) => {
   return (
     <div className="flex flex-col gap-16">
       <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
-        <BlueLink href={`${shuttle_id}/raw`}>raw (json)</BlueLink>
+        <JSONViewer>{JSON.stringify(shuttle, null, 2)}</JSONViewer>
         <BlueLink href={`${shuttle_id}/edit`}>수정</BlueLink>
       </div>
       <Shuttle shuttle={shuttle} />
