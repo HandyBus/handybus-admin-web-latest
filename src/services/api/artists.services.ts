@@ -1,8 +1,8 @@
 'use client';
 
 import { authInstance } from '../new-fetch';
-import { revalidatePath } from 'next/cache';
 import { ArtistListSchema } from '@/types/artist.type';
+import { queryClient } from '@/components/Provider';
 
 export const addArtist = async (name: string) => {
   const response = await authInstance.post<{ ok: boolean }>(
@@ -11,7 +11,7 @@ export const addArtist = async (name: string) => {
       name,
     },
   );
-  revalidatePath('/artists', 'layout');
+  queryClient.invalidateQueries({ queryKey: ['artists'] });
   return response;
 };
 
