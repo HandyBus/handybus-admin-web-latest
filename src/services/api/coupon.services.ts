@@ -1,6 +1,6 @@
-'use server';
+'use client';
 
-import { instance } from '@/services/config';
+import { authInstance } from '../new-fetch';
 import {
   CouponListSchema,
   CreateCouponFormType,
@@ -8,12 +8,15 @@ import {
 } from '@/types/coupon.type';
 
 export const addCoupon = async (request: CreateCouponFormType) => {
-  CreateCouponSchema.parse(request);
-  const response = await instance.post('/billing/admin/coupons', request);
-  return response.data;
+  return await authInstance.post(
+    '/billing/admin/coupons',
+    CreateCouponSchema.parse(request),
+  );
 };
 
 export const getAllCoupons = async () => {
-  const response = await instance.get('/billing/admin/coupons');
-  return CouponListSchema.parse(response.data.coupons);
+  const response = await authInstance.get<{ coupons: unknown }>(
+    '/billing/admin/coupons',
+  );
+  return CouponListSchema.parse(response.coupons);
 };

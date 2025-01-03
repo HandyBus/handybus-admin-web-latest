@@ -1,49 +1,38 @@
-'use server';
+'use client';
 
 import {
   CreateShuttleRouteRequestType,
   ShuttleRouteDetailSchema,
 } from '@/types/route.type';
-import { instance } from '@/services/config';
-import { AxiosError } from 'axios';
+import { authInstance } from '../new-fetch';
+import { queryClient } from '@/components/Provider';
 
 export const addRoute = async (
   shuttleId: number,
   dailyShuttleId: number,
   input: CreateShuttleRouteRequestType,
 ) => {
-  try {
-    console.log('input', JSON.stringify(input, null, 2));
-    const response = await instance.post(
-      `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes`,
-      input,
-    );
-    return response.data;
-  } catch (e) {
-    if (e instanceof AxiosError && e.response) {
-      throw e.response.data;
-    }
-    throw e;
-  }
+  const response = await authInstance.post(
+    `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes`,
+    input,
+  );
+  queryClient.invalidateQueries({
+    queryKey: ['routes', shuttleId, dailyShuttleId],
+  });
+  return response;
 };
 
 export const getAllRoutes = async (
   shuttleId: number,
   dailyShuttleId: number,
 ) => {
-  try {
-    const response = await instance.get(
-      `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes`,
-    );
-    return ShuttleRouteDetailSchema.array().parse(
-      response.data.shuttleRouteDetails,
-    );
-  } catch (e) {
-    if (e instanceof AxiosError && e.response) {
-      throw e.response.data;
-    }
-    throw e;
-  }
+  const response = await authInstance.get<{
+    ok: boolean;
+    shuttleRouteDetails: unknown;
+  }>(
+    `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes`,
+  );
+  return ShuttleRouteDetailSchema.array().parse(response.shuttleRouteDetails);
 };
 
 export const getRoute = async (
@@ -51,18 +40,13 @@ export const getRoute = async (
   dailyShuttleId: number,
   routeId: number,
 ) => {
-  try {
-    const response = await instance.get(
-      `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${routeId}`,
-    );
-
-    return ShuttleRouteDetailSchema.parse(response.data.shuttleRouteDetail);
-  } catch (e) {
-    if (e instanceof AxiosError && e.response) {
-      throw e.response.data;
-    }
-    throw e;
-  }
+  const response = await authInstance.get<{
+    ok: boolean;
+    shuttleRouteDetail: unknown;
+  }>(
+    `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${routeId}`,
+  );
+  return ShuttleRouteDetailSchema.parse(response.shuttleRouteDetail);
 };
 
 export const confirmRoute = async (
@@ -70,15 +54,12 @@ export const confirmRoute = async (
   dailyShuttleId: number,
   routeId: number,
 ) => {
-  try {
-    const response = await instance.put(
-      `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${routeId}/confirm`,
-    );
-    return response.data;
-  } catch (e) {
-    if (e instanceof AxiosError && e.response) {
-      return Promise.reject(e.response.data.error);
-    }
-    return Promise.reject(e);
-  }
+  const response = await authInstance.put(
+    `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${routeId}/confirm`,
+    {},
+  );
+  queryClient.invalidateQueries({
+    queryKey: ['routes', shuttleId, dailyShuttleId],
+  });
+  return response;
 };

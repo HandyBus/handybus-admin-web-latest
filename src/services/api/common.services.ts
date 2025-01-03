@@ -1,19 +1,13 @@
-'use server';
+'use client';
 
-import { instance } from '@/services/config';
+import { authInstance } from '../new-fetch';
 
 export const getPresignedUrl = async (
   key: 'concerts' | 'users/profiles' | 'reviews',
   extension: string, // TODO 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'svg',
 ) => {
-  try {
-    // TODO set no-cache or no-store? when refactored to fetch
-    const response = await instance.get(
-      `/common/image/presigned-url?key=${key}&extension=${extension}`,
-    );
-    return response.data as { presignedUrl: string; cdnUrl: string };
-  } catch (e) {
-    console.error(e);
-    return Promise.reject(e);
-  }
+  return await authInstance.get<{
+    presignedUrl: string;
+    cdnUrl: string;
+  }>(`/common/image/presigned-url?key=${key}&extension=${extension}`);
 };

@@ -1,8 +1,7 @@
-'use server';
+'use client';
 
-import { instance } from '@/services/config';
 import { CreateBusRequestType } from '@/types/bus.type';
-import { revalidatePath } from 'next/cache';
+import { authInstance } from '../new-fetch';
 
 export const addBus = async (
   shuttleId: number,
@@ -10,16 +9,8 @@ export const addBus = async (
   shuttleRouteId: number,
   input: CreateBusRequestType,
 ) => {
-  const ret = (
-    await instance.post(
-      `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${shuttleRouteId}/buses`,
-      input,
-    )
-  ).data;
-  revalidatePath(
-    `/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${shuttleRouteId}`,
-    'layout',
+  return await authInstance.post(
+    `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${shuttleRouteId}/buses`,
+    input,
   );
-  console.log('addBus', ret);
-  return ret;
 };

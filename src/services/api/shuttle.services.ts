@@ -1,61 +1,36 @@
-'use server';
+'use client';
 
-import { instance } from '@/services/config';
+import { queryClient } from '@/components/Provider';
+import { authInstance } from '../new-fetch';
 import {
   ShuttleWithDemandSchema,
   CreateShuttleRequestSchema,
   type CreateShuttleRequestType,
 } from '@/types/shuttle.type';
 
-import { AxiosError } from 'axios';
-import { revalidatePath } from 'next/cache';
-
 export const addShuttle = async (request: CreateShuttleRequestType) => {
-  try {
-    console.log(JSON.stringify(CreateShuttleRequestSchema.parse(request)));
-    const response = await instance.post(
-      '/shuttle-operation/admin/shuttles',
-      request,
-    );
-    revalidatePath('/shuttles');
-    return response.data;
-  } catch (e) {
-    if (e instanceof Error && e.message === 'NEXT_REDIRECT') {
-      throw e;
-    }
-    if (e instanceof AxiosError && e.response) {
-      console.log('AXIOS ERROR DATA', e.config?.data);
-      console.error(e.response.data);
-      throw e.response.data;
-    }
-    throw e;
-  }
+  const response = await authInstance.post<{
+    ok: boolean;
+  }>(
+    '/shuttle-operation/admin/shuttles',
+    CreateShuttleRequestSchema.parse(request),
+  );
+  queryClient.invalidateQueries({ queryKey: ['shuttles'] });
+  return response;
 };
 
 export const getAllShuttles = async () => {
-  const response = await instance.get('/shuttle-operation/admin/shuttles');
-
-  return ShuttleWithDemandSchema.array().parse(response.data.shuttleDetails);
+  const response = await authInstance.get<{
+    ok: boolean;
+    shuttleDetails: unknown;
+  }>('/shuttle-operation/admin/shuttles');
+  return ShuttleWithDemandSchema.array().parse(response.shuttleDetails);
 };
 
 export const getShuttle = async (shuttleId: number) => {
-  try {
-    const response = await instance.get(
-      `/shuttle-operation/admin/shuttles/${shuttleId}`,
-    );
-
-    if (!response.data.ok) {
-      throw response;
-    }
-
-    return ShuttleWithDemandSchema.parse(response.data.shuttleDetail);
-  } catch (e) {
-    if (e instanceof Error && e.message === 'NEXT_REDIRECT') {
-      throw e;
-    }
-    if (e instanceof AxiosError && e.response) {
-      throw e.response.data;
-    }
-    throw e;
-  }
+  const response = await authInstance.get<{
+    ok: boolean;
+    shuttleDetail: unknown;
+  }>(`/shuttle-operation/admin/shuttles/${shuttleId}`);
+  return ShuttleWithDemandSchema.parse(response.shuttleDetail);
 };
