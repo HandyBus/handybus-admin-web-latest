@@ -2,11 +2,11 @@ import { z } from 'zod';
 
 export const PaymentSchema = z.object({
   paymentId: z.string().uuid(),
-  principalAmount: z.number().int().nonnegative(),
-  paymentAmount: z.number().int().nonnegative(),
-  discountAmount: z.number().int().nonnegative(),
-  couponDiscountAmount: z.number().int().nonnegative().nullable(),
-  earlybirdDiscountAmount: z.number().int().nonnegative().nullable(),
+  principalAmount: z.number().int(),
+  paymentAmount: z.number().int(),
+  discountAmount: z.number().int(),
+  couponDiscountAmount: z.number().int().nullable(),
+  earlybirdDiscountAmount: z.number().int().nullable(),
 });
 
 export type PaymentType = z.infer<typeof PaymentSchema>;
