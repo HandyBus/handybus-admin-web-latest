@@ -13,10 +13,6 @@ export const RegionSchema = z.object({
 
 export type RegionType = z.infer<typeof RegionSchema>;
 
-export const RegionListSchema = z.array(RegionSchema);
-
-export const RegionList = z.array(RegionSchema);
-
 export const Hub = z.object({
   regionHubId: z.number().int(),
   regionId: z.number().int(),
