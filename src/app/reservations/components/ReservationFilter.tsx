@@ -16,8 +16,8 @@ import { twMerge } from 'tailwind-merge';
 import ShuttleInput from '@/components/input/ShuttleInput';
 import DailyShuttleInput from '@/components/input/DailyShuttleInput';
 import { useQuery } from '@tanstack/react-query';
-import { getShuttle } from '@/app/actions/shuttle.action';
-import { getRoute } from '@/app/actions/route.action';
+import { getShuttle } from '@/services/api/shuttle.services';
+import { getRoute } from '@/services/api/route.services';
 import ShuttleRouteInput from '@/components/input/ShuttleRouteInput';
 import usePrevious, { isFirst } from '@/hooks/usePrevious';
 

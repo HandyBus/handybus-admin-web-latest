@@ -19,7 +19,7 @@ import {
   ChevronDownIcon,
   MessageSquareWarningIcon,
 } from 'lucide-react';
-import { updateReservation } from '@/app/actions/reservations.action';
+import { updateReservation } from '@/services/api/reservations.services';
 import { conform, UpdateReservationHandyStatusFormType } from '../form.type';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import {

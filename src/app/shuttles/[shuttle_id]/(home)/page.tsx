@@ -4,7 +4,7 @@ import BlueLink from '@/components/link/BlueLink';
 import Guide from '@/components/guide/Guide';
 import { columns } from './types/table.type';
 import Shuttle from './components/Shuttle';
-import { getShuttle } from '@/app/actions/shuttle.action';
+import { getShuttle } from '@/services/api/shuttle.services';
 import DataTable from '@/components/table/DataTable';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2Icon } from 'lucide-react';
@@ -36,7 +36,7 @@ const Page = ({ params: { shuttle_id } }: Props) => {
   return (
     <div className="flex flex-col gap-16">
       <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
-        <JSONViewer>{JSON.stringify(shuttle, null, 2)}</JSONViewer>
+        <JSONViewer value={shuttle} />
         <BlueLink href={`${shuttle_id}/edit`}>수정</BlueLink>
       </div>
       <Shuttle shuttle={shuttle} />

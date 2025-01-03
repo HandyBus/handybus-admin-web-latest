@@ -83,7 +83,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
         id="kakao-maps-sdk"
         strategy="afterInteractive"
         src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_APP_KEY}&autoload=false&libraries=services`}
-        onLoad={() => window.kakao.maps.load(initializeMap)}
+        onReady={() => window.kakao.maps.load(initializeMap)}
       />
       <div className="relative rounded-[12px] transition-opacity">
         <div

@@ -7,8 +7,8 @@ import { conform, type CreateBusFormType } from './types/form.type';
 import Input from '@/components/input/Input';
 import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
 import { CheckIcon } from 'lucide-react';
-import { addBus } from '@/app/actions/bus.action';
 import { BusTypesToCapacity } from '@/types/bus.type';
+import { addBus } from '@/services/api/bus.services';
 
 interface Props {
   params: { shuttle_id: string; daily_id: string; route_id: string };

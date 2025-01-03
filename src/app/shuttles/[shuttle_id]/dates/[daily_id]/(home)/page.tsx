@@ -1,27 +1,54 @@
+'use client';
+
 import BlueLink from '@/components/link/BlueLink';
-import { getShuttle } from '@/app/actions/shuttle.action';
 import Shuttle from '@/app/shuttles/[shuttle_id]/(home)/components/Shuttle';
-import { getAllRoutes } from '@/app/actions/route.action';
+import { getAllRoutes } from '@/services/api/route.services';
+import { getShuttle } from '@/services/api/shuttle.services';
 import { notFound } from 'next/navigation';
 import { columns } from './types/table.type';
 import DataTable from '@/components/table/DataTable';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 interface Props {
   params: { shuttle_id: string; daily_id: string };
 }
 
-const Page = async ({ params: { shuttle_id, daily_id } }: Props) => {
-  const [shuttle, routes] = await Promise.all([
-    getShuttle(Number(shuttle_id)),
-    getAllRoutes(Number(shuttle_id), Number(daily_id)),
-  ]);
+const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
+  const {
+    data: shuttle,
+    isPending: isShuttlePending,
+    isError: isShuttleError,
+  } = useQuery({
+    queryKey: ['shuttle', shuttle_id],
+    queryFn: () => getShuttle(Number(shuttle_id)),
+  });
 
-  const thisDailyShuttle = shuttle.dailyShuttles.find(
-    (d) => d.dailyShuttleId === Number(daily_id),
-  );
+  const {
+    data: routes,
+    isPending: isRoutesPending,
+    isError: isRoutesError,
+  } = useQuery({
+    queryKey: ['routes', shuttle_id, daily_id],
+    queryFn: () => getAllRoutes(Number(shuttle_id), Number(daily_id)),
+  });
 
-  if (!thisDailyShuttle) {
-    notFound();
+  const thisDailyShuttle = shuttle
+    ? shuttle.dailyShuttles.find((d) => d.dailyShuttleId === Number(daily_id))
+    : null;
+
+  useEffect(() => {
+    if (shuttle && !thisDailyShuttle) {
+      notFound();
+    }
+  }, [shuttle, thisDailyShuttle]);
+
+  if (isShuttleError || isRoutesError) {
+    return <div>Error</div>;
+  }
+
+  if (isShuttlePending || isRoutesPending) {
+    return <div>Loading...</div>;
   }
 
   return (
