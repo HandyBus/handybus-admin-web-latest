@@ -1,6 +1,6 @@
 'use client';
 
-import { authInstance } from '../new-fetch';
+import { authInstance } from '../config';
 import {
   CouponListSchema,
   CreateCouponFormType,

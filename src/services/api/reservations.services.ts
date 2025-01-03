@@ -7,7 +7,7 @@ import {
 } from '@/types/reservation.type';
 import { PaginationResponseSchema } from '@/types/meta/pagination.type';
 import { PAGINATION_LIMIT } from '@/constants/config';
-import { authInstance } from '../new-fetch';
+import { authInstance } from '../config';
 import { queryClient } from '@/components/Provider';
 
 const ReservationResponse = PaginationResponseSchema(

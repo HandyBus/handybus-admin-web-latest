@@ -4,7 +4,7 @@ import {
   CreateShuttleRouteRequestType,
   ShuttleRouteDetailSchema,
 } from '@/types/route.type';
-import { authInstance } from '../new-fetch';
+import { authInstance } from '../config';
 import { queryClient } from '@/components/Provider';
 
 export const addRoute = async (

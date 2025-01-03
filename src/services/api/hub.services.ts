@@ -4,7 +4,7 @@ import {
   type CreateHubRequestType,
   HubListSchema,
 } from '@/types/regionHub.type';
-import { authInstance } from '../new-fetch';
+import { authInstance } from '../config';
 
 export const getHubs = async (regionId: number) => {
   const { regionHubs } = await authInstance.get<{ regionHubs: unknown }>(

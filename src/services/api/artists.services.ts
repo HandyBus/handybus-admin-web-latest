@@ -1,6 +1,6 @@
 'use client';
 
-import { authInstance } from '../new-fetch';
+import { authInstance } from '../config';
 import { ArtistListSchema } from '@/types/artist.type';
 import { queryClient } from '@/components/Provider';
 

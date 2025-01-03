@@ -1,6 +1,6 @@
 'use client';
 
-import { authInstance } from '../new-fetch';
+import { authInstance } from '../config';
 
 export const getPresignedUrl = async (
   key: 'concerts' | 'users/profiles' | 'reviews',

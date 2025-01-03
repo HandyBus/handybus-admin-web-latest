@@ -1,7 +1,7 @@
 'use client';
 
 import { queryClient } from '@/components/Provider';
-import { authInstance } from '../new-fetch';
+import { authInstance } from '../config';
 import {
   ShuttleWithDemandSchema,
   CreateShuttleRequestSchema,

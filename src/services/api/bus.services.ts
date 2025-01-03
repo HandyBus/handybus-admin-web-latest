@@ -1,7 +1,7 @@
 'use client';
 
 import { CreateBusRequestType } from '@/types/bus.type';
-import { authInstance } from '../new-fetch';
+import { authInstance } from '../config';
 
 export const addBus = async (
   shuttleId: number,
