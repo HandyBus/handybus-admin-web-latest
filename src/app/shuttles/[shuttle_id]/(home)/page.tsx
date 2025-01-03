@@ -36,7 +36,7 @@ const Page = ({ params: { shuttle_id } }: Props) => {
   return (
     <div className="flex flex-col gap-16">
       <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
-        <JSONViewer>{JSON.stringify(shuttle, null, 2)}</JSONViewer>
+        <JSONViewer value={shuttle} />
         <BlueLink href={`${shuttle_id}/edit`}>수정</BlueLink>
       </div>
       <Shuttle shuttle={shuttle} />
