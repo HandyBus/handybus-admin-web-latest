@@ -4,9 +4,9 @@ export const PaymentSchema = z.object({
   paymentId: z.string().uuid(),
   principalAmount: z.number().int().nonnegative(),
   paymentAmount: z.number().int().nonnegative(),
-  discountAmount: z.number().int().nonpositive(),
-  couponDiscountAmount: z.number().int().nonpositive().nullable(),
-  earlybirdDiscountAmount: z.number().int().nonpositive().nullable(),
+  discountAmount: z.number().int().nonnegative(),
+  couponDiscountAmount: z.number().int().nonnegative().nullable(),
+  earlybirdDiscountAmount: z.number().int().nonnegative().nullable(),
 });
 
 export type PaymentType = z.infer<typeof PaymentSchema>;
