@@ -3,7 +3,7 @@ import axios, {
   type InternalAxiosRequestConfig,
   type AxiosRequestTransformer,
 } from 'axios';
-import { getAccessToken } from '@/utils/auth.util';
+import { getAccessToken } from '@/services/auth';
 import dayjs from 'dayjs';
 
 export const BASE_URL = process.env.BASE_URL;
