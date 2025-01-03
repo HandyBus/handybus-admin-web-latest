@@ -20,11 +20,40 @@ const phoneRegex = /^01\d\-\d{4}\-d{4}$/;
 //   .url()
 //   .startsWith('https://openchat.kakao.com');
 
+const BusTypeSchema = z.enum([
+  'SMALL_BUS_28', // 28인승 우등버스
+  'LIMOUSINE_BUS_31', // 31인승 리무진버스
+  'SPRINTER_12', // 12인승 스프린터
+  'VAN_12', // 12인승 밴
+  'MINIBUS_24', // 24인승 미니버스
+  'LARGE_BUS_45', // 45인승 대형버스
+  'LARGE_BUS_41', // 41인승 대형버스
+  'PREMIUM_BUS_21', // 21인승 프리미엄버스
+  'MEDIUM_BUS_21', // 21인승 중형우등버스
+  'SMALL_BUS_33', // 33인승 우등버스
+]);
+
+export const BusTypesToCapacity: Record<
+  z.infer<typeof BusTypeSchema>,
+  number
+> = {
+  ['SMALL_BUS_28']: 28,
+  ['LIMOUSINE_BUS_31']: 31,
+  ['SPRINTER_12']: 12,
+  ['VAN_12']: 12,
+  ['MINIBUS_24']: 23,
+  ['LARGE_BUS_45']: 45,
+  ['LARGE_BUS_41']: 41,
+  ['PREMIUM_BUS_21']: 21,
+  ['MEDIUM_BUS_21']: 21,
+  ['SMALL_BUS_33']: 33,
+};
+
 export const BusSchema = z.object({
   shuttleBusId: z.number().int(),
   shuttleRouteId: z.number().int(),
   handyUserId: z.number().int().nullable(), // is this nullable?
-  type: z.enum(['SEATER_12', 'SEATER_28', 'SEATER_31', 'SEATER_45']),
+  type: BusTypeSchema,
   name: z.string(),
   number: z.unknown(), // zodCarNumber.optional(),
   phoneNumber: z.unknown(), //zodPhoneNumber.optional(),
@@ -37,7 +66,7 @@ export type BusType = z.infer<typeof BusSchema>;
 ////////////// create bus action ///////////////
 
 export const CreateBusRequestSchema = z.object({
-  type: z.enum(['SEATER_12', 'SEATER_28', 'SEATER_31', 'SEATER_45']),
+  type: BusTypeSchema,
   name: z.string(),
   number: z.string(),
   phoneNumber: z

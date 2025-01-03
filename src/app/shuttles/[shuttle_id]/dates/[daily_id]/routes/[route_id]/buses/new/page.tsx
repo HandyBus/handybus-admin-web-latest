@@ -8,6 +8,7 @@ import Input from '@/components/input/Input';
 import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
 import { CheckIcon } from 'lucide-react';
 import { addBus } from '@/app/actions/bus.action';
+import { BusTypesToCapacity } from '@/types/bus.type';
 
 interface Props {
   params: { shuttle_id: string; daily_id: string; route_id: string };
@@ -18,7 +19,7 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
 
   const { control, handleSubmit } = useForm<CreateBusFormType>({
     defaultValues: {
-      type: 'SEATER_45',
+      type: 'LARGE_BUS_45',
       name: '',
       number: '',
       phoneNumber: '',
@@ -106,11 +107,11 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
           render={({ field: { onChange, value } }) => (
             <RadioGroup
               value={value}
-              className="flex flex-row gap-4"
+              className="flex flex-row gap-4 flex-wrap"
               onChange={(s) => onChange(s)}
               aria-label="Server size"
             >
-              {['SEATER_45', 'SEATER_12', 'SEATER_28'].map((plan) => (
+              {Object.keys(BusTypesToCapacity).map((plan) => (
                 <Field key={plan} className="flex items-center gap-2">
                   <Radio
                     value={plan}
