@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import LoginPage from '../login/page';
-import { getAccessToken } from '@/utils/auth.util';
+import { getAccessToken } from '@/services/auth';
 import type { ReactNode } from 'react';
 import LogoutButton from './components/LogoutButton';
 

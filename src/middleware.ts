@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { getAccessToken } from './utils/auth.util';
+import { getAccessToken } from './services/auth';
 
 export const middleware = async (req: NextRequest) => {
   const session = await getAccessToken();
