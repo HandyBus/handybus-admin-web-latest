@@ -7,6 +7,7 @@ import { getAccessToken } from './auth';
 // } from '@/utils/handleToken';
 import { CustomError } from './custom-error';
 import { logout } from '@/app/actions/logout.action';
+import replacer from './replacer';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -38,7 +39,7 @@ class Instance {
         'Content-Type': 'application/json',
         ...options?.headers,
       },
-      ...(body && { body: JSON.stringify(body) }),
+      ...(body && { body: JSON.stringify(body, replacer) }),
     };
 
     const res = await fetch(new URL(url, this.baseUrl).toString(), config);
