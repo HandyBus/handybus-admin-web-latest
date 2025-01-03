@@ -1,20 +1,28 @@
 import BlueLink from '@/components/link/BlueLink';
-import { getRoute } from '@/app/actions/route.action';
+import { getRoute } from '@/services/api/route.services';
 import DataTable from '@/components/table/DataTable';
 import { busColumns, routeHubColumns } from './types/table.type';
-import ConfirmRouteDialog from './components/ConfirmRouteDialog';
 import dayjs from 'dayjs';
+import { useQuery } from '@tanstack/react-query';
 
 interface Props {
   params: { shuttle_id: string; daily_id: string; route_id: string };
 }
 
-const Page = async ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
-  const route = await getRoute(
-    Number(shuttle_id),
-    Number(daily_id),
-    Number(route_id),
-  );
+const Page = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
+  const {
+    data: route,
+    isPending,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['routes', shuttle_id, daily_id, route_id],
+    queryFn: () =>
+      getRoute(Number(shuttle_id), Number(daily_id), Number(route_id)),
+  });
+
+  if (isPending) return <p>로딩중...</p>;
+  if (isError) return <p>에러 : {error.message}</p>;
 
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
@@ -28,7 +36,6 @@ const Page = async ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
         >
           일일 셔틀
         </BlueLink>
-        <ConfirmRouteDialog shuttleRouteDetail={route} />
       </div>
       <div className="flex flex-col gap-16">
         <div className="grid grid-cols-4 gap-4 bg-grey-50 p-16 rounded-xl">
