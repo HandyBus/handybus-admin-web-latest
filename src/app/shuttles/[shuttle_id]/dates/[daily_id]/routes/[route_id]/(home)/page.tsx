@@ -2,6 +2,8 @@ import BlueLink from '@/components/link/BlueLink';
 import { getRoute } from '@/app/actions/route.action';
 import DataTable from '@/components/table/DataTable';
 import { busColumns, routeHubColumns } from './types/table.type';
+import ConfirmRouteDialog from './components/ConfirmRouteDialog';
+import dayjs from 'dayjs';
 
 interface Props {
   params: { shuttle_id: string; daily_id: string; route_id: string };
@@ -26,6 +28,7 @@ const Page = async ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
         >
           일일 셔틀
         </BlueLink>
+        <ConfirmRouteDialog shuttleRouteDetail={route} />
       </div>
       <div className="flex flex-col gap-16">
         <div className="grid grid-cols-4 gap-4 bg-grey-50 p-16 rounded-xl">
@@ -39,7 +42,8 @@ const Page = async ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
             {route.hasEarlybird && (
               <>
                 <li>
-                  예약 마감일: {route.earlybirdDeadline?.toLocaleDateString()}
+                  얼리버드 예약 마감일:{' '}
+                  {dayjs(route.earlybirdDeadline).format('YYYY-MM-DD')}
                 </li>
                 <li>
                   귀가행 얼리버드 가격: {route.earlybirdPriceFromDestination}
@@ -52,6 +56,10 @@ const Page = async ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
             )}
           </ul>
           <ul>
+            <li>
+              에약 마감일:{' '}
+              {dayjs(route.reservationDeadline).format('YYYY-MM-DD')}
+            </li>
             <li>귀가행 가격: {route.regularPriceFromDestination}</li>
             <li>목적지행 가격: {route.regularPriceToDestination}</li>
             <li>왕복 가격: {route.regularPriceRoundTrip}</li>
