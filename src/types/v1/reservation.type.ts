@@ -3,7 +3,7 @@ import { UserSchema } from './user.type';
 import { ShuttleRouteDetailSchema } from './route.type';
 import { PaymentSchema } from './payment.type';
 import { PassengerSchema, FlatPassengerSchema } from './passenger.type';
-import { nullableDate } from './meta/date.type';
+import { nullableDate } from '../meta/date.type';
 
 export const ReservationSchema = z
   .object({
@@ -94,10 +94,6 @@ export const ReservationSchema = z
   .strict();
 
 export type ReservationType = z.infer<typeof ReservationSchema>;
-
-export const ReservationListSchema = z.array(ReservationSchema);
-
-export type ReservationListType = z.infer<typeof ReservationListSchema>;
 
 export const HANDY_STATUS = [
   'NOT_SUPPORTED',
