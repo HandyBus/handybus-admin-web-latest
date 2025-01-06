@@ -22,19 +22,6 @@ export const addRoute = async (
   return response;
 };
 
-export const getAllRoutes = async (
-  shuttleId: number,
-  dailyShuttleId: number,
-) => {
-  const response = await authInstance.get<{
-    ok: boolean;
-    shuttleRouteDetails: unknown;
-  }>(
-    `/v1/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes`,
-  );
-  return ShuttleRouteDetailSchema.array().parse(response.shuttleRouteDetails);
-};
-
 export const getRoute = async (
   shuttleId: number,
   dailyShuttleId: number,

@@ -20,8 +20,8 @@ interface Props {
 }
 
 import { ChevronDown } from 'lucide-react';
-import { getAllRoutes } from '@/services/v1/route.services';
-import { ShuttleRouteDetailType } from '@/types/v1/route.type';
+import { getRoutes } from '@/services/v2/shuttleRoute.services';
+import { ShuttleRoutesViewType } from '@/types/v2/shuttleRoute.type';
 
 const ShuttleRouteInput = ({
   shuttleId,
@@ -32,23 +32,23 @@ const ShuttleRouteInput = ({
   const [query, setQuery] = useState('');
   const { data, isLoading, error } = useQuery({
     queryKey: ['shuttleRoutes', shuttleId, dailyShuttleId],
-    queryFn: async () => await getAllRoutes(shuttleId, dailyShuttleId),
+    queryFn: async () => await getRoutes(shuttleId, dailyShuttleId),
   });
 
-  const setSelectedRoute: (route: ShuttleRouteDetailType | null) => void =
+  const setSelectedRoute: (route: ShuttleRoutesViewType | null) => void =
     useCallback(
-      (route: ShuttleRouteDetailType | null) => {
+      (route: ShuttleRoutesViewType | null) => {
         setValue(route?.shuttleRouteId ?? null);
       },
       [setValue],
     );
 
-  const selectedRoute: ShuttleRouteDetailType | null = useMemo(
+  const selectedRoute: ShuttleRoutesViewType | null = useMemo(
     () => data?.find((ds) => ds.shuttleRouteId === value) || null,
     [data, value],
   );
 
-  const filtered: ShuttleRouteDetailType[] = useMemo(() => {
+  const filtered: ShuttleRoutesViewType[] = useMemo(() => {
     return query
       ? filterByFuzzy(data ?? [], query, (p) => p.name)
       : (data ?? []);
@@ -57,7 +57,7 @@ const ShuttleRouteInput = ({
   if (error) return <div>Failed to load artists</div>;
 
   return (
-    <Combobox<ShuttleRouteDetailType | null>
+    <Combobox<ShuttleRoutesViewType | null>
       immediate
       value={selectedRoute}
       onChange={setSelectedRoute}
@@ -78,7 +78,7 @@ const ShuttleRouteInput = ({
                 : '노선 선택'
           }
           defaultValue={null}
-          displayValue={(route: null | ShuttleRouteDetailType) =>
+          displayValue={(route: null | ShuttleRoutesViewType) =>
             route?.name ?? ''
           }
           onChange={(event) => setQuery(event.target.value)}

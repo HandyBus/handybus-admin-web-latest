@@ -2,7 +2,7 @@
 
 import BlueLink from '@/components/link/BlueLink';
 import Shuttle from '@/app/shuttles/[shuttle_id]/(home)/components/Shuttle';
-import { getAllRoutes } from '@/services/v1/route.services';
+import { getRoutes } from '@/services/v2/shuttleRoute.services';
 import { getShuttle } from '@/services/v1/shuttle.services';
 import { notFound } from 'next/navigation';
 import { columns } from './types/table.type';
@@ -30,7 +30,7 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
     isError: isRoutesError,
   } = useQuery({
     queryKey: ['routes', shuttle_id, daily_id],
-    queryFn: () => getAllRoutes(Number(shuttle_id), Number(daily_id)),
+    queryFn: () => getRoutes(Number(shuttle_id), Number(daily_id)),
   });
 
   const thisDailyShuttle = shuttle
