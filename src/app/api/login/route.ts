@@ -5,7 +5,7 @@ export const POST = async (request: NextRequest) => {
   try {
     const formData = await request.formData();
     const apiResponse = await fetch(
-      new URL('/auth/admin/login', process.env.NEXT_PUBLIC_BASE_URL),
+      new URL('/v1/auth/admin/login', process.env.NEXT_PUBLIC_BASE_URL),
       {
         method: 'POST',
         headers: {
