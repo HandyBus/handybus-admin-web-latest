@@ -49,7 +49,8 @@ export const ShuttleRoutesViewEntity = z
       ShuttleRouteHubsInShuttleRoutesViewEntity.array(),
     fromDestinationShuttleRouteHubs:
       ShuttleRouteHubsInShuttleRoutesViewEntity.array(),
-    shuttleEvent: ShuttleEventsViewEntity,
+    // TODO remove .nullable() after fixing the api
+    shuttleEvent: ShuttleEventsViewEntity.optional(),
   })
   .strict();
 

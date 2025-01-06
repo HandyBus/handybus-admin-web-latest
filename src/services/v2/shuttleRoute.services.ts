@@ -22,7 +22,7 @@ export const getRoutes = async (
   const response = await authInstance.get<{
     shuttleRoutes: unknown;
   }>(
-    `/v1/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes?${new URLSearchParams(filter)}`,
+    `/v2/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes?${new URLSearchParams(filter)}`,
   );
   return ShuttleRoutesViewEntity.array().parse(response.shuttleRoutes);
 };
