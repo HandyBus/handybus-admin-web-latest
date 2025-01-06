@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { type CreateShuttleRouteRequestType } from '@/types/route.type';
+import { type CreateShuttleRouteRequestType } from '@/types/v1/route.type';
 
 export const CreateShuttleRouteFormSchema = z.object({
   name: z.string(),

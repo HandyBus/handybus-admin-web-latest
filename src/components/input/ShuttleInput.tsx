@@ -18,8 +18,8 @@ interface Props {
 }
 
 import { ChevronDown } from 'lucide-react';
-import { getAllShuttles } from '@/services/api/shuttle.services';
-import { ShuttleType } from '@/types/shuttle.type';
+import { getAllShuttles } from '@/services/v2/shuttleEvent.services';
+import { ShuttleEventsViewType } from '@/types/v2/shuttleEvent.type';
 import Image from 'next/image';
 
 const ShuttleInput = ({ value, setValue }: Props) => {
@@ -30,20 +30,25 @@ const ShuttleInput = ({ value, setValue }: Props) => {
   });
 
   const setSelectedShuttle = useCallback(
-    (shuttle: ShuttleType | null) => {
+    (shuttle: ShuttleEventsViewType | null) => {
       setValue(shuttle?.shuttleId ?? null);
     },
     [setValue],
   );
 
-  const selectedShuttle = useMemo(
+  const selectedShuttle: ShuttleEventsViewType | null = useMemo(
     () => data?.find((shuttle) => shuttle.shuttleId === value) || null,
     [data, value],
   );
 
-  const filtered: ShuttleType[] = useMemo(() => {
+  const filtered: ShuttleEventsViewType[] = useMemo(() => {
     return query
-      ? filterByFuzzy(data ?? [], query, (p) => p.name)
+      ? filterByFuzzy(
+          data ?? [],
+          query,
+          (p) =>
+            `${p.shuttleName} ${p.eventName} ${p.destinationName} ${p.eventArtists?.join(' ') ?? ''}`,
+        )
       : (data ?? []);
   }, [data, query]);
 
@@ -71,7 +76,9 @@ const ShuttleInput = ({ value, setValue }: Props) => {
                 : '셔틀 선택'
           }
           defaultValue={null}
-          displayValue={(shuttle: null | ShuttleType) => shuttle?.name ?? ''}
+          displayValue={(shuttle: null | ShuttleEventsViewType) =>
+            shuttle?.shuttleName ?? ''
+          }
           onChange={(event) => setQuery(event.target.value)}
         />
 
@@ -86,15 +93,16 @@ const ShuttleInput = ({ value, setValue }: Props) => {
               className="data-[focus]:bg-blue-100 p-8 flex flex-row"
             >
               <Image
-                src={shuttle.image}
-                alt={shuttle.name}
+                src={shuttle.eventImageUrl}
+                alt={shuttle.eventName}
                 width={100}
                 height={100}
               />
               <div className="flex flex-col">
-                <span>{shuttle.name}</span>
+                <span>{shuttle.shuttleName}</span>
                 <span>
-                  {shuttle.participants.map((p) => p.name).join(', ')}
+                  {// TODO remove option chaining '?' after fixing the api
+                  shuttle.eventArtists?.map((p) => p.artistName).join(', ')}
                 </span>
               </div>
             </ComboboxOption>

@@ -5,7 +5,7 @@ import {
   CouponListSchema,
   CreateCouponFormType,
   CreateCouponSchema,
-} from '@/types/coupon.type';
+} from '@/types/v1/coupon.type';
 
 export const addCoupon = async (request: CreateCouponFormType) => {
   return await authInstance.post(

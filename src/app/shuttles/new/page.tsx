@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import { useForm, useFieldArray, useWatch } from 'react-hook-form';
-import { addShuttle } from '@/services/api/shuttle.services';
+import { addShuttle } from '@/services/v1/shuttle.services';
 import { type CreateShuttleFormType, conform } from './types/form.type';
 import { useRouter } from 'next/navigation';
 import ArtistInput from '@/components/input/ArtistInput';

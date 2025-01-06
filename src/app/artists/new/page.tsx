@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { addArtist } from '@/services/api/artists.services';
+import { addArtist } from '@/services/v1/artists.services';
 import { PlusIcon } from 'lucide-react';
 import Input from '@/components/input/Input';
 

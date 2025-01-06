@@ -1,4 +1,4 @@
-import { CreateShuttleRequestType } from '@/types/shuttle.type';
+import { CreateShuttleRequestType } from '@/types/v1/shuttle.type';
 import { z } from 'zod';
 
 export const CreateShuttleFormSchema = z.object({

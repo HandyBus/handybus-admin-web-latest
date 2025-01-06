@@ -1,5 +1,5 @@
 import BlueLink from '@/components/link/BlueLink';
-import { getRoute } from '@/services/api/route.services';
+import { getRoute } from '@/services/v1/route.services';
 import DataTable from '@/components/table/DataTable';
 import { busColumns, routeHubColumns } from './types/table.type';
 import dayjs from 'dayjs';

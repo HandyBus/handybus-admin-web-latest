@@ -11,9 +11,9 @@ import CoordInput from '@/components/input/CoordInput';
 import RegionInput from '@/components/input/RegionInput';
 import { useQuery } from '@tanstack/react-query';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
-import { RegionType } from '@/types/region.type';
-import { getRegions } from '@/services/api/region.services';
-import { addHub } from '@/services/api/hub.services';
+import { RegionType } from '@/types/v1/region.type';
+import { getRegions } from '@/services/v1/region.services';
+import { addHub } from '@/services/v1/hub.services';
 
 const NewHubPage = () => {
   const router = useRouter();

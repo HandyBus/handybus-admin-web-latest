@@ -19,14 +19,14 @@ import {
   ChevronDownIcon,
   MessageSquareWarningIcon,
 } from 'lucide-react';
-import { updateReservation } from '@/services/api/reservations.services';
+import { updateReservation } from '@/services/v1/reservations.services';
 import { conform, UpdateReservationHandyStatusFormType } from '../form.type';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import {
   HANDY_STATUS,
   HandyStatusType,
   ReservationDetailType,
-} from '@/types/reservation.type';
+} from '@/types/v1/reservation.type';
 import Stringifier from '@/utils/stringifier.util';
 
 interface Props {

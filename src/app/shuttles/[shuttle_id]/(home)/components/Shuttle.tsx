@@ -1,4 +1,4 @@
-import type { ShuttleType } from '@/types/shuttle.type';
+import type { ShuttleType } from '@/types/v1/shuttle.type';
 import Image from 'next/image';
 import Guide from '@/components/guide/Guide';
 

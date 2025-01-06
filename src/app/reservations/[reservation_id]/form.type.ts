@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   HandyStatusSchema,
   UpdateReservationRequestType,
-} from '@/types/reservation.type';
+} from '@/types/v1/reservation.type';
 
 export const UpdateReservationHandyStatusFormSchema = z.object({
   handyStatus: HandyStatusSchema,

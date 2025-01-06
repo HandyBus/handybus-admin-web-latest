@@ -2,8 +2,8 @@
 
 import BlueLink from '@/components/link/BlueLink';
 import Shuttle from '@/app/shuttles/[shuttle_id]/(home)/components/Shuttle';
-import { getAllRoutes } from '@/services/api/route.services';
-import { getShuttle } from '@/services/api/shuttle.services';
+import { getRoutes } from '@/services/v2/shuttleRoute.services';
+import { getShuttle } from '@/services/v1/shuttle.services';
 import { notFound } from 'next/navigation';
 import { columns } from './types/table.type';
 import DataTable from '@/components/table/DataTable';
@@ -19,6 +19,7 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
     data: shuttle,
     isPending: isShuttlePending,
     isError: isShuttleError,
+    error: shuttleError,
   } = useQuery({
     queryKey: ['shuttle', shuttle_id],
     queryFn: () => getShuttle(Number(shuttle_id)),
@@ -28,9 +29,10 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
     data: routes,
     isPending: isRoutesPending,
     isError: isRoutesError,
+    error: routesError,
   } = useQuery({
     queryKey: ['routes', shuttle_id, daily_id],
-    queryFn: () => getAllRoutes(Number(shuttle_id), Number(daily_id)),
+    queryFn: () => getRoutes(Number(shuttle_id), Number(daily_id)),
   });
 
   const thisDailyShuttle = shuttle
@@ -44,7 +46,12 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
   }, [shuttle, thisDailyShuttle]);
 
   if (isShuttleError || isRoutesError) {
-    return <div>Error</div>;
+    return (
+      <div>
+        Error! shuttle error : {shuttleError?.message}, or routes error :{' '}
+        {routesError?.message}
+      </div>
+    );
   }
 
   if (isShuttlePending || isRoutesPending) {

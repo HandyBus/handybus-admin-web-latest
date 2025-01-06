@@ -1,5 +1,5 @@
 'use client';
-import { getReservation } from '@/services/api/reservations.services';
+import { getReservation } from '@/services/v1/reservations.services';
 import DataTable from '@/components/table/DataTable';
 import { columns as passengerColumns } from './types/passenger.table.types';
 import dayjs from 'dayjs';

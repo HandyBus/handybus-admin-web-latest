@@ -1,11 +1,11 @@
 'use client';
 
-import { type ShuttleType } from '@/types/shuttle.type';
+import type { ShuttleEventsViewType } from '@/types/v2/shuttleEvent.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import Image from 'next/image';
 import BlueLink from '@/components/link/BlueLink';
 
-const columnHelper = createColumnHelper<ShuttleType>();
+const columnHelper = createColumnHelper<ShuttleEventsViewType>();
 
 export const columns = [
   columnHelper.accessor('shuttleId', {
@@ -17,7 +17,7 @@ export const columns = [
     header: () => '포스터',
     cell: (props) => (
       <Image
-        src={props.row.original.image}
+        src={props.row.original.eventImageUrl}
         alt="Shuttle"
         width={40}
         height={55}
@@ -28,13 +28,17 @@ export const columns = [
     minSize: 40, //enforced during column resizing
     maxSize: 40, //enforced during column resizing
   }),
-  columnHelper.accessor('name', {
-    header: () => '이름',
+  columnHelper.accessor('shuttleName', {
+    header: () => '셔틀 이름',
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor('destination', {
+  columnHelper.accessor('eventName', {
+    header: () => '이벤트 이름',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('destinationName', {
     header: () => '장소',
-    cell: (info) => info.getValue().name,
+    cell: (info) => info.getValue(),
   }),
   columnHelper.accessor((row) => row.dailyShuttles.map((ds) => ds.date), {
     header: '날짜',
@@ -49,10 +53,11 @@ export const columns = [
       );
     },
   }),
-  columnHelper.accessor((row) => row.participants.map((p) => p.name), {
+  // TODO remove option chaining '?' after fixing the api
+  columnHelper.accessor((row) => row.eventArtists?.map((p) => p.artistName), {
     header: '출연자',
     cell: (info) => {
-      const ps: string[] = info.getValue();
+      const ps: string[] = info.getValue() || [];
       return (
         <div>
           {ps.map((p) => (

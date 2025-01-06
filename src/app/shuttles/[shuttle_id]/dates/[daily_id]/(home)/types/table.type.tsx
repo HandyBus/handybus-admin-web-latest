@@ -1,10 +1,10 @@
 'use client';
 
 import { createColumnHelper } from '@tanstack/react-table';
-import { type ShuttleRouteDetailType } from '@/types/route.type';
+import type { ShuttleRoutesViewType } from '@/types/v2/shuttleRoute.type';
 import BlueLink from '@/components/link/BlueLink';
 
-const columnHelper = createColumnHelper<ShuttleRouteDetailType>();
+const columnHelper = createColumnHelper<ShuttleRoutesViewType>();
 
 export const columns = [
   columnHelper.accessor('shuttleRouteId', {

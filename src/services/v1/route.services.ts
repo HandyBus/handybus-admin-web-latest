@@ -3,7 +3,7 @@
 import {
   CreateShuttleRouteRequestType,
   ShuttleRouteDetailSchema,
-} from '@/types/route.type';
+} from '@/types/v1/route.type';
 import { authInstance } from '../config';
 import { queryClient } from '@/components/Provider';
 
@@ -20,19 +20,6 @@ export const addRoute = async (
     queryKey: ['routes', shuttleId, dailyShuttleId],
   });
   return response;
-};
-
-export const getAllRoutes = async (
-  shuttleId: number,
-  dailyShuttleId: number,
-) => {
-  const response = await authInstance.get<{
-    ok: boolean;
-    shuttleRouteDetails: unknown;
-  }>(
-    `/v1/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes`,
-  );
-  return ShuttleRouteDetailSchema.array().parse(response.shuttleRouteDetails);
 };
 
 export const getRoute = async (

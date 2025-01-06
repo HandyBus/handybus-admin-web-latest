@@ -1,6 +1,6 @@
 'use client';
 
-import { getReservations } from '@/services/api/reservations.services';
+import { getReservations } from '@/services/v1/reservations.services';
 import { columns } from './types/table.type';
 import { useCallback, useMemo } from 'react';
 import ManuallyFilteredInfiniteTable from '@/components/table/ManuallyFilteredInfiniteTable';
@@ -12,7 +12,7 @@ import useParamState, {
   optionalStringOpt as sOpt,
 } from '@/hooks/useParamState';
 import Filter from './components/ReservationFilter';
-import { ReservationType } from '@/types/reservation.type';
+import { ReservationType } from '@/types/v1/reservation.type';
 
 const Page = () => {
   const [shuttleId] = useParamState(undefined, 'shuttleId', nOpt);
