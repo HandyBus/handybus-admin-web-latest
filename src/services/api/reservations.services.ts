@@ -23,7 +23,7 @@ export const getReservations = async (
   userNickname: string | undefined,
   passengerName: string | undefined,
 ) => {
-  let url = `/shuttle-operation/admin/reservations?limit=${PAGINATION_LIMIT}`;
+  let url = `/v2/shuttle-operation/admin/reservations?limit=${PAGINATION_LIMIT}`;
   if (pageIndex !== undefined && pageIndex !== null)
     url = url.concat(`&page=${pageIndex}`);
   if (shuttleId !== undefined && shuttleId !== null)
@@ -45,7 +45,7 @@ export const getReservation = async (id: number) => {
   const ret = await authInstance.get<{
     ok: boolean;
     shuttleReservation: unknown;
-  }>(`/shuttle-operation/admin/reservations/${id}`);
+  }>(`/v1/shuttle-operation/admin/reservations/${id}`);
   return ReservationDetailSchema.parse(ret.shuttleReservation);
 };
 
@@ -54,7 +54,7 @@ export const updateReservation = async (
   input: UpdateReservationRequestType,
 ) => {
   const ret = await authInstance.put(
-    `/shuttle-operation/admin/reservations/${reservationId}`,
+    `/v1/shuttle-operation/admin/reservations/${reservationId}`,
     input,
   );
   queryClient.invalidateQueries({ queryKey: ['reservations'] });

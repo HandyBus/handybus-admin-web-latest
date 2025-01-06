@@ -13,7 +13,7 @@ export const addRoute = async (
   input: CreateShuttleRouteRequestType,
 ) => {
   const response = await authInstance.post(
-    `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes`,
+    `/v1/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes`,
     input,
   );
   queryClient.invalidateQueries({
@@ -30,7 +30,7 @@ export const getAllRoutes = async (
     ok: boolean;
     shuttleRouteDetails: unknown;
   }>(
-    `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes`,
+    `/v1/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes`,
   );
   return ShuttleRouteDetailSchema.array().parse(response.shuttleRouteDetails);
 };
@@ -44,7 +44,7 @@ export const getRoute = async (
     ok: boolean;
     shuttleRouteDetail: unknown;
   }>(
-    `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${routeId}`,
+    `/v1/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${routeId}`,
   );
   return ShuttleRouteDetailSchema.parse(response.shuttleRouteDetail);
 };
@@ -55,7 +55,7 @@ export const confirmRoute = async (
   routeId: number,
 ) => {
   const response = await authInstance.put(
-    `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${routeId}/confirm`,
+    `/v1/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${routeId}/confirm`,
     {},
   );
   queryClient.invalidateQueries({
