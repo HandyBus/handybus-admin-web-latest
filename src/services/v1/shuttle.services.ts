@@ -6,7 +6,7 @@ import {
   ShuttleWithDemandSchema,
   CreateShuttleRequestSchema,
   type CreateShuttleRequestType,
-} from '@/types/shuttle.type';
+} from '@/types/v1/shuttle.type';
 
 export const addShuttle = async (request: CreateShuttleRequestType) => {
   const response = await authInstance.post<{
