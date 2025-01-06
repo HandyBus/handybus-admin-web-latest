@@ -1,10 +1,24 @@
+'use client';
+
 import BlueLink from '@/components/link/BlueLink';
 import DataTable from '@/components/table/DataTable';
 import { columns } from './types/table.type';
-import { getAllShuttles } from '@/app/actions/shuttle.action';
+import { getAllShuttles } from '@/services/api/shuttle.services';
+import { useQuery } from '@tanstack/react-query';
 
-const Page = async () => {
-  const shuttles = await getAllShuttles();
+const Page = () => {
+  const {
+    data: shuttles,
+    isPending,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['shuttles'],
+    queryFn: getAllShuttles,
+  });
+
+  if (isPending) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
 
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">

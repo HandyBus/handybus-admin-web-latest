@@ -1,6 +1,6 @@
 'use client';
 
-import { addCoupon } from '@/app/actions/coupon.action';
+import { addCoupon } from '@/services/api/coupon.services';
 import Input from '@/components/input/Input';
 import NumberInput from '@/components/input/NumberInput';
 import { CreateCouponFormType } from '@/types/coupon.type';

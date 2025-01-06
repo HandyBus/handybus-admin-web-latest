@@ -1,18 +1,28 @@
 import BlueLink from '@/components/link/BlueLink';
-import { getRoute } from '@/app/actions/route.action';
+import { getRoute } from '@/services/api/route.services';
 import DataTable from '@/components/table/DataTable';
 import { busColumns, routeHubColumns } from './types/table.type';
+import dayjs from 'dayjs';
+import { useQuery } from '@tanstack/react-query';
 
 interface Props {
   params: { shuttle_id: string; daily_id: string; route_id: string };
 }
 
-const Page = async ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
-  const route = await getRoute(
-    Number(shuttle_id),
-    Number(daily_id),
-    Number(route_id),
-  );
+const Page = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
+  const {
+    data: route,
+    isPending,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['routes', shuttle_id, daily_id, route_id],
+    queryFn: () =>
+      getRoute(Number(shuttle_id), Number(daily_id), Number(route_id)),
+  });
+
+  if (isPending) return <p>로딩중...</p>;
+  if (isError) return <p>에러 : {error.message}</p>;
 
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
@@ -39,7 +49,8 @@ const Page = async ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
             {route.hasEarlybird && (
               <>
                 <li>
-                  예약 마감일: {route.earlybirdDeadline?.toLocaleDateString()}
+                  얼리버드 예약 마감일:{' '}
+                  {dayjs(route.earlybirdDeadline).format('YYYY-MM-DD')}
                 </li>
                 <li>
                   귀가행 얼리버드 가격: {route.earlybirdPriceFromDestination}
@@ -52,6 +63,10 @@ const Page = async ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
             )}
           </ul>
           <ul>
+            <li>
+              에약 마감일:{' '}
+              {dayjs(route.reservationDeadline).format('YYYY-MM-DD')}
+            </li>
             <li>귀가행 가격: {route.regularPriceFromDestination}</li>
             <li>목적지행 가격: {route.regularPriceToDestination}</li>
             <li>왕복 가격: {route.regularPriceRoundTrip}</li>

@@ -60,7 +60,7 @@ export const ShuttleRouteDetailSchema = z
       fromDestination: z.array(RouteHubSchema),
     }),
     shuttleBuses: BusSchema.array(),
-    shuttle: ShuttleSchema,
+    shuttle: ShuttleSchema.nullable(),
   })
   .strict();
 
