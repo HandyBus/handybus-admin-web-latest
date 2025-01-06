@@ -1,7 +1,7 @@
 'use client';
 
 import { createColumnHelper } from '@tanstack/react-table';
-import { type ShuttleRouteDetailType } from '@/types/route.type';
+import { type ShuttleRouteDetailType } from '@/types/v1/route.type';
 import BlueLink from '@/components/link/BlueLink';
 
 const columnHelper = createColumnHelper<ShuttleRouteDetailType>();

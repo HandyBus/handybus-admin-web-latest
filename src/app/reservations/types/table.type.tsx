@@ -1,6 +1,6 @@
 'use client';
 
-import { ReservationType } from '@/types/reservation.type';
+import { ReservationType } from '@/types/v1/reservation.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
 import dayjs from 'dayjs';

@@ -21,7 +21,7 @@ interface Props {
 
 import { ChevronDown } from 'lucide-react';
 import { getAllRoutes } from '@/services/api/route.services';
-import { ShuttleRouteDetailType } from '@/types/route.type';
+import { ShuttleRouteDetailType } from '@/types/v1/route.type';
 
 const ShuttleRouteInput = ({
   shuttleId,

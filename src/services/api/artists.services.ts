@@ -1,7 +1,7 @@
 'use client';
 
 import { authInstance } from '../config';
-import { ArtistListSchema } from '@/types/artist.type';
+import { ArtistListSchema } from '@/types/v1/artist.type';
 import { queryClient } from '@/components/Provider';
 
 export const addArtist = async (name: string) => {

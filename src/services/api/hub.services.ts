@@ -3,7 +3,7 @@
 import {
   type CreateHubRequestType,
   HubListSchema,
-} from '@/types/regionHub.type';
+} from '@/types/v1/regionHub.type';
 import { authInstance } from '../config';
 
 export const getHubs = async (regionId: number) => {

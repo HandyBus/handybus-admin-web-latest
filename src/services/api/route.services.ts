@@ -3,7 +3,7 @@
 import {
   CreateShuttleRouteRequestType,
   ShuttleRouteDetailSchema,
-} from '@/types/route.type';
+} from '@/types/v1/route.type';
 import { authInstance } from '../config';
 import { queryClient } from '@/components/Provider';
 

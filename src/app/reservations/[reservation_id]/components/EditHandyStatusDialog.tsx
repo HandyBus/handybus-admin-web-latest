@@ -26,7 +26,7 @@ import {
   HANDY_STATUS,
   HandyStatusType,
   ReservationDetailType,
-} from '@/types/reservation.type';
+} from '@/types/v1/reservation.type';
 import Stringifier from '@/utils/stringifier.util';
 
 interface Props {

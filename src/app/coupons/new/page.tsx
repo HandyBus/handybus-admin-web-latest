@@ -3,7 +3,7 @@
 import { addCoupon } from '@/services/api/coupon.services';
 import Input from '@/components/input/Input';
 import NumberInput from '@/components/input/NumberInput';
-import { CreateCouponFormType } from '@/types/coupon.type';
+import { CreateCouponFormType } from '@/types/v1/coupon.type';
 import { Label, Radio } from '@headlessui/react';
 import { Field } from '@headlessui/react';
 import { RadioGroup } from '@headlessui/react';

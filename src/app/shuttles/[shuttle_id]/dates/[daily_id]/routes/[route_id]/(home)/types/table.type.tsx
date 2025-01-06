@@ -1,10 +1,10 @@
 'use client';
 
 import { createColumnHelper } from '@tanstack/react-table';
-import { type BusType } from '@/types/bus.type';
+import { type BusType } from '@/types/v1/bus.type';
 import BlueLink from '@/components/link/BlueLink';
 import dayjs from 'dayjs';
-import { RouteHubType } from '@/types/routeHub.type';
+import { RouteHubType } from '@/types/v1/routeHub.type';
 
 const busColumnHelper = createColumnHelper<BusType>();
 

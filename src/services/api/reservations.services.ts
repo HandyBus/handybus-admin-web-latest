@@ -4,7 +4,7 @@ import {
   ReservationDetailSchema,
   ReservationSchema,
   type UpdateReservationRequestType,
-} from '@/types/reservation.type';
+} from '@/types/v1/reservation.type';
 import { PaginationResponseSchema } from '@/types/meta/pagination.type';
 import { PAGINATION_LIMIT } from '@/constants/config';
 import { authInstance } from '../config';

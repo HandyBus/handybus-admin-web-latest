@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Loader2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { CouponType } from '@/types/coupon.type';
+import { CouponType } from '@/types/v1/coupon.type';
 import { matches } from 'kled';
 import DebouncedInput from '@/components/input/DebouncedInput';
 import BlueLink from '@/components/link/BlueLink';

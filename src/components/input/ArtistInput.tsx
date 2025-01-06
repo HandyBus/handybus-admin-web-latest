@@ -10,7 +10,7 @@ import {
   ComboboxOption,
   ComboboxOptions,
 } from '@headlessui/react';
-import { ArtistType } from '@/types/artist.type';
+import { ArtistType } from '@/types/v1/artist.type';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 
 interface Props {

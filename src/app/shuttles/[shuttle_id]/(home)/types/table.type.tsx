@@ -1,5 +1,5 @@
 // 'use client';
-import type { DailyShuttleType } from '@/types/dailyShuttle.type';
+import type { DailyShuttleType } from '@/types/v1/dailyShuttle.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
 

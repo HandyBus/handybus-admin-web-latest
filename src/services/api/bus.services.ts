@@ -1,6 +1,6 @@
 'use client';
 
-import { CreateBusRequestType } from '@/types/bus.type';
+import { CreateBusRequestType } from '@/types/v1/bus.type';
 import { authInstance } from '../config';
 
 export const addBus = async (

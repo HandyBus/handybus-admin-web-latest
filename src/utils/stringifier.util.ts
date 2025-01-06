@@ -1,4 +1,4 @@
-import { HandyStatusType } from '@/types/reservation.type';
+import { HandyStatusType } from '@/types/v1/reservation.type';
 
 const Stringifier = Object.freeze({
   handyStatus(v: HandyStatusType) {
