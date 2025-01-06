@@ -11,7 +11,7 @@ import {
   ComboboxButton,
 } from '@headlessui/react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
-import { getHubs } from '@/services/api/hub.services';
+import { getHubs } from '@/services/v1/hub.services';
 import { HubType } from '@/types/v1/regionHub.type';
 
 interface Props {

@@ -1,6 +1,6 @@
 'use client';
 
-import { getReservations } from '@/services/api/reservations.services';
+import { getReservations } from '@/services/v1/reservations.services';
 import { columns } from './types/table.type';
 import { useCallback, useMemo } from 'react';
 import ManuallyFilteredInfiniteTable from '@/components/table/ManuallyFilteredInfiniteTable';

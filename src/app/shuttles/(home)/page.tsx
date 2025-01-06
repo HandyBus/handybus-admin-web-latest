@@ -3,7 +3,7 @@
 import BlueLink from '@/components/link/BlueLink';
 import DataTable from '@/components/table/DataTable';
 import { columns } from './types/table.type';
-import { getAllShuttles } from '@/services/api/shuttle.services';
+import { getAllShuttles } from '@/services/v1/shuttle.services';
 import { useQuery } from '@tanstack/react-query';
 
 const Page = () => {

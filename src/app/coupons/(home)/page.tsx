@@ -1,6 +1,6 @@
 'use client';
 
-import { getAllCoupons } from '@/services/api/coupon.services';
+import { getAllCoupons } from '@/services/v1/coupon.services';
 import { columns } from './types/table.type';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';

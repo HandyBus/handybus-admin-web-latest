@@ -1,7 +1,7 @@
 'use client';
 
 import DataTable from '@/components/table/DataTable';
-import { getArtists } from '@/services/api/artists.services';
+import { getArtists } from '@/services/v1/artists.services';
 import { columns } from './\btypes/table.type';
 import { useQuery } from '@tanstack/react-query';
 

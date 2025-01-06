@@ -8,7 +8,7 @@ import Input from '@/components/input/Input';
 import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
 import { CheckIcon } from 'lucide-react';
 import { BusTypesToCapacity } from '@/types/v1/bus.type';
-import { addBus } from '@/services/api/bus.services';
+import { addBus } from '@/services/v1/bus.services';
 
 interface Props {
   params: { shuttle_id: string; daily_id: string; route_id: string };

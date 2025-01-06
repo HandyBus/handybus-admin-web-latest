@@ -4,7 +4,7 @@ import BlueLink from '@/components/link/BlueLink';
 import Guide from '@/components/guide/Guide';
 import { columns } from './types/table.type';
 import Shuttle from './components/Shuttle';
-import { getShuttle } from '@/services/api/shuttle.services';
+import { getShuttle } from '@/services/v1/shuttle.services';
 import DataTable from '@/components/table/DataTable';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2Icon } from 'lucide-react';

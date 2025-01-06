@@ -2,8 +2,8 @@
 
 import BlueLink from '@/components/link/BlueLink';
 import Shuttle from '@/app/shuttles/[shuttle_id]/(home)/components/Shuttle';
-import { getAllRoutes } from '@/services/api/route.services';
-import { getShuttle } from '@/services/api/shuttle.services';
+import { getAllRoutes } from '@/services/v1/route.services';
+import { getShuttle } from '@/services/v1/shuttle.services';
 import { notFound } from 'next/navigation';
 import { columns } from './types/table.type';
 import DataTable from '@/components/table/DataTable';

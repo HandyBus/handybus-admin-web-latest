@@ -19,7 +19,7 @@ interface Props {
 }
 
 import { ChevronDown } from 'lucide-react';
-import { getShuttle } from '@/services/api/shuttle.services';
+import { getShuttle } from '@/services/v1/shuttle.services';
 import { DailyShuttleType } from '@/types/v1/dailyShuttle.type';
 import dayjs from 'dayjs';
 
