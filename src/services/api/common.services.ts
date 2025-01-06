@@ -9,5 +9,5 @@ export const getPresignedUrl = async (
   return await authInstance.get<{
     presignedUrl: string;
     cdnUrl: string;
-  }>(`/common/image/presigned-url?key=${key}&extension=${extension}`);
+  }>(`/v1/common/image/presigned-url?key=${key}&extension=${extension}`);
 };

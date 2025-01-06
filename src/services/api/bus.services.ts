@@ -10,7 +10,7 @@ export const addBus = async (
   input: CreateBusRequestType,
 ) => {
   return await authInstance.post(
-    `/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${shuttleRouteId}/buses`,
+    `/v1/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${shuttleRouteId}/buses`,
     input,
   );
 };
