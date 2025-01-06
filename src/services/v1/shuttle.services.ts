@@ -19,14 +19,6 @@ export const addShuttle = async (request: CreateShuttleRequestType) => {
   return response;
 };
 
-export const getAllShuttles = async () => {
-  const response = await authInstance.get<{
-    ok: boolean;
-    shuttleDetails: unknown;
-  }>('/v1/shuttle-operation/admin/shuttles');
-  return ShuttleWithDemandSchema.array().parse(response.shuttleDetails);
-};
-
 export const getShuttle = async (shuttleId: number) => {
   const response = await authInstance.get<{
     ok: boolean;
