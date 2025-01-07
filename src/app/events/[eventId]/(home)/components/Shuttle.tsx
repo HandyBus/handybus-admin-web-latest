@@ -1,6 +1,7 @@
 import type { ShuttleType } from '@/types/v1/shuttle.type';
 import Image from 'next/image';
 import Guide from '@/components/guide/Guide';
+import Stringifier from '@/utils/stringifier.util';
 
 interface Props {
   shuttle: ShuttleType;
@@ -27,7 +28,7 @@ const Shuttle = ({ shuttle }: Props) => {
                 .map((ds) => ds.date.toLocaleDateString('ko-KR'))
                 .join(', ')}
             </p>
-            <p>상태: {shuttle.status}</p>
+            <p>상태: {Stringifier.eventStatus(shuttle.status)}</p>
           </div>
         </div>
       </div>
