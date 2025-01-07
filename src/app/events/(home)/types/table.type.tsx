@@ -8,7 +8,7 @@ import BlueLink from '@/components/link/BlueLink';
 const columnHelper = createColumnHelper<ShuttleEventsViewType>();
 
 export const columns = [
-  columnHelper.accessor('shuttleId', {
+  columnHelper.accessor('eventId', {
     header: () => 'ID',
     cell: (info) => info.getValue(),
   }),
@@ -18,7 +18,7 @@ export const columns = [
     cell: (props) => (
       <Image
         src={props.row.original.eventImageUrl}
-        alt="Shuttle"
+        alt="Event"
         width={40}
         height={55}
         className="overflow-hidden"
@@ -28,19 +28,15 @@ export const columns = [
     minSize: 40, //enforced during column resizing
     maxSize: 40, //enforced during column resizing
   }),
-  columnHelper.accessor('shuttleName', {
-    header: () => '셔틀 이름',
-    cell: (info) => info.getValue(),
-  }),
   columnHelper.accessor('eventName', {
     header: () => '이벤트 이름',
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor('destinationName', {
+  columnHelper.accessor('eventLocationName', {
     header: () => '장소',
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor((row) => row.dailyShuttles.map((ds) => ds.date), {
+  columnHelper.accessor((row) => row.dailyEvents.map((de) => de.date), {
     header: '날짜',
     cell: ({ getValue }) => {
       const dates: Date[] = getValue();
@@ -71,7 +67,7 @@ export const columns = [
     id: 'actions  ',
     header: () => '액션',
     cell: (props) => (
-      <BlueLink href={`/shuttles/${props.row.original.shuttleId}`}>
+      <BlueLink href={`/events/${props.row.original.eventId}`}>
         자세히 보기
       </BlueLink>
     ),
