@@ -7,11 +7,13 @@ import {
   getCoreRowModel,
   ColumnDef,
   getFilteredRowModel,
+  VisibilityState,
 } from '@tanstack/react-table';
 
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  columnVisibility?: VisibilityState | undefined;
 }
 
 /**
@@ -25,6 +27,7 @@ interface Props<TData, TValue> {
 const DataTable = <TData,>({
   columns,
   data: dataSource,
+  columnVisibility,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: Props<TData, any>) => {
   const [data] = useState([...dataSource]);
@@ -33,6 +36,9 @@ const DataTable = <TData,>({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
+    state: {
+      columnVisibility,
+    },
     getFilteredRowModel: getFilteredRowModel(),
   });
 
