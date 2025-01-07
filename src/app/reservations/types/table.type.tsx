@@ -16,6 +16,16 @@ export const columns = [
     header: () => '생성일',
     cell: (info) => dayjs(info.getValue()).format('YYYY-MM-DD HH:mm:ss'),
   }),
+  columnHelper.accessor('cancelStatus', {
+    id: 'cancelStatus',
+    header: () => '취소 상태',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('reservationStatus', {
+    id: 'reservationStatus',
+    header: () => '예약 상태',
+    cell: (info) => info.getValue(),
+  }),
   columnHelper.display({
     id: 'user',
     header: () => '고객 정보',
@@ -37,6 +47,7 @@ export const columns = [
     },
   }),
   columnHelper.accessor('handyStatus', {
+    id: 'handyStatus',
     header: '핸디 지원 유무',
     cell: (info) => {
       switch (info.getValue()) {
@@ -52,7 +63,7 @@ export const columns = [
     },
   }),
   columnHelper.display({
-    // id: 'handyActions',
+    id: 'handyActions',
     header: '핸디 승인',
     cell: (props) =>
       props.row.original.handyStatus === 'SUPPORTED' && (
@@ -67,7 +78,7 @@ export const columns = [
       ),
   }),
   columnHelper.display({
-    // id: 'actions',
+    id: 'actions',
     header: '액션',
     cell: (props) => (
       <>
@@ -78,7 +89,3 @@ export const columns = [
     ),
   }),
 ];
-
-// columns.map((c) => {
-//   c.
-// });

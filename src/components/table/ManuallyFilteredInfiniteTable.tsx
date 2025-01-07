@@ -5,11 +5,13 @@ import {
   flexRender,
   getCoreRowModel,
   ColumnDef,
+  VisibilityState,
 } from '@tanstack/react-table';
 
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  columnVisibility?: VisibilityState | undefined;
 }
 
 /**
@@ -20,12 +22,16 @@ interface Props<TData, TValue> {
 const ManuallyFilteredInfiniteTable = <TData,>({
   columns,
   data,
+  columnVisibility,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: Props<TData, any>) => {
   const table = useReactTable({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
+    state: {
+      columnVisibility,
+    },
     manualFiltering: true,
   });
 
