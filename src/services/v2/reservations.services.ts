@@ -3,6 +3,7 @@ import { authInstance } from '../config';
 import { silentParse } from '@/utils/parse.util';
 import { PaginationResponseSchema } from '@/types/meta/pagination.type';
 import { ReservationViewEntity } from '@/types/v2/reservation.type';
+import { toSearchParamString } from '@/utils/searchParam.util';
 import { z } from 'zod';
 
 interface GetReservationOption {
