@@ -24,7 +24,7 @@ export const columns = [
     header: () => '액션',
     cell: (props) => (
       <BlueLink
-        href={`/shuttles/${props.row.original.shuttleId}/dates/${props.row.original.dailyShuttleId}/routes/${props.row.original.shuttleRouteId}`}
+        href={`/events/${props.row.original.eventId}/dates/${props.row.original.dailyEventId}/routes/${props.row.original.shuttleRouteId}`}
       >
         자세히 보기
       </BlueLink>

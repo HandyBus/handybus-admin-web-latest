@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { nullableDate } from '../meta/date.type';
-import { ShuttleEventsViewEntity } from './shuttleEvent.type';
+import { EventsViewEntity } from './event.type';
 
 const ShuttleRouteHubsInShuttleRoutesViewEntity = z.object({
   shuttleId: z.unknown(),
@@ -22,8 +22,8 @@ const ShuttleRouteHubsInShuttleRoutesViewEntity = z.object({
 export const ShuttleRoutesViewEntity = z
   .object({
     shuttleRouteId: z.number().int(),
-    shuttleId: z.number().int(),
-    dailyShuttleId: z.number().int(),
+    eventId: z.number().int(),
+    dailyEventId: z.number().int(),
     name: z.string(),
     reservationDeadline: z.coerce.date(),
     hasEarlybird: z.boolean(),
@@ -34,6 +34,12 @@ export const ShuttleRoutesViewEntity = z
     regularPriceToDestination: z.number().int(),
     regularPriceFromDestination: z.number().int(),
     regularPriceRoundTrip: z.number().int(),
+    remainingSeatCount: z.number().int(),
+    remainingSeatType: z.enum([
+      'TO_DESTINATION',
+      'FROM_DESTINATION',
+      'ROUND_TRIP',
+    ]),
     maxPassengerCount: z.number().int(),
     toDestinationCount: z.number().int(),
     fromDestinationCount: z.number().int(),
@@ -50,7 +56,7 @@ export const ShuttleRoutesViewEntity = z
     fromDestinationShuttleRouteHubs:
       ShuttleRouteHubsInShuttleRoutesViewEntity.array(),
     // TODO remove .nullable() after fixing the api
-    shuttleEvent: ShuttleEventsViewEntity.optional(),
+    event: EventsViewEntity.optional(),
   })
   .strict();
 

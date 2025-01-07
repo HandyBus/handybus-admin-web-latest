@@ -1,3 +1,5 @@
+'use client';
+
 import BlueLink from '@/components/link/BlueLink';
 import { getRoute } from '@/services/v1/route.services';
 import DataTable from '@/components/table/DataTable';
@@ -6,19 +8,19 @@ import dayjs from 'dayjs';
 import { useQuery } from '@tanstack/react-query';
 
 interface Props {
-  params: { shuttle_id: string; daily_id: string; route_id: string };
+  params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
 }
 
-const Page = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
+const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
   const {
     data: route,
     isPending,
     isError,
     error,
   } = useQuery({
-    queryKey: ['routes', shuttle_id, daily_id, route_id],
+    queryKey: ['routes', eventId, dailyEventId, shuttleRouteId],
     queryFn: () =>
-      getRoute(Number(shuttle_id), Number(daily_id), Number(route_id)),
+      getRoute(Number(eventId), Number(dailyEventId), Number(shuttleRouteId)),
   });
 
   if (isPending) return <p>로딩중...</p>;
@@ -30,11 +32,11 @@ const Page = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
         <h1 className="text-[32px] font-500">노선 상세</h1>
       </header>
       <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
-        <BlueLink href={`/shuttles/${route.shuttleId}`}>셔틀</BlueLink>
+        <BlueLink href={`/events/${route.shuttleId}`}>이벤트</BlueLink>
         <BlueLink
-          href={`/shuttles/${route.shuttleId}/dates/${route.dailyShuttleId}`}
+          href={`/events/${route.shuttleId}/dates/${route.dailyShuttleId}`}
         >
-          일일 셔틀
+          해당 일자 이벤트
         </BlueLink>
       </div>
       <div className="flex flex-col gap-16">
@@ -91,7 +93,7 @@ const Page = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
 
         <header className="flex flex-row justify-between">
           <h3 className="text-[24px] font-500">버스 목록 ({0})</h3>
-          <BlueLink href={`${route_id}/buses/new`}>추가하기</BlueLink>
+          <BlueLink href={`${shuttleRouteId}/buses/new`}>추가하기</BlueLink>
         </header>
         <DataTable columns={busColumns} data={route.shuttleBuses} />
       </div>

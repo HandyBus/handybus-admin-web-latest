@@ -7,8 +7,9 @@ import { conform, type CreateBusFormType } from './types/form.type';
 import Input from '@/components/input/Input';
 import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
 import { CheckIcon } from 'lucide-react';
-import { BusTypesToCapacity } from '@/types/v1/bus.type';
+import { BusSortSchema } from '@/types/v1/bus.type';
 import { addBus } from '@/services/v1/bus.services';
+import Stringifier from '@/utils/stringifier.util';
 
 interface Props {
   params: { shuttle_id: string; daily_id: string; route_id: string };
@@ -111,7 +112,7 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
               onChange={(s) => onChange(s)}
               aria-label="Server size"
             >
-              {Object.keys(BusTypesToCapacity).map((plan) => (
+              {BusSortSchema.options.map((plan) => (
                 <Field key={plan} className="flex items-center gap-2">
                   <Radio
                     value={plan}
@@ -130,7 +131,7 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
                       className="invisible group-data-[checked]:visible"
                       size={18}
                     />
-                    <Label>{plan}</Label>
+                    <Label>{Stringifier.busType(plan)}</Label>
                   </Radio>
                 </Field>
               ))}

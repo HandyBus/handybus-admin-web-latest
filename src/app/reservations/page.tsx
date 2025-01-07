@@ -1,6 +1,6 @@
 'use client';
 
-import { getReservations } from '@/services/v1/reservations.services';
+import { getReservations } from '@/services/v2/reservations.services';
 import { columns } from './types/table.type';
 import { useCallback, useMemo } from 'react';
 import ManuallyFilteredInfiniteTable from '@/components/table/ManuallyFilteredInfiniteTable';
@@ -12,34 +12,35 @@ import useParamState, {
   optionalStringOpt as sOpt,
 } from '@/hooks/useParamState';
 import Filter from './components/ReservationFilter';
-import { ReservationType } from '@/types/v1/reservation.type';
+import { ReservationViewType } from '@/types/v2/reservation.type';
 
 const Page = () => {
-  const [shuttleId] = useParamState(undefined, 'shuttleId', nOpt);
-  const [dailyShuttleId] = useParamState(undefined, 'dailyShuttleId', nOpt);
+  // TODO add more filters (v2)
+  const [eventId] = useParamState(undefined, 'eventId', nOpt);
+  const [dailyEventId] = useParamState(undefined, 'dailyEventId', nOpt);
   const [shuttleRouteId] = useParamState(undefined, 'shuttleRouteId', nOpt);
   const [userNickname] = useParamState(undefined, 'userNickname', sOpt);
   const [passengerName] = useParamState(undefined, 'passengerName', sOpt);
 
   const queryFn = useCallback(
     ({ pageParam }: { pageParam: number }) => {
-      return getReservations(
-        pageParam,
-        shuttleId,
-        dailyShuttleId,
+      return getReservations({
+        page: pageParam,
+        eventId,
+        dailyEventId,
         shuttleRouteId,
         userNickname,
         passengerName,
-      );
+      });
     },
-    [shuttleId, dailyShuttleId, shuttleRouteId, userNickname, passengerName],
+    [eventId, dailyEventId, shuttleRouteId, userNickname, passengerName],
   );
 
   const infiniteDataQuery = useInfiniteQuery({
     queryKey: [
       'reservations',
-      shuttleId,
-      dailyShuttleId,
+      eventId,
+      dailyEventId,
       shuttleRouteId,
       userNickname,
       passengerName,
@@ -56,7 +57,7 @@ const Page = () => {
   const { data, fetchNextPage, isFetching, hasNextPage } = infiniteDataQuery;
   const ref = useInfiniteScroll(fetchNextPage);
 
-  const defaultData: ReservationType[] = useMemo(() => [], []);
+  const defaultData: ReservationViewType[] = useMemo(() => [], []);
 
   const flatData = useMemo(
     () => data.pages.flatMap((page) => page.reservations),

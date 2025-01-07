@@ -19,7 +19,7 @@ interface Props {
 
 import { ChevronDown } from 'lucide-react';
 import { getAllShuttles } from '@/services/v2/shuttleEvent.services';
-import { ShuttleEventsViewType } from '@/types/v2/shuttleEvent.type';
+import { EventsViewType } from '@/types/v2/event.type';
 import Image from 'next/image';
 
 const ShuttleInput = ({ value, setValue }: Props) => {
@@ -30,24 +30,24 @@ const ShuttleInput = ({ value, setValue }: Props) => {
   });
 
   const setSelectedShuttle = useCallback(
-    (shuttle: ShuttleEventsViewType | null) => {
-      setValue(shuttle?.shuttleId ?? null);
+    (shuttle: EventsViewType | null) => {
+      setValue(shuttle?.eventId ?? null);
     },
     [setValue],
   );
 
-  const selectedShuttle: ShuttleEventsViewType | null = useMemo(
-    () => data?.find((shuttle) => shuttle.shuttleId === value) || null,
+  const selectedShuttle: EventsViewType | null = useMemo(
+    () => data?.find((event) => event.eventId === value) || null,
     [data, value],
   );
 
-  const filtered: ShuttleEventsViewType[] = useMemo(() => {
+  const filtered: EventsViewType[] = useMemo(() => {
     return query
       ? filterByFuzzy(
           data ?? [],
           query,
           (p) =>
-            `${p.shuttleName} ${p.eventName} ${p.destinationName} ${p.eventArtists?.join(' ') ?? ''}`,
+            `${p.eventName} ${p.eventName} ${p.eventLocationName} ${p.eventArtists?.join(' ') ?? ''}`,
         )
       : (data ?? []);
   }, [data, query]);
@@ -76,8 +76,8 @@ const ShuttleInput = ({ value, setValue }: Props) => {
                 : '셔틀 선택'
           }
           defaultValue={null}
-          displayValue={(shuttle: null | ShuttleEventsViewType) =>
-            shuttle?.shuttleName ?? ''
+          displayValue={(shuttle: null | EventsViewType) =>
+            shuttle?.eventName ?? ''
           }
           onChange={(event) => setQuery(event.target.value)}
         />
@@ -86,23 +86,23 @@ const ShuttleInput = ({ value, setValue }: Props) => {
           anchor="bottom"
           className="w-[var(--input-width)] shadow-md bg-white rounded-lg empty:invisible mt-4"
         >
-          {filtered.map((shuttle) => (
+          {filtered.map((event) => (
             <ComboboxOption
-              key={shuttle.shuttleId}
-              value={shuttle}
+              key={event.eventId}
+              value={event}
               className="data-[focus]:bg-blue-100 p-8 flex flex-row"
             >
               <Image
-                src={shuttle.eventImageUrl}
-                alt={shuttle.eventName}
+                src={event.eventImageUrl}
+                alt={event.eventName}
                 width={100}
                 height={100}
               />
               <div className="flex flex-col">
-                <span>{shuttle.shuttleName}</span>
+                <span>{event.eventName}</span>
                 <span>
                   {// TODO remove option chaining '?' after fixing the api
-                  shuttle.eventArtists?.map((p) => p.artistName).join(', ')}
+                  event.eventArtists?.map((p) => p.artistName).join(', ')}
                 </span>
               </div>
             </ComboboxOption>

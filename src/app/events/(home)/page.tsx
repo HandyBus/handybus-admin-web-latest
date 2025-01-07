@@ -20,8 +20,8 @@ const Page = () => {
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
       <header className="flex flex-row justify-between">
-        <h1 className="text-[32px] font-500">셔틀 대시보드</h1>
-        <BlueLink href="shuttles/new">추가하기</BlueLink>
+        <h1 className="text-[32px] font-500">이벤트 대시보드</h1>
+        <BlueLink href="events/new">추가하기</BlueLink>
       </header>
       {isLoading ? (
         <div>Loading...</div>
