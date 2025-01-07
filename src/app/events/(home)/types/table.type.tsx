@@ -1,11 +1,11 @@
 'use client';
 
-import type { ShuttleEventsViewType } from '@/types/v2/shuttleEvent.type';
+import type { EventsViewType } from '@/types/v2/event.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import Image from 'next/image';
 import BlueLink from '@/components/link/BlueLink';
 
-const columnHelper = createColumnHelper<ShuttleEventsViewType>();
+const columnHelper = createColumnHelper<EventsViewType>();
 
 export const columns = [
   columnHelper.accessor('eventId', {

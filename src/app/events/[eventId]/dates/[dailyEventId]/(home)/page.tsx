@@ -1,7 +1,7 @@
 'use client';
 
 import BlueLink from '@/components/link/BlueLink';
-import Shuttle from '@/app/shuttles/[shuttle_id]/(home)/components/Shuttle';
+import Shuttle from '@/app/events/[eventId]/(home)/components/Shuttle';
 import { getRoutes } from '@/services/v2/shuttleRoute.services';
 import { getShuttle } from '@/services/v1/shuttle.services';
 import { notFound } from 'next/navigation';

@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import tw from 'tailwind-styled-components';
 
 interface Props {
-  params: { shuttle_id: string; daily_id: string };
+  params: { eventId: string; dailyEventId: string };
 }
 
 const Input = tw.input`
@@ -47,7 +47,7 @@ const defaultValues: CreateShuttleRouteFormType = {
   ],
 };
 
-const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
+const Page = ({ params: { eventId, dailyEventId } }: Props) => {
   const router = useRouter();
   const {
     register,
@@ -87,9 +87,9 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
   const onSubmit = async (data: CreateShuttleRouteFormType) => {
     if (!confirm('등록하시겠습니까?')) return;
     try {
-      await addRoute(Number(shuttle_id), Number(daily_id), conform(data));
+      await addRoute(Number(eventId), Number(dailyEventId), conform(data));
       alert('등록에 성공했습니다.');
-      router.push(`/shuttles/${shuttle_id}/dates/${daily_id}`);
+      router.push(`/shuttles/${eventId}/dates/${dailyEventId}`);
     } catch (error) {
       alert('오류가 발생했습니다.');
       console.error(error);
