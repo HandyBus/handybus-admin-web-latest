@@ -1,11 +1,12 @@
 'use client';
 
 import { authInstance } from '../config';
-import { ShuttleEventsViewEntity } from '@/types/v2/shuttleEvent.type';
+import { EventsViewEntity } from '@/types/v2/event.type';
+import { silentParse } from '@/utils/parse.util';
 
 export const getAllShuttles = async () => {
   const response = await authInstance.get<{
-    shuttleEvents: unknown;
-  }>('/v2/shuttle-operation/admin/shuttles');
-  return ShuttleEventsViewEntity.array().parse(response.shuttleEvents);
+    events: unknown;
+  }>('/v2/shuttle-operation/admin/events');
+  return silentParse(EventsViewEntity.array(), response.events);
 };

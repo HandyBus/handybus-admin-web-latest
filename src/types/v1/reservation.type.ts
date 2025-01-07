@@ -106,6 +106,25 @@ export const HandyStatusSchema = z.enum(HANDY_STATUS);
 
 export type HandyStatusType = z.infer<typeof HandyStatusSchema>;
 
+type ExactEnum<T, TEnum extends T = T> = T extends TEnum
+  ? TEnum extends T
+    ? T extends TEnum
+      ? T
+      : never
+    : never
+  : never;
+
+const a: ExactEnum<'a' | 'b' | 'd'> = 'a';
+
+function f(x: ExactEnum<'a' | 'b' | 'c'>): ExactEnum<'a' | 'b' | 'c'> {
+  return x;
+}
+
+const b = f('a');
+const c = f(a);
+
+console.log(b, c);
+
 export const ReservationDetailSchema = z
   .object({
     reservationId: z.number().int(),
