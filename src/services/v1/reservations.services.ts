@@ -6,13 +6,14 @@ import {
 } from '@/types/v1/reservation.type';
 import { authInstance } from '../config';
 import { queryClient } from '@/components/Provider';
+import { silentParse } from '@/utils/parse.util';
 
 export const getReservation = async (id: number) => {
   const ret = await authInstance.get<{
     ok: boolean;
     shuttleReservation: unknown;
   }>(`/v1/shuttle-operation/admin/reservations/${id}`);
-  return ReservationDetailSchema.parse(ret.shuttleReservation);
+  return silentParse(ReservationDetailSchema, ret.shuttleReservation);
 };
 
 export const updateReservation = async (

@@ -1,5 +1,6 @@
 'use client';
 
+import { silentParse } from '@/utils/parse.util';
 import { authInstance } from '../config';
 import {
   ShuttleRoutesViewEntity,
@@ -24,5 +25,5 @@ export const getRoutes = async (
   }>(
     `/v2/shuttle-operation/admin/events/${shuttleId}/dates/${dailyShuttleId}/routes?${new URLSearchParams(filter)}`,
   );
-  return ShuttleRoutesViewEntity.array().parse(response.shuttleRoutes);
+  return silentParse(ShuttleRoutesViewEntity.array(), response.shuttleRoutes);
 };
