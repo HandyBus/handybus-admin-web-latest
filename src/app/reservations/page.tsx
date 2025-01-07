@@ -11,8 +11,9 @@ import useParamState, {
   optionalNumberOpt as nOpt,
   optionalStringOpt as sOpt,
 } from '@/hooks/useParamState';
-import Filter from './components/ReservationFilter';
+import RowFilter from './components/ReservationFilter';
 import { ReservationViewType } from '@/types/v2/reservation.type';
+import useColumnVisibility from '@/hooks/useColumnVisibility';
 
 const Page = () => {
   // TODO add more filters (v2)
@@ -64,14 +65,18 @@ const Page = () => {
     [data],
   );
 
+  const [columnVisibility, ColumnFilter] = useColumnVisibility(columns);
+
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
       <h1 className="text-[32px] font-500">예약 관리</h1>
-      <Filter />
+      <RowFilter />
+      <ColumnFilter columnVisibility={columnVisibility} />
       {/* TODO virtualization */}
       <ManuallyFilteredInfiniteTable
         data={flatData ?? defaultData}
         columns={columns}
+        columnVisibility={columnVisibility}
       />
       {infiniteDataQuery.isError ? (
         <p>에러 : {infiniteDataQuery.error.message}</p>
