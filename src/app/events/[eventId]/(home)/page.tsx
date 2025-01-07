@@ -16,7 +16,7 @@ interface Props {
 }
 
 const Page = ({ params: { eventId } }: Props) => {
-  const { data: shuttle } = useQuery({
+  const { data: event } = useQuery({
     queryKey: ['events', eventId],
     queryFn: () => getShuttle(Number(eventId)),
   });
@@ -26,7 +26,7 @@ const Page = ({ params: { eventId } }: Props) => {
     [eventId],
   );
 
-  if (!shuttle)
+  if (!event)
     return (
       <div>
         <Loader2Icon className="animate-spin" size={64} />
@@ -38,14 +38,14 @@ const Page = ({ params: { eventId } }: Props) => {
       <h1 className="text-[32px] font-500">이벤트 상세</h1>
       <div className="flex flex-col gap-16">
         <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
-          <JSONViewer value={shuttle} />
+          <JSONViewer value={event} />
           <BlueLink href={`${eventId}/edit`}>수정</BlueLink>
         </div>
-        <Shuttle shuttle={shuttle} />
+        <Shuttle shuttle={event} />
         <header className="flex flex-row justify-between pt-32  ">
           <h2 className="text-[24px] font-500">수요 통계</h2>
         </header>
-        <div>{shuttle.totalDemandCount}개의 수요 조사가 있습니다.</div>
+        <div>{event.totalDemandCount}개의 수요 조사가 있습니다.</div>
 
         <header className="flex flex-row justify-between pt-32  ">
           <h2 className="text-[24px] font-500">일자별 콘서트 목록</h2>
@@ -57,7 +57,7 @@ const Page = ({ params: { eventId } }: Props) => {
         </Guide>
         <DataTable
           columns={columnsForThisShuttleId}
-          data={shuttle.dailyShuttles}
+          data={event.dailyShuttles}
         />
       </div>
     </main>
