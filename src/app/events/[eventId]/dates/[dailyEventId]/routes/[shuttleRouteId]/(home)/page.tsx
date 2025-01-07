@@ -32,11 +32,11 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
         <h1 className="text-[32px] font-500">노선 상세</h1>
       </header>
       <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
-        <BlueLink href={`/shuttles/${route.shuttleId}`}>셔틀</BlueLink>
+        <BlueLink href={`/events/${route.shuttleId}`}>이벤트</BlueLink>
         <BlueLink
-          href={`/shuttles/${route.shuttleId}/dates/${route.dailyShuttleId}`}
+          href={`/events/${route.shuttleId}/dates/${route.dailyShuttleId}`}
         >
-          일일 셔틀
+          해당 일자 이벤트
         </BlueLink>
       </div>
       <div className="flex flex-col gap-16">

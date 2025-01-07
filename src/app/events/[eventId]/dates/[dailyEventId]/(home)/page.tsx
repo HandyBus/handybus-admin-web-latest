@@ -11,18 +11,18 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 interface Props {
-  params: { shuttle_id: string; daily_id: string };
+  params: { eventId: string; dailyEventId: string };
 }
 
-const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
+const Page = ({ params: { eventId, dailyEventId } }: Props) => {
   const {
     data: shuttle,
     isPending: isShuttlePending,
     isError: isShuttleError,
     error: shuttleError,
   } = useQuery({
-    queryKey: ['shuttle', shuttle_id],
-    queryFn: () => getShuttle(Number(shuttle_id)),
+    queryKey: ['event', eventId],
+    queryFn: () => getShuttle(Number(eventId)),
   });
 
   const {
@@ -31,12 +31,14 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
     isError: isRoutesError,
     error: routesError,
   } = useQuery({
-    queryKey: ['routes', shuttle_id, daily_id],
-    queryFn: () => getRoutes(Number(shuttle_id), Number(daily_id)),
+    queryKey: ['routes', eventId, dailyEventId],
+    queryFn: () => getRoutes(Number(eventId), Number(dailyEventId)),
   });
 
   const thisDailyShuttle = shuttle
-    ? shuttle.dailyShuttles.find((d) => d.dailyShuttleId === Number(daily_id))
+    ? shuttle.dailyShuttles.find(
+        (d) => d.dailyShuttleId === Number(dailyEventId),
+      )
     : null;
 
   useEffect(() => {
@@ -72,7 +74,7 @@ const Page = ({ params: { shuttle_id, daily_id } }: Props) => {
         <Shuttle shuttle={shuttle} />
         <header className="flex flex-row justify-between">
           <h1 className="text-[24px] font-500">노선 목록</h1>
-          <BlueLink href={`${daily_id}/routes/new`}>추가하기</BlueLink>
+          <BlueLink href={`${dailyEventId}/routes/new`}>추가하기</BlueLink>
         </header>
         <DataTable data={routes} columns={columns} />
       </div>
