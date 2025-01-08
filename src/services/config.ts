@@ -1,10 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { getAccessToken } from './auth';
-//   setAccessToken,
-//   setRefreshToken,
-//   updateToken,
-// } from '@/utils/handleToken';
 import { CustomError } from './custom-error';
 import { logout } from '@/app/actions/logout.action';
 import replacer from './replacer';
@@ -15,7 +11,6 @@ type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const EmptyShape = {};
 type EmptyShape = typeof EmptyShape;
 
@@ -23,45 +18,11 @@ interface RequestInitWithSchema<T extends z.ZodRawShape> extends RequestInit {
   shape?: T;
 }
 
-const ApiResponseOkSchema = <T extends z.ZodRawShape>(
-  rawShape: T,
-): z.ZodObject<{ ok: z.ZodLiteral<true>; statusCode: z.ZodNumber } & T> =>
+const ApiResponseOkSchema = <T extends z.ZodRawShape>(rawShape: T) =>
   z
-    .object(rawShape)
-    .merge(z.object({ ok: z.literal(true), statusCode: z.number() }));
-
-// const ApiResponseSchema = <T extends z.ZodRawShape>(
-//   rawShape: T,
-// ): z.ZodDiscriminatedUnion<
-//   'ok',
-//   [
-//     z.ZodObject<
-//       T & {
-//         ok: z.ZodLiteral<true>;
-//         statusCode: z.ZodNumber;
-//       }
-//     >,
-//     z.ZodObject<{
-//       ok: z.ZodLiteral<false>;
-//       statusCode: z.ZodNumber;
-//       error: z.ZodObject<{
-//         message: z.ZodString;
-//         stack: z.ZodArray<z.ZodString>;
-//       }>;
-//     }>,
-//   ]
-// > =>
-//   z.discriminatedUnion('ok', [
-//     z.object({ ok: z.literal(true), statusCode: z.number(), ...rawShape }),
-//     z.object({
-//       ok: z.literal(false),
-//       statusCode: z.number(),
-//       error: z.object({
-//         message: z.string(),
-//         stack: z.string().array(),
-//       }),
-//     }),
-//   ]);
+    .object({ ok: z.literal(true), statusCode: z.number() })
+    .merge(z.object(rawShape))
+    .strict();
 
 class Instance {
   constructor(private readonly baseUrl: string = BASE_URL ?? '') {}
@@ -86,7 +47,7 @@ class Instance {
 
     const schema = shape
       ? ApiResponseOkSchema(shape)
-      : // NOTE 이 부분은 유일하게
+      : // NOTE this `as T` is safe because `shape` is undefined
         ApiResponseOkSchema(EmptyShape as T);
 
     const res = await fetch(new URL(url, this.baseUrl).toString(), config);
