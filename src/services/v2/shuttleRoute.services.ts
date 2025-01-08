@@ -1,6 +1,5 @@
 'use client';
 
-import { silentParse } from '@/utils/parse.util';
 import { authInstance } from '../config';
 import {
   ShuttleRoutesViewEntity,
@@ -20,10 +19,13 @@ export const getRoutes = async (
   dailyShuttleId: number,
   filter?: Partial<GetRouteFilter>,
 ) => {
-  const response = await authInstance.get<{
-    shuttleRoutes: unknown;
-  }>(
+  const response = await authInstance.get(
     `/v2/shuttle-operation/admin/events/${shuttleId}/dates/${dailyShuttleId}/routes?${new URLSearchParams(filter)}`,
+    {
+      shape: {
+        shuttleRoutes: ShuttleRoutesViewEntity.array(),
+      },
+    },
   );
-  return silentParse(ShuttleRoutesViewEntity.array(), response.shuttleRoutes);
+  return response.shuttleRoutes;
 };
