@@ -6,7 +6,6 @@ import {
 } from '@/types/v1/route.type';
 import { authInstance } from '../config';
 import { queryClient } from '@/components/Provider';
-import { silentParse } from '@/utils/parse.util';
 
 export const addRoute = async (
   shuttleId: number,
@@ -28,13 +27,13 @@ export const getRoute = async (
   dailyShuttleId: number,
   routeId: number,
 ) => {
-  const response = await authInstance.get<{
-    ok: boolean;
-    shuttleRouteDetail: unknown;
-  }>(
+  const response = await authInstance.get(
     `/v1/shuttle-operation/admin/shuttles/${shuttleId}/dates/${dailyShuttleId}/routes/${routeId}`,
+    {
+      shape: { shuttleRouteDetail: ShuttleRouteDetailSchema },
+    },
   );
-  return silentParse(ShuttleRouteDetailSchema, response.shuttleRouteDetail);
+  return response.shuttleRouteDetail;
 };
 
 export const confirmRoute = async (

@@ -1,7 +1,6 @@
 import { PAGINATION_LIMIT } from '@/constants/config';
 import { authInstance } from '../config';
-import { silentParse } from '@/utils/parse.util';
-import { PaginationResponseSchema } from '@/types/meta/pagination.type';
+import { withPagination } from '@/types/meta/pagination.type';
 import { ReservationViewEntity } from '@/types/v2/reservation.type';
 import { toSearchParamString } from '@/utils/searchParam.util';
 import { z } from 'zod';
@@ -22,9 +21,7 @@ export const getReservations = async (
 ) => {
   const url = `/v2/shuttle-operation/admin/reservations?limit=${PAGINATION_LIMIT}${toSearchParamString(option, '&')}`;
 
-  const ret = await authInstance.get(url);
-  return silentParse(
-    PaginationResponseSchema(ReservationViewEntity.array(), 'reservations'),
-    ret,
-  );
+  return await authInstance.get(url, {
+    shape: withPagination({ reservations: ReservationViewEntity.array() }),
+  });
 };

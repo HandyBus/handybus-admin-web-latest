@@ -9,10 +9,11 @@ import { authInstance } from '../config';
 import { silentParse } from '@/utils/parse.util';
 
 export const getHubs = async (regionId: number) => {
-  const { regionHubs } = await authInstance.get<{ regionHubs: unknown }>(
+  const response = await authInstance.get(
     `/v1/location/admin/regions/${regionId}/hubs`,
+    { shape: { regionHubs: HubListSchema } },
   );
-  return silentParse(HubListSchema, regionHubs);
+  return response.regionHubs;
 };
 
 export const addHub = async (regionId: number, input: CreateHubRequestType) => {
