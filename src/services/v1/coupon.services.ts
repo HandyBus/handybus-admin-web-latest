@@ -16,8 +16,8 @@ export const addCoupon = async (request: CreateCouponFormType) => {
 };
 
 export const getAllCoupons = async () => {
-  const response = await authInstance.get<{ coupons: unknown }>(
-    '/v1/billing/admin/coupons',
-  );
-  return silentParse(CouponListSchema, response.coupons);
+  const response = await authInstance.get('/v1/billing/admin/coupons', {
+    shape: { coupons: CouponListSchema },
+  });
+  return response.coupons;
 };

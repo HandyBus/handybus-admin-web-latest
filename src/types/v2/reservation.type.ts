@@ -19,7 +19,6 @@ export const ReservationViewEntity = z
     userProfileImage: z.string(),
     shuttleRouteId: z.number().int(),
     type: z.enum(['TO_DESTINATION', 'FROM_DESTINATION', 'ROUND_TRIP']),
-    // toDestinationShuttleRouteHubId: z.number().int().nullable(),
     fromDestinationShuttleRouteHubId: z.number().int().nullable(),
     toDestinationShuttleRouteHubId: z.number().int().nullable(),
     handyStatus: z.enum(['NOT_SUPPORTED', 'SUPPORTED', 'ACCEPTED', 'DECLINED']),
@@ -43,6 +42,7 @@ export const ReservationViewEntity = z
     shuttleRoute: ShuttleRoutesViewEntity,
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
+    hasReview: z.boolean(),
   })
   .strict();
 

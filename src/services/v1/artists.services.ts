@@ -3,10 +3,9 @@
 import { authInstance } from '../config';
 import { ArtistListSchema } from '@/types/v1/artist.type';
 import { queryClient } from '@/components/Provider';
-import { silentParse } from '@/utils/parse.util';
 
 export const addArtist = async (name: string) => {
-  const response = await authInstance.post<{ ok: boolean }>(
+  const response = await authInstance.post(
     '/v1/shuttle-operation/admin/artists',
     {
       name,
@@ -17,8 +16,9 @@ export const addArtist = async (name: string) => {
 };
 
 export const getArtists = async () => {
-  const response = await authInstance.get<{ ok: boolean; artists: unknown }>(
+  const response = await authInstance.get(
     '/v1/shuttle-operation/admin/artists',
+    { shape: { artists: ArtistListSchema } },
   );
-  return silentParse(ArtistListSchema, response.artists);
+  return response.artists;
 };

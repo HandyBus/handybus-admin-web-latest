@@ -1,7 +1,6 @@
-'use client';
-
 import { z } from 'zod';
 import { toast } from 'react-toastify';
+import { isServer } from '@tanstack/react-query';
 
 /**
  * zod schema를 이용하여 데이터를 파싱합니다.
@@ -17,9 +16,11 @@ export const silentParse = <T extends z.ZodTypeAny>(
 ): z.infer<T> => {
   const parseResult = zod.safeParse(input);
   if (!parseResult.success) {
-    toast.error(
-      '데이터 파싱 과정에서 잘못 타이핑된 데이터가 발견되었습니다. 자세한 내용은 어드민 개발팀에 문의해주세요.',
-    );
+    if (!isServer) {
+      toast.error(
+        '파싱 과정에서 타입 오류가 발생했습니다. 자세한 내용은 어드민 개발팀에 문의해주세요.',
+      );
+    }
     console.error(
       `데이터를 파싱하는데에 실패했습니다. 다음 오류 정보를 참고하세요.`,
       parseResult.error,

@@ -10,9 +10,7 @@ import {
 import { silentParse } from '@/utils/parse.util';
 
 export const addShuttle = async (request: CreateShuttleRequestType) => {
-  const response = await authInstance.post<{
-    ok: boolean;
-  }>(
+  const response = await authInstance.post(
     '/v1/shuttle-operation/admin/shuttles',
     silentParse(CreateShuttleRequestSchema, request),
   );
@@ -21,9 +19,11 @@ export const addShuttle = async (request: CreateShuttleRequestType) => {
 };
 
 export const getShuttle = async (shuttleId: number) => {
-  const response = await authInstance.get<{
-    ok: boolean;
-    shuttleDetail: unknown;
-  }>(`/v1/shuttle-operation/admin/shuttles/${shuttleId}`);
-  return silentParse(ShuttleWithDemandSchema, response.shuttleDetail);
+  const response = await authInstance.get(
+    `/v1/shuttle-operation/admin/shuttles/${shuttleId}`,
+    {
+      shape: { shuttleDetail: ShuttleWithDemandSchema },
+    },
+  );
+  return response.shuttleDetail;
 };
