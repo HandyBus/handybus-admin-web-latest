@@ -11,8 +11,13 @@ import { twMerge } from 'tailwind-merge';
 import { ColumnDef } from '@tanstack/react-table';
 import Toggle from '@/components/button/Toggle';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const useColumnVisibility = <TData,>(columns: ColumnDef<TData, any>[]) => {
+/**
+ * @deprecated Use {@link TableFilter} instead.
+ */
+const useColumnVisibility = <TData,>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  columns: ColumnDef<TData, any>[],
+) => {
   const [visibility, setVisibility] = useState(
     Object.fromEntries(
       columns
