@@ -12,7 +12,7 @@ interface Props<TData> {
   table: Table<TData>;
 }
 
-const TableFilter = <TData,>({ table }: Props<TData>) => {
+const ColumnFilter = <TData,>({ table }: Props<TData>) => {
   return (
     <Disclosure>
       <DisclosureButton
@@ -76,4 +76,4 @@ const renderColumnToggle = <TData,>(column: Column<TData, unknown>) => {
   );
 };
 
-export default TableFilter;
+export default ColumnFilter;
