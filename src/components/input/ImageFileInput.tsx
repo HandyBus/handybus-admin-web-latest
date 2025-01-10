@@ -74,7 +74,7 @@ const ImageFileInput = ({ type, value, setValue }: Props) => {
 export default ImageFileInput;
 
 import Image from 'next/image';
-import { getPresignedUrl } from '@/app/actions/common.action';
+import { getPresignedUrl } from '@/services/v1/common.services';
 
 const addImageFile = async (
   key: 'concerts' | 'users/profiles' | 'reviews',

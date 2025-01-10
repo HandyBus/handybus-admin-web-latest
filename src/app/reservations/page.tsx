@@ -1,6 +1,6 @@
 'use client';
 
-import { getReservations } from '../actions/reservations.action';
+import { getReservations } from '@/services/v2/reservations.services';
 import { columns } from './types/table.type';
 import { useCallback, useMemo } from 'react';
 import ManuallyFilteredInfiniteTable from '@/components/table/ManuallyFilteredInfiniteTable';
@@ -11,35 +11,37 @@ import useParamState, {
   optionalNumberOpt as nOpt,
   optionalStringOpt as sOpt,
 } from '@/hooks/useParamState';
-import Filter from './components/ReservationFilter';
-import { ReservationType } from '@/types/reservation.type';
+import RowFilter from './components/ReservationFilter';
+import { ReservationViewType } from '@/types/v2/reservation.type';
+import useColumnVisibility from '@/hooks/useColumnVisibility';
 
 const Page = () => {
-  const [shuttleId] = useParamState(undefined, 'shuttleId', nOpt);
-  const [dailyShuttleId] = useParamState(undefined, 'dailyShuttleId', nOpt);
+  // TODO add more filters (v2)
+  const [eventId] = useParamState(undefined, 'eventId', nOpt);
+  const [dailyEventId] = useParamState(undefined, 'dailyEventId', nOpt);
   const [shuttleRouteId] = useParamState(undefined, 'shuttleRouteId', nOpt);
   const [userNickname] = useParamState(undefined, 'userNickname', sOpt);
   const [passengerName] = useParamState(undefined, 'passengerName', sOpt);
 
   const queryFn = useCallback(
     ({ pageParam }: { pageParam: number }) => {
-      return getReservations(
-        pageParam,
-        shuttleId,
-        dailyShuttleId,
+      return getReservations({
+        page: pageParam,
+        eventId,
+        dailyEventId,
         shuttleRouteId,
         userNickname,
         passengerName,
-      );
+      });
     },
-    [shuttleId, dailyShuttleId, shuttleRouteId, userNickname, passengerName],
+    [eventId, dailyEventId, shuttleRouteId, userNickname, passengerName],
   );
 
   const infiniteDataQuery = useInfiniteQuery({
     queryKey: [
       'reservations',
-      shuttleId,
-      dailyShuttleId,
+      eventId,
+      dailyEventId,
       shuttleRouteId,
       userNickname,
       passengerName,
@@ -56,21 +58,25 @@ const Page = () => {
   const { data, fetchNextPage, isFetching, hasNextPage } = infiniteDataQuery;
   const ref = useInfiniteScroll(fetchNextPage);
 
-  const defaultData: ReservationType[] = useMemo(() => [], []);
+  const defaultData: ReservationViewType[] = useMemo(() => [], []);
 
   const flatData = useMemo(
     () => data.pages.flatMap((page) => page.reservations),
     [data],
   );
 
+  const [columnVisibility, ColumnFilter] = useColumnVisibility(columns);
+
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
       <h1 className="text-[32px] font-500">예약 관리</h1>
-      <Filter />
+      <RowFilter />
+      <ColumnFilter columnVisibility={columnVisibility} />
       {/* TODO virtualization */}
       <ManuallyFilteredInfiniteTable
         data={flatData ?? defaultData}
         columns={columns}
+        columnVisibility={columnVisibility}
       />
       {infiniteDataQuery.isError ? (
         <p>에러 : {infiniteDataQuery.error.message}</p>

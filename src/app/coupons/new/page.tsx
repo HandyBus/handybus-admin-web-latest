@@ -1,9 +1,9 @@
 'use client';
 
-import { addCoupon } from '@/app/actions/coupon.action';
+import { addCoupon } from '@/services/v1/coupon.services';
 import Input from '@/components/input/Input';
 import NumberInput from '@/components/input/NumberInput';
-import { CreateCouponFormType } from '@/types/coupon.type';
+import { CreateCouponFormType } from '@/types/v1/coupon.type';
 import { Label, Radio } from '@headlessui/react';
 import { Field } from '@headlessui/react';
 import { RadioGroup } from '@headlessui/react';

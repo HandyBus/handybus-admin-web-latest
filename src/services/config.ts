@@ -1,59 +1,180 @@
-import 'server-only';
-import axios, {
-  type InternalAxiosRequestConfig,
-  type AxiosRequestTransformer,
-} from 'axios';
-import { getAccessToken } from '@/utils/auth.util';
-import dayjs from 'dayjs';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-export const BASE_URL = process.env.BASE_URL;
+import { getAccessToken } from './auth';
+import { CustomError } from './custom-error';
+import { logout } from '@/app/actions/logout.action';
+import replacer from './replacer';
+import { z } from 'zod';
+import { silentParse } from '@/utils/parse.util';
 
-const cookiesInterceptor = async (req: InternalAxiosRequestConfig) => {
-  const token = await getAccessToken();
-  req.headers.set('Authorization', `Bearer ${token}`);
-  return req;
-};
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
-// date stringify 처리
-// NOTE this binding 때문에 arrow function을 사용할 수 없음
-const dateTransformer: AxiosRequestTransformer = function (
-  this,
-  data,
-  headers,
-) {
-  if (data instanceof Date || dayjs.isDayjs(data)) {
-    const date = dayjs(data);
+export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-    if (date.startOf('day').isSame(date)) {
-      return date.format('YYYY-MM-DD');
+const EmptyShape = {};
+type EmptyShape = typeof EmptyShape;
+
+interface RequestInitWithSchema<T extends z.ZodRawShape> extends RequestInit {
+  shape?: T;
+}
+
+const ApiResponseOkSchema = <T extends z.ZodRawShape>(rawShape: T) =>
+  z
+    .object({ ok: z.literal(true), statusCode: z.number() })
+    .merge(z.object(rawShape))
+    .strict();
+
+class Instance {
+  constructor(private readonly baseUrl: string = BASE_URL ?? '') {}
+
+  async fetchWithConfig<T extends z.ZodRawShape = EmptyShape>(
+    url: string,
+    method: HttpMethod,
+    body?: any,
+    options: RequestInitWithSchema<T> = {},
+  ) {
+    const { shape, ...pure } = options;
+    const config: RequestInit = {
+      method,
+      cache: 'no-store',
+      ...pure,
+      headers: {
+        'Content-Type': 'application/json',
+        ...pure?.headers,
+      },
+      ...(body && { body: JSON.stringify(body, replacer) }),
+    };
+
+    const schema = shape
+      ? ApiResponseOkSchema(shape)
+      : // NOTE this `as T` is safe because `shape` is undefined
+        ApiResponseOkSchema(EmptyShape as T);
+
+    const res = await fetch(new URL(url, this.baseUrl).toString(), config);
+
+    // response가 없는 경우
+    if (res.statusText === 'No Content') {
+      if (res.status >= 400) {
+        throw new CustomError(res.status, 'No Content');
+      }
+      return silentParse(schema, {
+        ok: true,
+        statusCode: res.status,
+      });
+    }
+    // response가 있는 경우
+    const data = await res.json();
+    if (!data.ok) {
+      throw new CustomError(
+        data.statusCode,
+        data.error?.message || '알 수 없는 오류',
+      );
     }
 
-    return date.format('YYYY-MM-DD HH:mm:ss');
+    return silentParse(schema, data);
   }
-  if (Array.isArray(data)) {
-    return data.map((val) => dateTransformer.call(this, val, headers));
+
+  async get<T extends z.ZodRawShape = EmptyShape>(
+    url: string,
+    options?: RequestInitWithSchema<T>,
+  ) {
+    return this.fetchWithConfig<T>(url, 'GET', undefined, options);
   }
-  if (isPlainObject(data)) {
-    return Object.fromEntries(
-      Object.entries(data).map(([key, val]) => [
-        key,
-        dateTransformer.call(this, val, headers),
-      ]),
-    );
+  async delete<T extends z.ZodRawShape = EmptyShape>(
+    url: string,
+    options?: RequestInitWithSchema<T>,
+  ) {
+    return await this.fetchWithConfig<T>(url, 'DELETE', undefined, options);
   }
-  return data;
-};
+  async post<T extends z.ZodRawShape = EmptyShape>(
+    url: string,
+    body: any,
+    options?: RequestInitWithSchema<T>,
+  ) {
+    return await this.fetchWithConfig<T>(url, 'POST', body, options);
+  }
+  async put<T extends z.ZodRawShape = EmptyShape>(
+    url: string,
+    body: any,
+    options?: RequestInitWithSchema<T>,
+  ) {
+    return await this.fetchWithConfig<T>(url, 'PUT', body, options);
+  }
+  async patch<T extends z.ZodRawShape = EmptyShape>(
+    url: string,
+    body: any,
+    options?: RequestInitWithSchema<T>,
+  ) {
+    return await this.fetchWithConfig<T>(url, 'PATCH', body, options);
+  }
+}
 
-const instance = axios.create({
-  baseURL: BASE_URL,
-  transformRequest: [dateTransformer].concat(
-    axios.defaults.transformRequest || [],
-  ),
-});
+export const instance = new Instance();
 
-instance.interceptors.request.use(cookiesInterceptor);
+class AuthInstance {
+  async authFetchWithConfig<T extends z.ZodRawShape = EmptyShape>(
+    url: string,
+    method: HttpMethod,
+    body?: unknown,
+    options: RequestInitWithSchema<T> = {},
+  ) {
+    const accessToken = await getAccessToken();
+    const authOptions: RequestInitWithSchema<T> = {
+      ...options,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        ...options.headers,
+      },
+    };
 
-export { instance };
+    try {
+      return await instance.fetchWithConfig<T>(url, method, body, authOptions);
+    } catch (e) {
+      const error = e as CustomError;
+      const isServer = typeof window === 'undefined';
+      if (error.statusCode === 401 && !isServer) {
+        console.error('로그인 시간 만료: ', error.message);
+        logout();
+      }
+      throw error;
+    }
+  }
 
-const isPlainObject = (v: unknown) =>
-  Object.prototype.toString.call(v) === '[object Object]';
+  async get<T extends z.ZodRawShape = EmptyShape>(
+    url: string,
+    options?: RequestInitWithSchema<T>,
+  ) {
+    return this.authFetchWithConfig<T>(url, 'GET', undefined, options);
+  }
+  async delete<T extends z.ZodRawShape = EmptyShape>(
+    url: string,
+    options?: RequestInitWithSchema<T>,
+  ) {
+    return this.authFetchWithConfig<T>(url, 'DELETE', undefined, options);
+  }
+
+  async post<T extends z.ZodRawShape = EmptyShape>(
+    url: string,
+    body: any,
+    options?: RequestInitWithSchema<T>,
+  ) {
+    return this.authFetchWithConfig<T>(url, 'POST', body, options);
+  }
+  async put<T extends z.ZodRawShape = EmptyShape>(
+    url: string,
+    body: any,
+    options?: RequestInitWithSchema<T>,
+  ) {
+    return this.authFetchWithConfig<T>(url, 'PUT', body, options);
+  }
+
+  async patch<T extends z.ZodRawShape = EmptyShape>(
+    url: string,
+    body: any,
+    options?: RequestInitWithSchema<T>,
+  ) {
+    return this.authFetchWithConfig<T>(url, 'PATCH', body, options);
+  }
+}
+
+export const authInstance = new AuthInstance();

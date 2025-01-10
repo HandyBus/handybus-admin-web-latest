@@ -1,11 +1,11 @@
 'use client';
 
-import { ReservationType } from '@/types/reservation.type';
+import { ReservationViewType } from '@/types/v2/reservation.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
 import dayjs from 'dayjs';
 
-const columnHelper = createColumnHelper<ReservationType>();
+const columnHelper = createColumnHelper<ReservationViewType>();
 
 export const columns = [
   columnHelper.accessor('reservationId', {
@@ -15,6 +15,16 @@ export const columns = [
   columnHelper.accessor('createdAt', {
     header: () => '생성일',
     cell: (info) => dayjs(info.getValue()).format('YYYY-MM-DD HH:mm:ss'),
+  }),
+  columnHelper.accessor('cancelStatus', {
+    id: 'cancelStatus',
+    header: () => '취소 상태',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('reservationStatus', {
+    id: 'reservationStatus',
+    header: () => '예약 상태',
+    cell: (info) => info.getValue(),
   }),
   columnHelper.display({
     id: 'user',
@@ -37,7 +47,8 @@ export const columns = [
     },
   }),
   columnHelper.accessor('handyStatus', {
-    header: () => '핸디 지원 유무',
+    id: 'handyStatus',
+    header: '핸디 지원 유무',
     cell: (info) => {
       switch (info.getValue()) {
         case 'ACCEPTED':
@@ -53,7 +64,7 @@ export const columns = [
   }),
   columnHelper.display({
     id: 'handyActions',
-    header: () => '핸디 승인',
+    header: '핸디 승인',
     cell: (props) =>
       props.row.original.handyStatus === 'SUPPORTED' && (
         <>
@@ -68,7 +79,7 @@ export const columns = [
   }),
   columnHelper.display({
     id: 'actions',
-    header: () => '액션',
+    header: '액션',
     cell: (props) => (
       <>
         <BlueLink href={`/reservations/${props.row.original.reservationId}`}>

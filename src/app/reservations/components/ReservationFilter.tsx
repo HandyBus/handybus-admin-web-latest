@@ -16,8 +16,8 @@ import { twMerge } from 'tailwind-merge';
 import ShuttleInput from '@/components/input/ShuttleInput';
 import DailyShuttleInput from '@/components/input/DailyShuttleInput';
 import { useQuery } from '@tanstack/react-query';
-import { getShuttle } from '@/app/actions/shuttle.action';
-import { getRoute } from '@/app/actions/route.action';
+import { getShuttle } from '@/services/v1/shuttle.services';
+import { getRoute } from '@/services/v1/route.services';
 import ShuttleRouteInput from '@/components/input/ShuttleRouteInput';
 import usePrevious, { isFirst } from '@/hooks/usePrevious';
 
@@ -100,14 +100,14 @@ function Filter() {
         <ChevronDownIcon className="w-5 group-data-[open]:rotate-180" />
       </DisclosureButton>
       <DisclosurePanel className="flex flex-col gap-4 bg-grey-50 rounded-xl p-8">
-        <label>shuttleId</label>
+        <label>셔틀</label>
         <ShuttleInput
           value={shuttleId ?? null}
           setValue={(n) => setShuttleId(n ?? undefined)}
         />
         {shuttleId && (
           <>
-            <label>dailyShuttleId</label>
+            <label>일일 셔틀</label>
             <DailyShuttleInput
               shuttleId={shuttleId}
               value={dailyShuttleId ?? null}
@@ -117,7 +117,7 @@ function Filter() {
         )}
         {shuttleId && dailyShuttleId && (
           <>
-            <label>shuttleRouteId</label>
+            <label>노선</label>
             <ShuttleRouteInput
               shuttleId={shuttleId}
               dailyShuttleId={dailyShuttleId}
@@ -126,12 +126,12 @@ function Filter() {
             />
           </>
         )}
-        <label>userNickname (fuzzy)</label>
+        <label>유저 닉네임 (fuzzy)</label>
         <Input
           value={optionalStringOpt.encoder(userNickname) ?? ''}
           setValue={(n) => setUserNickname(optionalStringOpt.decoder(n))}
         />
-        <label>passengerName (fuzzy)</label>
+        <label>탑승자 이름 (fuzzy)</label>
         <Input
           value={optionalStringOpt.encoder(passengerName) ?? ''}
           setValue={(n) => setPassengerName(optionalStringOpt.decoder(n))}

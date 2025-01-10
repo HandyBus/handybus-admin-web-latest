@@ -1,12 +1,12 @@
 'use client';
 
-import { getAllCoupons } from '@/app/actions/coupon.action';
+import { getAllCoupons } from '@/services/v1/coupon.services';
 import { columns } from './types/table.type';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Loader2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { CouponType } from '@/types/coupon.type';
+import { CouponType } from '@/types/v1/coupon.type';
 import { matches } from 'kled';
 import DebouncedInput from '@/components/input/DebouncedInput';
 import BlueLink from '@/components/link/BlueLink';

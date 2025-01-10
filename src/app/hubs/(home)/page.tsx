@@ -3,10 +3,10 @@
 import DataTable from '@/components/table/DataTable';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { getHubs } from '@/app/actions/hub.action';
 import RegionInput from '@/components/input/RegionInput';
 import BlueLink from '@/components/link/BlueLink';
 import { columns } from './types/table.type';
+import { getHubs } from '@/services/v1/hub.services';
 
 const Page = () => {
   const [regionId, setRegionId] = useState<number | null>(null);

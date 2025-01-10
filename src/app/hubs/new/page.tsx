@@ -10,10 +10,10 @@ import Input from '@/components/input/Input';
 import CoordInput from '@/components/input/CoordInput';
 import RegionInput from '@/components/input/RegionInput';
 import { useQuery } from '@tanstack/react-query';
-import { getRegions } from '@/app/actions/regions.action';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
-import { RegionType } from '@/types/region.type';
-import { addHub } from '@/app/actions/hub.action';
+import { RegionType } from '@/types/v1/region.type';
+import { getRegions } from '@/services/v1/region.services';
+import { addHub } from '@/services/v1/hub.services';
 
 const NewHubPage = () => {
   const router = useRouter();
@@ -54,7 +54,7 @@ const NewHubPage = () => {
       const confirmMessage =
         recommended?.regionId === data.regionId || false
           ? `거점지를 추가하시겠습니까?`
-          : `선택한 주소 "${data.coord.address}"가 지역 "${target ? `${target.cityFullName} ${target.cityShortName}` : '<오류: 알수 없는 위치>'}에 등록됩니다. 거점지를 추가하시겠습니까?`;
+          : `선택한 주소 "${data.coord.address}"가 지역 "${target ? `${target.provinceFullName} ${target.cityFullName}` : '<오류: 알수 없는 위치>'}에 등록됩니다. 거점지를 추가하시겠습니까?`;
       if (confirm(confirmMessage)) {
         addHub(data.regionId, conform(data))
           .then(() => {

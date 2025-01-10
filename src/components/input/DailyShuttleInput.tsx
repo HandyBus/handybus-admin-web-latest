@@ -19,8 +19,8 @@ interface Props {
 }
 
 import { ChevronDown } from 'lucide-react';
-import { getShuttle } from '@/app/actions/shuttle.action';
-import { DailyShuttleType } from '@/types/dailyShuttle.type';
+import { getShuttle } from '@/services/v1/shuttle.services';
+import { DailyShuttleType } from '@/types/v1/dailyShuttle.type';
 import dayjs from 'dayjs';
 
 const DailyShuttleInput = ({ shuttleId, value, setValue }: Props) => {
@@ -69,9 +69,9 @@ const DailyShuttleInput = ({ shuttleId, value, setValue }: Props) => {
           placeholder={
             isLoading
               ? '로딩 중…'
-              : data?.dailyShuttles.length === 0
-                ? '셔틀이 없습니다'
-                : '셔틀 선택'
+              : !data || data.dailyShuttles.length === 0
+                ? '등록된 날짜가 없습니다'
+                : '날짜 선택'
           }
           defaultValue={null}
           displayValue={(dailyShuttle: null | DailyShuttleType) =>

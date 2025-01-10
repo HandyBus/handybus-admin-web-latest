@@ -1,6 +1,6 @@
 'use client';
 
-import { CouponType } from '@/types/coupon.type';
+import { CouponType } from '@/types/v1/coupon.type';
 import { createColumnHelper } from '@tanstack/react-table';
 
 const columnHelper = createColumnHelper<CouponType>();

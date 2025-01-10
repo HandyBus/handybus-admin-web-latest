@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getArtists } from '@/app/actions/artists.action';
+import { getArtists } from '@/services/v1/artists.services';
 
 import {
   Combobox,
@@ -10,7 +10,7 @@ import {
   ComboboxOption,
   ComboboxOptions,
 } from '@headlessui/react';
-import { ArtistType } from '@/types/artist.type';
+import { ArtistType } from '@/types/v1/artist.type';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 
 interface Props {

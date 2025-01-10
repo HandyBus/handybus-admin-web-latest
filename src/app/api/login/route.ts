@@ -1,17 +1,31 @@
 import { AUTH_TOKEN_COOKIE_NAME } from '@/constants/auth';
 import { NextResponse, type NextRequest } from 'next/server';
-import { instance } from '@/services/config';
-import { formToJSON } from 'axios';
 
 export const POST = async (request: NextRequest) => {
   try {
-    const apiResponse = await instance.post<LoginResponse>(
-      '/auth/admin/login',
-      formToJSON(await request.formData()),
+    const formData = await request.formData();
+    const apiResponse = await fetch(
+      new URL('/v1/auth/admin/login', process.env.NEXT_PUBLIC_BASE_URL),
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          identifier: formData.get('identifier')?.toString(),
+          password: formData.get('password')?.toString(),
+        }),
+      },
     );
 
     // ASSERT : apiResponse.status === 200
-    const issuedToken = (await apiResponse).data.token;
+    const issuedToken = (
+      (await apiResponse.json()) as {
+        statusCode: number;
+        ok: boolean;
+        token: string;
+      }
+    ).token;
 
     if (issuedToken) {
       const url = request.nextUrl.clone();
@@ -34,9 +48,3 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.redirect(url);
   }
 };
-
-interface LoginResponse {
-  statusCode: number;
-  ok: boolean;
-  token: string;
-}

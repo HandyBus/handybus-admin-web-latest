@@ -1,9 +1,12 @@
-import { getReservation } from '@/app/actions/reservations.action';
+'use client';
+import { getReservation } from '@/services/v1/reservations.services';
 import DataTable from '@/components/table/DataTable';
 import { columns as passengerColumns } from './types/passenger.table.types';
 import dayjs from 'dayjs';
 import Guide from '@/components/guide/Guide';
 import EditHandyStatusDialog from './components/EditHandyStatusDialog';
+import { useQuery } from '@tanstack/react-query';
+import JSONViewer from '@/components/json/JSONViewer';
 
 interface Props {
   params: {
@@ -13,14 +16,27 @@ interface Props {
 
 const json = (v: unknown) => JSON.stringify(v, null, 2);
 
-const Page = async ({ params: { reservation_id } }: Props) => {
-  const reservation = await getReservation(Number(reservation_id));
+const Page = ({ params: { reservation_id } }: Props) => {
+  const {
+    data: reservation,
+    isPending,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['reservations', reservation_id],
+    queryFn: () => getReservation(Number(reservation_id)),
+  });
+
+  if (isPending) return <p>로딩중...</p>;
+  if (isError) return <p>에러 : {error.message}</p>;
+
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
       <header className="flex flex-row justify-between">
         <h1 className="text-[32px] font-500">예약 상세보기</h1>
       </header>
       <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
+        <JSONViewer value={reservation} />
         <EditHandyStatusDialog reservation={reservation} />
       </div>
       <h2>createdAt</h2>

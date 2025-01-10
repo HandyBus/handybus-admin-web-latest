@@ -1,6 +1,6 @@
 'use client';
 
-import { ArtistType } from '@/types/artist.type';
+import { ArtistType } from '@/types/v1/artist.type';
 import { createColumnHelper } from '@tanstack/react-table';
 
 const columnHelper = createColumnHelper<ArtistType>();

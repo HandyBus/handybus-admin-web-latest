@@ -1,5 +1,5 @@
 'use client';
-import { HubType } from '@/types/region.type';
+import { HubType } from '@/types/v1/region.type';
 import { createColumnHelper } from '@tanstack/react-table';
 
 const columnHelper = createColumnHelper<HubType>();
