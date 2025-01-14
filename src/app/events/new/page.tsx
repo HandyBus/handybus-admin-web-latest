@@ -2,8 +2,8 @@
 
 import { useCallback } from 'react';
 import { useForm, useFieldArray, useWatch } from 'react-hook-form';
-import { addShuttle } from '@/services/v1/shuttle.services';
-import { type CreateShuttleFormType, conform } from './types/form.type';
+import { createEvent } from '@/services/v2/shuttleEvent.services';
+import { type CreateEventFormData, conform } from './types/form.type';
 import { useRouter } from 'next/navigation';
 import ArtistInput from '@/components/input/ArtistInput';
 import { Controller } from 'react-hook-form';
@@ -18,25 +18,22 @@ import { today, toDateOnly } from '@/utils/date.util';
 
 const defaultValues = {
   name: '',
+  imageUrl: '',
   regionId: 0,
   regionHubId: 0,
   type: 'CONCERT',
-  dailyShuttles: [],
-  detail: {
-    name: '',
-    image: '',
-    artistIds: [],
-  },
-} satisfies CreateShuttleFormType;
+  dailyEvents: [],
+  artistIds: [],
+} satisfies CreateEventFormData;
 
-const ShuttleForm = () => {
+const CreateEventForm = () => {
   const router = useRouter();
 
   const {
     control,
     handleSubmit,
     // formState: { errors },
-  } = useForm<CreateShuttleFormType>({
+  } = useForm<CreateEventFormData>({
     defaultValues,
   });
 
@@ -49,33 +46,36 @@ const ShuttleForm = () => {
     fields: dailyFields,
     append: appendDaily,
     remove: removeDaily,
-  } = useFieldArray<CreateShuttleFormType>({
+  } = useFieldArray<CreateEventFormData>({
     control,
-    name: 'dailyShuttles',
+    name: 'dailyEvents',
   });
 
   const {
     fields: concertArtistFields,
     append: appendArtist,
     remove: removeArtist,
-  } = useFieldArray<CreateShuttleFormType>({
+  } = useFieldArray<CreateEventFormData>({
     control,
-    name: 'detail.artistIds',
+    name: 'artistIds',
   });
 
   const onSubmit = useCallback(
-    async (data: CreateShuttleFormType) => {
-      if (confirm('셔틀을 추가하시겠습니까?') === false) return;
+    async (data: CreateEventFormData) => {
+      if (confirm('행사를 추가하시겠습니까?') === false) return;
       try {
-        await addShuttle(conform(data));
-        alert('셔틀이 추가되었습니다.');
-        router.push('/shuttles');
+        await createEvent(conform(data));
+        alert('행사가 추가되었습니다.');
+        router.push('/events');
       } catch (error) {
         if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
           throw error;
         }
-        console.error('Error adding shuttle:', error);
-        alert('셔틀 추가에 실패했습니다');
+        console.error('Error creating events:', error);
+        alert(
+          '행사 추가에 실패했습니다, ' +
+            (error instanceof Error && error.message),
+        );
         throw error;
       }
     },
@@ -83,14 +83,8 @@ const ShuttleForm = () => {
   );
 
   return (
-    <form
-      className="flex flex-col gap-8
-      [&>label]:p-16 [&>label]:rounded-lg [&>label]:bg-grey-50
-      [&>label]:flex [&>label]:flex-col [&>label]:gap-4
-      "
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <label>셔틀 이름</label>
+    <form className="flex flex-col gap-16" onSubmit={handleSubmit(onSubmit)}>
+      <label>행사 이름</label>
       <Controller
         control={control}
         name="name"
@@ -111,7 +105,7 @@ const ShuttleForm = () => {
           <RegionInput value={value} setValue={(id) => onChange(id || null)} />
         )}
       />
-      <label>거점지</label>
+      <label>목적지</label>
       <Controller
         control={control}
         name="regionHubId"
@@ -123,7 +117,7 @@ const ShuttleForm = () => {
           />
         )}
       />
-      <div className="flex flex-col gap-4 bg-grey-50 p-16 rounded-lg">
+      <div className="flex flex-col gap-4">
         <header>
           <label>날짜</label>
           <button
@@ -140,7 +134,7 @@ const ShuttleForm = () => {
             <Controller
               key={field.id}
               control={control}
-              name={`dailyShuttles.${index}.date` as const}
+              name={`dailyEvents.${index}.date` as const}
               render={({ field: { onChange, value } }) => (
                 <div className="flex flex-col w-full">
                   <div className="flex flex-row w-full items-center">
@@ -198,23 +192,10 @@ const ShuttleForm = () => {
           </RadioGroup>
         )}
       />
-      <label>(콘서트/페스티벌) 이름</label>
-      <Controller
-        control={control}
-        name="detail.name"
-        render={({ field: { onChange, value } }) => (
-          <Input
-            type="text"
-            value={value}
-            setValue={onChange}
-            placeholder="콘서트/페스티벌 이름"
-          />
-        )}
-      />
       <label>포스터 이미지 URL</label>
       <Controller
         control={control}
-        name="detail.image"
+        name="imageUrl"
         render={({ field: { onChange, value } }) => (
           <ImageFileInput
             type="concerts"
@@ -223,7 +204,7 @@ const ShuttleForm = () => {
           />
         )}
       />
-      <div className="flex flex-col gap-4 bg-grey-50 p-16 rounded-lg">
+      <div className="flex flex-col gap-4">
         <header>
           <label>아티스트</label>
           <button
@@ -239,7 +220,7 @@ const ShuttleForm = () => {
             <div key={field.id} className="flex gap-4">
               <Controller
                 control={control}
-                name={`detail.artistIds.${index}.artistId`}
+                name={`artistIds.${index}.artistId`}
                 render={({ field: { onChange, value } }) => (
                   <ArtistInput
                     value={value}
@@ -268,4 +249,4 @@ const ShuttleForm = () => {
   );
 };
 
-export default ShuttleForm;
+export default CreateEventForm;
