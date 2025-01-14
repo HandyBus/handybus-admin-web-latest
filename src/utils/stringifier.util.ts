@@ -1,6 +1,7 @@
 import { BusSortType } from '@/types/v1/bus.type';
 import { HandyStatusType } from '@/types/v1/reservation.type';
 import { EventsView } from '@/types/v2/event.type';
+import { ShuttleRoutesView } from '@/types/v2/shuttleRoute.type';
 
 const Stringifier = Object.freeze({
   handyStatus(v: HandyStatusType) {
@@ -49,6 +50,34 @@ const Stringifier = Object.freeze({
         return '행사 수요조사 모집 종료';
       case 'ENDED':
         return '행사 종료';
+    }
+  },
+  dailyEventStatus(v: EventsView['dailyEvents'][number]['status']) {
+    switch (v) {
+      case 'INACTIVE':
+        return '이 일자의 행사 비활성';
+      case 'OPEN':
+        return '이 일자의 행사 수요조사 모집 중';
+      case 'CLOSED':
+        return '이 일자의 행사 수요조사 모집 종료';
+      case 'ENDED':
+        return '이 일자의 행사 종료';
+    }
+  },
+  shuttleRouteStatus(v: ShuttleRoutesView['status']) {
+    switch (v) {
+      case 'OPEN':
+        return '예약 모집 중';
+      case 'CLOSED':
+        return '예약 마감';
+      case 'CONFIRMED':
+        return '배차가 완료되고 모든 정보가 확정된 상태';
+      case 'ENDED':
+        return '운행 종료';
+      case 'CANCELLED':
+        return '무산';
+      case 'INACTIVE':
+        return '비활성';
     }
   },
 });
