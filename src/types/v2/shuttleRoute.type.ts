@@ -1,23 +1,25 @@
 import { z } from 'zod';
-import { nullableDate } from '../meta/date.type';
+import { nullableDate } from '../meta/common.type';
 import { EventsViewEntity } from './event.type';
 
-const ShuttleRouteHubsInShuttleRoutesViewEntity = z.object({
-  shuttleId: z.unknown(),
-  shuttleName: z.unknown(),
-  shuttleType: z.unknown(),
-  regionId: z.unknown(),
-  regionHubId: z.unknown(),
-  shuttleStatus: z.unknown(),
-  destinationName: z.unknown(),
-  destinationAddress: z.unknown(),
-  destinationLatitude: z.unknown(),
-  destinationLongitude: z.unknown(),
-  eventName: z.unknown(),
-  eventImageUrl: z.unknown(),
-  eventArtists: z.unknown(),
-  dailyShuttles: z.unknown(),
-});
+const ShuttleRouteHubsInShuttleRoutesViewEntity = z
+  .object({
+    shuttleRouteHubId: z.unknown(),
+    regionHubId: z.unknown(),
+    name: z.unknown(),
+    address: z.unknown(),
+    latitude: z.unknown(),
+    longitude: z.unknown(),
+    type: z.unknown(),
+    sequence: z.unknown(),
+    arrivalTime: z.unknown(),
+    status: z.unknown(),
+  })
+  .strict();
+
+export type ShuttleRouteHubsInShuttleRoutesView = z.infer<
+  typeof ShuttleRouteHubsInShuttleRoutesViewEntity
+>;
 
 export const ShuttleRoutesViewEntity = z
   .object({
@@ -60,4 +62,23 @@ export const ShuttleRoutesViewEntity = z
   })
   .strict();
 
-export type ShuttleRoutesViewType = z.infer<typeof ShuttleRoutesViewEntity>;
+export type ShuttleRoutesView = z.infer<typeof ShuttleRoutesViewEntity>;
+
+//////////////////////// create request ////////////////////////
+
+export const CreateShuttleRouteRequestSchema = z
+  .object({
+    name: z.unknown(),
+    reservationDeadline: z.unknown(),
+    hasEarlybird: z.unknown(),
+    earlybirdPrice: z.unknown(),
+    regularPrice: z.unknown(),
+    earlybirdDeadline: z.unknown(),
+    maxPassengerCount: z.unknown(),
+    shuttleRouteHubs: z.unknown(),
+  })
+  .strict();
+
+export type CreateShuttleRouteRequest = z.infer<
+  typeof CreateShuttleRouteRequestSchema
+>;

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { RouteHubSchema } from './routeHub.type';
 import { BusSchema } from './bus.type';
-import { nullableDate } from '../meta/date.type';
+import { nullableDate } from '../meta/common.type';
 import { ShuttleSchema } from './shuttle.type';
 
 export const CreateShuttleRouteRequestSchema = z.object({

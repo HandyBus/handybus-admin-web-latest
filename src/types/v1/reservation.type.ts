@@ -3,7 +3,7 @@ import { UserSchema } from './user.type';
 import { ShuttleRouteDetailSchema } from './route.type';
 import { PaymentSchema } from './payment.type';
 import { PassengerSchema, FlatPassengerSchema } from './passenger.type';
-import { nullableDate } from '../meta/date.type';
+import { nullableDate } from '../meta/common.type';
 
 export const ReservationSchema = z
   .object({

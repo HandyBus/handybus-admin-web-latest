@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { nullableDate } from '../meta/date.type';
+import { nullableDate } from '../meta/common.type';
 import { ShuttleRoutesViewEntity } from './shuttleRoute.type';
 
 const ReservationPassengersInReservationsViewEntity = z

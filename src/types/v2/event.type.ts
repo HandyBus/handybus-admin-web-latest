@@ -23,14 +23,29 @@ export const EventsViewEntity = z
     regionId: z.number().int(),
     regionHubId: z.number().int(),
     eventStatus: z.enum(['OPEN', 'CLOSED', 'ENDED', 'INACTIVE']),
-    eventImageUrl: z.string().url(),
+    eventImageUrl: z.literal('').or(z.string()),
     eventLocationName: z.string(),
     eventLocationAddress: z.string(),
     eventLocationLatitude: z.number(),
     eventLocationLongitude: z.number(),
+    // is this really nullable?
     eventArtists: ArtistsInEventsViewEntity.array().nullable(),
     dailyEvents: EventDailyShuttlesInEventsViewEntity.array(),
   })
   .strict();
 
-export type EventsViewType = z.infer<typeof EventsViewEntity>;
+export type EventsView = z.infer<typeof EventsViewEntity>;
+
+////////////////////////////////////////
+
+export const CreateEventRequest = z.object({
+  name: z.string(),
+  imageUrl: z.string().url(),
+  regionId: z.number().int(),
+  regionHubId: z.number().int(),
+  dailyEvents: z.object({}).array(),
+  type: z.enum(['CONCERT', 'FESTIVAL']),
+  artistIds: z.number().int().array(),
+});
+
+export type CreateEventRequest = z.infer<typeof CreateEventRequest>;
