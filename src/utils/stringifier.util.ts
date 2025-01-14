@@ -1,6 +1,6 @@
 import { BusSortType } from '@/types/v1/bus.type';
 import { HandyStatusType } from '@/types/v1/reservation.type';
-import { EventsViewType } from '@/types/v2/event.type';
+import { EventsView } from '@/types/v2/event.type';
 
 const Stringifier = Object.freeze({
   handyStatus(v: HandyStatusType) {
@@ -39,16 +39,16 @@ const Stringifier = Object.freeze({
         return '12인승 밴';
     }
   },
-  eventStatus(v: EventsViewType['eventStatus']) {
+  eventStatus(v: EventsView['eventStatus']) {
     switch (v) {
       case 'INACTIVE':
-        return '비활성화됨';
+        return '행사 비활성';
       case 'OPEN':
-        return '열림';
+        return '행사 수요조사 모집 중';
       case 'CLOSED':
-        return '닫힘';
+        return '행사 수요조사 모집 종료';
       case 'ENDED':
-        return '종료됨';
+        return '행사 종료';
     }
   },
 });

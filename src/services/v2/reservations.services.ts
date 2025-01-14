@@ -1,6 +1,5 @@
 import { PAGINATION_LIMIT } from '@/constants/config';
-import { authInstance } from '../config';
-import { withPagination } from '@/types/meta/pagination.type';
+import { authInstance, withPagination } from '../config';
 import { ReservationViewEntity } from '@/types/v2/reservation.type';
 import { toSearchParamString } from '@/utils/searchParam.util';
 import { z } from 'zod';
