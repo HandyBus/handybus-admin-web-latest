@@ -3,7 +3,7 @@
 import {
   CreateHubRequestSchema,
   type CreateHubRequestType,
-  HubListSchema,
+  RegionHubSchema,
 } from '@/types/v1/regionHub.type';
 import { authInstance } from '../config';
 import { silentParse } from '@/utils/parse.util';
@@ -11,9 +11,17 @@ import { silentParse } from '@/utils/parse.util';
 export const getHubs = async (regionId: number) => {
   const response = await authInstance.get(
     `/v1/location/admin/regions/${regionId}/hubs`,
-    { shape: { regionHubs: HubListSchema } },
+    { shape: { regionHubs: RegionHubSchema.array() } },
   );
   return response.regionHubs;
+};
+
+export const getHub = async (regionId: number, regionHubId: number) => {
+  const response = await authInstance.get(
+    `/v1/location/admin/regions/${regionId}/hubs/${regionHubId}`,
+    { shape: { regionHub: RegionHubSchema } },
+  );
+  return response.regionHub;
 };
 
 export const addHub = async (regionId: number, input: CreateHubRequestType) => {

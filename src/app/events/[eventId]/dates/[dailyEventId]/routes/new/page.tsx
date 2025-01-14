@@ -4,18 +4,11 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { conform, type CreateShuttleRouteFormType } from './form.type';
 import { addRoute } from '@/services/v1/route.services';
 import { useRouter } from 'next/navigation';
-import tw from 'tailwind-styled-components';
+import Input from '@/components/input/Input';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
 }
-
-const Input = tw.input`
-  rounded-lg
-  border
-  border-grey-100
-  p-8
-`;
 
 const defaultValues: CreateShuttleRouteFormType = {
   name: '',

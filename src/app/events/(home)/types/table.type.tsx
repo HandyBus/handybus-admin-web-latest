@@ -1,11 +1,12 @@
 'use client';
 
-import type { EventsViewType } from '@/types/v2/event.type';
+import type { EventsView } from '@/types/v2/event.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import Image from 'next/image';
 import BlueLink from '@/components/link/BlueLink';
+import RegionHubViewerModal from '@/components/viewer/RegionHubViewerModal';
 
-const columnHelper = createColumnHelper<EventsViewType>();
+const columnHelper = createColumnHelper<EventsView>();
 
 export const columns = [
   columnHelper.accessor('eventId', {
@@ -34,15 +35,31 @@ export const columns = [
     header: '이벤트 상태',
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor('regionId', {
-    id: 'regionId',
-    header: '지역',
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor('regionHubId', {
-    id: 'regionHubId',
-    header: '거점지',
-    cell: (info) => info.getValue(),
+  columnHelper.group({
+    id: 'region',
+    header: '목적지',
+    columns: [
+      columnHelper.accessor('regionId', {
+        id: 'regionId',
+        header: '지역 ID',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor('regionHubId', {
+        id: 'regionHubId',
+        header: '거점지 ID',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.display({
+        id: 'regionHub',
+        header: '거점지 종합 정보',
+        cell: (info) => (
+          <RegionHubViewerModal
+            regionId={info.row.original.regionId}
+            regionHubId={info.row.original.regionHubId}
+          />
+        ),
+      }),
+    ],
   }),
   columnHelper.accessor('eventType', {
     id: 'eventType',
@@ -55,25 +72,30 @@ export const columns = [
     cell: (info) => info.getValue(),
   }),
   // Accessor Column
-  columnHelper.accessor('eventLocationName', {
-    id: 'eventLocationName',
-    header: '이벤트 장소 이름',
-    cell: (info) => info.getValue(),
+  columnHelper.group({
+    id: 'eventLocation',
+    header: '이벤트 장소',
+    columns: [
+      columnHelper.accessor('eventLocationName', {
+        id: 'eventLocationName',
+        header: '이벤트 장소 이름',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor('eventLocationAddress', {
+        id: 'eventLocationAddress',
+        header: '이벤트 장소 주소',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor('eventLocationLatitude', {
+        header: '이벤트 장소 위도',
+        cell: (info) => info.getValue(),
+      }),
+      columnHelper.accessor('eventLocationLongitude', {
+        header: '이벤트 장소 경도',
+        cell: (info) => info.getValue(),
+      }),
+    ],
   }),
-  columnHelper.accessor('eventLocationAddress', {
-    id: 'eventLocationAddress',
-    header: '이벤트 장소 주소',
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor(
-    (e) =>
-      `(${e.eventLocationLatitude.toFixed(2)}… , ${e.eventLocationLongitude.toFixed(2)}…)`,
-    {
-      id: 'eventCoord',
-      header: '이벤트 장소 좌표',
-      cell: (info) => info.getValue(),
-    },
-  ),
   columnHelper.accessor((row) => row.dailyEvents.map((de) => de.date), {
     header: '날짜',
     cell: ({ getValue }) => {
@@ -103,7 +125,7 @@ export const columns = [
     },
   }),
   columnHelper.display({
-    id: 'actions  ',
+    id: 'actions',
     header: '액션',
     cell: (props) => (
       <BlueLink href={`/events/${props.row.original.eventId}`}>
@@ -112,3 +134,13 @@ export const columns = [
     ),
   }),
 ];
+
+// Initial column visibility - columns are shown by default
+export const initialColumnVisibility = {
+  eventLocationAddress: false,
+  eventLocationLatitude: false,
+  eventLocationLongitude: false,
+  eventCoord: false,
+  regionId: false,
+  regionHubId: false,
+};

@@ -18,30 +18,30 @@ interface Props {
 }
 
 import { ChevronDown } from 'lucide-react';
-import { getAllShuttles } from '@/services/v2/shuttleEvent.services';
-import { EventsViewType } from '@/types/v2/event.type';
+import { readAllEvents } from '@/services/v2/shuttleEvent.services';
+import { EventsView } from '@/types/v2/event.type';
 import Image from 'next/image';
 
 const ShuttleInput = ({ value, setValue }: Props) => {
   const [query, setQuery] = useState('');
   const { data, isLoading, error } = useQuery({
     queryKey: ['shuttles'],
-    queryFn: async () => await getAllShuttles(),
+    queryFn: async () => await readAllEvents(),
   });
 
   const setSelectedShuttle = useCallback(
-    (shuttle: EventsViewType | null) => {
+    (shuttle: EventsView | null) => {
       setValue(shuttle?.eventId ?? null);
     },
     [setValue],
   );
 
-  const selectedShuttle: EventsViewType | null = useMemo(
+  const selectedShuttle: EventsView | null = useMemo(
     () => data?.find((event) => event.eventId === value) || null,
     [data, value],
   );
 
-  const filtered: EventsViewType[] = useMemo(() => {
+  const filtered: EventsView[] = useMemo(() => {
     return query
       ? filterByFuzzy(
           data ?? [],
@@ -76,7 +76,7 @@ const ShuttleInput = ({ value, setValue }: Props) => {
                 : '셔틀 선택'
           }
           defaultValue={null}
-          displayValue={(shuttle: null | EventsViewType) =>
+          displayValue={(shuttle: null | EventsView) =>
             shuttle?.eventName ?? ''
           }
           onChange={(event) => setQuery(event.target.value)}

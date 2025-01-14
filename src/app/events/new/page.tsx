@@ -83,7 +83,10 @@ const CreateEventForm = () => {
   );
 
   return (
-    <form className="flex flex-col gap-16" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="flex flex-col gap-16 bg-grey-50 p-16"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <label>행사 이름</label>
       <Controller
         control={control}

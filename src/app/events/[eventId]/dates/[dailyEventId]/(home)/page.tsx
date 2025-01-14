@@ -1,9 +1,9 @@
 'use client';
 
 import BlueLink from '@/components/link/BlueLink';
-import Shuttle from '@/app/events/[eventId]/(home)/components/Shuttle';
-import { getRoutes } from '@/services/v2/shuttleRoute.services';
-import { getShuttle } from '@/services/v1/shuttle.services';
+import EventViewer from '@/app/events/[eventId]/(home)/components/Shuttle';
+import { readRoutes } from '@/services/v2/shuttleRoute.services';
+import { readEvent } from '@/services/v2/shuttleEvent.services';
 import { notFound } from 'next/navigation';
 import { columns } from './types/table.type';
 import DataTable from '@/components/table/DataTable';
@@ -21,8 +21,8 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     isError: isShuttleError,
     error: shuttleError,
   } = useQuery({
-    queryKey: ['event', eventId],
-    queryFn: () => getShuttle(Number(eventId)),
+    queryKey: ['events', eventId],
+    queryFn: () => readEvent(Number(eventId)),
   });
 
   const {
@@ -32,13 +32,11 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     error: routesError,
   } = useQuery({
     queryKey: ['routes', eventId, dailyEventId],
-    queryFn: () => getRoutes(Number(eventId), Number(dailyEventId)),
+    queryFn: () => readRoutes(Number(eventId), Number(dailyEventId)),
   });
 
   const thisDailyShuttle = shuttle
-    ? shuttle.dailyShuttles.find(
-        (d) => d.dailyShuttleId === Number(dailyEventId),
-      )
+    ? shuttle.dailyEvents.find((d) => d.dailyEventId === Number(dailyEventId))
     : null;
 
   useEffect(() => {
@@ -71,7 +69,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
           {JSON.stringify(thisDailyShuttle, null, 2)}
         </pre>
         이 일자별 셔틀과 연결된 셔틀 정보
-        <Shuttle shuttle={shuttle} />
+        <EventViewer event={shuttle} />
         <header className="flex flex-row justify-between">
           <h1 className="text-[24px] font-500">노선 목록</h1>
           <BlueLink href={`${dailyEventId}/routes/new`}>추가하기</BlueLink>
