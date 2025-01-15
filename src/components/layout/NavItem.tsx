@@ -13,15 +13,13 @@ const NavItem = ({ href, children }: Props) => {
   const firstHref = href.split('/').at(1);
   const firstPath = usePathname().split('/').at(1);
   return (
-    <li>
-      <Link
-        href={href}
-        className={`cursor-pointer break-keep transition-opacity hover:opacity-20 
-          ${firstPath === firstHref ? 'font-700' : 'font-400'}`}
-      >
-        {children}
-      </Link>
-    </li>
+    <Link
+      href={href}
+      className={`block cursor-pointer text-20 break-keep transition-opacity hover:opacity-30 
+          ${firstPath === firstHref ? 'font-700 text-white' : 'font-400 text-grey-100'}`}
+    >
+      {children}
+    </Link>
   );
 };
 
