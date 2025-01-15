@@ -120,8 +120,8 @@ const BusSection = ({
 
   const [assignedBus, setAssignedBus] = useState<AssignedBus[]>([]);
 
+  // 버스 자동 배정
   const autoAssignBus = async (buses: ShuttleBusesView[]) => {
-    // 핸디 유저와 일반 유저 분리
     const handyUsers = reservations.filter((r) => r.handyStatus === 'ACCEPTED');
     const normalUsers = reservations.filter(
       (r) => r.handyStatus !== 'ACCEPTED',
@@ -129,12 +129,12 @@ const BusSection = ({
 
     // 버스 수와 핸디 유저 수 검증
     if (buses.length !== handyUsers.length) {
-      throw new CustomError(400, '버스 수와 핸디 수가 일치해야 합니다.');
+      toast.error('버스 수와 핸디 수가 일치해야 합니다.');
+      return;
     }
 
     try {
       const newAssignedBus: AssignedBus[] = [];
-      // 각 버스에 핸디 유저 먼저 배정
       buses.forEach((bus, index) => {
         newAssignedBus.push({
           shuttleBusId: bus.shuttleBusId,
@@ -145,7 +145,6 @@ const BusSection = ({
         });
       });
 
-      // 나머지 일반 유저 배정
       for (const user of normalUsers) {
         const availableBus = newAssignedBus.find(
           (bus) => bus.busCapacity > bus.passengers.length,
@@ -161,6 +160,39 @@ const BusSection = ({
       const error = e as CustomError;
       toast.error(error.message);
     }
+  };
+
+  // 승객 이동
+  const movePassenger = (
+    passengerId: number,
+    fromBusId: number,
+    toBusId: number,
+  ) => {
+    setAssignedBus((prev) => {
+      const newAssignment = structuredClone(prev);
+      const fromBus = newAssignment.find((b) => b.shuttleBusId === fromBusId);
+      const toBus = newAssignment.find((b) => b.shuttleBusId === toBusId);
+
+      if (!fromBus || !toBus) {
+        return prev;
+      }
+      if (toBus.passengers.length >= toBus.busCapacity) {
+        toast.error('선택한 버스의 정원이 초과되었습니다.');
+        return prev;
+      }
+
+      const passengerIndex = fromBus.passengers.findIndex(
+        (p) => p.reservationId === passengerId,
+      );
+      if (passengerIndex === -1) {
+        return prev;
+      }
+
+      const [passenger] = fromBus.passengers.splice(passengerIndex, 1);
+      toBus.passengers.push(passenger);
+
+      return newAssignment;
+    });
   };
 
   return (
@@ -227,6 +259,35 @@ const BusSection = ({
                       {passenger.handyStatus === 'ACCEPTED' && (
                         <span className="text-primary-main">핸디</span>
                       )}
+                      <div className="ml-auto flex items-center gap-2">
+                        <select
+                          className="border border-grey-300 rounded-md px-2 py-1"
+                          onChange={(e) => {
+                            const toBusId = Number(e.target.value);
+                            if (toBusId === bus.shuttleBusId) return;
+                            movePassenger(
+                              passenger.reservationId,
+                              bus.shuttleBusId,
+                              toBusId,
+                            );
+                          }}
+                          value={bus.shuttleBusId}
+                        >
+                          {assignedBus.map((b) => (
+                            <option
+                              key={b.shuttleBusId}
+                              value={b.shuttleBusId}
+                              disabled={
+                                b.shuttleBusId === bus.shuttleBusId ||
+                                b.passengers.length >= b.busCapacity
+                              }
+                            >
+                              {b.busName} ({b.passengers.length}/{b.busCapacity}
+                              )
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -264,7 +325,6 @@ const ReservationSection = ({
       initialPageParam: 0,
       initialData: { pages: [], pageParams: [] },
       getNextPageParam: (lastPage) => {
-        console.log('lastPage' + lastPage.nextPage);
         return lastPage.nextPage;
       },
       placeholderData: keepPreviousData,

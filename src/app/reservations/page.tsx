@@ -191,7 +191,6 @@ const AllReservations = () => {
     initialPageParam: 0,
     initialData: { pages: [], pageParams: [] },
     getNextPageParam: (lastPage) => {
-      console.log('lastPage' + lastPage.nextPage);
       return lastPage.nextPage;
     },
     placeholderData: keepPreviousData,
