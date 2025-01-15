@@ -11,7 +11,7 @@ const columnHelper = createColumnHelper<EventsView>();
 export const columns = [
   columnHelper.accessor('eventId', {
     id: 'eventId',
-    header: '이벤트 ID',
+    header: '행사 ID',
     cell: (info) => info.getValue(),
   }),
   columnHelper.display({
@@ -32,7 +32,7 @@ export const columns = [
   }),
   columnHelper.accessor('eventStatus', {
     id: 'eventStatus',
-    header: '이벤트 상태',
+    header: '행사 상태',
     cell: (info) => info.getValue(),
   }),
   columnHelper.group({
@@ -63,35 +63,35 @@ export const columns = [
   }),
   columnHelper.accessor('eventType', {
     id: 'eventType',
-    header: '이벤트 종류',
+    header: '행사 종류',
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('eventName', {
     id: 'eventName',
-    header: '이벤트 이름',
+    header: '행사 이름',
     cell: (info) => info.getValue(),
   }),
   // Accessor Column
   columnHelper.group({
     id: 'eventLocation',
-    header: '이벤트 장소',
+    header: '행사 장소',
     columns: [
       columnHelper.accessor('eventLocationName', {
         id: 'eventLocationName',
-        header: '이벤트 장소 이름',
+        header: '행사 장소 이름',
         cell: (info) => info.getValue(),
       }),
       columnHelper.accessor('eventLocationAddress', {
         id: 'eventLocationAddress',
-        header: '이벤트 장소 주소',
+        header: '행사 장소 주소',
         cell: (info) => info.getValue(),
       }),
       columnHelper.accessor('eventLocationLatitude', {
-        header: '이벤트 장소 위도',
+        header: '행사 장소 위도',
         cell: (info) => info.getValue(),
       }),
       columnHelper.accessor('eventLocationLongitude', {
-        header: '이벤트 장소 경도',
+        header: '행사 장소 경도',
         cell: (info) => info.getValue(),
       }),
     ],
