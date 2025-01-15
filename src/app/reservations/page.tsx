@@ -68,7 +68,7 @@ const RouteReservations = () => {
       <h2 className="text-24 font-500 pb-8 bg-grey-50 py-4 px-12 my-4 flex items-center">
         노선별 예약 조회
       </h2>
-      <div className="flex w-full justify-between h-600">
+      <div className="flex w-full justify-between h-500">
         <article className="h-full w-400 flex flex-col">
           <p className="font-500 text-20 pb-4 text-grey-900">행사 선택</p>
           <ul className="grow overflow-scroll border border-grey-200 rounded-[4px]">

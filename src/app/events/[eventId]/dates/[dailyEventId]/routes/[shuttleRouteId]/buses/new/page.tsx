@@ -12,10 +12,12 @@ import { postBus } from '@/services/v2/shuttleBus.services';
 import Stringifier from '@/utils/stringifier.util';
 
 interface Props {
-  params: { shuttle_id: string; daily_id: string; route_id: string };
+  params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
 }
 
-const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
+const NewBusPage = ({
+  params: { eventId, dailyEventId, shuttleRouteId },
+}: Props) => {
   const router = useRouter();
 
   const { control, handleSubmit } = useForm<CreateBusFormType>({
@@ -32,15 +34,15 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
     (data: CreateBusFormType) => {
       if (confirm('버스를 추가하시겠습니까?')) {
         postBus(
-          Number(shuttle_id),
-          Number(daily_id),
-          Number(route_id),
+          Number(eventId),
+          Number(dailyEventId),
+          Number(shuttleRouteId),
           conform(data),
         )
           .then(() => {
             alert('버스가 추가되었습니다.');
             router.push(
-              `/shuttles/${shuttle_id}/dates/${daily_id}/routes/${route_id}`,
+              `/shuttles/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`,
             );
           })
           .catch((e) => {
@@ -49,7 +51,7 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
           });
       }
     },
-    [router, shuttle_id, daily_id, route_id],
+    [router, eventId, dailyEventId, shuttleRouteId],
   );
 
   return (

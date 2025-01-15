@@ -23,11 +23,11 @@ export const ShuttleBusesViewEntity = z
     shuttleRouteId: z.number().int(),
     busType: BusTypeSchema,
     busName: z.string(),
-    busNumber: z.number().int(),
+    busNumber: z.string(),
     busCapacity: z.number().int(),
     busDriverPhoneNumber: z.string(),
-    openChatLink: z.string(),
-    handyUserId: z.number().int(),
+    openChatLink: z.string().nullable(),
+    handyUserId: z.number().int().nullable(),
   })
   .strict();
 
