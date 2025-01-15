@@ -12,7 +12,7 @@ export const columns = (eventId: number) => [
   }),
   columnHelper.accessor('date', {
     header: () => '날짜',
-    cell: (info) => info.getValue().toLocaleDateString('ko-KR'),
+    cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('status', {
     header: () => '상태',

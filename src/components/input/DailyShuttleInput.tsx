@@ -77,7 +77,7 @@ const DailyShuttleInput = ({ shuttleId, value, setValue }: Props) => {
           }
           defaultValue={null}
           displayValue={(dailyEvent: DailyEvent | null) =>
-            dailyEvent?.date.toLocaleDateString() ?? ''
+            dailyEvent?.date ?? ''
           }
           onChange={(event) => setQuery(event.target.value)}
         />

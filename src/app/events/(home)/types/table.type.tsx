@@ -99,11 +99,11 @@ export const columns = [
   columnHelper.accessor((row) => row.dailyEvents.map((de) => de.date), {
     header: '날짜',
     cell: ({ getValue }) => {
-      const dates: Date[] = getValue();
+      const dates: string[] = getValue();
       return (
         <div>
           {dates.map((date, index) => (
-            <div key={index}>{date.toLocaleDateString('ko-KR')}</div>
+            <div key={index}>{date}</div>
           ))}
         </div>
       );

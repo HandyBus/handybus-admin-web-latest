@@ -26,12 +26,7 @@ const EventViewer = ({ event }: Props) => {
               출연:{' '}
               {event.eventArtists?.map((p) => p.artistName).join(', ') ?? '-'}
             </p>
-            <p>
-              날짜:{' '}
-              {event.dailyEvents
-                .map((ds) => ds.date.toLocaleDateString('ko-KR'))
-                .join(', ')}
-            </p>
+            <p>날짜: {event.dailyEvents.map((ds) => ds.date).join(', ')}</p>
             <p>상태: {Stringifier.eventStatus(event.eventStatus)}</p>
           </div>
         </div>
