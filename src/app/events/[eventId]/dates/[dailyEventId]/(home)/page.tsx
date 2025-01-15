@@ -2,8 +2,8 @@
 
 import BlueLink from '@/components/link/BlueLink';
 import EventViewer from '@/app/events/[eventId]/(home)/components/Shuttle';
-import { readRoutes } from '@/services/v2/shuttleRoute.services';
-import { readEvent } from '@/services/v2/shuttleEvent.services';
+import { getRoutes } from '@/services/v2/shuttleRoute.services';
+import { getEvent } from '@/services/v2/shuttleEvent.services';
 import { notFound } from 'next/navigation';
 import { columns } from './types/table.type';
 import DataTable from '@/components/table/DataTable';
@@ -22,7 +22,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     error: shuttleError,
   } = useQuery({
     queryKey: ['events', eventId],
-    queryFn: () => readEvent(Number(eventId)),
+    queryFn: () => getEvent(Number(eventId)),
   });
 
   const {
@@ -32,7 +32,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     error: routesError,
   } = useQuery({
     queryKey: ['routes', eventId, dailyEventId],
-    queryFn: () => readRoutes(Number(eventId), Number(dailyEventId)),
+    queryFn: () => getRoutes(Number(eventId), Number(dailyEventId)),
   });
 
   const thisDailyShuttle = shuttle

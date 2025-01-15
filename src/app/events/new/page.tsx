@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import { useForm, useFieldArray, useWatch } from 'react-hook-form';
-import { createEvent } from '@/services/v2/shuttleEvent.services';
+import { postEvent } from '@/services/v2/shuttleEvent.services';
 import { type CreateEventFormData, conform } from './types/form.type';
 import { useRouter } from 'next/navigation';
 import ArtistInput from '@/components/input/ArtistInput';
@@ -64,7 +64,7 @@ const CreateEventForm = () => {
     async (data: CreateEventFormData) => {
       if (confirm('행사를 추가하시겠습니까?') === false) return;
       try {
-        await createEvent(conform(data));
+        await postEvent(conform(data));
         alert('행사가 추가되었습니다.');
         router.push('/events');
       } catch (error) {

@@ -3,7 +3,7 @@
 import BlueLink from '@/components/link/BlueLink';
 import { columns } from './types/table.type';
 import EventViewer from './components/Shuttle';
-import { readEvent } from '@/services/v2/shuttleEvent.services';
+import { getEvent } from '@/services/v2/shuttleEvent.services';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2Icon } from 'lucide-react';
 import { useMemo } from 'react';
@@ -18,7 +18,7 @@ interface Props {
 const Page = ({ params: { eventId } }: Props) => {
   const { data: event } = useQuery({
     queryKey: ['events', eventId],
-    queryFn: () => readEvent(Number(eventId)),
+    queryFn: () => getEvent(Number(eventId)),
   });
 
   const columnsForThisShuttleId = useMemo(

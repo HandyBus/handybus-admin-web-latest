@@ -4,7 +4,7 @@ import {
   ShuttleBusesViewEntity,
 } from '@/types/v2/shuttleBus.type';
 
-export const readBuses = async (
+export const getBuses = async (
   eventId: number,
   dailyEventId: number,
   shuttleRouteId: number,
@@ -21,7 +21,7 @@ export const readBuses = async (
 import { CreateBusRequest } from '@/types/v2/shuttleBus.type';
 import { silentParse } from '@/utils/parse.util';
 
-export const createBus = async (
+export const postBus = async (
   eventId: number,
   dailyEventId: number,
   shuttleRouteId: number,

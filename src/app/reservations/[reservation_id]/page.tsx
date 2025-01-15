@@ -1,5 +1,5 @@
 'use client';
-import { readReservationAndPayments } from '@/services/v2/reservations.services';
+import { getReservationAndPayments } from '@/services/v2/reservations.services';
 // import EditHandyStatusDialog from './components/EditHandyStatusDialog';
 import { useQuery } from '@tanstack/react-query';
 import JSONViewer from '@/components/json/JSONViewer';
@@ -14,7 +14,7 @@ interface Props {
 const Page = ({ params: { reservation_id } }: Props) => {
   const { data, isPending, isError, error } = useQuery({
     queryKey: ['reservations', reservation_id],
-    queryFn: () => readReservationAndPayments(Number(reservation_id)),
+    queryFn: () => getReservationAndPayments(Number(reservation_id)),
   });
 
   if (isPending) return <p>로딩중...</p>;

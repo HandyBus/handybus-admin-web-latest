@@ -2,7 +2,7 @@
 
 import { useForm, useFieldArray } from 'react-hook-form';
 import { conform, type CreateShuttleRouteForm } from './form.type';
-import { createRoute } from '@/services/v2/shuttleRoute.services';
+import { postRoute } from '@/services/v2/shuttleRoute.services';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/input/Input';
 
@@ -80,7 +80,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
   const onSubmit = async (data: CreateShuttleRouteForm) => {
     if (!confirm('등록하시겠습니까?')) return;
     try {
-      await createRoute(Number(eventId), Number(dailyEventId), conform(data));
+      await postRoute(Number(eventId), Number(dailyEventId), conform(data));
       alert('등록에 성공했습니다.');
       router.push(`/events/${eventId}/dates/${dailyEventId}`);
     } catch (error) {

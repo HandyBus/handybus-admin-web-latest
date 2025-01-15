@@ -18,7 +18,7 @@ interface Props {
 }
 
 import { ChevronDown } from 'lucide-react';
-import { readAllEvents } from '@/services/v2/shuttleEvent.services';
+import { getAllEvents } from '@/services/v2/shuttleEvent.services';
 import { EventsView } from '@/types/v2/event.type';
 import Image from 'next/image';
 
@@ -26,7 +26,7 @@ const ShuttleInput = ({ value, setValue }: Props) => {
   const [query, setQuery] = useState('');
   const { data, isLoading, error } = useQuery({
     queryKey: ['shuttles'],
-    queryFn: async () => await readAllEvents(),
+    queryFn: async () => await getAllEvents(),
   });
 
   const setSelectedShuttle = useCallback(

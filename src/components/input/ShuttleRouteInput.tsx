@@ -20,7 +20,7 @@ interface Props {
 }
 
 import { ChevronDown } from 'lucide-react';
-import { readRoutes } from '@/services/v2/shuttleRoute.services';
+import { getRoutes } from '@/services/v2/shuttleRoute.services';
 import { ShuttleRoutesView } from '@/types/v2/shuttleRoute.type';
 
 const ShuttleRouteInput = ({
@@ -32,7 +32,7 @@ const ShuttleRouteInput = ({
   const [query, setQuery] = useState('');
   const { data, isLoading, error } = useQuery({
     queryKey: ['shuttleRoutes', shuttleId, dailyShuttleId],
-    queryFn: async () => await readRoutes(shuttleId, dailyShuttleId),
+    queryFn: async () => await getRoutes(shuttleId, dailyShuttleId),
   });
 
   const setSelectedRoute: (route: ShuttleRoutesView | null) => void =

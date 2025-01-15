@@ -16,7 +16,7 @@ interface GetReservationOption {
   passengerName: string;
 }
 
-export const readReservations = async (
+export const getReservations = async (
   option?: Partial<GetReservationOption>,
 ) => {
   const url = `/v2/shuttle-operation/admin/reservations?limit=${PAGINATION_LIMIT}${toSearchParamString(option, '&')}`;
@@ -26,7 +26,7 @@ export const readReservations = async (
   });
 };
 
-export const readReservationAndPayments = async (reservationId: number) => {
+export const getReservationAndPayments = async (reservationId: number) => {
   const response = await authInstance.get(
     `/v2/shuttle-operation/admin/reservations/${reservationId}`,
     {

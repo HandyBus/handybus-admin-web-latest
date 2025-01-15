@@ -19,7 +19,7 @@ interface Props {
 }
 
 import { ChevronDown } from 'lucide-react';
-import { readEvent } from '@/services/v2/shuttleEvent.services';
+import { getEvent } from '@/services/v2/shuttleEvent.services';
 import { EventsView } from '@/types/v2/event.type';
 import dayjs from 'dayjs';
 
@@ -29,7 +29,7 @@ const DailyShuttleInput = ({ shuttleId, value, setValue }: Props) => {
   const [query, setQuery] = useState('');
   const { data, isLoading, error } = useQuery({
     queryKey: ['shuttle', shuttleId],
-    queryFn: async () => await readEvent(shuttleId),
+    queryFn: async () => await getEvent(shuttleId),
   });
 
   const setSelectedDailyShuttle = useCallback(

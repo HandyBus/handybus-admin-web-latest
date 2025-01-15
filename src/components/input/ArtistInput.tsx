@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { readArtists } from '@/services/v2/artists.services';
+import { getArtists } from '@/services/v2/artists.services';
 import {
   Combobox,
   ComboboxInput,
@@ -21,7 +21,7 @@ const ArtistInput = ({ value, setValue }: Props) => {
   const [query, setQuery] = useState('');
   const { data, isLoading, error } = useQuery({
     queryKey: ['artists'],
-    queryFn: async () => await readArtists(),
+    queryFn: async () => await getArtists(),
   });
 
   const setSelectedArtist = useCallback(

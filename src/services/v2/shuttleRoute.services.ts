@@ -14,7 +14,7 @@ interface GetRouteFilter {
   cityShortName: string;
 }
 
-export const readRoutes = async (
+export const getRoutes = async (
   shuttleId: number,
   dailyShuttleId: number,
   filter?: Partial<GetRouteFilter>,
@@ -30,7 +30,7 @@ export const readRoutes = async (
   return response.shuttleRoutes;
 };
 
-export const readRoute = async (
+export const getRoute = async (
   eventId: number,
   dailyEventId: number,
   routeId: number,
@@ -50,7 +50,7 @@ import { queryClient } from '@/components/Provider';
 import { silentParse } from '@/utils/parse.util';
 import { z } from 'zod';
 
-export const createRoute = async (
+export const postRoute = async (
   eventId: number,
   dailyEventId: number,
   input: CreateShuttleRouteRequest,

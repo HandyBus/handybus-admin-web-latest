@@ -4,7 +4,7 @@ import BlueLink from '@/components/link/BlueLink';
 import { routeHubColumns } from './types/table.type';
 import dayjs from 'dayjs';
 import { useQuery } from '@tanstack/react-query';
-import { readRoute } from '@/services/v2/shuttleRoute.services';
+import { getRoute } from '@/services/v2/shuttleRoute.services';
 import useTable from '@/hooks/useTable';
 import BaseTable from '@/components/table/BaseTable';
 import Buses from './components/Buses';
@@ -22,7 +22,7 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
   } = useQuery({
     queryKey: ['routes', eventId, dailyEventId, shuttleRouteId],
     queryFn: () =>
-      readRoute(Number(eventId), Number(dailyEventId), Number(shuttleRouteId)),
+      getRoute(Number(eventId), Number(dailyEventId), Number(shuttleRouteId)),
   });
 
   const fromHubTable = useTable({

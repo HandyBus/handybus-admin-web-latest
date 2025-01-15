@@ -16,8 +16,8 @@ import { twMerge } from 'tailwind-merge';
 import ShuttleInput from '@/components/input/ShuttleInput';
 import DailyShuttleInput from '@/components/input/DailyShuttleInput';
 import { useQuery } from '@tanstack/react-query';
-import { readEvent } from '@/services/v2/shuttleEvent.services';
-import { readRoute } from '@/services/v2/shuttleRoute.services';
+import { getEvent } from '@/services/v2/shuttleEvent.services';
+import { getRoute } from '@/services/v2/shuttleRoute.services';
 import ShuttleRouteInput from '@/components/input/ShuttleRouteInput';
 import usePrevious, { isFirst } from '@/hooks/usePrevious';
 
@@ -164,7 +164,7 @@ const checkValidity = async (
       return true;
     }
 
-    const shuttle = await readEvent(eventId);
+    const shuttle = await getEvent(eventId);
 
     if (dailyEventId === undefined) {
       return true;
@@ -178,7 +178,7 @@ const checkValidity = async (
       return true;
     }
 
-    await readRoute(eventId, dailyEventId, shuttleRouteId);
+    await getRoute(eventId, dailyEventId, shuttleRouteId);
 
     return true;
   } catch {

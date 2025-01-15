@@ -1,6 +1,6 @@
 'use client';
 
-import { readReservations } from '@/services/v2/reservations.services';
+import { getReservations } from '@/services/v2/reservations.services';
 import { columns } from './types/table.type';
 import { useCallback, useMemo } from 'react';
 import ManuallyFilteredInfiniteTable from '@/components/table/ManuallyFilteredInfiniteTable';
@@ -25,7 +25,7 @@ const Page = () => {
 
   const queryFn = useCallback(
     ({ pageParam }: { pageParam: number }) => {
-      return readReservations({
+      return getReservations({
         page: pageParam,
         eventId,
         dailyEventId,

@@ -1,7 +1,7 @@
 'use client';
 
 import BaseTable from '@/components/table/BaseTable';
-import { readArtists } from '@/services/v2/artists.services';
+import { getArtists } from '@/services/v2/artists.services';
 import { columns } from './types/table.type';
 import { useQuery } from '@tanstack/react-query';
 import useTable from '@/hooks/useTable';
@@ -13,7 +13,7 @@ const ArtistPage = () => {
     isPending,
   } = useQuery({
     queryKey: ['artists'],
-    queryFn: () => readArtists(),
+    queryFn: () => getArtists(),
   });
 
   const table = useTable({
