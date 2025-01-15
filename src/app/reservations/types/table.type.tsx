@@ -1,11 +1,11 @@
 'use client';
 
-import { ReservationViewType } from '@/types/v2/reservation.type';
+import { ReservationView } from '@/types/v2/reservation.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
 import dayjs from 'dayjs';
 
-const columnHelper = createColumnHelper<ReservationViewType>();
+const columnHelper = createColumnHelper<ReservationView>();
 
 export const columns = [
   columnHelper.accessor('reservationId', {

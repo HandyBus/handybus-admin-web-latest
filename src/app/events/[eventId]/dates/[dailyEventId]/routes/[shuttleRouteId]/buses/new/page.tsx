@@ -7,8 +7,8 @@ import { conform, type CreateBusFormType } from './types/form.type';
 import Input from '@/components/input/Input';
 import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
 import { CheckIcon } from 'lucide-react';
-import { BusSortSchema } from '@/types/v1/bus.type';
-import { addBus } from '@/services/v1/bus.services';
+import { BusTypeSchema } from '@/types/v2/shuttleBus.type';
+import { postBus } from '@/services/v2/shuttleBus.services';
 import Stringifier from '@/utils/stringifier.util';
 
 interface Props {
@@ -31,7 +31,7 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
   const onSubmit = useCallback(
     (data: CreateBusFormType) => {
       if (confirm('버스를 추가하시겠습니까?')) {
-        addBus(
+        postBus(
           Number(shuttle_id),
           Number(daily_id),
           Number(route_id),
@@ -112,7 +112,7 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
               onChange={(s) => onChange(s)}
               aria-label="Server size"
             >
-              {BusSortSchema.options.map((plan) => (
+              {BusTypeSchema.options.map((plan) => (
                 <Field key={plan} className="flex items-center gap-2">
                   <Radio
                     value={plan}

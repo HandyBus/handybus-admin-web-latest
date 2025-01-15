@@ -4,7 +4,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
-interface ParamStateOptions<State> {
+export interface ParamStateOptions<State> {
   encoder: (state: State) => string | null;
   decoder: (encoded: string | null) => State;
 }

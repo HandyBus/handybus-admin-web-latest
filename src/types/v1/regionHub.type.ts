@@ -11,11 +11,7 @@ export const RegionHubSchema = z.object({
   updatedAt: z.coerce.date(),
 });
 
-export type HubType = z.infer<typeof RegionHubSchema>;
-
-export const HubListSchema = z.array(RegionHubSchema);
-
-export type HubListType = z.infer<typeof HubListSchema>;
+export type RegionHub = z.infer<typeof RegionHubSchema>;
 
 //////////////// create hub action ///////////////
 

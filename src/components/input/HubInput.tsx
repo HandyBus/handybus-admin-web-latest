@@ -12,7 +12,7 @@ import {
 } from '@headlessui/react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { getHubs } from '@/services/v1/hub.services';
-import { HubType } from '@/types/v1/regionHub.type';
+import { RegionHub } from '@/types/v1/regionHub.type';
 
 interface Props {
   regionId: number | undefined;
@@ -34,7 +34,7 @@ const HubInput = ({ regionId, value, setValue }: Props) => {
   });
 
   const setSelectedHub = useCallback(
-    (hub: HubType | null) => {
+    (hub: RegionHub | null) => {
       setValue(hub?.regionHubId ?? null);
     },
     [setValue],
@@ -45,7 +45,7 @@ const HubInput = ({ regionId, value, setValue }: Props) => {
     [data, value],
   );
 
-  const filtered: HubType[] = useMemo(() => {
+  const filtered: RegionHub[] = useMemo(() => {
     const filterByID =
       regionId === undefined
         ? data
@@ -82,7 +82,7 @@ const HubInput = ({ regionId, value, setValue }: Props) => {
                   : '거점지 선택'
           }
           defaultValue={null}
-          displayValue={(hub: null | HubType) => hub?.name ?? ''}
+          displayValue={(hub: null | RegionHub) => hub?.name ?? ''}
           onChange={(event) => setQuery(event.target.value)}
         />
 

@@ -1,9 +1,9 @@
 'use client';
 
 import { authInstance } from '../config';
-import { ArtistListSchema } from '@/types/v1/artist.type';
 import { queryClient } from '@/components/Provider';
 
+// TODO : v2 api가 준비되면 migrate
 export const addArtist = async (name: string) => {
   const response = await authInstance.post(
     '/v1/shuttle-operation/admin/artists',
@@ -13,12 +13,4 @@ export const addArtist = async (name: string) => {
   );
   queryClient.invalidateQueries({ queryKey: ['artists'] });
   return response;
-};
-
-export const getArtists = async () => {
-  const response = await authInstance.get(
-    '/v1/shuttle-operation/admin/artists',
-    { shape: { artists: ArtistListSchema } },
-  );
-  return response.artists;
 };
