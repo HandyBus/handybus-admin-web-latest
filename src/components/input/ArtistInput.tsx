@@ -38,7 +38,9 @@ const ArtistInput = ({ value, setValue }: Props) => {
 
   const filtered: ArtistsView[] = useMemo(
     () =>
-      query ? filterByFuzzy(data ?? [], query, (p) => p.name) : (data ?? []),
+      query
+        ? filterByFuzzy(data ?? [], query, (p) => p.artistName)
+        : (data ?? []),
     [data, query],
   );
 
