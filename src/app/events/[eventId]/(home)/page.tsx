@@ -45,12 +45,11 @@ const Page = ({ params: { eventId } }: Props) => {
         <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
           <JSONViewer value={event} />
           <BlueLink href={`${eventId}/edit`}>수정</BlueLink>
+          <BlueLink href={`/demands/${eventId}`}>
+            이 행사의 수요 조사 조회
+          </BlueLink>
         </div>
         <EventViewer event={event} />
-        <header className="flex flex-row justify-between pt-32  ">
-          <h2 className="text-[24px] font-500">수요 통계</h2>
-        </header>
-        TODO
         <header className="flex flex-row justify-between pt-32  ">
           <h2 className="text-[24px] font-500">행사 일자 목록</h2>
         </header>
