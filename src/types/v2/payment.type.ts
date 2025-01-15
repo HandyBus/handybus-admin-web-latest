@@ -17,6 +17,10 @@ const RefundRequestsInPaymentsViewEntity = z.array(
   }),
 );
 
+export type RefundRequestsInPaymentsView = z.infer<
+  typeof RefundRequestsInPaymentsViewEntity
+>;
+
 export const PaymentEntity = z.object({
   paymentId: z.string(),
   principalAmount: z.number(),
@@ -32,7 +36,7 @@ export const PaymentEntity = z.object({
   refundRequests: RefundRequestsInPaymentsViewEntity.array().nullable(),
 });
 
-export type PaymentType = z.infer<typeof PaymentEntity>;
+export type Payment = z.infer<typeof PaymentEntity>;
 
 const TosspaymentsCancelEntity = z.array(
   z.object({
@@ -50,6 +54,8 @@ const TosspaymentsCancelEntity = z.array(
     tossPaymentId: z.number(),
   }),
 );
+
+export type TosspaymentsCancel = z.infer<typeof TosspaymentsCancelEntity>;
 
 const TosspaymentsCashReceiptsEntity = z.array(
   z.object({
@@ -71,6 +77,10 @@ const TosspaymentsCashReceiptsEntity = z.array(
     tossPaymentId: z.number(),
   }),
 );
+
+export type TosspaymentsCashReceipts = z.infer<
+  typeof TosspaymentsCashReceiptsEntity
+>;
 
 export const TosspaymentsEntity = z.object({
   version: z.string(),
@@ -126,4 +136,4 @@ export const TosspaymentsEntity = z.object({
   cashReceipts: TosspaymentsCashReceiptsEntity.nullable(),
 });
 
-export type TosspaymentsType = z.infer<typeof TosspaymentsEntity>;
+export type Tosspayments = z.infer<typeof TosspaymentsEntity>;
