@@ -16,8 +16,8 @@ import { twMerge } from 'tailwind-merge';
 import ShuttleInput from '@/components/input/ShuttleInput';
 import DailyShuttleInput from '@/components/input/DailyShuttleInput';
 import { useQuery } from '@tanstack/react-query';
-import { getShuttle } from '@/services/v1/shuttle.services';
-import { getRoute } from '@/services/v1/route.services';
+import { getEvent } from '@/services/v2/event.services';
+import { getRoute } from '@/services/v2/shuttleRoute.services';
 import ShuttleRouteInput from '@/components/input/ShuttleRouteInput';
 import usePrevious, { isFirst } from '@/hooks/usePrevious';
 
@@ -144,35 +144,33 @@ function Filter() {
 export default Filter;
 
 const checkValidity = async (
-  shuttleId: number | undefined,
-  dailyShuttleId: number | undefined,
+  eventId: number | undefined,
+  dailyEventId: number | undefined,
   shuttleRouteId: number | undefined,
 ) => {
   try {
     if (
       shuttleRouteId !== undefined &&
-      (shuttleId === undefined || dailyShuttleId === undefined)
+      (eventId === undefined || dailyEventId === undefined)
     ) {
       return false;
     }
 
-    if (dailyShuttleId !== undefined && shuttleId === undefined) {
+    if (dailyEventId !== undefined && eventId === undefined) {
       return false;
     }
 
-    if (shuttleId === undefined) {
+    if (eventId === undefined) {
       return true;
     }
 
-    const shuttle = await getShuttle(shuttleId);
+    const shuttle = await getEvent(eventId);
 
-    if (dailyShuttleId === undefined) {
+    if (dailyEventId === undefined) {
       return true;
     }
 
-    if (
-      shuttle.dailyShuttles.every((d) => d.dailyShuttleId !== dailyShuttleId)
-    ) {
+    if (shuttle.dailyEvents.every((d) => d.dailyEventId !== dailyEventId)) {
       return false;
     }
 
@@ -180,7 +178,7 @@ const checkValidity = async (
       return true;
     }
 
-    await getRoute(shuttleId, dailyShuttleId, shuttleRouteId);
+    await getRoute(eventId, dailyEventId, shuttleRouteId);
 
     return true;
   } catch {

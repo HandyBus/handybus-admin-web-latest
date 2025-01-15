@@ -2,15 +2,14 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getArtists } from '@/services/v1/artists.services';
-
+import { getArtists } from '@/services/v2/artists.services';
 import {
   Combobox,
   ComboboxInput,
   ComboboxOption,
   ComboboxOptions,
 } from '@headlessui/react';
-import { ArtistType } from '@/types/v1/artist.type';
+import { ArtistsView } from '@/types/v2/artist.type';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 
 interface Props {
@@ -26,7 +25,7 @@ const ArtistInput = ({ value, setValue }: Props) => {
   });
 
   const setSelectedArtist = useCallback(
-    (artist: ArtistType) => {
+    (artist: ArtistsView) => {
       setValue(artist?.artistId);
     },
     [setValue],
@@ -37,9 +36,11 @@ const ArtistInput = ({ value, setValue }: Props) => {
     [data, value],
   );
 
-  const filtered: ArtistType[] = useMemo(
+  const filtered: ArtistsView[] = useMemo(
     () =>
-      query ? filterByFuzzy(data ?? [], query, (p) => p.name) : (data ?? []),
+      query
+        ? filterByFuzzy(data ?? [], query, (p) => p.artistName)
+        : (data ?? []),
     [data, query],
   );
 
@@ -57,7 +58,7 @@ const ArtistInput = ({ value, setValue }: Props) => {
         aria-label="Assignee"
         placeholder={isLoading ? '로딩 중…' : '아티스트 선택'}
         defaultValue={null}
-        displayValue={(person: null | ArtistType) => person?.name ?? ''}
+        displayValue={(person: null | ArtistsView) => person?.artistName ?? ''}
         onChange={(event) => setQuery(event.target.value)}
       />
 
@@ -71,7 +72,7 @@ const ArtistInput = ({ value, setValue }: Props) => {
             value={artist}
             className="data-[focus]:bg-blue-100 p-8"
           >
-            {artist.name}
+            {artist.artistName}
           </ComboboxOption>
         ))}
       </ComboboxOptions>

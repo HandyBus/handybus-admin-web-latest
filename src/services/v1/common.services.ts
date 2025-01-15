@@ -3,6 +3,7 @@
 import { z } from 'zod';
 import { authInstance } from '../config';
 
+// TODO : v2 api가 준비되면 migrate
 export const getPresignedUrl = async (
   key: 'concerts' | 'users/profiles' | 'reviews',
   extension: string, // TODO 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'svg',

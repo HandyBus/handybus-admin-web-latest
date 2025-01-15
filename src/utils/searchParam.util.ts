@@ -1,4 +1,4 @@
-export const toSearchParams = <T>(params: Record<string, T> | undefined) => {
+const toSearchParams = <T>(params: Record<string, T> | undefined) => {
   const searchParams = new URLSearchParams();
   if (!params) {
     return searchParams;

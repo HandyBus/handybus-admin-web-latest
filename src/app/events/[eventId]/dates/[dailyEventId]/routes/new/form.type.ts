@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-import { type CreateShuttleRouteRequestType } from '@/types/v1/route.type';
+import { CreateShuttleRouteRequest } from '@/types/v2/shuttleRoute.type';
+import { formatDate } from '@/utils/date.util';
 
 export const CreateShuttleRouteFormSchema = z.object({
   name: z.string(),
@@ -32,29 +33,36 @@ export const CreateShuttleRouteFormSchema = z.object({
   ),
 });
 
-export type CreateShuttleRouteFormType = z.infer<
+export type CreateShuttleRouteForm = z.infer<
   typeof CreateShuttleRouteFormSchema
 >;
 
 export const conform = (
-  data: CreateShuttleRouteFormType,
-): CreateShuttleRouteRequestType => {
-  const froms: CreateShuttleRouteRequestType['shuttleRouteHubs'] =
+  data: CreateShuttleRouteForm,
+): CreateShuttleRouteRequest => {
+  const froms: CreateShuttleRouteRequest['shuttleRouteHubs'] =
     data.shuttleRouteHubsFromDestination.map((v, idx) => ({
       ...v,
       sequence: idx + 1,
       type: 'FROM_DESTINATION',
-    }));
+      arrivalTime: formatDate(v.arrivalTime, 'datetime'),
+    })) satisfies CreateShuttleRouteRequest['shuttleRouteHubs'];
 
-  const tos: CreateShuttleRouteRequestType['shuttleRouteHubs'] =
+  const tos: CreateShuttleRouteRequest['shuttleRouteHubs'] =
     data.shuttleRouteHubsToDestination.map((v, idx) => ({
       ...v,
       sequence: idx + 1,
       type: 'TO_DESTINATION',
-    }));
+      arrivalTime: formatDate(v.arrivalTime, 'datetime'),
+    })) satisfies CreateShuttleRouteRequest['shuttleRouteHubs'];
 
-  return {
+  const x = {
     ...data,
     shuttleRouteHubs: froms.concat(tos),
-  } satisfies CreateShuttleRouteRequestType;
+    reservationDeadline: formatDate(data.reservationDeadline, 'datetime'),
+    earlybirdDeadline: data.earlybirdDeadline
+      ? formatDate(data.earlybirdDeadline, 'datetime')
+      : null,
+  };
+  return x;
 };

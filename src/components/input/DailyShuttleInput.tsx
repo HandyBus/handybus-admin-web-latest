@@ -19,41 +19,43 @@ interface Props {
 }
 
 import { ChevronDown } from 'lucide-react';
-import { getShuttle } from '@/services/v1/shuttle.services';
-import { DailyShuttleType } from '@/types/v1/dailyShuttle.type';
+import { getEvent } from '@/services/v2/event.services';
+import { EventsView } from '@/types/v2/event.type';
 import dayjs from 'dayjs';
+
+type DailyEvent = ArrayElement<EventsView['dailyEvents']>;
 
 const DailyShuttleInput = ({ shuttleId, value, setValue }: Props) => {
   const [query, setQuery] = useState('');
   const { data, isLoading, error } = useQuery({
     queryKey: ['shuttle', shuttleId],
-    queryFn: async () => await getShuttle(shuttleId),
+    queryFn: async () => await getEvent(shuttleId),
   });
 
   const setSelectedDailyShuttle = useCallback(
-    (dailyShuttle: DailyShuttleType | null) => {
-      setValue(dailyShuttle?.dailyShuttleId ?? null);
+    (dailyEvent: DailyEvent | null) => {
+      setValue(dailyEvent?.dailyEventId ?? null);
     },
     [setValue],
   );
 
   const selectedDailyShuttle = useMemo(
-    () => data?.dailyShuttles.find((ds) => ds.dailyShuttleId === value) || null,
+    () => data?.dailyEvents.find((ds) => ds.dailyEventId === value) || null,
     [data, value],
   );
 
-  const filtered: DailyShuttleType[] = useMemo(() => {
+  const filtered: DailyEvent[] = useMemo(() => {
     return query
-      ? filterByFuzzy(data?.dailyShuttles ?? [], query, (p) =>
+      ? filterByFuzzy(data?.dailyEvents ?? [], query, (p) =>
           dayjs(p.date).format('YYYY-MM-DD'),
         )
-      : (data?.dailyShuttles ?? []);
+      : (data?.dailyEvents ?? []);
   }, [data, query]);
 
   if (error) return <div>Failed to load artists</div>;
 
   return (
-    <Combobox
+    <Combobox<DailyEvent | null>
       immediate
       value={selectedDailyShuttle}
       onChange={setSelectedDailyShuttle}
@@ -69,13 +71,13 @@ const DailyShuttleInput = ({ shuttleId, value, setValue }: Props) => {
           placeholder={
             isLoading
               ? '로딩 중…'
-              : !data || data.dailyShuttles.length === 0
+              : !data || data.dailyEvents.length === 0
                 ? '등록된 날짜가 없습니다'
                 : '날짜 선택'
           }
           defaultValue={null}
-          displayValue={(dailyShuttle: null | DailyShuttleType) =>
-            dailyShuttle?.date.toLocaleDateString() ?? ''
+          displayValue={(dailyEvent: DailyEvent | null) =>
+            dailyEvent?.date ?? ''
           }
           onChange={(event) => setQuery(event.target.value)}
         />
@@ -84,14 +86,14 @@ const DailyShuttleInput = ({ shuttleId, value, setValue }: Props) => {
           anchor="bottom"
           className="w-[var(--input-width)] shadow-md bg-white rounded-lg empty:invisible mt-4"
         >
-          {filtered.map((dailyShuttle) => (
+          {filtered.map((dailyEvent) => (
             <ComboboxOption
-              key={dailyShuttle.dailyShuttleId}
-              value={dailyShuttle}
+              key={dailyEvent.dailyEventId}
+              value={dailyEvent}
               className="data-[focus]:bg-blue-100 p-8 flex flex-row"
             >
               <div className="flex flex-col">
-                <span>{dayjs(dailyShuttle.date).format('YYYY-MM-DD')}</span>
+                <span>{dayjs(dailyEvent.date).format('YYYY-MM-DD')}</span>
               </div>
             </ComboboxOption>
           ))}

@@ -1,6 +1,5 @@
 import { z } from 'zod';
-
-const phoneRegex = /^01\d\-\d{4}\-d{4}$/;
+import { phoneRegex } from '../meta/common.type';
 
 // const carNumberRegex = /^[0-9]{2}[가-힣]{1}[0-9]{4}$/;
 

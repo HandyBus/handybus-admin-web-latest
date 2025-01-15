@@ -17,7 +17,7 @@ export const ShuttleSchema = z
     shuttleId: z.number().int(),
     name: z.string(),
     dailyShuttles: z.array(DailyShuttleSchema),
-    image: z.string().url(),
+    image: z.literal('').or(z.string().url()),
     status: z.enum(['OPEN', 'CLOSED', 'ENDED', 'INACTIVE']),
     destination: DestinationSchema,
     type: z.enum(['CONCERT', 'FESTIVAL']),
@@ -29,7 +29,7 @@ export const ShuttleWithDemandSchema = ShuttleSchema.merge(
   z.object({
     totalDemandCount: z.number().int(),
   }),
-);
+).strict();
 
 export type ShuttleType = z.infer<typeof ShuttleSchema>;
 export type ShuttleWithDemandType = z.infer<typeof ShuttleWithDemandSchema>;

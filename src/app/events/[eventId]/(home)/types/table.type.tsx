@@ -1,18 +1,18 @@
-// 'use client';
-import type { DailyShuttleType } from '@/types/v1/dailyShuttle.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
+import { EventsView } from '@/types/v2/event.type';
 
-const columnHelper = createColumnHelper<DailyShuttleType>();
+const columnHelper =
+  createColumnHelper<ArrayElement<EventsView['dailyEvents']>>();
 
-export const columns = (shuttleId: number) => [
-  columnHelper.accessor('dailyShuttleId', {
+export const columns = (eventId: number) => [
+  columnHelper.accessor('dailyEventId', {
     header: () => 'ID',
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('date', {
     header: () => '날짜',
-    cell: (info) => info.getValue().toLocaleDateString('ko-KR'),
+    cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('status', {
     header: () => '상태',
@@ -23,7 +23,7 @@ export const columns = (shuttleId: number) => [
     header: () => '액션',
     cell: (props) => (
       <BlueLink
-        href={`/events/${shuttleId}/dates/${props.row.original.dailyShuttleId}`}
+        href={`/events/${eventId}/dates/${props.row.original.dailyEventId}`}
       >
         자세히 보기
       </BlueLink>

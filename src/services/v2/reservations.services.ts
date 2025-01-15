@@ -1,7 +1,7 @@
 import { PAGINATION_LIMIT } from '@/constants/config';
-import { authInstance } from '../config';
-import { withPagination } from '@/types/meta/pagination.type';
+import { authInstance, withPagination } from '../config';
 import { ReservationViewEntity } from '@/types/v2/reservation.type';
+import { PaymentEntity, TosspaymentsEntity } from '@/types/v2/payment.type';
 import { toSearchParamString } from '@/utils/searchParam.util';
 import { z } from 'zod';
 
@@ -24,4 +24,18 @@ export const getReservations = async (
   return await authInstance.get(url, {
     shape: withPagination({ reservations: ReservationViewEntity.array() }),
   });
+};
+
+export const getReservationAndPayments = async (reservationId: number) => {
+  const response = await authInstance.get(
+    `/v2/shuttle-operation/admin/reservations/${reservationId}`,
+    {
+      shape: {
+        reservation: ReservationViewEntity,
+        payment: PaymentEntity,
+        tossPayments: TosspaymentsEntity,
+      },
+    },
+  );
+  return response;
 };

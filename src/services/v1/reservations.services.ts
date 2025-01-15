@@ -1,24 +1,10 @@
 'use client';
 
-import {
-  ReservationDetailSchema,
-  type UpdateReservationRequestType,
-} from '@/types/v1/reservation.type';
+import { type UpdateReservationRequestType } from '@/types/v1/reservation.type';
 import { authInstance } from '../config';
 import { queryClient } from '@/components/Provider';
 
-export const getReservation = async (id: number) => {
-  const response = await authInstance.get(
-    `/v1/shuttle-operation/admin/reservations/${id}`,
-    {
-      shape: {
-        shuttleReservation: ReservationDetailSchema,
-      },
-    },
-  );
-  return response.shuttleReservation;
-};
-
+// TODO : v2 api가 준비되면 migrate
 export const updateReservation = async (
   reservationId: number,
   input: UpdateReservationRequestType,

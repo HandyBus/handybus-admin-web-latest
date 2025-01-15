@@ -13,6 +13,7 @@ import { isServer } from '@tanstack/react-query';
 export const silentParse = <T extends z.ZodTypeAny>(
   zod: T,
   input: unknown,
+  debugHint?: string,
 ): z.infer<T> => {
   const parseResult = zod.safeParse(input);
   if (!parseResult.success) {
@@ -22,7 +23,7 @@ export const silentParse = <T extends z.ZodTypeAny>(
       );
     }
     console.error(
-      `데이터를 파싱하는데에 실패했습니다. 다음 오류 정보를 참고하세요.`,
+      `데이터를 파싱하는데에 실패했습니다. ${debugHint ?? ''}`,
       parseResult.error,
     );
     return input as z.infer<T>;

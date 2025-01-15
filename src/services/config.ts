@@ -11,11 +11,11 @@ type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-const EmptyShape = {};
-type EmptyShape = typeof EmptyShape;
+const emptyShape = {};
+type EmptyShape = typeof emptyShape;
 
-interface RequestInitWithSchema<T extends z.ZodRawShape> extends RequestInit {
-  shape?: T;
+interface RequestInitWithSchema<O extends z.ZodRawShape> extends RequestInit {
+  shape?: O;
 }
 
 const ApiResponseOkSchema = <T extends z.ZodRawShape>(rawShape: T) =>
@@ -34,6 +34,7 @@ class Instance {
     options: RequestInitWithSchema<T> = {},
   ) {
     const { shape, ...pure } = options;
+
     const config: RequestInit = {
       method,
       cache: 'no-store',
@@ -48,7 +49,7 @@ class Instance {
     const schema = shape
       ? ApiResponseOkSchema(shape)
       : // NOTE this `as T` is safe because `shape` is undefined
-        ApiResponseOkSchema(EmptyShape as T);
+        ApiResponseOkSchema(emptyShape as T);
 
     const res = await fetch(new URL(url, this.baseUrl).toString(), config);
 
@@ -71,7 +72,11 @@ class Instance {
       );
     }
 
-    return silentParse(schema, data);
+    return silentParse(
+      schema,
+      data,
+      `${url}에 대한 응답이 실패했습니다. : ${data}`,
+    );
   }
 
   async get<T extends z.ZodRawShape = EmptyShape>(
@@ -178,3 +183,19 @@ class AuthInstance {
 }
 
 export const authInstance = new AuthInstance();
+
+//////////////// utility for shape option ////////////////
+
+type PaginatedResponse<Shape extends z.ZodRawShape> = Shape & {
+  totalCount: z.ZodNumber;
+  nextPage: z.ZodNullable<z.ZodNumber>;
+};
+
+export const withPagination = <Shape extends z.ZodRawShape>(
+  shape: Shape,
+): PaginatedResponse<Shape> =>
+  ({
+    ...shape,
+    totalCount: z.number(),
+    nextPage: z.number().nullable(),
+  }) satisfies PaginatedResponse<Shape>;

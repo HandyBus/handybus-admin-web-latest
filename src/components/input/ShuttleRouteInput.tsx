@@ -21,7 +21,7 @@ interface Props {
 
 import { ChevronDown } from 'lucide-react';
 import { getRoutes } from '@/services/v2/shuttleRoute.services';
-import { ShuttleRoutesViewType } from '@/types/v2/shuttleRoute.type';
+import { ShuttleRoutesView } from '@/types/v2/shuttleRoute.type';
 
 const ShuttleRouteInput = ({
   shuttleId,
@@ -35,20 +35,20 @@ const ShuttleRouteInput = ({
     queryFn: async () => await getRoutes(shuttleId, dailyShuttleId),
   });
 
-  const setSelectedRoute: (route: ShuttleRoutesViewType | null) => void =
+  const setSelectedRoute: (route: ShuttleRoutesView | null) => void =
     useCallback(
-      (route: ShuttleRoutesViewType | null) => {
+      (route: ShuttleRoutesView | null) => {
         setValue(route?.shuttleRouteId ?? null);
       },
       [setValue],
     );
 
-  const selectedRoute: ShuttleRoutesViewType | null = useMemo(
+  const selectedRoute: ShuttleRoutesView | null = useMemo(
     () => data?.find((ds) => ds.shuttleRouteId === value) || null,
     [data, value],
   );
 
-  const filtered: ShuttleRoutesViewType[] = useMemo(() => {
+  const filtered: ShuttleRoutesView[] = useMemo(() => {
     return query
       ? filterByFuzzy(data ?? [], query, (p) => p.name)
       : (data ?? []);
@@ -57,7 +57,7 @@ const ShuttleRouteInput = ({
   if (error) return <div>Failed to load artists</div>;
 
   return (
-    <Combobox<ShuttleRoutesViewType | null>
+    <Combobox<ShuttleRoutesView | null>
       immediate
       value={selectedRoute}
       onChange={setSelectedRoute}
@@ -78,9 +78,7 @@ const ShuttleRouteInput = ({
                 : '노선 선택'
           }
           defaultValue={null}
-          displayValue={(route: null | ShuttleRoutesViewType) =>
-            route?.name ?? ''
-          }
+          displayValue={(route: null | ShuttleRoutesView) => route?.name ?? ''}
           onChange={(event) => setQuery(event.target.value)}
         />
 

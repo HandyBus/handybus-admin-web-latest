@@ -1,23 +1,16 @@
 'use client';
 
 import { useForm, useFieldArray } from 'react-hook-form';
-import { conform, type CreateShuttleRouteFormType } from './form.type';
-import { addRoute } from '@/services/v1/route.services';
+import { conform, type CreateShuttleRouteForm } from './form.type';
+import { postRoute } from '@/services/v2/shuttleRoute.services';
 import { useRouter } from 'next/navigation';
-import tw from 'tailwind-styled-components';
+import Input from '@/components/input/Input';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
 }
 
-const Input = tw.input`
-  rounded-lg
-  border
-  border-grey-100
-  p-8
-`;
-
-const defaultValues: CreateShuttleRouteFormType = {
+const defaultValues: CreateShuttleRouteForm = {
   name: '',
   maxPassengerCount: 0,
   earlybirdDeadline: new Date(),
@@ -55,7 +48,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateShuttleRouteFormType>({
+  } = useForm<CreateShuttleRouteForm>({
     // resolver: zodResolver(CreateShuttleRouteRequestSchema),
     defaultValues,
   });
@@ -84,12 +77,12 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     name: 'shuttleRouteHubsToDestination',
   });
 
-  const onSubmit = async (data: CreateShuttleRouteFormType) => {
+  const onSubmit = async (data: CreateShuttleRouteForm) => {
     if (!confirm('등록하시겠습니까?')) return;
     try {
-      await addRoute(Number(eventId), Number(dailyEventId), conform(data));
+      await postRoute(Number(eventId), Number(dailyEventId), conform(data));
       alert('등록에 성공했습니다.');
-      router.push(`/shuttles/${eventId}/dates/${dailyEventId}`);
+      router.push(`/events/${eventId}/dates/${dailyEventId}`);
     } catch (error) {
       alert('오류가 발생했습니다.');
       console.error(error);
