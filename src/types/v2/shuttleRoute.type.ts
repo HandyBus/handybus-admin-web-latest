@@ -4,16 +4,16 @@ import { EventsViewEntity } from './event.type';
 
 const ShuttleRouteHubsInShuttleRoutesViewEntity = z
   .object({
-    shuttleRouteHubId: z.unknown(),
-    regionHubId: z.unknown(),
-    name: z.unknown(),
-    address: z.unknown(),
-    latitude: z.unknown(),
-    longitude: z.unknown(),
-    type: z.unknown(),
-    sequence: z.unknown(),
-    arrivalTime: z.unknown(),
-    status: z.unknown(),
+    shuttleRouteHubId: z.number().int(),
+    regionHubId: z.number().int(),
+    name: z.string(),
+    address: z.string(),
+    latitude: z.number(),
+    longitude: z.number(),
+    type: z.enum(['TO_DESTINATION', 'FROM_DESTINATION', 'ROUND_TRIP']),
+    sequence: z.number().int(),
+    arrivalTime: z.string(), // TODO not use coerce.date() ?
+    status: z.enum(['ACTIVE', 'INACTIVE']),
   })
   .strict();
 
@@ -68,14 +68,33 @@ export type ShuttleRoutesView = z.infer<typeof ShuttleRoutesViewEntity>;
 
 export const CreateShuttleRouteRequestSchema = z
   .object({
-    name: z.unknown(),
-    reservationDeadline: z.unknown(),
-    hasEarlybird: z.unknown(),
-    earlybirdPrice: z.unknown(),
-    regularPrice: z.unknown(),
-    earlybirdDeadline: z.unknown(),
-    maxPassengerCount: z.unknown(),
-    shuttleRouteHubs: z.unknown(),
+    name: z.string(),
+    reservationDeadline: z.string(), // TODO not use corece.date() ?
+    hasEarlybird: z.boolean(),
+    // nullable or undefined-able or .optional?
+    earlybirdPrice: z
+      .object({
+        toDestination: z.number(),
+        fromDestination: z.number(),
+        roundTrip: z.number(),
+      })
+      .nullable(),
+    regularPrice: z.object({
+      toDestination: z.number(),
+      fromDestination: z.number(),
+      roundTrip: z.number(),
+    }),
+    // optional or nullable
+    earlybirdDeadline: z.string().nullable(),
+    maxPassengerCount: z.number(),
+    shuttleRouteHubs: z
+      .object({
+        regionHubId: z.number().int(),
+        type: z.enum(['TO_DESTINATION', 'FROM_DESTINATION', 'ROUND_TRIP']),
+        sequence: z.number().int().positive(),
+        arrivalTime: z.string(),
+      })
+      .array(),
   })
   .strict();
 

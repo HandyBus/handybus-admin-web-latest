@@ -17,7 +17,7 @@ import ShuttleInput from '@/components/input/ShuttleInput';
 import DailyShuttleInput from '@/components/input/DailyShuttleInput';
 import { useQuery } from '@tanstack/react-query';
 import { readEvent } from '@/services/v2/shuttleEvent.services';
-import { getRoute } from '@/services/v1/route.services';
+import { readRoute } from '@/services/v2/shuttleRoute.services';
 import ShuttleRouteInput from '@/components/input/ShuttleRouteInput';
 import usePrevious, { isFirst } from '@/hooks/usePrevious';
 
@@ -178,7 +178,7 @@ const checkValidity = async (
       return true;
     }
 
-    await getRoute(eventId, dailyEventId, shuttleRouteId);
+    await readRoute(eventId, dailyEventId, shuttleRouteId);
 
     return true;
   } catch {

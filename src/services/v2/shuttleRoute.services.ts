@@ -44,8 +44,11 @@ export const readRoute = async (
   return response.shuttleRoute;
 };
 
+////////////////// create route //////////////////
+
 import { queryClient } from '@/components/Provider';
 import { silentParse } from '@/utils/parse.util';
+import { z } from 'zod';
 
 export const createRoute = async (
   eventId: number,
@@ -55,6 +58,9 @@ export const createRoute = async (
   const response = await authInstance.post(
     `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes`,
     silentParse(CreateShuttleRouteRequestSchema, input),
+    {
+      shape: { shuttleRouteId: z.number().int() },
+    },
   );
   queryClient.invalidateQueries({
     queryKey: ['routes', eventId, dailyEventId],

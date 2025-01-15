@@ -1,24 +1,6 @@
 import { z } from 'zod';
 
-export const ShuttleBusesViewEntity = z
-  .object({
-    shuttleBusId: z.unknown(),
-    shuttleRouteId: z.unknown(),
-    busType: z.unknown(),
-    busName: z.unknown(),
-    busNumber: z.unknown(),
-    busCapacity: z.unknown(),
-    busDriverPhoneNumber: z.unknown(),
-    openChatLink: z.unknown(),
-    handyUserId: z.unknown(),
-  })
-  .strict();
-
-export type ShuttleBusesView = z.infer<typeof ShuttleBusesViewEntity>;
-
-/////////////////////// create bus action ///////////////////////
-
-import { phoneRegex } from '../meta/common.type';
+/////////////////////// pre-defined enums ///////////////////////
 
 export const BusTypeSchema = z.enum([
   'SMALL_BUS_28', // 28인승 우등버스
@@ -33,15 +15,38 @@ export const BusTypeSchema = z.enum([
   'SMALL_BUS_33', // 33인승 우등버스
 ]);
 
+/////////////////////// view entity ///////////////////////
+
+export const ShuttleBusesViewEntity = z
+  .object({
+    shuttleBusId: z.number().int(),
+    shuttleRouteId: z.number().int(),
+    busType: BusTypeSchema,
+    busName: z.string(),
+    busNumber: z.number().int(),
+    busCapacity: z.number().int(),
+    busDriverPhoneNumber: z.string(),
+    openChatLink: z.string(),
+    handyUserId: z.number().int(),
+  })
+  .strict();
+
+export type ShuttleBusesView = z.infer<typeof ShuttleBusesViewEntity>;
+
+/////////////////////// create bus action ///////////////////////
+
+import { phoneRegex } from '../meta/common.type';
+
 export const BusSchema = z.object({
   shuttleBusId: z.number().int(),
   shuttleRouteId: z.number().int(),
   handyUserId: z.number().int().nullable(), // is this nullable?
   type: BusTypeSchema,
   name: z.string(),
-  number: z.unknown(), // zodCarNumber.optional(),
-  phoneNumber: z.unknown(), //zodPhoneNumber.optional(),
-  openChatLink: z.unknown(), //zodOpenChatLink.optional(),
+  // TODO are 'number, phoneNumber, openChatLink' optional? 빈 경우 ""를 주는 것으로 보임, 확인 필요
+  number: z.string(),
+  phoneNumber: z.string(),
+  openChatLink: z.string(),
   capacity: z.number().int(),
 });
 

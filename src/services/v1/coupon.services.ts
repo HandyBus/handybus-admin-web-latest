@@ -8,6 +8,7 @@ import {
   CreateCouponSchema,
 } from '@/types/v1/coupon.type';
 
+// TODO : v2 api가 준비되면 migrate
 export const addCoupon = async (request: CreateCouponFormType) => {
   return await authInstance.post(
     '/v1/billing/admin/coupons',
@@ -15,6 +16,7 @@ export const addCoupon = async (request: CreateCouponFormType) => {
   );
 };
 
+// TODO : v2 api가 준비되면 migrate
 export const getAllCoupons = async () => {
   const response = await authInstance.get('/v1/billing/admin/coupons', {
     shape: { coupons: CouponListSchema },

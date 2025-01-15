@@ -1,6 +1,6 @@
 'use client';
 
-import { getReservations } from '@/services/v2/reservations.services';
+import { readReservations } from '@/services/v2/reservations.services';
 import { columns } from './types/table.type';
 import { useCallback, useMemo } from 'react';
 import ManuallyFilteredInfiniteTable from '@/components/table/ManuallyFilteredInfiniteTable';
@@ -12,7 +12,7 @@ import useParamState, {
   optionalStringOpt as sOpt,
 } from '@/hooks/useParamState';
 import RowFilter from './components/ReservationFilter';
-import { ReservationViewType } from '@/types/v2/reservation.type';
+import { ReservationView } from '@/types/v2/reservation.type';
 import useColumnVisibility from '@/hooks/useColumnVisibility';
 
 const Page = () => {
@@ -25,7 +25,7 @@ const Page = () => {
 
   const queryFn = useCallback(
     ({ pageParam }: { pageParam: number }) => {
-      return getReservations({
+      return readReservations({
         page: pageParam,
         eventId,
         dailyEventId,
@@ -58,7 +58,7 @@ const Page = () => {
   const { data, fetchNextPage, isFetching, hasNextPage } = infiniteDataQuery;
   const ref = useInfiniteScroll(fetchNextPage);
 
-  const defaultData: ReservationViewType[] = useMemo(() => [], []);
+  const defaultData: ReservationView[] = useMemo(() => [], []);
 
   const flatData = useMemo(
     () => data.pages.flatMap((page) => page.reservations),

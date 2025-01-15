@@ -46,4 +46,4 @@ export const ReservationViewEntity = z
   })
   .strict();
 
-export type ReservationViewType = z.infer<typeof ReservationViewEntity>;
+export type ReservationView = z.infer<typeof ReservationViewEntity>;
