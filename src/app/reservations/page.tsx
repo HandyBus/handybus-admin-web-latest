@@ -65,7 +65,9 @@ const RouteReservations = () => {
 
   return (
     <section className="pb-40">
-      <h2 className="text-24 font-500 pb-8">노선별 예약 조회</h2>
+      <h2 className="text-24 font-500 pb-8 bg-grey-50 py-4 px-12 my-4 flex items-center">
+        노선별 예약 조회
+      </h2>
       <div className="flex w-full justify-between h-600">
         <article className="h-full w-400 flex flex-col">
           <p className="font-500 text-20 pb-4 text-grey-900">행사 선택</p>
@@ -131,7 +133,7 @@ const RouteReservations = () => {
                 shuttleRoutes?.map((shuttleRoute) => (
                   <Link
                     key={shuttleRoute.shuttleRouteId}
-                    href={`/reservations/${shuttleRoute.shuttleRouteId}`}
+                    href={`/reservations/${shuttleRoute.shuttleRouteId}?eventId=${selectedEvent?.eventId}&dailyEventId=${selectedDailyEvent?.dailyEventId}`}
                     className="block w-full border-b border-grey-100 px-12 py-12 text-left hover:bg-grey-50"
                   >
                     {shuttleRoute.name}
@@ -208,7 +210,9 @@ const AllReservations = () => {
 
   return (
     <section>
-      <h2 className="text-24 font-500">모든 예약 조회</h2>
+      <h2 className="text-24 font-500 pb-8 bg-grey-50 py-4 px-12 my-4 flex items-center">
+        모든 예약 조회
+      </h2>
       <RowFilter />
       <ColumnFilter columnVisibility={columnVisibility} />
       {/* TODO virtualization */}
