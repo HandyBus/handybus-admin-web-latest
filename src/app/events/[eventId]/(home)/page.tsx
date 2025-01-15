@@ -3,7 +3,7 @@
 import BlueLink from '@/components/link/BlueLink';
 import { columns } from './types/table.type';
 import EventViewer from './components/Shuttle';
-import { getEvent } from '@/services/v2/shuttleEvent.services';
+import { getEvent } from '@/services/v2/event.services';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2Icon } from 'lucide-react';
 import { useMemo } from 'react';

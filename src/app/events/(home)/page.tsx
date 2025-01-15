@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getAllEvents } from '@/services/v2/shuttleEvent.services';
+import { getAllEvents } from '@/services/v2/event.services';
 import BlueLink from '@/components/link/BlueLink';
 import ColumnFilter from '@/components/table/ColumnFilter';
 import BaseTable from '@/components/table/BaseTable';

@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import { useForm, useFieldArray, useWatch } from 'react-hook-form';
-import { postEvent } from '@/services/v2/shuttleEvent.services';
+import { postEvent } from '@/services/v2/event.services';
 import { type CreateEventFormData, conform } from './types/form.type';
 import { useRouter } from 'next/navigation';
 import ArtistInput from '@/components/input/ArtistInput';

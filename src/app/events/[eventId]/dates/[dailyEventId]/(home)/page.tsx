@@ -3,7 +3,7 @@
 import BlueLink from '@/components/link/BlueLink';
 import EventViewer from '@/app/events/[eventId]/(home)/components/Shuttle';
 import { getRoutes } from '@/services/v2/shuttleRoute.services';
-import { getEvent } from '@/services/v2/shuttleEvent.services';
+import { getEvent } from '@/services/v2/event.services';
 import { notFound } from 'next/navigation';
 import { columns } from './types/table.type';
 import DataTable from '@/components/table/DataTable';

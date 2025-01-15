@@ -24,8 +24,6 @@ export const getEvent = async (eventId: number) => {
     `/v2/shuttle-operation/admin/events/${eventId}`,
     {
       shape: {
-        // TODO check is this api use EventsViewEntity ?
-        // 문서에는 따로 명시되어 있지 않으나 일단 호환됨
         event: EventsViewEntity,
       },
     },

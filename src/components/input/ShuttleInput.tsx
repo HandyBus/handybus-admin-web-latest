@@ -18,7 +18,7 @@ interface Props {
 }
 
 import { ChevronDown } from 'lucide-react';
-import { getAllEvents } from '@/services/v2/shuttleEvent.services';
+import { getAllEvents } from '@/services/v2/event.services';
 import { EventsView } from '@/types/v2/event.type';
 import Image from 'next/image';
 
