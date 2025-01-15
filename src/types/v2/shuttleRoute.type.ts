@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { nullableDate } from '../meta/common.type';
 import { EventsViewEntity } from './event.type';
 
 const ShuttleRouteHubsInShuttleRoutesViewEntity = z
@@ -12,7 +11,7 @@ const ShuttleRouteHubsInShuttleRoutesViewEntity = z
     longitude: z.number(),
     type: z.enum(['TO_DESTINATION', 'FROM_DESTINATION', 'ROUND_TRIP']),
     sequence: z.number().int(),
-    arrivalTime: z.string(), // TODO not use coerce.date() ?
+    arrivalTime: z.string(),
     status: z.enum(['ACTIVE', 'INACTIVE']),
   })
   .strict();
@@ -27,9 +26,9 @@ export const ShuttleRoutesViewEntity = z
     eventId: z.number().int(),
     dailyEventId: z.number().int(),
     name: z.string(),
-    reservationDeadline: z.coerce.date(),
+    reservationDeadline: z.string(),
     hasEarlybird: z.boolean(),
-    earlybirdDeadline: nullableDate,
+    earlybirdDeadline: z.string().nullable(),
     earlybirdPriceToDestination: z.number().int().nullable(),
     earlybirdPriceFromDestination: z.number().int().nullable(),
     earlybirdPriceRoundTrip: z.number().int().nullable(),

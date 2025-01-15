@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { nullableDate } from '../meta/common.type';
 import { ShuttleRoutesViewEntity } from './shuttleRoute.type';
 
 const ReservationPassengersInReservationsViewEntity = z
@@ -35,13 +34,13 @@ export const ReservationViewEntity = z
     paymentDiscountAmount: z.number().int().nullable(),
     paymentCouponDiscountAmount: z.number().int().nullable(),
     paymentEarlybirdDiscountAmount: z.number().int().nullable(),
-    paymentCreatedAt: nullableDate,
-    paymentUpdatedAt: nullableDate,
+    paymentCreatedAt: z.string().nullable(),
+    paymentUpdatedAt: z.string().nullable(),
     shuttleBusId: z.number().int().nullable(),
     passengers: ReservationPassengersInReservationsViewEntity.array(),
     shuttleRoute: ShuttleRoutesViewEntity,
-    createdAt: z.coerce.date(),
-    updatedAt: z.coerce.date(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
     hasReview: z.boolean(),
   })
   .strict();

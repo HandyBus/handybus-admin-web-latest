@@ -3,7 +3,7 @@ import { z } from 'zod';
 const EventDailyShuttlesInEventsViewEntity = z
   .object({
     dailyEventId: z.number().int(),
-    date: z.coerce.date(),
+    date: z.string(),
     status: z.enum(['OPEN', 'CLOSED', 'ENDED', 'INACTIVE']),
   })
   .strict();
