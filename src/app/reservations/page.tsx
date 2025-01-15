@@ -22,6 +22,7 @@ import useColumnVisibility from '@/hooks/useColumnVisibility';
 import { getAllEvents } from '@/services/v2/event.services';
 import { EventsView } from '@/types/v2/event.type';
 import { getRoutes } from '@/services/v2/shuttleRoute.services';
+import Link from 'next/link';
 
 const Page = () => {
   return (
@@ -64,7 +65,7 @@ const RouteReservations = () => {
 
   return (
     <section className="pb-40">
-      <h2 className="text-24 font-500 pb-8">노선 별 예약 조회</h2>
+      <h2 className="text-24 font-500 pb-8">노선별 예약 조회</h2>
       <div className="flex w-full justify-between h-600">
         <article className="h-full w-400 flex flex-col">
           <p className="font-500 text-20 pb-4 text-grey-900">행사 선택</p>
@@ -128,13 +129,13 @@ const RouteReservations = () => {
             {selectedDailyEvent ? (
               shuttleRoutes?.length !== 0 ? (
                 shuttleRoutes?.map((shuttleRoute) => (
-                  <button
+                  <Link
                     key={shuttleRoute.shuttleRouteId}
-                    type="button"
-                    className="w-full border-b border-grey-100 px-12 py-12 text-left hover:bg-grey-50"
+                    href={`/reservations/${shuttleRoute.shuttleRouteId}`}
+                    className="block w-full border-b border-grey-100 px-12 py-12 text-left hover:bg-grey-50"
                   >
                     {shuttleRoute.name}
-                  </button>
+                  </Link>
                 ))
               ) : (
                 <div className="h-full flex items-center justify-center text-grey-500">
