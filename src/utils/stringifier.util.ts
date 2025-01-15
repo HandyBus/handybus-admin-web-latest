@@ -80,6 +80,38 @@ const Stringifier = Object.freeze({
         return '비활성';
     }
   },
+  reservationStatus(v: string) {
+    switch (v) {
+      case 'NOT_PAYMENT':
+        return '결제 미완료';
+      case 'COMPLETE_PAYMENT':
+        return '결제 완료';
+      case 'RESERVATION_CONFIRMED':
+        return '예약 확정';
+      case 'CANCEL':
+        return '취소됨';
+    }
+  },
+  cancelStatus(v: string) {
+    switch (v) {
+      case 'NONE':
+        return '취소 요청 없음';
+      case 'CANCEL_REQUEST':
+        return '취소 요청됨';
+      case 'CANCEL_COMPLETE':
+        return '취소 완료';
+    }
+  },
+  reservationType(v: string) {
+    switch (v) {
+      case 'TO_DESTINATION':
+        return '목적지행 편도';
+      case 'FROM_DESTINATION':
+        return '귀가행 편도';
+      case 'ROUND_TRIP':
+        return '왕복';
+    }
+  },
 });
 
 export default Stringifier;
