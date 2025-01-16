@@ -1,9 +1,16 @@
 'use client';
-import { getReservationAndPayments } from '@/services/v2/reservations.services';
-// import EditHandyStatusDialog from './components/EditHandyStatusDialog';
+
+import EditHandyStatusDialog from './components/EditHandyStatusDialog';
 import { useQuery } from '@tanstack/react-query';
 import JSONViewer from '@/components/json/JSONViewer';
-import ReservationViewer from './components/ReservationViewer';
+import { getReservationAndPayments } from '@/services/v2/reservations.services';
+import AccountInfo from './components/AccountInfo';
+import PassengersInfo from './components/PassengersInfo';
+import ReservationMetaInfo from './components/\bReservationMetaInfo';
+import EventInfo from './components/EventInfo';
+import PaymentInfo from './components/PaymentInfo';
+import RouteInfo from './components/RouteInfo';
+import RouteHubInfo from './components/RouteHubInfo';
 
 interface Props {
   params: {
@@ -27,9 +34,21 @@ const Page = ({ params: { reservation_id } }: Props) => {
       </header>
       <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
         <JSONViewer value={data} />
-        {/* <EditHandyStatusDialog reservation={data.reservation} /> */}
+        <EditHandyStatusDialog response={data.reservation} />
       </div>
-      <ReservationViewer reservation={data.reservation} />
+      <ReservationMetaInfo response={data.reservation} />
+      <AccountInfo response={data.reservation} />
+      <PassengersInfo response={data.reservation} />
+      <EventInfo response={data.reservation} />
+      <RouteInfo response={data.reservation} />
+      <RouteHubInfo response={data.reservation} />
+      <PaymentInfo
+        response={{
+          reservation: data.reservation,
+          payment: data.payment,
+          tossPayments: data.tossPayments,
+        }}
+      />
     </main>
   );
 };

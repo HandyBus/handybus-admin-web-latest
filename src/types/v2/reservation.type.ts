@@ -9,6 +9,10 @@ const ReservationPassengersInReservationsViewEntity = z
   })
   .strict();
 
+export type ReservationPassengersInReservationsView = z.infer<
+  typeof ReservationPassengersInReservationsViewEntity
+>;
+
 export const ReservationViewEntity = z
   .object({
     reservationId: z.number().int(),

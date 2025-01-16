@@ -1,12 +1,16 @@
 import { z } from 'zod';
 
-const EventDailyShuttlesInEventsViewEntity = z
+export const EventDailyShuttlesInEventsViewEntity = z
   .object({
     dailyEventId: z.number().int(),
     date: z.string(),
     status: z.enum(['OPEN', 'CLOSED', 'ENDED', 'INACTIVE']),
   })
   .strict();
+
+export type EventDailyShuttlesInEventsView = z.infer<
+  typeof EventDailyShuttlesInEventsViewEntity
+>;
 
 const ArtistsInEventsViewEntity = z
   .object({

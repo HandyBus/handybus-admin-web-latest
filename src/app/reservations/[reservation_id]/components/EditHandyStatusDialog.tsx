@@ -22,19 +22,16 @@ import {
 import { updateReservation } from '@/services/v1/reservations.services';
 import { conform, UpdateReservationHandyStatusFormType } from '../form.type';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import {
-  HANDY_STATUS,
-  HandyStatusType,
-  ReservationDetailType,
-} from '@/types/v1/reservation.type';
+import { HANDY_STATUS, HandyStatusType } from '@/types/v1/reservation.type';
 import Stringifier from '@/utils/stringifier.util';
+import { ReservationView } from '@/types/v2/reservation.type';
 
 interface Props {
-  reservation: ReservationDetailType;
+  response: ReservationView;
   defaultHandyStatus?: HandyStatusType;
 }
 
-function EditHandyStatusDialog({ reservation, defaultHandyStatus }: Props) {
+function EditHandyStatusDialog({ response, defaultHandyStatus }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   const { control, handleSubmit } =
@@ -47,8 +44,8 @@ function EditHandyStatusDialog({ reservation, defaultHandyStatus }: Props) {
   const handyStatus = useWatch({ control, name: 'handyStatus' });
 
   const isAdvancedFrom = useMemo(() => {
-    return reservation.handyStatus !== 'SUPPORTED';
-  }, [reservation]);
+    return response.handyStatus !== 'SUPPORTED';
+  }, [response]);
 
   const isAdvancedTo = useMemo(() => {
     return handyStatus === 'SUPPORTED' || handyStatus === 'NOT_SUPPORTED';
@@ -61,14 +58,14 @@ function EditHandyStatusDialog({ reservation, defaultHandyStatus }: Props) {
   const onSubmit = useCallback(
     async (input: UpdateReservationHandyStatusFormType) => {
       try {
-        await updateReservation(reservation.reservationId, conform(input));
+        await updateReservation(response.reservationId, conform(input));
         alert('핸디 상태가 수정되었습니다.');
         closeDialog();
       } catch {
         alert(`핸디 상태 수정에 실패했습니다`);
       }
     },
-    [reservation, closeDialog],
+    [response, closeDialog],
   );
 
   return (
@@ -87,12 +84,12 @@ function EditHandyStatusDialog({ reservation, defaultHandyStatus }: Props) {
           <Description>핸디 지원 상태를 수정합니다.</Description>
           <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
             <div className="p-8 bg-white rounded-lg border border-grey-100 w-256 justify-between flex flex-row items-center">
-              {Stringifier.handyStatus(reservation.handyStatus)}
+              {Stringifier.handyStatus(response.handyStatus)}
             </div>
             {isAdvancedFrom && (
               <p className="text-red-500 font-600 text-12">
                 <MessageSquareWarningIcon className="inline" /> 주의: 변경 전
-                상태가 &#39;{Stringifier.handyStatus(reservation.handyStatus)}
+                상태가 &#39;{Stringifier.handyStatus(response.handyStatus)}
                 &#39;인 작업은 일반적이지 않습니다.
               </p>
             )}
