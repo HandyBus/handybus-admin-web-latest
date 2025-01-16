@@ -238,7 +238,12 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: BusTableProps) => {
           if (reservation.type === 'TO_DESTINATION') {
             newBusWithSeats[busWithSeatIndex].toDestinationFilledSeat +=
               reservation.passengers.length;
+          } else if (reservation.type === 'FROM_DESTINATION') {
+            newBusWithSeats[busWithSeatIndex].fromDestinationFilledSeat +=
+              reservation.passengers.length;
           } else {
+            newBusWithSeats[busWithSeatIndex].toDestinationFilledSeat +=
+              reservation.passengers.length;
             newBusWithSeats[busWithSeatIndex].fromDestinationFilledSeat +=
               reservation.passengers.length;
           }
