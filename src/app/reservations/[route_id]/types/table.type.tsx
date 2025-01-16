@@ -94,7 +94,7 @@ export const reservationColumns = [
     id: 'handyActions',
     header: '핸디 승인',
     cell: (props) =>
-      props.row.original.handyStatus === 'SUPPORTED' && (
+      props.row.original.handyStatus !== 'NOT_SUPPORTED' && (
         <EditHandyStatusDialog response={props.row.original} />
       ),
   }),

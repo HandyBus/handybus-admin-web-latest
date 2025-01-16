@@ -12,6 +12,7 @@ import { ReservationView } from '@/types/v2/reservation.type';
 import { AssignBusRequest, ShuttleBusesView } from '@/types/v2/shuttleBus.type';
 import EditHandyStatusDialog from './[reservation_id]/components/EditHandyStatusDialog';
 import { toast } from 'react-toastify';
+import { updateReservation } from '@/services/v1/reservations.services';
 
 interface Props {
   params: {
@@ -31,11 +32,8 @@ const Page = ({ params, searchParams }: Props) => {
   return (
     <>
       <main className="flex h-full w-full flex-col gap-16 bg-white">
-        <h1 className="text-[32px] font-500 flex items-center gap-32">
+        <h1 className="text-[32px] font-500 flex items-center">
           노선별 예약 관리
-          <button className="text-14 font-500 rounded-[4px] border border-grey-300 px-12 py-4 bg-grey-50">
-            핸디 지원 일괄 거절
-          </button>
         </h1>
         <ReservationTable
           eventId={eventId}
@@ -92,6 +90,32 @@ const ReservationTable = ({
     data: reservations,
   });
 
+  const rejectAllSupportedHandy = async () => {
+    const confirm = window.confirm(
+      '핸디 지원자들을 일괄 거절하시겠습니까? \n 모두에게 거절 알림톡이 전송됩니다.',
+    );
+    if (!confirm) {
+      return;
+    }
+
+    const reservationIds = reservations
+      .filter((reservation) => reservation.handyStatus === 'SUPPORTED')
+      .map((reservation) => reservation.reservationId);
+
+    try {
+      await Promise.all(
+        reservationIds.map((reservationId) =>
+          updateReservation(reservationId, {
+            handyStatus: 'DECLINED',
+          }),
+        ),
+      );
+      toast.success('핸디 지원자들을 일괄 거절했습니다.');
+    } catch {
+      toast.error('오류가 발생했습니다.');
+    }
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -103,6 +127,12 @@ const ReservationTable = ({
         <span className="text-14 font-400 text-grey-700 ml-20">
           현재 유효한 예약만 표시됩니다.
         </span>
+        <button
+          onClick={rejectAllSupportedHandy}
+          className="text-14 font-500 rounded-[4px] border border-grey-300 px-12 py-4 bg-grey-100 ml-24"
+        >
+          핸디 지원 일괄 거절
+        </button>
       </h2>
       <BaseTable table={reservationTable} />
     </section>
@@ -414,14 +444,14 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: BusTableProps) => {
             </button>
             <button
               type="button"
-              className="text-14 font-500 bg-primary rounded-md border border-grey-300 px-12 py-[3px]"
+              className="text-14 font-500 bg-grey-100 rounded-md border border-grey-300 px-12 py-[3px]"
               onClick={() => setIsEditMode(false)}
             >
               취소
             </button>
             <button
               type="button"
-              className="text-14 font-500 bg-primary rounded-md border border-grey-300 px-12 py-[3px] ml-16"
+              className="text-14 font-500 bg-grey-100 rounded-md border border-grey-300 px-12 py-[3px] ml-16"
               onClick={handleFillUnassignedReservation}
             >
               배차되지 않은 승객 채우기
@@ -430,7 +460,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: BusTableProps) => {
         ) : (
           <button
             type="button"
-            className="text-14 font-500 bg-primary rounded-md ml-40 border border-grey-300 px-12 py-[3px]"
+            className="text-14 font-500 bg-grey-100 rounded-md ml-40 border border-grey-300 px-12 py-[3px]"
             onClick={() => {
               setIsEditMode(true);
               initEditing();
@@ -573,9 +603,6 @@ const PassengerItem = ({
       >
         {Stringifier.handyStatus(reservation.handyStatus)}
       </p>
-      {reservation.handyStatus === 'SUPPORTED' && (
-        <EditHandyStatusDialog response={reservation} />
-      )}
       {isEditMode && (
         <select
           className="text-14 font-400 text-grey-700"
@@ -591,6 +618,11 @@ const PassengerItem = ({
             </option>
           ))}
         </select>
+      )}
+      {reservation.handyStatus !== 'NOT_SUPPORTED' && (
+        <p className="ml-auto">
+          <EditHandyStatusDialog response={reservation} />
+        </p>
       )}
     </li>
   );
