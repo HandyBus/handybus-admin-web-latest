@@ -6,6 +6,7 @@ import BlueLink from '@/components/link/BlueLink';
 import dayjs from 'dayjs';
 import Stringifier from '@/utils/stringifier.util';
 import { ShuttleBusesView } from '@/types/v2/shuttleBus.type';
+import EditHandyStatusDialog from '../[reservation_id]/components/EditHandyStatusDialog';
 
 const busColumnHelper = createColumnHelper<ShuttleBusesView>();
 
@@ -94,18 +95,7 @@ export const reservationColumns = [
     header: '핸디 승인',
     cell: (props) =>
       props.row.original.handyStatus === 'SUPPORTED' && (
-        <>
-          <BlueLink
-            href={`/reservations/${props.row.original.shuttleRouteId}/${props.row.original.reservationId}`}
-          >
-            승인하기
-          </BlueLink>
-          <BlueLink
-            href={`/reservations/${props.row.original.shuttleRouteId}/${props.row.original.reservationId}`}
-          >
-            거절하기
-          </BlueLink>
-        </>
+        <EditHandyStatusDialog response={props.row.original} />
       ),
   }),
   reservationColumnHelper.display({

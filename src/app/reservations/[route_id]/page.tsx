@@ -31,7 +31,12 @@ const Page = ({ params, searchParams }: Props) => {
   return (
     <>
       <main className="flex h-full w-full flex-col gap-16 bg-white">
-        <h1 className="text-[32px] font-500">노선별 예약 관리</h1>
+        <h1 className="text-[32px] font-500 flex items-center gap-32">
+          노선별 예약 관리
+          <button className="text-14 font-500 rounded-[4px] border border-grey-300 px-12 py-4 bg-grey-50">
+            핸디 지원 일괄 거절
+          </button>
+        </h1>
         <ReservationTable
           eventId={eventId}
           dailyEventId={dailyEventId}
@@ -359,7 +364,6 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: BusTableProps) => {
           selectedBus
         ) {
           prevBusId = busAndReservation.bus.shuttleBusId;
-          console.log('FOUND', selectedBus);
           const newBusAndReservation = {
             ...busAndReservation,
             bus: selectedBus,
@@ -394,8 +398,6 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: BusTableProps) => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
-  console.log(editingBusAndReservations);
 
   return (
     <section>
