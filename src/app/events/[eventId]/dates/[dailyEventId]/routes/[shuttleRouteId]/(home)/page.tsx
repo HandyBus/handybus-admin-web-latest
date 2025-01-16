@@ -41,9 +41,9 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
         <h1 className="text-[32px] font-500">노선 상세</h1>
       </header>
       <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
-        <BlueLink href={`/events/${eventId}`}>이벤트</BlueLink>
+        <BlueLink href={`/events/${eventId}`}>행사</BlueLink>
         <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>
-          해당 일자 이벤트
+          해당 일자 행사
         </BlueLink>
       </div>
       {isRoutePending && <div>Loading...</div>}
