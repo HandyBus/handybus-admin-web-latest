@@ -7,6 +7,8 @@ import { z } from 'zod';
 export const ShuttleDemandStatisics = z
   .object({
     eventId: z.number().int(),
+    eventName: z.string().nullable(),
+    eventImageUrl: z.string().nullable(),
     dailyEventId: z.number().int().nullable(),
     provinceFullName: z.string().nullable(),
     provinceShortName: z.string().nullable(),

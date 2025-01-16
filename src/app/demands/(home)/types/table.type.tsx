@@ -1,6 +1,7 @@
 import { ShuttleDemandStatisics } from '@/types/v2/demand.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
+import Image from 'next/image';
 
 const columnHelper = createColumnHelper<ShuttleDemandStatisics>();
 
@@ -9,6 +10,28 @@ export const columnsForGroupByEventId = [
     id: 'eventId',
     header: '행사 ID',
     cell: (info) => info.getValue(),
+  }),
+
+  columnHelper.display({
+    id: 'image',
+    header: '포스터',
+    cell: (props) => (
+      <Image
+        src={props.row.original.eventImageUrl ?? ''}
+        alt="포스터 이미지"
+        width={80}
+        height={110}
+      />
+    ),
+  }),
+  columnHelper.display({
+    id: 'eventName',
+    header: '행사 이름',
+    cell: (info) => (
+      <BlueLink href={`/events/${info.row.original.eventId}`}>
+        {info.row.original.eventName}
+      </BlueLink>
+    ),
   }),
   // columnHelper.accessor('dailyEventId', {
   //   id: 'dailyEventId',
