@@ -10,7 +10,8 @@ import {
 } from '@headlessui/react';
 import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, FileWarningIcon } from 'lucide-react';
+import { twMerge } from 'tailwind-merge';
 
 /**
  * PartialRegion 은 regionId가 없을 수 있는 지역 상태를 나타냅니다.
@@ -57,6 +58,8 @@ const PartialRegionInput = ({ value, setValue }: Props<PartialRegion>) => {
     );
   }, [value.city, value.province]);
 
+  const isValid = isValidPartialRegion(value);
+
   return (
     <div className="flex flex-col justify-start items-start w-full">
       <Combobox
@@ -75,9 +78,12 @@ const PartialRegionInput = ({ value, setValue }: Props<PartialRegion>) => {
       >
         <div className="relative group size-full">
           <ComboboxInput
-            className="p-8 
+            className={twMerge(
+              `p-8 
            border border-grey-200 rounded-t-lg size-full
-           focus:outline-blue-400"
+           focus:outline-blue-400`,
+              isValid ? '' : 'text-red-500',
+            )}
             aria-label="Assignee"
             placeholder={'도/광역시 선택'}
             defaultValue={null}
@@ -154,8 +160,29 @@ const PartialRegionInput = ({ value, setValue }: Props<PartialRegion>) => {
           </ComboboxOptions>
         </div>
       </Combobox>
+      {!isValid && (
+        <div className="text-red-500 flex flex-row items-center gap-4">
+          <FileWarningIcon size={16} /> 필터 오류, 이 지역 정보는 잘못된 것
+          같습니다.
+        </div>
+      )}
     </div>
   );
 };
 
 export default PartialRegionInput;
+
+const isValidPartialRegion = (value: PartialRegion) => {
+  const provinceValid =
+    value.province === null || provinces.includes(value.province);
+  const cityValid =
+    value.city === null ||
+    (value.city !== null &&
+      value.province !== null &&
+      data.some(
+        (region) =>
+          region.cityFullName === value.city &&
+          region.provinceFullName === value.province,
+      ));
+  return provinceValid && cityValid;
+};

@@ -1,0 +1,120 @@
+'use client';
+
+import useTable from '@/hooks/useTable';
+import { getDemand, GetDemandOption } from '@/services/v2/demand.services';
+import { useQuery } from '@tanstack/react-query';
+import { columnsFrom, columnsTo } from './types/table.type';
+import BaseTable from '@/components/table/BaseTable';
+import PartialRegionInput, {
+  PartialRegion,
+} from '@/components/input/PartialRegionInput';
+import { useState } from 'react';
+import BlueLink from '@/components/link/BlueLink';
+import { useSearchParams } from 'next/navigation';
+import { getEvent } from '@/services/v2/event.services';
+import { formatDateString } from '@/utils/date.util';
+// import useParamState, { nullableStringOpt } from '@/hooks/useParamState';
+
+interface Props {
+  params: { eventId: string; dailyEventId: string };
+}
+
+const Page = ({ params: { eventId, dailyEventId } }: Props) => {
+  const sp = useSearchParams();
+  const province = sp.get('provinceFullName');
+  const city = sp.get('cityFullName');
+
+  const [partialRegion, setPartialRegion] = useState<PartialRegion>({
+    province,
+    city,
+  });
+
+  console.log('partialRegion', JSON.stringify(partialRegion));
+
+  const { data: event } = useQuery({
+    queryKey: ['event', eventId],
+    queryFn: async () => await getEvent(Number(eventId)),
+  });
+
+  const dailyEvent = event?.dailyEvents.find(
+    (d) => d.dailyEventId === Number(dailyEventId),
+  );
+
+  const optionTo: GetDemandOption = {
+    groupBy: 'TO_DESTINATION_REGION_HUB',
+    provinceFullName: partialRegion.province ?? undefined,
+    cityFullName: partialRegion.city ?? undefined,
+    dailyEventId: Number(dailyEventId),
+    eventId: Number(eventId),
+  };
+
+  const optionFrom: GetDemandOption = {
+    groupBy: 'FROM_DESTINATION_REGION_HUB',
+    provinceFullName: partialRegion.province ?? undefined,
+    cityFullName: partialRegion.city ?? undefined,
+    dailyEventId: Number(dailyEventId),
+    eventId: Number(eventId),
+  };
+
+  const {
+    data: dataTo,
+    isPending: isPendingTo,
+    isError: isErrorTo,
+    error: errorTo,
+  } = useQuery({
+    queryKey: ['demand', optionTo],
+    queryFn: async () => await getDemand(optionTo),
+  });
+
+  const {
+    data: dataFrom,
+    isPending: isPendingFrom,
+    isError: isErrorFrom,
+    error: errorFrom,
+  } = useQuery({
+    queryKey: ['demand', optionFrom],
+    queryFn: async () => await getDemand(optionFrom),
+  });
+
+  const tableTo = useTable({ data: dataTo, columns: columnsTo });
+  const tableFrom = useTable({ data: dataFrom, columns: columnsFrom });
+
+  return (
+    <div className="flex flex-col gap-16">
+      <h1 className="text-[32px] font-500">
+        <BlueLink href={`/events/${eventId}`}>{event?.eventName}</BlueLink>의{' '}
+        <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>
+          {dailyEvent && formatDateString(dailyEvent.date, 'date')}
+        </BlueLink>
+        일자의 수요
+      </h1>
+      <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
+        <BlueLink href={`/demands/${eventId}`}>
+          이 행사의 모든 날짜 수요
+        </BlueLink>
+      </div>
+
+      <PartialRegionInput value={partialRegion} setValue={setPartialRegion} />
+
+      <article>
+        <h2 className="text-[24px] font-500">목적지행 수요</h2>
+        <BaseTable table={tableTo} />
+        {dataTo && dataTo.length === 0 && <div>데이터가 없습니다.</div>}
+        {isPendingTo && <div>Loading...</div>}
+        {isErrorTo && <div>Failed to load, message: ${errorTo.message} </div>}
+      </article>
+
+      <article>
+        <h2 className="text-[24px] font-500">귀가행 수요</h2>
+        <BaseTable table={tableFrom} />
+        {dataFrom && dataFrom.length === 0 && <div>데이터가 없습니다.</div>}
+        {isPendingFrom && <div>Loading...</div>}
+        {isErrorFrom && (
+          <div>Failed to load, message: ${errorFrom.message} </div>
+        )}
+      </article>
+    </div>
+  );
+};
+
+export default Page;
