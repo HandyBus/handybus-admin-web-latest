@@ -13,6 +13,6 @@ export const updateReservation = async (
     `/v1/shuttle-operation/admin/reservations/${reservationId}`,
     input,
   );
-  queryClient.invalidateQueries({ queryKey: ['reservations'] });
+  queryClient.invalidateQueries({ queryKey: ['reservation'] });
   return ret;
 };

@@ -23,6 +23,8 @@ import { getAllEvents } from '@/services/v2/event.services';
 import { EventsView } from '@/types/v2/event.type';
 import { getRoutes } from '@/services/v2/shuttleRoute.services';
 import Link from 'next/link';
+import Stringifier from '@/utils/stringifier.util';
+import { PAGINATION_LIMIT } from '@/constants/config';
 
 const Page = () => {
   return (
@@ -76,7 +78,7 @@ const RouteReservations = () => {
               <button
                 key={event.eventId}
                 type="button"
-                className={`w-full border-b border-grey-100 px-12 py-12  text-left ${
+                className={`w-full border-b border-grey-100 px-12 py-12 text-left ${
                   selectedEvent?.eventId === event.eventId
                     ? 'bg-grey-100'
                     : 'hover:bg-grey-50'
@@ -90,6 +92,9 @@ const RouteReservations = () => {
                 }}
               >
                 {event.eventName}
+                <span className="text-14 text-grey-500 ml-auto block">
+                  {Stringifier.eventStatus(event.eventStatus)}
+                </span>
               </button>
             ))}
           </ul>
@@ -125,7 +130,7 @@ const RouteReservations = () => {
         </article>
         <article className="h-full w-400 flex flex-col">
           <p className="font-500 text-20 pb-4 text-grey-900">
-            일자별 행사 선택
+            일자별 노선 선택
           </p>
           <ul className="grow overflow-scroll border border-grey-200 rounded-[4px]">
             {selectedDailyEvent ? (
@@ -137,6 +142,16 @@ const RouteReservations = () => {
                     className="block w-full border-b border-grey-100 px-12 py-12 text-left hover:bg-grey-50"
                   >
                     {shuttleRoute.name}
+                    <p className="text-14 text-grey-500 ml-auto flex gap-12">
+                      <span>
+                        {Stringifier.shuttleRouteStatus(shuttleRoute.status)}
+                      </span>
+                      <span>
+                        {shuttleRoute.fromDestinationCount +
+                          shuttleRoute.toDestinationCount}
+                        석 예약
+                      </span>
+                    </p>
                   </Link>
                 ))
               ) : (
@@ -168,6 +183,7 @@ const AllReservations = () => {
     ({ pageParam }: { pageParam: number }) => {
       return getReservations({
         page: pageParam,
+        limit: PAGINATION_LIMIT,
         eventId,
         dailyEventId,
         shuttleRouteId,

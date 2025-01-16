@@ -25,12 +25,7 @@ export const ReservationViewEntity = z
     fromDestinationShuttleRouteHubId: z.number().int().nullable(),
     toDestinationShuttleRouteHubId: z.number().int().nullable(),
     handyStatus: z.enum(['NOT_SUPPORTED', 'SUPPORTED', 'ACCEPTED', 'DECLINED']),
-    reservationStatus: z.enum([
-      'NOT_PAYMENT',
-      'COMPLETE_PAYMENT',
-      'RESERVATION_CONFIRMED',
-      'CANCEL',
-    ]),
+    reservationStatus: z.enum(['NOT_PAYMENT', 'COMPLETE_PAYMENT', 'CANCEL']),
     cancelStatus: z.enum(['NONE', 'CANCEL_REQUEST', 'CANCEL_COMPLETE']),
     paymentId: z.string().nullable(),
     paymentPrincipalAmount: z.number().int().nullable(),

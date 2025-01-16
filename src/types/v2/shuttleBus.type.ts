@@ -27,7 +27,6 @@ export const ShuttleBusesViewEntity = z
     busCapacity: z.number().int(),
     busDriverPhoneNumber: z.string(),
     openChatLink: z.string().nullable(),
-    handyUserId: z.number().int().nullable(),
   })
   .strict();
 
@@ -40,7 +39,6 @@ import { phoneRegex } from '../meta/common.type';
 export const BusSchema = z.object({
   shuttleBusId: z.number().int(),
   shuttleRouteId: z.number().int(),
-  handyUserId: z.number().int().nullable(), // is this nullable?
   type: BusTypeSchema,
   name: z.string(),
   // TODO are 'number, phoneNumber, openChatLink' optional? 빈 경우 ""를 주는 것으로 보임, 확인 필요
@@ -68,3 +66,14 @@ export const CreateBusRequestSchema = z.object({
 });
 
 export type CreateBusRequest = z.infer<typeof CreateBusRequestSchema>;
+
+export const AssignBusRequestSchema = z.object({
+  reservationShuttleBusMap: z
+    .object({
+      reservationId: z.number(),
+      shuttleBusId: z.number(),
+    })
+    .array(),
+});
+
+export type AssignBusRequest = z.infer<typeof AssignBusRequestSchema>;
