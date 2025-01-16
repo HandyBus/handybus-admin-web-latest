@@ -34,10 +34,6 @@ export const busColumns = [
     header: () => '기사님 연락처',
     cell: (info) => info.getValue(),
   }),
-  busColumnHelper.accessor('handyUserId', {
-    header: () => '핸디 유저 ID',
-    cell: (info) => info.getValue(),
-  }),
   busColumnHelper.accessor('openChatLink', {
     header: () => '오픈채팅 링크',
     cell: (info) => info.getValue(),

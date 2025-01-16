@@ -71,8 +71,6 @@ const Stringifier = Object.freeze({
         return '예약 모집 중';
       case 'CLOSED':
         return '예약 마감';
-      case 'CONFIRMED':
-        return '배차가 완료되고 모든 정보가 확정된 상태';
       case 'ENDED':
         return '운행 종료';
       case 'CANCELLED':

@@ -53,7 +53,6 @@ export const BusTypesToCapacity: Record<
 export const BusSchema = z.object({
   shuttleBusId: z.number().int(),
   shuttleRouteId: z.number().int(),
-  handyUserId: z.number().int().nullable(), // is this nullable?
   type: BusSortSchema,
   name: z.string(),
   number: z.unknown(), // zodCarNumber.optional(),
