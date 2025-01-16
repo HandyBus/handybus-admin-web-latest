@@ -10,7 +10,7 @@ const Nav = () => {
       </Link>
       <NavItem href="/">홈</NavItem>
       <NavItem href="/events">행사</NavItem>
-      <NavItem href="/demands">수요 조사</NavItem>
+      <NavItem href="/demands">수요조사</NavItem>
       <NavItem href="/reservations">예약</NavItem>
       <NavItem href="/hubs">거점지</NavItem>
       <NavItem href="/artists">아티스트</NavItem>
