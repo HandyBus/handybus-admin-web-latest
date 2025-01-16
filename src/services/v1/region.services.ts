@@ -4,6 +4,7 @@ import { RegionSchema } from '@/types/v1/region.type';
 import regions from '../../data/regions.json';
 import { silentParse } from '@/utils/parse.util';
 
-export const getRegions = async () => {
+// not a real API call
+export const getRegions = () => {
   return silentParse(RegionSchema.array(), regions.regions);
 };
