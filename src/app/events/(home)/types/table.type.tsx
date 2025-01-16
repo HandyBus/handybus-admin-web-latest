@@ -5,6 +5,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import Image from 'next/image';
 import BlueLink from '@/components/link/BlueLink';
 import RegionHubViewerModal from '@/components/viewer/RegionHubViewerModal';
+import { formatDateString } from '@/utils/date.util';
 
 const columnHelper = createColumnHelper<EventsView>();
 
@@ -103,7 +104,7 @@ export const columns = [
       return (
         <div>
           {dates.map((date, index) => (
-            <div key={index}>{date}</div>
+            <div key={index}>{formatDateString(date, 'date')}</div>
           ))}
         </div>
       );
