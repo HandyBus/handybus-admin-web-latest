@@ -1,6 +1,7 @@
 'use client';
 
-import DataTable from '@/components/table/DataTable';
+import BaseTable from '@/components/table/BaseTable';
+import useTable from '@/hooks/useTable';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import RegionInput from '@/components/input/RegionInput';
@@ -20,6 +21,8 @@ const Page = () => {
     enabled: regionId !== null,
   });
 
+  const table = useTable({ data, columns });
+
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
       <header className="flex flex-row justify-between items-center">
@@ -29,10 +32,10 @@ const Page = () => {
       <div>
         <RegionInput value={regionId} setValue={setRegionId} />
         {regionId === null ? <p>지역을 선택하세요.</p> : null}
+        {data ? <BaseTable table={table} /> : null}
         {isLoading ? <p>로딩 중...</p> : null}
         {isError ? <p>에러 : {error.message}</p> : null}
-        {data ? <DataTable data={data} columns={columns} /> : null}
-        {data?.length === 0 ? <p>이 지역에 거점지가 없습니다.</p> : null}
+        {data && data.length === 0 ? <p>이 지역에 거점지가 없습니다.</p> : null}
       </div>
     </main>
   );
