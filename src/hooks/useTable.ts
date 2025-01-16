@@ -14,8 +14,10 @@ import { useState } from 'react';
  * @returns
  */
 const useTable = <TData>(
-  option: Omit<TableOptions<TData>, 'getCoreRowModel'>,
+  option: AllowUndefind<Omit<TableOptions<TData>, 'getCoreRowModel'>, 'data'>,
 ) => {
+  const [empty] = useState<TData[]>([]);
+
   const [columnVisibility, setColumnVisibility] = useState<
     Record<string, boolean>
   >(option.initialState?.columnVisibility || {});
@@ -30,6 +32,7 @@ const useTable = <TData>(
   const newOption = {
     ...defaultOptions,
     ...option,
+    data: option.data ?? empty,
     getCoreRowModel: getCoreRowModel(),
   };
 
