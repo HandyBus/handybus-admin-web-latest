@@ -1,6 +1,7 @@
 import { BusSortType } from '@/types/v1/bus.type';
 import { HandyStatusType } from '@/types/v1/reservation.type';
 import { EventsView } from '@/types/v2/event.type';
+import { ReservationView } from '@/types/v2/reservation.type';
 import { ShuttleRoutesView } from '@/types/v2/shuttleRoute.type';
 
 const Stringifier = Object.freeze({
@@ -80,29 +81,29 @@ const Stringifier = Object.freeze({
         return '비활성';
     }
   },
-  reservationStatus(v: string) {
+  reservationStatus(v: ReservationView['reservationStatus']) {
     switch (v) {
       case 'NOT_PAYMENT':
-        return '결제 미완료';
+        return '미결제';
       case 'COMPLETE_PAYMENT':
         return '결제 완료';
       case 'RESERVATION_CONFIRMED':
-        return '예약 확정';
+        return '확정';
       case 'CANCEL':
-        return '취소됨';
+        return '취소';
     }
   },
-  cancelStatus(v: string) {
+  cancelStatus(v: ReservationView['cancelStatus']) {
     switch (v) {
       case 'NONE':
-        return '취소 요청 없음';
+        return 'X';
       case 'CANCEL_REQUEST':
-        return '취소 요청됨';
+        return '환불 요청';
       case 'CANCEL_COMPLETE':
-        return '취소 완료';
+        return '환불 완료';
     }
   },
-  reservationType(v: string) {
+  reservationType(v: ReservationView['type']) {
     switch (v) {
       case 'TO_DESTINATION':
         return '목적지행 편도';

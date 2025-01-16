@@ -12,6 +12,17 @@ export const columns = [
     header: () => 'ID',
     cell: (info) => info.getValue(),
   }),
+  columnHelper.display({
+    id: 'user',
+    header: () => '고객 정보',
+    cell: (props) => (
+      <span>
+        <span>{props.row.original.userNickname}</span>
+        <br />
+        <span>({props.row.original.userPhoneNumber || '전화번호 없음'})</span>
+      </span>
+    ),
+  }),
   columnHelper.accessor('createdAt', {
     header: () => '생성일',
     cell: (info) => dayjs(info.getValue()).format('YYYY-MM-DD HH:mm:ss'),
@@ -27,23 +38,23 @@ export const columns = [
     cell: (info) => info.getValue(),
   }),
   columnHelper.display({
-    id: 'user',
-    header: () => '고객 정보',
-    cell: (props) => (
-      <span>
-        <span>{props.row.original.userNickname}</span>
-        <br />
-        <span>({props.row.original.userPhoneNumber || '전화번호 없음'})</span>
-      </span>
-    ),
-  }),
-  columnHelper.display({
     id: 'shuttleRoute',
     header: () => '이용 노선',
     cell: (props) => {
       const reservation = props.row.original;
-      // TODO
-      return <span>노선 이름: {reservation.shuttleRoute?.name}</span>;
+      const date = reservation.shuttleRoute.event?.dailyEvents.find(
+        (dailyEvent) =>
+          dailyEvent.dailyEventId === reservation.shuttleRoute.dailyEventId,
+      )?.date;
+      return (
+        <p>
+          <span>{reservation.shuttleRoute?.event?.eventName}</span>
+          <br />
+          <span>{date && new Date(date).toLocaleDateString()}</span>
+          <br />
+          <span>{reservation.shuttleRoute?.name}</span>
+        </p>
+      );
     },
   }),
   columnHelper.accessor('handyStatus', {

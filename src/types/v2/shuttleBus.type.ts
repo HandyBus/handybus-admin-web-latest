@@ -23,11 +23,11 @@ export const ShuttleBusesViewEntity = z
     shuttleRouteId: z.number().int(),
     busType: BusTypeSchema,
     busName: z.string(),
-    busNumber: z.number().int(),
+    busNumber: z.string(),
     busCapacity: z.number().int(),
     busDriverPhoneNumber: z.string(),
-    openChatLink: z.string(),
-    handyUserId: z.number().int(),
+    openChatLink: z.string().nullable(),
+    handyUserId: z.number().int().nullable(),
   })
   .strict();
 
@@ -64,7 +64,7 @@ export const CreateBusRequestSchema = z.object({
       (value) => phoneRegex.test(value),
       '010으로 시작하는 11자리 숫자를 입력해주세요',
     ),
-  openChatLink: z.string().url(),
+  openChatLink: z.string().url().optional(),
 });
 
 export type CreateBusRequest = z.infer<typeof CreateBusRequestSchema>;
