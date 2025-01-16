@@ -14,8 +14,8 @@ export const filterByFuzzy = <T>(
   query: string,
   accessor: (t: T) => string,
   threshold: number = 0,
-) => {
-  if (!query) return list;
+): T[] => {
+  if (!query) return [...list];
 
   return list
     .map((item) => {
