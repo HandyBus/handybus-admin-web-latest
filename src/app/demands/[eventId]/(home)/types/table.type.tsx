@@ -86,7 +86,7 @@ export const columnGroupByCity = [
     cell: (props) => (
       <>
         <BlueLink
-          href={`/demands/${props.row.original.eventId}/dates/${props.row.original.dailyEventId}`}
+          href={`/demands/${props.row.original.eventId}/dates/${props.row.original.dailyEventId}${toSearchParamString({ provinceFullName: props.row.original.provinceFullName, cityFullName: props.row.original.cityFullName }, '?')}`}
         >
           {props.row.original.provinceFullName}{' '}
           {props.row.original.cityFullName}
