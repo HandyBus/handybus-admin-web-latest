@@ -27,7 +27,7 @@ const Page = ({ params: { eventId } }: Props) => {
   );
 
   const table = useTable({
-    data: event?.dailyEvents || [],
+    data: event?.dailyEvents,
     columns: columnsForThisShuttleId,
   });
 

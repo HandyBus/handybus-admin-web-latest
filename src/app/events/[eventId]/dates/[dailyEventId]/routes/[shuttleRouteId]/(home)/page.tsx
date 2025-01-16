@@ -26,12 +26,12 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
   });
 
   const fromHubTable = useTable({
-    data: route ? route.fromDestinationShuttleRouteHubs : [],
+    data: route?.fromDestinationShuttleRouteHubs,
     columns: routeHubColumns,
   });
 
   const toHubTable = useTable({
-    data: route?.toDestinationShuttleRouteHubs ?? [],
+    data: route?.toDestinationShuttleRouteHubs,
     columns: routeHubColumns,
   });
 

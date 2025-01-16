@@ -23,7 +23,7 @@ const Page = () => {
   });
 
   const table = useTable({
-    data: events || [],
+    data: events,
     columns,
     initialState: {
       columnVisibility: initialColumnVisibility,
