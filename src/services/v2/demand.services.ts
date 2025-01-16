@@ -2,7 +2,7 @@ import { authInstance } from '../config';
 import { toSearchParamString } from '@/utils/searchParam.util';
 import { ShuttleDemandStatisics } from '@/types/v2/demand.type';
 
-interface GetDemandOption {
+export interface GetDemandOption {
   groupBy:
     | 'EVENT'
     | 'DAILY_EVENT'
