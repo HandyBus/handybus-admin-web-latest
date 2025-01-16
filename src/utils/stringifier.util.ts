@@ -103,6 +103,16 @@ const Stringifier = Object.freeze({
         return '환불 완료';
     }
   },
+  reservationType(v: ReservationView['type']) {
+    switch (v) {
+      case 'TO_DESTINATION':
+        return '목적지행 편도';
+      case 'FROM_DESTINATION':
+        return '귀가행 편도';
+      case 'ROUND_TRIP':
+        return '왕복';
+    }
+  },
 });
 
 export default Stringifier;
