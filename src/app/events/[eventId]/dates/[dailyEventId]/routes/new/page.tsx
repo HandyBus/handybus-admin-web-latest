@@ -1,10 +1,12 @@
 'use client';
 
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { conform, type CreateShuttleRouteForm } from './form.type';
 import { postRoute } from '@/services/v2/shuttleRoute.services';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/input/Input';
+import { RegionHubInputSelfContained } from '@/components/input/HubInput';
+import Guide from '@/components/guide/Guide';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -213,7 +215,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
         <button
           type="button"
           onClick={() =>
-            appendFromDestHub({
+            appendToDestHub({
               regionHubId: 0,
               arrivalTime: new Date(),
             })
@@ -222,24 +224,30 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
         >
           추가
         </button>
+        <Guide>
+          주의! 목적지행 경유지 목록의 마지막 경유지는 노선이 행사 장소에 도착할
+          때 운행을 종료하는 최종 거점지가 되어야 합니다. 꼭 설정해주세요.
+        </Guide>
         <div className="space-y-2">
           {toDestHubFields.map((field, index) => {
             return (
               <div key={field.id}>
                 <div className="flex items-center gap-2">
-                  <label>
-                    경유지 ID
-                    <Input
-                      type="number"
-                      {...register(
-                        `shuttleRouteHubsToDestination.${index}.regionHubId` as const,
-                        {
-                          valueAsNumber: true,
-                        },
+                  <label className="flex flex-row ">경유지 ID</label>
+                  <div className="flex flex-row">
+                    <Controller
+                      control={control}
+                      name={
+                        `shuttleRouteHubsToDestination.${index}.regionHubId` as const
+                      }
+                      render={({ field: { onChange, value } }) => (
+                        <RegionHubInputSelfContained
+                          value={value}
+                          setValue={onChange}
+                        />
                       )}
-                      placeholder="Hub ID"
                     />
-                  </label>
+                  </div>
 
                   <label>타입 : 목적지행</label>
 
@@ -291,7 +299,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
         <button
           type="button"
           onClick={() =>
-            appendToDestHub({
+            appendFromDestHub({
               regionHubId: 0,
               arrivalTime: new Date(),
             })
@@ -300,24 +308,30 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
         >
           추가
         </button>
+        <Guide>
+          주의! 귀가행 경유지 목록의 첫번째 경유지는 노선이 행사 장소에서 출발할
+          때 운행을 시작하는 최초 거점지가 되어야 합니다. 꼭 설정해주세요.
+        </Guide>
         <div className="space-y-2">
           {fromDestHubFields.map((field, index) => {
             return (
               <div key={field.id}>
                 <div className="flex items-center gap-2">
-                  <label>
-                    경유지 ID
-                    <Input
-                      type="number"
-                      {...register(
-                        `shuttleRouteHubsFromDestination.${index}.regionHubId` as const,
-                        {
-                          valueAsNumber: true,
-                        },
+                  <label className="flex flex-row ">경유지 ID</label>
+                  <div className="flex flex-row">
+                    <Controller
+                      control={control}
+                      name={
+                        `shuttleRouteHubsFromDestination.${index}.regionHubId` as const
+                      }
+                      render={({ field: { onChange, value } }) => (
+                        <RegionHubInputSelfContained
+                          value={value}
+                          setValue={onChange}
+                        />
                       )}
-                      placeholder="Hub ID"
                     />
-                  </label>
+                  </div>
 
                   <label>타입 : 귀가행</label>
 

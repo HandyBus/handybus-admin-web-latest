@@ -21,11 +21,12 @@ interface Props {
 }
 
 import { ChevronDown } from 'lucide-react';
+import RegionInput from './RegionInput';
 
 const validRegionID = (regionId: number | undefined): regionId is number =>
   typeof regionId === 'number' && !Number.isNaN(regionId);
 
-const HubInput = ({ regionId, value, setValue }: Props) => {
+const RegionHubInput = ({ regionId, value, setValue }: Props) => {
   const [query, setQuery] = useState('');
   const { data, isLoading, error } = useQuery({
     queryKey: ['hub', regionId],
@@ -56,7 +57,7 @@ const HubInput = ({ regionId, value, setValue }: Props) => {
       : (filterByID ?? []);
   }, [data, query, regionId]);
 
-  if (error) return <div>Failed to load artists</div>;
+  if (error) return <div>Failed to load hubs</div>;
 
   return (
     <Combobox
@@ -105,4 +106,24 @@ const HubInput = ({ regionId, value, setValue }: Props) => {
   );
 };
 
-export default HubInput;
+export default RegionHubInput;
+
+/**
+ *
+ */
+export const RegionHubInputSelfContained = ({
+  value,
+  setValue,
+}: Omit<Props, 'regionId'>) => {
+  const [regionId, setRegionId] = useState<number | null>(null);
+  return (
+    <>
+      <RegionInput value={regionId} setValue={setRegionId} />
+      <RegionHubInput
+        regionId={regionId ?? undefined}
+        value={value}
+        setValue={setValue}
+      />
+    </>
+  );
+};
