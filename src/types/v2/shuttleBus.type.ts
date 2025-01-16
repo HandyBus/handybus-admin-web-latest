@@ -66,3 +66,14 @@ export const CreateBusRequestSchema = z.object({
 });
 
 export type CreateBusRequest = z.infer<typeof CreateBusRequestSchema>;
+
+export const AssignBusRequestSchema = z.object({
+  reservationShuttleBusMap: z
+    .object({
+      reservationId: z.number(),
+      shuttleBusId: z.number(),
+    })
+    .array(),
+});
+
+export type AssignBusRequest = z.infer<typeof AssignBusRequestSchema>;

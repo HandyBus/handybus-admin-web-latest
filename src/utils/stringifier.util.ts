@@ -85,8 +85,6 @@ const Stringifier = Object.freeze({
         return '미결제';
       case 'COMPLETE_PAYMENT':
         return '결제 완료';
-      case 'RESERVATION_CONFIRMED':
-        return '확정';
       case 'CANCEL':
         return '취소';
     }
@@ -104,9 +102,9 @@ const Stringifier = Object.freeze({
   reservationType(v: ReservationView['type']) {
     switch (v) {
       case 'TO_DESTINATION':
-        return '목적지행 편도';
+        return '콘서트행';
       case 'FROM_DESTINATION':
-        return '귀가행 편도';
+        return '귀가행';
       case 'ROUND_TRIP':
         return '왕복';
     }

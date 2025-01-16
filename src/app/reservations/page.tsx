@@ -24,6 +24,7 @@ import { EventsView } from '@/types/v2/event.type';
 import { getRoutes } from '@/services/v2/shuttleRoute.services';
 import Link from 'next/link';
 import Stringifier from '@/utils/stringifier.util';
+import { PAGINATION_LIMIT } from '@/constants/config';
 
 const Page = () => {
   return (
@@ -182,6 +183,7 @@ const AllReservations = () => {
     ({ pageParam }: { pageParam: number }) => {
       return getReservations({
         page: pageParam,
+        limit: PAGINATION_LIMIT,
         eventId,
         dailyEventId,
         shuttleRouteId,

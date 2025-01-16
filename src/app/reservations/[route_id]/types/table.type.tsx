@@ -59,18 +59,18 @@ export const reservationColumns = [
     ),
   }),
   reservationColumnHelper.accessor('createdAt', {
-    header: () => '생성일',
+    header: () => '예약일',
     cell: (info) => dayjs(info.getValue()).format('YYYY-MM-DD HH:mm:ss'),
   }),
-  reservationColumnHelper.accessor('reservationStatus', {
-    id: 'reservationStatus',
-    header: () => '예약 상태',
-    cell: (info) => Stringifier.reservationStatus(info.getValue()),
+  reservationColumnHelper.accessor('passengers', {
+    id: 'passengersLength',
+    header: () => '예약 인원',
+    cell: (info) => info.getValue().length + '인',
   }),
-  reservationColumnHelper.accessor('cancelStatus', {
-    id: 'cancelStatus',
-    header: () => '환불 상태',
-    cell: (info) => Stringifier.cancelStatus(info.getValue()),
+  reservationColumnHelper.accessor('type', {
+    id: 'type',
+    header: () => '예약 유형',
+    cell: (info) => Stringifier.reservationType(info.getValue()),
   }),
   reservationColumnHelper.accessor('handyStatus', {
     id: 'handyStatus',
@@ -110,7 +110,7 @@ export const reservationColumns = [
   }),
   reservationColumnHelper.display({
     id: 'actions',
-    header: '액션',
+    header: '상세',
     cell: (props) => (
       <>
         <BlueLink

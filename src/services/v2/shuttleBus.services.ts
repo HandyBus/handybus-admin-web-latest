@@ -1,5 +1,7 @@
 import { authInstance } from '../config';
 import {
+  AssignBusRequest,
+  AssignBusRequestSchema,
   CreateBusRequestSchema,
   ShuttleBusesViewEntity,
 } from '@/types/v2/shuttleBus.type';
@@ -30,5 +32,17 @@ export const postBus = async (
   return await authInstance.post(
     `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/buses`,
     silentParse(CreateBusRequestSchema, input),
+  );
+};
+
+export const postAssignBus = async (
+  eventId: number,
+  dailyEventId: number,
+  shuttleRouteId: number,
+  input: AssignBusRequest,
+) => {
+  return await authInstance.post(
+    `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/buses/bulk-assign`,
+    silentParse(AssignBusRequestSchema, input),
   );
 };

@@ -1,4 +1,3 @@
-import { PAGINATION_LIMIT } from '@/constants/config';
 import { authInstance, withPagination } from '../config';
 import { ReservationViewEntity } from '@/types/v2/reservation.type';
 import { PaymentEntity, TosspaymentsEntity } from '@/types/v2/payment.type';
@@ -7,11 +6,15 @@ import { z } from 'zod';
 
 interface GetReservationOption {
   page: number;
+  limit: number;
   eventId: number;
   dailyEventId: number;
   shuttleRouteId: number;
   shuttleBusId: number;
   handyStatus: z.infer<typeof ReservationViewEntity.shape.handyStatus>;
+  reservationStatus: z.infer<
+    typeof ReservationViewEntity.shape.reservationStatus
+  >;
   userNickname: string;
   passengerName: string;
 }
@@ -19,7 +22,7 @@ interface GetReservationOption {
 export const getReservations = async (
   option?: Partial<GetReservationOption>,
 ) => {
-  const url = `/v2/shuttle-operation/admin/reservations?limit=${PAGINATION_LIMIT}${toSearchParamString(option, '&')}`;
+  const url = `/v2/shuttle-operation/admin/reservations${toSearchParamString(option, '?')}`;
 
   return await authInstance.get(url, {
     shape: withPagination({ reservations: ReservationViewEntity.array() }),
