@@ -17,7 +17,7 @@ const ArtistPage = () => {
   });
 
   const table = useTable({
-    data: artists ?? [],
+    data: artists,
     columns,
   });
 
