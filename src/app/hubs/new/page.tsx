@@ -11,7 +11,7 @@ import CoordInput from '@/components/input/CoordInput';
 import RegionInput from '@/components/input/RegionInput';
 import { useQuery } from '@tanstack/react-query';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
-import { RegionType } from '@/types/v1/region.type';
+import { Region } from '@/types/v1/region.type';
 import { getRegions } from '@/services/v1/region.services';
 import { addHub } from '@/services/v1/hub.services';
 
@@ -37,7 +37,7 @@ const NewHubPage = () => {
 
   const address = useWatch({ control, name: 'coord.address' });
 
-  const recommended: RegionType | undefined = useMemo(() => {
+  const recommended: Region | undefined = useMemo(() => {
     if (!regions || !address) {
       return undefined;
     }

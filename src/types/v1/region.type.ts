@@ -11,7 +11,7 @@ export const RegionSchema = z.object({
   updatedAt: z.coerce.date(),
 });
 
-export type RegionType = z.infer<typeof RegionSchema>;
+export type Region = z.infer<typeof RegionSchema>;
 
 export const Hub = z.object({
   regionHubId: z.number().int(),

@@ -34,3 +34,7 @@ export const formatDate = (date: Date, type: 'date' | 'datetime') => {
     return dayjs(date).format('YYYY-MM-DD');
   }
 };
+
+export const formatDateString = (date: string, type: 'date' | 'datetime') => {
+  return formatDate(new Date(date), type);
+};

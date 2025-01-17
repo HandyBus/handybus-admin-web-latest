@@ -41,12 +41,6 @@ const renderColumnToggle = <TData,>(column: Column<TData, unknown>) => {
   const header = column.columnDef.header;
 
   if (column.getLeafColumns().length > 1) {
-    console.log(
-      'column.getLeafColumns().length > 0',
-      column.getLeafColumns().length,
-      header,
-      column.getLeafColumns(),
-    );
     const visibilityHandler = () => {
       const newState = !column.getIsVisible();
       column.getLeafColumns().forEach((c) => {

@@ -1,12 +1,13 @@
 'use client';
 
+import BaseTable from '@/components/table/BaseTable';
+import useTable from '@/hooks/useTable';
 import BlueLink from '@/components/link/BlueLink';
 import EventViewer from '@/app/events/[eventId]/(home)/components/Shuttle';
 import { getRoutes } from '@/services/v2/shuttleRoute.services';
 import { getEvent } from '@/services/v2/event.services';
 import { notFound } from 'next/navigation';
 import { columns } from './types/table.type';
-import DataTable from '@/components/table/DataTable';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
@@ -34,6 +35,8 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     queryKey: ['routes', eventId, dailyEventId],
     queryFn: () => getRoutes(Number(eventId), Number(dailyEventId)),
   });
+
+  const table = useTable({ data: routes, columns });
 
   const thisDailyShuttle = shuttle
     ? shuttle.dailyEvents.find((d) => d.dailyEventId === Number(dailyEventId))
@@ -74,7 +77,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
           <h1 className="text-[24px] font-500">노선 목록</h1>
           <BlueLink href={`${dailyEventId}/routes/new`}>추가하기</BlueLink>
         </header>
-        <DataTable data={routes} columns={columns} />
+        <BaseTable table={table} />
       </div>
     </main>
   );
