@@ -39,10 +39,10 @@ const Page = ({ searchParams }: Props) => {
       status === '전체' || !status
         ? true
         : status === '진행중'
-          ? coupon.isActive && now > coupon.validFrom
+          ? coupon.isActive && now > new Date(coupon.validFrom)
           : status === '대기'
-            ? !coupon.isActive && now < coupon.validFrom
-            : !coupon.isActive && now > coupon.validFrom;
+            ? !coupon.isActive && now < new Date(coupon.validFrom)
+            : !coupon.isActive && now > new Date(coupon.validFrom);
     if (!value) {
       return isFilteredByStatus;
     }
