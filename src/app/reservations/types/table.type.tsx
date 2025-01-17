@@ -4,6 +4,7 @@ import { ReservationView } from '@/types/v2/reservation.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
 import dayjs from 'dayjs';
+import Stringifier from '@/utils/stringifier.util';
 
 const columnHelper = createColumnHelper<ReservationView>();
 
@@ -27,15 +28,20 @@ export const columns = [
     header: () => '생성일',
     cell: (info) => dayjs(info.getValue()).format('YYYY-MM-DD HH:mm:ss'),
   }),
-  columnHelper.accessor('cancelStatus', {
-    id: 'cancelStatus',
-    header: () => '취소 상태',
-    cell: (info) => info.getValue(),
+  columnHelper.accessor('passengers', {
+    id: 'passengersLength',
+    header: () => '예약 인원',
+    cell: (info) => info.getValue().length + '인',
   }),
   columnHelper.accessor('reservationStatus', {
     id: 'reservationStatus',
     header: () => '예약 상태',
-    cell: (info) => info.getValue(),
+    cell: (info) => Stringifier.reservationStatus(info.getValue()),
+  }),
+  columnHelper.accessor('cancelStatus', {
+    id: 'cancelStatus',
+    header: () => '환불 상태',
+    cell: (info) => Stringifier.cancelStatus(info.getValue()),
   }),
   columnHelper.display({
     id: 'shuttleRoute',
@@ -48,11 +54,17 @@ export const columns = [
       )?.date;
       return (
         <p>
-          <span>{reservation.shuttleRoute?.event?.eventName}</span>
+          <span className="font-500 text-16">
+            {reservation.shuttleRoute?.event?.eventName}
+          </span>
           <br />
-          <span>{date && new Date(date).toLocaleDateString()}</span>
+          <span className="font-400 text-grey-600 text-14">
+            {date && new Date(date).toLocaleDateString()}
+          </span>
           <br />
-          <span>{reservation.shuttleRoute?.name}</span>
+          <span className="font-500 text-grey-700 text-14">
+            {reservation.shuttleRoute?.name}
+          </span>
         </p>
       );
     },
@@ -93,7 +105,9 @@ export const columns = [
     header: '액션',
     cell: (props) => (
       <>
-        <BlueLink href={`/reservations/${props.row.original.reservationId}`}>
+        <BlueLink
+          href={`/reservations/${props.row.original.shuttleRouteId}/${props.row.original.reservationId}`}
+        >
           상세보기
         </BlueLink>
       </>

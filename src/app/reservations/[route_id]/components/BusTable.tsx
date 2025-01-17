@@ -1,3 +1,5 @@
+'use client';
+
 import { getReservations } from '@/services/v2/reservations.services';
 import { getBuses, postAssignBus } from '@/services/v2/shuttleBus.services';
 import { ReservationView } from '@/types/v2/reservation.type';
@@ -7,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import EditHandyStatusDialog from '../[reservation_id]/components/EditHandyStatusDialog';
+import BlueLink from '@/components/link/BlueLink';
 
 type BusAndReservation = {
   bus: ShuttleBusesView;
@@ -493,11 +496,20 @@ const PassengerItem = ({
           ))}
         </select>
       )}
-      {reservation.handyStatus !== 'NOT_SUPPORTED' && (
-        <p className="ml-auto">
-          <EditHandyStatusDialog response={reservation} />
+      <div className="flex items-center gap-12 ml-auto">
+        {reservation.handyStatus !== 'NOT_SUPPORTED' && (
+          <p>
+            <EditHandyStatusDialog response={reservation} />
+          </p>
+        )}
+        <p>
+          <BlueLink
+            href={`/reservations/${reservation.shuttleRouteId}/${reservation.reservationId}`}
+          >
+            상세보기
+          </BlueLink>
         </p>
-      )}
+      </div>
     </li>
   );
 };

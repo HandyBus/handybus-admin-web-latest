@@ -1,3 +1,5 @@
+'use client';
+
 import useTable from '@/hooks/useTable';
 import { getReservations } from '@/services/v2/reservations.services';
 import { useQuery } from '@tanstack/react-query';
