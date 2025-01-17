@@ -4,25 +4,33 @@ import { PaymentEntity, TosspaymentsEntity } from '@/types/v2/payment.type';
 import { toSearchParamString } from '@/utils/searchParam.util';
 import { z } from 'zod';
 
-interface GetReservationOption {
+export interface GetReservationOption {
+  eventId: number | undefined;
+  dailyEventId: number | undefined;
+  shuttleRouteId: number | undefined;
+  shuttleBusId: number | undefined;
+  userNickname: string | undefined;
+  passengerName: string | undefined;
+  handyStatus:
+    | undefined
+    | z.infer<typeof ReservationViewEntity.shape.handyStatus>;
+  reservationStatus:
+    | undefined
+    | z.infer<typeof ReservationViewEntity.shape.reservationStatus>;
+  cancelStatus:
+    | undefined
+    | z.infer<typeof ReservationViewEntity.shape.cancelStatus>;
+}
+
+interface GetReservationOptionWithPagination extends GetReservationOption {
   page: number;
   limit: number;
-  eventId: number;
-  dailyEventId: number;
-  shuttleRouteId: number;
-  shuttleBusId: number;
-  handyStatus: z.infer<typeof ReservationViewEntity.shape.handyStatus>;
-  reservationStatus: z.infer<
-    typeof ReservationViewEntity.shape.reservationStatus
-  >;
-  userNickname: string;
-  passengerName: string;
 }
 
 export const getReservations = async (
-  option?: Partial<GetReservationOption>,
+  option?: Partial<GetReservationOptionWithPagination>,
 ) => {
-  const url = `/v2/shuttle-operation/admin/reservations${toSearchParamString(option, '?')}`;
+  const url = `/v2/shuttle-operation/admin/reservations${toSearchParamString({ ...option }, '?')}`;
 
   return await authInstance.get(url, {
     shape: withPagination({ reservations: ReservationViewEntity.array() }),

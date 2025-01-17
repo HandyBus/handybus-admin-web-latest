@@ -14,53 +14,51 @@ import { filterByFuzzy } from '@/utils/fuzzy.util';
 
 interface Props {
   eventId: number;
-  dailyEventId: number;
   value: number | null;
   setValue: (value: number | null) => void;
 }
 
 import { ChevronDown } from 'lucide-react';
-import { getRoutes } from '@/services/v2/shuttleRoute.services';
-import { ShuttleRoutesView } from '@/types/v2/shuttleRoute.type';
+import { getEvent } from '@/services/v2/event.services';
+import { EventsView } from '@/types/v2/event.type';
+import dayjs from 'dayjs';
 
-const ShuttleRouteInput = ({
-  eventId,
-  dailyEventId,
-  value,
-  setValue,
-}: Props) => {
+type DailyEvent = ArrayElement<EventsView['dailyEvents']>;
+
+const DailyEventInput = ({ eventId, value, setValue }: Props) => {
   const [query, setQuery] = useState('');
   const { data, isLoading, error } = useQuery({
-    queryKey: ['shuttleRoutes', eventId, dailyEventId],
-    queryFn: async () => await getRoutes(eventId, dailyEventId),
+    queryKey: ['shuttle', eventId],
+    queryFn: async () => await getEvent(eventId),
   });
 
-  const setSelectedRoute: (route: ShuttleRoutesView | null) => void =
-    useCallback(
-      (route: ShuttleRoutesView | null) => {
-        setValue(route?.shuttleRouteId ?? null);
-      },
-      [setValue],
-    );
+  const setSelectedDailyShuttle = useCallback(
+    (dailyEvent: DailyEvent | null) => {
+      setValue(dailyEvent?.dailyEventId ?? null);
+    },
+    [setValue],
+  );
 
-  const selectedRoute: ShuttleRoutesView | null = useMemo(
-    () => data?.find((ds) => ds.shuttleRouteId === value) || null,
+  const selectedDailyShuttle = useMemo(
+    () => data?.dailyEvents.find((ds) => ds.dailyEventId === value) || null,
     [data, value],
   );
 
-  const filtered: ShuttleRoutesView[] = useMemo(() => {
+  const filtered: DailyEvent[] = useMemo(() => {
     return query
-      ? filterByFuzzy(data ?? [], query, (p) => p.name)
-      : (data ?? []);
+      ? filterByFuzzy(data?.dailyEvents ?? [], query, (p) =>
+          dayjs(p.date).format('YYYY-MM-DD'),
+        )
+      : (data?.dailyEvents ?? []);
   }, [data, query]);
 
   if (error) return <div>Failed to load artists</div>;
 
   return (
-    <Combobox<ShuttleRoutesView | null>
+    <Combobox<DailyEvent | null>
       immediate
-      value={selectedRoute}
-      onChange={setSelectedRoute}
+      value={selectedDailyShuttle}
+      onChange={setSelectedDailyShuttle}
       onClose={() => setQuery('')}
     >
       <div className="relative group">
@@ -73,12 +71,14 @@ const ShuttleRouteInput = ({
           placeholder={
             isLoading
               ? '로딩 중…'
-              : data?.length === 0
-                ? '노선이 없습니다'
-                : '노선 선택'
+              : !data || data.dailyEvents.length === 0
+                ? '등록된 날짜가 없습니다'
+                : '날짜 선택'
           }
           defaultValue={null}
-          displayValue={(route: null | ShuttleRoutesView) => route?.name ?? ''}
+          displayValue={(dailyEvent: DailyEvent | null) =>
+            dailyEvent?.date ?? ''
+          }
           onChange={(event) => setQuery(event.target.value)}
         />
 
@@ -86,14 +86,14 @@ const ShuttleRouteInput = ({
           anchor="bottom"
           className="w-[var(--input-width)] shadow-md bg-white rounded-lg empty:invisible mt-4"
         >
-          {filtered.map((route) => (
+          {filtered.map((dailyEvent) => (
             <ComboboxOption
-              key={route.shuttleRouteId}
-              value={route}
+              key={dailyEvent.dailyEventId}
+              value={dailyEvent}
               className="data-[focus]:bg-blue-100 p-8 flex flex-row"
             >
               <div className="flex flex-col">
-                <span>{route.name}</span>
+                <span>{dayjs(dailyEvent.date).format('YYYY-MM-DD')}</span>
               </div>
             </ComboboxOption>
           ))}
@@ -103,4 +103,4 @@ const ShuttleRouteInput = ({
   );
 };
 
-export default ShuttleRouteInput;
+export default DailyEventInput;

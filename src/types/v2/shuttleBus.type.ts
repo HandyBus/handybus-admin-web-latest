@@ -62,7 +62,6 @@ export const CreateBusRequestSchema = z.object({
       (value) => phoneRegex.test(value),
       '010으로 시작하는 11자리 숫자를 입력해주세요',
     ),
-  openChatLink: z.string().url().optional(),
 });
 
 export type CreateBusRequest = z.infer<typeof CreateBusRequestSchema>;
