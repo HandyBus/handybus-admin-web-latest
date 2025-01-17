@@ -56,13 +56,21 @@ export const conform = (
       arrivalTime: formatDate(v.arrivalTime, 'datetime'),
     })) satisfies CreateShuttleRouteRequest['shuttleRouteHubs'];
 
+  const {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- we don't need to use these
+    shuttleRouteHubsToDestination,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- we don't need to use these
+    shuttleRouteHubsFromDestination,
+    ...rest
+  } = data;
+
   const x = {
-    ...data,
+    ...rest,
     shuttleRouteHubs: froms.concat(tos),
     reservationDeadline: formatDate(data.reservationDeadline, 'datetime'),
     earlybirdDeadline: data.earlybirdDeadline
       ? formatDate(data.earlybirdDeadline, 'datetime')
       : null,
-  };
+  } satisfies CreateShuttleRouteRequest;
   return x;
 };

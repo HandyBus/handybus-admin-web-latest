@@ -11,7 +11,7 @@ import RegionInput from '@/components/input/RegionInput';
 import { CheckIcon, PlusIcon, XIcon } from 'lucide-react';
 import { Button, Field, Label, RadioGroup, Radio } from '@headlessui/react';
 import ImageFileInput from '@/components/input/ImageFileInput';
-import HubInput from '@/components/input/HubInput';
+import RegionHubInput from '@/components/input/HubInput';
 import Input from '@/components/input/Input';
 import dayjs from 'dayjs';
 import { today, toDateOnly } from '@/utils/date.util';
@@ -113,7 +113,7 @@ const CreateEventForm = () => {
         control={control}
         name="regionHubId"
         render={({ field: { onChange, value } }) => (
-          <HubInput
+          <RegionHubInput
             regionId={watch.regionId}
             value={value}
             setValue={(n) => onChange(n)}
