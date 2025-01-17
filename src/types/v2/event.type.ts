@@ -35,6 +35,8 @@ export const EventsViewEntity = z
     // is this really nullable?
     eventArtists: ArtistsInEventsViewEntity.array().nullable(),
     dailyEvents: EventDailyShuttlesInEventsViewEntity.array(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
   })
   .strict();
 
