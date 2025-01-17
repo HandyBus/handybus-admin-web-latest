@@ -2,12 +2,12 @@
 
 import BlueLink from '@/components/link/BlueLink';
 import { routeHubColumns } from './types/table.type';
-import dayjs from 'dayjs';
 import { useQuery } from '@tanstack/react-query';
 import { getRoute } from '@/services/v2/shuttleRoute.services';
 import useTable from '@/hooks/useTable';
 import BaseTable from '@/components/table/BaseTable';
 import Buses from './components/Buses';
+import { formatDateString } from '@/utils/date.util';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -62,7 +62,7 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
                 <>
                   <li>
                     얼리버드 예약 마감일:{' '}
-                    {dayjs(route.earlybirdDeadline).format('YYYY-MM-DD')}
+                    {formatDateString(route.earlybirdDeadline)}
                   </li>
                   <li>
                     귀가행 얼리버드 가격: {route.earlybirdPriceFromDestination}
@@ -76,8 +76,7 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
             </ul>
             <ul>
               <li>
-                에약 마감일:{' '}
-                {dayjs(route.reservationDeadline).format('YYYY-MM-DD')}
+                에약 마감일: {formatDateString(route.reservationDeadline)}
               </li>
               <li>귀가행 가격: {route.regularPriceFromDestination}</li>
               <li>목적지행 가격: {route.regularPriceToDestination}</li>

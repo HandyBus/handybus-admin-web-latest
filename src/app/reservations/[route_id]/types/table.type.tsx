@@ -3,10 +3,10 @@
 import { ReservationView } from '@/types/v2/reservation.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
-import dayjs from 'dayjs';
 import Stringifier from '@/utils/stringifier.util';
 import { ShuttleBusesView } from '@/types/v2/shuttleBus.type';
 import EditHandyStatusDialog from '../[reservation_id]/components/EditHandyStatusDialog';
+import { formatDateString } from '@/utils/date.util';
 
 const busColumnHelper = createColumnHelper<ShuttleBusesView>();
 
@@ -61,7 +61,7 @@ export const reservationColumns = [
   }),
   reservationColumnHelper.accessor('createdAt', {
     header: () => '예약일',
-    cell: (info) => dayjs(info.getValue()).format('YYYY-MM-DD HH:mm:ss'),
+    cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
   reservationColumnHelper.accessor('passengers', {
     id: 'passengersLength',

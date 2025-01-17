@@ -1,21 +1,19 @@
 import { z } from 'zod';
 
-const RefundRequestsInPaymentsViewEntity = z.array(
-  z.object({
-    refundRequestId: z.number(),
-    paymentId: z.string(),
-    principalAmount: z.number(),
-    previousRefundableAmount: z.number(),
-    refundAmount: z.number(),
-    afterRefundableAmount: z.number().nullable(),
-    refundReason: z.string(),
-    refundAt: z.string().nullable(),
-    failedReason: z.string(),
-    status: z.enum(['REQUESTED, COMPLETED, FAILED']),
-    createdAt: z.string(),
-    updatedAt: z.string(),
-  }),
-);
+const RefundRequestsInPaymentsViewEntity = z.object({
+  refundRequestId: z.number(),
+  paymentId: z.string(),
+  principalAmount: z.number(),
+  previousRefundableAmount: z.number(),
+  refundAmount: z.number(),
+  afterRefundableAmount: z.number().nullable(),
+  refundReason: z.string(),
+  refundAt: z.string().nullable(),
+  failedReason: z.string(),
+  status: z.enum(['REQUESTED', 'COMPLETED', 'FAILED']),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
 
 export type RefundRequestsInPaymentsView = z.infer<
   typeof RefundRequestsInPaymentsViewEntity

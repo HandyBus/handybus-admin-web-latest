@@ -58,6 +58,8 @@ export const ShuttleRoutesViewEntity = z
       ShuttleRouteHubsInShuttleRoutesViewEntity.array(),
     // TODO remove .nullable() after fixing the api
     event: EventsViewEntity.optional(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
   })
   .strict();
 
