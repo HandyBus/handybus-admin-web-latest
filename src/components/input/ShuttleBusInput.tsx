@@ -11,54 +11,57 @@ import {
   ComboboxButton,
 } from '@headlessui/react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
+import { ChevronDown } from 'lucide-react';
+import { ShuttleBusesView } from '@/types/v2/shuttleBus.type';
+import { getBuses } from '@/services/v2/shuttleBus.services';
 
 interface Props {
-  shuttleId: number;
+  eventId: number;
+  dailyEventId: number;
+  shuttleRouteId: number;
   value: number | null;
   setValue: (value: number | null) => void;
 }
 
-import { ChevronDown } from 'lucide-react';
-import { getEvent } from '@/services/v2/event.services';
-import { EventsView } from '@/types/v2/event.type';
-import dayjs from 'dayjs';
-
-type DailyEvent = ArrayElement<EventsView['dailyEvents']>;
-
-const DailyShuttleInput = ({ shuttleId, value, setValue }: Props) => {
+const ShuttleBusInput = ({
+  eventId,
+  dailyEventId,
+  shuttleRouteId,
+  value,
+  setValue,
+}: Props) => {
   const [query, setQuery] = useState('');
   const { data, isLoading, error } = useQuery({
-    queryKey: ['shuttle', shuttleId],
-    queryFn: async () => await getEvent(shuttleId),
+    queryKey: ['shuttleBus', eventId, dailyEventId, shuttleRouteId],
+    queryFn: async () => await getBuses(eventId, dailyEventId, shuttleRouteId),
   });
 
-  const setSelectedDailyShuttle = useCallback(
-    (dailyEvent: DailyEvent | null) => {
-      setValue(dailyEvent?.dailyEventId ?? null);
-    },
-    [setValue],
-  );
+  const setSelectedRoute: (route: ShuttleBusesView | null) => void =
+    useCallback(
+      (route: ShuttleBusesView | null) => {
+        setValue(route?.shuttleBusId ?? null);
+      },
+      [setValue],
+    );
 
-  const selectedDailyShuttle = useMemo(
-    () => data?.dailyEvents.find((ds) => ds.dailyEventId === value) || null,
+  const setSelectedBus: ShuttleBusesView | null = useMemo(
+    () => data?.find((ds) => ds.shuttleBusId === value) || null,
     [data, value],
   );
 
-  const filtered: DailyEvent[] = useMemo(() => {
+  const filtered: ShuttleBusesView[] = useMemo(() => {
     return query
-      ? filterByFuzzy(data?.dailyEvents ?? [], query, (p) =>
-          dayjs(p.date).format('YYYY-MM-DD'),
-        )
-      : (data?.dailyEvents ?? []);
+      ? filterByFuzzy(data ?? [], query, (p) => p.busName)
+      : (data ?? []);
   }, [data, query]);
 
   if (error) return <div>Failed to load artists</div>;
 
   return (
-    <Combobox<DailyEvent | null>
+    <Combobox<ShuttleBusesView | null>
       immediate
-      value={selectedDailyShuttle}
-      onChange={setSelectedDailyShuttle}
+      value={setSelectedBus}
+      onChange={setSelectedRoute}
       onClose={() => setQuery('')}
     >
       <div className="relative group">
@@ -71,14 +74,12 @@ const DailyShuttleInput = ({ shuttleId, value, setValue }: Props) => {
           placeholder={
             isLoading
               ? '로딩 중…'
-              : !data || data.dailyEvents.length === 0
-                ? '등록된 날짜가 없습니다'
-                : '날짜 선택'
+              : data?.length === 0
+                ? '버스가 없습니다'
+                : '버스 선택'
           }
           defaultValue={null}
-          displayValue={(dailyEvent: DailyEvent | null) =>
-            dailyEvent?.date ?? ''
-          }
+          displayValue={(bus: null | ShuttleBusesView) => bus?.busName ?? ''}
           onChange={(event) => setQuery(event.target.value)}
         />
 
@@ -86,14 +87,14 @@ const DailyShuttleInput = ({ shuttleId, value, setValue }: Props) => {
           anchor="bottom"
           className="w-[var(--input-width)] shadow-md bg-white rounded-lg empty:invisible mt-4"
         >
-          {filtered.map((dailyEvent) => (
+          {filtered.map((bus) => (
             <ComboboxOption
-              key={dailyEvent.dailyEventId}
-              value={dailyEvent}
+              key={bus.shuttleBusId}
+              value={bus}
               className="data-[focus]:bg-blue-100 p-8 flex flex-row"
             >
               <div className="flex flex-col">
-                <span>{dayjs(dailyEvent.date).format('YYYY-MM-DD')}</span>
+                <span>{bus.busName}</span>
               </div>
             </ComboboxOption>
           ))}
@@ -103,4 +104,4 @@ const DailyShuttleInput = ({ shuttleId, value, setValue }: Props) => {
   );
 };
 
-export default DailyShuttleInput;
+export default ShuttleBusInput;

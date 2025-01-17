@@ -22,7 +22,7 @@ import { getAllEvents } from '@/services/v2/event.services';
 import { EventsView } from '@/types/v2/event.type';
 import Image from 'next/image';
 
-const ShuttleInput = ({ value, setValue }: Props) => {
+const EventInput = ({ value, setValue }: Props) => {
   const [query, setQuery] = useState('');
   const { data, isLoading, error } = useQuery({
     queryKey: ['shuttles'],
@@ -113,4 +113,4 @@ const ShuttleInput = ({ value, setValue }: Props) => {
   );
 };
 
-export default ShuttleInput;
+export default EventInput;

@@ -26,7 +26,6 @@ const NewBusPage = ({
       name: '',
       number: '',
       phoneNumber: '',
-      openChatLink: '',
     },
   });
 
@@ -42,7 +41,7 @@ const NewBusPage = ({
           .then(() => {
             alert('버스가 추가되었습니다.');
             router.push(
-              `/shuttles/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`,
+              `/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`,
             );
           })
           .catch((e) => {
@@ -58,7 +57,7 @@ const NewBusPage = ({
     <main className="h-full w-full bg-white flex flex-col gap-16">
       <h2 className="text-24 font-500">거점지 정보</h2>
       <form
-        className="flex flex-col"
+        className="flex flex-col gap-8"
         onSubmit={handleSubmit(onSubmit)}
         method="post"
       >
@@ -86,18 +85,6 @@ const NewBusPage = ({
             <Input
               value={value}
               placeholder="010-0000-0000"
-              setValue={onChange}
-            />
-          )}
-        />
-        <label>오픈채팅 링크</label>
-        <Controller
-          control={control}
-          name="openChatLink"
-          render={({ field: { onChange, value } }) => (
-            <Input
-              value={value}
-              placeholder="https://open.kakao.com/..."
               setValue={onChange}
             />
           )}
@@ -141,7 +128,12 @@ const NewBusPage = ({
           )}
         />
 
-        <button type="submit">버스 추가하기</button>
+        <button
+          className="bg-blue-500 text-white active:scale-95 transition-all p-4 rounded-xl hover:opacity-75"
+          type="submit"
+        >
+          버스 추가하기
+        </button>
       </form>
     </main>
   );
