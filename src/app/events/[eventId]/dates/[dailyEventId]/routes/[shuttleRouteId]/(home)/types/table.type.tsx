@@ -4,6 +4,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import type { ShuttleBusesView } from '@/types/v2/shuttleBus.type';
 import BlueLink from '@/components/link/BlueLink';
 import { ShuttleRouteHubsInShuttleRoutesView } from '@/types/v2/shuttleRoute.type';
+import { formatDateString } from '@/utils/date.util';
 
 const busColumnHelper = createColumnHelper<ShuttleBusesView>();
 
@@ -52,6 +53,6 @@ export const routeHubColumns = [
   }),
   routeHubColumnHelper.accessor('arrivalTime', {
     header: () => '도착시간',
-    cell: (info) => JSON.stringify(info.getValue()), // dayjs(info.getValue()).format('YYYY-MM-DD HH:mm:ss'),
+    cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
 ];

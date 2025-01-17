@@ -1,6 +1,7 @@
 import { BusSortType } from '@/types/v1/bus.type';
 import { HandyStatusType } from '@/types/v1/reservation.type';
 import { EventsView } from '@/types/v2/event.type';
+import { RefundRequestsInPaymentsView } from '@/types/v2/payment.type';
 import { ReservationView } from '@/types/v2/reservation.type';
 import { ShuttleRoutesView } from '@/types/v2/shuttleRoute.type';
 
@@ -97,6 +98,16 @@ const Stringifier = Object.freeze({
         return '환불 요청';
       case 'CANCEL_COMPLETE':
         return '환불 완료';
+    }
+  },
+  refundStatus(v: RefundRequestsInPaymentsView['status']) {
+    switch (v) {
+      case 'REQUESTED':
+        return '환불 요청';
+      case 'COMPLETED':
+        return '환불 완료';
+      case 'FAILED':
+        return '환불 거절';
     }
   },
   reservationType(v: ReservationView['type']) {

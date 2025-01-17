@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import BusTable from './components/BusTable';
 import ReservationTable from './components/ReservationTable';
 import { getRoute } from '@/services/v2/shuttleRoute.services';
+import { formatDateString } from '@/utils/date.util';
 
 interface Props {
   params: {
@@ -26,11 +27,12 @@ const Page = ({ params, searchParams }: Props) => {
   });
 
   const eventName = shuttleRoute?.event?.eventName;
-  const dailyEventDate = new Date(
+  const dailyEventDate = formatDateString(
     shuttleRoute?.event?.dailyEvents.find(
       (dailyEvent) => dailyEvent.dailyEventId === dailyEventId,
-    )?.date ?? '',
-  ).toLocaleDateString();
+    )?.date,
+  );
+
   const shuttleRouteName = shuttleRoute?.name;
 
   return (

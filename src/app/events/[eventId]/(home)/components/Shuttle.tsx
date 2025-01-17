@@ -2,6 +2,7 @@ import type { EventsView } from '@/types/v2/event.type';
 import Image from 'next/image';
 import Guide from '@/components/guide/Guide';
 import Stringifier from '@/utils/stringifier.util';
+import { formatDateString } from '@/utils/date.util';
 
 interface Props {
   event: EventsView;
@@ -26,7 +27,12 @@ const EventViewer = ({ event }: Props) => {
               출연:{' '}
               {event.eventArtists?.map((p) => p.artistName).join(', ') ?? '-'}
             </p>
-            <p>날짜: {event.dailyEvents.map((ds) => ds.date).join(', ')}</p>
+            <p>
+              날짜:{' '}
+              {event.dailyEvents
+                .map((ds) => formatDateString(ds.date))
+                .join(', ')}
+            </p>
             <p>상태: {Stringifier.eventStatus(event.eventStatus)}</p>
           </div>
         </div>

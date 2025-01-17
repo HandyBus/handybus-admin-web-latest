@@ -6,6 +6,7 @@ import Image from 'next/image';
 import BlueLink from '@/components/link/BlueLink';
 import RegionHubViewerModal from '@/components/viewer/RegionHubViewerModal';
 import { formatDateString } from '@/utils/date.util';
+import Stringifier from '@/utils/stringifier.util';
 
 const columnHelper = createColumnHelper<EventsView>();
 
@@ -34,7 +35,7 @@ export const columns = [
   columnHelper.accessor('eventStatus', {
     id: 'eventStatus',
     header: '행사 상태',
-    cell: (info) => info.getValue(),
+    cell: (info) => Stringifier.eventStatus(info.getValue()),
   }),
   columnHelper.group({
     id: 'region',

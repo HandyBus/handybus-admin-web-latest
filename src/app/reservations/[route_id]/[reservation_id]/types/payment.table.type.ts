@@ -5,6 +5,8 @@ import {
   TosspaymentsCancel,
   TosspaymentsCashReceipts,
 } from '@/types/v2/payment.type';
+import { formatDateString } from '@/utils/date.util';
+import Stringifier from '@/utils/stringifier.util';
 import { createColumnHelper } from '@tanstack/react-table';
 
 const columnHelper = createColumnHelper<Payment>();
@@ -48,11 +50,11 @@ export const paymentColumns = [
   }),
   columnHelper.accessor('createdAt', {
     header: '생성일',
-    cell: (info) => info.getValue(),
+    cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
   columnHelper.accessor('updatedAt', {
     header: '수정일',
-    cell: (info) => info.getValue(),
+    cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
   columnHelper.accessor('refundRequests', {
     header: '환불 요청',
@@ -95,7 +97,7 @@ export const refundRequestColumns = [
   }),
   refundRequestColumnHelper.accessor('refundAt', {
     header: '환불 일시',
-    cell: (info) => info.getValue() || '-',
+    cell: (info) => (info.getValue() ? formatDateString(info.getValue()) : '-'),
   }),
   refundRequestColumnHelper.accessor('failedReason', {
     header: '실패 사유',
@@ -103,15 +105,15 @@ export const refundRequestColumns = [
   }),
   refundRequestColumnHelper.accessor('status', {
     header: '환불 상태',
-    cell: (info) => info.getValue(),
+    cell: (info) => Stringifier.refundStatus(info.getValue()),
   }),
   refundRequestColumnHelper.accessor('createdAt', {
     header: '생성일',
-    cell: (info) => info.getValue(),
+    cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
   refundRequestColumnHelper.accessor('updatedAt', {
     header: '수정일',
-    cell: (info) => info.getValue(),
+    cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
 ];
 
@@ -164,11 +166,12 @@ export const tosspaymentsColumns = [
   }),
   tosspaymentsColumnHelper.accessor('requestedAt', {
     header: '요청일시',
-    cell: (info) => info.getValue(),
+    cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
   tosspaymentsColumnHelper.accessor('approvedAt', {
     header: '승인일시',
-    cell: (info) => (info.getValue() ? info.getValue() : '없음'),
+    cell: (info) =>
+      info.getValue() ? formatDateString(info.getValue(), 'datetime') : '없음',
   }),
   tosspaymentsColumnHelper.accessor('useEscrow', {
     header: '에스크로 사용 useEscrow',

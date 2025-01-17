@@ -1,5 +1,7 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { ShuttleRoutesView } from '@/types/v2/shuttleRoute.type';
+import { formatDateString } from '@/utils/date.util';
+import Stringifier from '@/utils/stringifier.util';
 
 const columnHelper = createColumnHelper<ShuttleRoutesView>();
 
@@ -22,19 +24,19 @@ export const columns = [
         (event) => event.dailyEventId === dailyEventId,
       );
 
-      return dailyEvent ? dailyEvent.date : '-';
+      return dailyEvent ? formatDateString(dailyEvent.date) : '-';
     },
   }),
   columnHelper.accessor('status', {
     header: () => '노선 상태',
-    cell: (info) => info.getValue(),
+    cell: (info) => Stringifier.shuttleRouteStatus(info.getValue()),
   }),
   columnHelper.accessor('reservationDeadline', {
     header: () => '예약 마감일',
-    cell: (info) => info.getValue(),
+    cell: (info) => formatDateString(info.getValue()),
   }),
   columnHelper.accessor('earlybirdDeadline', {
     header: () => '얼리버드 예약 마감일',
-    cell: (info) => info.getValue() ?? '-',
+    cell: (info) => (info.getValue() ? formatDateString(info.getValue()) : '-'),
   }),
 ];

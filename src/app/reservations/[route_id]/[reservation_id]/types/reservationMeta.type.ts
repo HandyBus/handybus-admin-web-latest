@@ -1,6 +1,7 @@
 import { ReservationView } from '@/types/v2/reservation.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import Stringifier from '@/utils/stringifier.util';
+import { formatDateString } from '@/utils/date.util';
 
 const columnHelper = createColumnHelper<ReservationView>();
 
@@ -14,7 +15,7 @@ export const columns = [
     cell: (info) => Stringifier.reservationStatus(info.getValue()),
   }),
   columnHelper.accessor('cancelStatus', {
-    header: () => '취소 상태',
+    header: () => '환불 상태',
     cell: (info) => Stringifier.cancelStatus(info.getValue()),
   }),
   columnHelper.accessor('type', {
@@ -27,10 +28,10 @@ export const columns = [
   }),
   columnHelper.accessor('createdAt', {
     header: () => '생성일',
-    cell: (info) => info.getValue(),
+    cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
   columnHelper.accessor('updatedAt', {
     header: () => '수정일',
-    cell: (info) => info.getValue(),
+    cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
 ];

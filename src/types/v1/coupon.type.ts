@@ -13,12 +13,12 @@ export const CouponSchema = z.object({
   maxApplicablePeople: z.number().int(),
   currentCouponUsage: z.number().int(),
   maxCouponUsage: z.number().int(),
-  validFrom: z.coerce.date(),
-  validTo: z.coerce.date(),
+  validFrom: z.string(),
+  validTo: z.string(),
   isActive: z.boolean(),
   status: z.enum(['ACTIVE', 'INACTIVE']),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 export const CouponListSchema = z.array(CouponSchema);

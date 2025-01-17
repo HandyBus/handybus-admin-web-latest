@@ -1,6 +1,7 @@
 'use client';
 
 import { CouponType } from '@/types/v1/coupon.type';
+import { formatDateString } from '@/utils/date.util';
 import { createColumnHelper } from '@tanstack/react-table';
 
 const columnHelper = createColumnHelper<CouponType>();
@@ -49,7 +50,7 @@ export const columns = [
         const now = new Date();
         return isActive ? (
           <span className="text-primary-600">진행중</span>
-        ) : now < validFrom ? (
+        ) : now < new Date(validFrom) ? (
           <span className="text-grey-700">대기</span>
         ) : (
           <span className="text-red-600">만료</span>
@@ -83,9 +84,9 @@ export const columns = [
       const { from, to } = info.getValue();
       return (
         <span className="white-space text-14">
-          {from.toLocaleString('ko-KR')}부터
+          {formatDateString(from, 'datetime')}부터
           <br />
-          {to.toLocaleString('ko-KR')}까지
+          {formatDateString(to, 'datetime')}까지
         </span>
       );
     },
@@ -93,13 +94,17 @@ export const columns = [
   columnHelper.accessor('createdAt', {
     header: () => '생성일',
     cell: (info) => (
-      <span className="text-14">{info.getValue().toLocaleString('ko-KR')}</span>
+      <span className="text-14">
+        {formatDateString(info.getValue(), 'datetime')}
+      </span>
     ),
   }),
   columnHelper.accessor('updatedAt', {
     header: () => '수정일',
     cell: (info) => (
-      <span className="text-14">{info.getValue().toLocaleString('ko-KR')}</span>
+      <span className="text-14">
+        {formatDateString(info.getValue(), 'datetime')}
+      </span>
     ),
   }),
 ];

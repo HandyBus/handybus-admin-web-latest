@@ -1,5 +1,6 @@
 'use client';
 import { HubType } from '@/types/v1/region.type';
+import { formatDate } from '@/utils/date.util';
 import { createColumnHelper } from '@tanstack/react-table';
 
 const columnHelper = createColumnHelper<HubType>();
@@ -19,10 +20,10 @@ export const columns = [
   }),
   columnHelper.accessor('createdAt', {
     header: () => '생성일',
-    cell: (info) => info.getValue().toLocaleDateString('ko-KR'),
+    cell: (info) => formatDate(info.getValue(), 'datetime'),
   }),
   columnHelper.accessor('updatedAt', {
     header: () => '수정일',
-    cell: (info) => info.getValue().toLocaleDateString('ko-KR'),
+    cell: (info) => formatDate(info.getValue(), 'datetime'),
   }),
 ];

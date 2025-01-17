@@ -26,15 +26,20 @@ const isDateOnly = (date: Date) => {
   );
 };
 
-export const formatDate = (date: Date, type: 'date' | 'datetime') => {
-  if (type === 'datetime') return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
-  else {
+export const formatDate = (date: Date, type: 'date' | 'datetime' = 'date') => {
+  if (type === 'datetime') {
+    return dayjs(date).format('YYYY. MM. DD. HH:mm:ss');
+  } else {
     if (!isDateOnly(date))
-      console.warn('printing non-date only Date to YYYY-MM-DD');
-    return dayjs(date).format('YYYY-MM-DD');
+      console.warn('printing non-date only Date to YYYY. MM. DD');
+    return dayjs(date).format('YYYY. MM. DD');
   }
 };
 
-export const formatDateString = (date: string, type: 'date' | 'datetime') => {
+export const formatDateString = (
+  date: string | null | undefined,
+  type: 'date' | 'datetime' = 'date',
+) => {
+  if (!date) return '';
   return formatDate(new Date(date), type);
 };
