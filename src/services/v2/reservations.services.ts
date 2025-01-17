@@ -28,7 +28,7 @@ interface GetReservationOptionWithPagination extends GetReservationOption {
 }
 
 export const getReservations = async (
-  option?: GetReservationOptionWithPagination,
+  option?: Partial<GetReservationOptionWithPagination>,
 ) => {
   const url = `/v2/shuttle-operation/admin/reservations${toSearchParamString({ ...option }, '?')}`;
 
