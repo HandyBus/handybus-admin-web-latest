@@ -36,8 +36,7 @@ export const postEvent = async (request: CreateEventRequest) => {
     '/v2/shuttle-operation/admin/events',
     silentParse(CreateEventRequest, request),
     {
-      // TODO: rename to eventId when v2 api is ready
-      shape: { shuttleId: z.number() },
+      shape: { eventId: z.number() },
     },
   );
   queryClient.invalidateQueries({ queryKey: ['events'] });

@@ -10,6 +10,7 @@ import { notFound } from 'next/navigation';
 import { columns } from './types/table.type';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
+import { formatDateString } from '@/utils/date.util';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -64,7 +65,13 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
       <header className="flex flex-row justify-between">
-        <h1 className="text-[32px] font-500">일자별 셔틀 상세</h1>
+        {thisDailyShuttle && (
+          <h1 className="text-[32px] font-500">
+            <BlueLink href={`/events/${eventId}`}>{shuttle.eventName}</BlueLink>{' '}
+            행사의 <b>{formatDateString(thisDailyShuttle.date)}</b>일자 상세
+            정보
+          </h1>
+        )}
       </header>
       <div className="flex flex-col gap-16">
         일자별 셔틀 정보

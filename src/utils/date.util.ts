@@ -43,3 +43,8 @@ export const formatDateString = (
   if (!date) return '';
   return formatDate(new Date(date), type);
 };
+
+export const parseDateString = (date: string | undefined) => {
+  if (!date) return new Date();
+  return new Date(date);
+};

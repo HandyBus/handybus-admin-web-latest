@@ -21,13 +21,13 @@ export const CreateShuttleRouteFormSchema = z.object({
   maxPassengerCount: z.number(),
   shuttleRouteHubsToDestination: z.array(
     z.object({
-      regionHubId: z.number(),
+      regionHubId: z.number().nullable(),
       arrivalTime: z.coerce.date(),
     }),
   ),
   shuttleRouteHubsFromDestination: z.array(
     z.object({
-      regionHubId: z.number(),
+      regionHubId: z.number().nullable(),
       arrivalTime: z.coerce.date(),
     }),
   ),
@@ -41,20 +41,30 @@ export const conform = (
   data: CreateShuttleRouteForm,
 ): CreateShuttleRouteRequest => {
   const froms: CreateShuttleRouteRequest['shuttleRouteHubs'] =
-    data.shuttleRouteHubsFromDestination.map((v, idx) => ({
-      ...v,
-      sequence: idx + 1,
-      type: 'FROM_DESTINATION',
-      arrivalTime: formatDate(v.arrivalTime, 'datetime'),
-    })) satisfies CreateShuttleRouteRequest['shuttleRouteHubs'];
+    data.shuttleRouteHubsFromDestination
+      .filter(
+        (dest): dest is { regionHubId: number; arrivalTime: Date } =>
+          dest.regionHubId !== null,
+      )
+      .map((v, idx) => ({
+        ...v,
+        sequence: idx + 1,
+        type: 'FROM_DESTINATION',
+        arrivalTime: formatDate(v.arrivalTime, 'datetime'),
+      })) satisfies CreateShuttleRouteRequest['shuttleRouteHubs'];
 
   const tos: CreateShuttleRouteRequest['shuttleRouteHubs'] =
-    data.shuttleRouteHubsToDestination.map((v, idx) => ({
-      ...v,
-      sequence: idx + 1,
-      type: 'TO_DESTINATION',
-      arrivalTime: formatDate(v.arrivalTime, 'datetime'),
-    })) satisfies CreateShuttleRouteRequest['shuttleRouteHubs'];
+    data.shuttleRouteHubsToDestination
+      .filter(
+        (dest): dest is { regionHubId: number; arrivalTime: Date } =>
+          dest.regionHubId !== null,
+      )
+      .map((v, idx) => ({
+        ...v,
+        sequence: idx + 1,
+        type: 'TO_DESTINATION',
+        arrivalTime: formatDate(v.arrivalTime, 'datetime'),
+      })) satisfies CreateShuttleRouteRequest['shuttleRouteHubs'];
 
   const {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars -- we don't need to use these

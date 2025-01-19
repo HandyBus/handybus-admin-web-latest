@@ -76,8 +76,26 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     queryFn: async () => await getDemand(optionFrom),
   });
 
-  const tableTo = useTable({ data: dataTo, columns: columnsTo });
-  const tableFrom = useTable({ data: dataFrom, columns: columnsFrom });
+  const tableTo = useTable({
+    data: dataTo,
+    columns: columnsTo,
+    state: {
+      columnVisibility: {
+        provinceFullName: partialRegion.province === null,
+        cityFullName: partialRegion.city === null,
+      },
+    },
+  });
+  const tableFrom = useTable({
+    data: dataFrom,
+    columns: columnsFrom,
+    state: {
+      columnVisibility: {
+        provinceFullName: partialRegion.province === null,
+        cityFullName: partialRegion.city === null,
+      },
+    },
+  });
 
   return (
     <div className="flex flex-col gap-16">
@@ -97,7 +115,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
       <PartialRegionInput value={partialRegion} setValue={setPartialRegion} />
 
       <article>
-        <h2 className="text-[24px] font-500">목적지행 수요</h2>
+        <h2 className="text-[24px] font-500">목적지 방향 희망 탑승지 수요</h2>
         <BaseTable table={tableTo} />
         {dataTo && dataTo.length === 0 && <div>데이터가 없습니다.</div>}
         {isPendingTo && <div>Loading...</div>}
@@ -105,7 +123,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
       </article>
 
       <article>
-        <h2 className="text-[24px] font-500">귀가행 수요</h2>
+        <h2 className="text-[24px] font-500">귀가 방향 탑승지 수요</h2>
         <BaseTable table={tableFrom} />
         {dataFrom && dataFrom.length === 0 && <div>데이터가 없습니다.</div>}
         {isPendingFrom && <div>Loading...</div>}

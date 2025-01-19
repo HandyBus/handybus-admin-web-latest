@@ -40,7 +40,9 @@ const Page = ({ params: { eventId } }: Props) => {
 
   return (
     <main className="flex size-full flex-col gap-16 bg-white ">
-      <h1 className="text-[32px] font-500">행사 상세</h1>
+      <h1 className="text-[32px] font-500">
+        <b>{event?.eventName}</b> 행사의 상세 정보
+      </h1>
       <div className="flex flex-col gap-16">
         <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
           <JSONViewer value={event} />

@@ -212,7 +212,7 @@ const CreateEventForm = () => {
           <label>아티스트</label>
           <button
             type="button"
-            onClick={() => appendArtist({ artistId: 0 })}
+            onClick={() => appendArtist({ artistId: null })}
             className="w-fit text-blue-500"
           >
             <PlusIcon />

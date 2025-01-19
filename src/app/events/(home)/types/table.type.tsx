@@ -32,6 +32,20 @@ export const columns = [
     minSize: 40, //enforced during column resizing
     maxSize: 40, //enforced during column resizing
   }),
+  columnHelper.accessor('eventName', {
+    id: 'eventName',
+    header: '행사 이름',
+    cell: (info) => (
+      <BlueLink href={`/events/${info.row.original.eventId}`}>
+        {info.getValue()}
+      </BlueLink>
+    ),
+  }),
+  columnHelper.accessor('eventType', {
+    id: 'eventType',
+    header: '행사 종류',
+    cell: (info) => info.getValue(),
+  }),
   columnHelper.accessor('eventStatus', {
     id: 'eventStatus',
     header: '행사 상태',
@@ -62,16 +76,6 @@ export const columns = [
         ),
       }),
     ],
-  }),
-  columnHelper.accessor('eventType', {
-    id: 'eventType',
-    header: '행사 종류',
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor('eventName', {
-    id: 'eventName',
-    header: '행사 이름',
-    cell: (info) => info.getValue(),
   }),
   // Accessor Column
   columnHelper.group({
@@ -126,19 +130,20 @@ export const columns = [
       );
     },
   }),
-  columnHelper.display({
-    id: 'actions',
-    header: '액션',
-    cell: (props) => (
-      <BlueLink href={`/events/${props.row.original.eventId}`}>
-        자세히 보기
-      </BlueLink>
-    ),
-  }),
+  // columnHelper.display({
+  //   id: 'actions',
+  //   header: '액션',
+  //   cell: (props) => (
+  //     <BlueLink href={`/events/${props.row.original.eventId}`}>
+  //       자세히 보기
+  //     </BlueLink>
+  //   ),
+  // }),
 ];
 
 // Initial column visibility - columns are shown by default
 export const initialColumnVisibility = {
+  eventId: false,
   eventLocationAddress: false,
   eventLocationLatitude: false,
   eventLocationLongitude: false,

@@ -9,14 +9,17 @@ export const CreateEventFormSchema = z.object({
   dailyEvents: z.object({ date: z.date() }).array(),
   type: z.enum(['CONCERT', 'FESTIVAL']),
   // to work with react-hook-form
-  artistIds: z.array(z.object({ artistId: z.number().int() })),
+  artistIds: z.array(z.object({ artistId: z.number().int().nullable() })),
 });
 
 export type CreateEventFormData = z.infer<typeof CreateEventFormSchema>;
 
 export const conform = (data: CreateEventFormData): CreateEventRequest => {
+  const artistIds = data.artistIds.filter(
+    (artist): artist is { artistId: number } => artist.artistId !== null,
+  );
   return {
     ...data,
-    artistIds: data.artistIds.map(({ artistId }) => artistId),
+    artistIds: artistIds.map((artist) => artist.artistId),
   } satisfies CreateEventRequest;
 };
