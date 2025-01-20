@@ -117,13 +117,13 @@ export const RegionHubInputSelfContained = ({
 }: Omit<Props, 'regionId'>) => {
   const [regionId, setRegionId] = useState<number | null>(null);
   return (
-    <>
+    <div className="flex flex-col">
       <RegionInput value={regionId} setValue={setRegionId} />
       <RegionHubInput
         regionId={regionId ?? undefined}
         value={value}
         setValue={setValue}
       />
-    </>
+    </div>
   );
 };

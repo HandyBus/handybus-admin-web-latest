@@ -19,20 +19,20 @@ export const POST = async (request: NextRequest) => {
     );
 
     // ASSERT : apiResponse.status === 200
-    const issuedToken = (
-      (await apiResponse.json()) as {
-        statusCode: number;
-        ok: boolean;
-        token: string;
-      }
-    ).token;
+    const issuedToken = (await apiResponse.json()) as {
+      statusCode: number;
+      ok: boolean;
+      token: string;
+    };
 
-    if (issuedToken) {
+    console.log('login response:', issuedToken);
+
+    if (issuedToken.token) {
       const url = request.nextUrl.clone();
       url.pathname = '/';
       const response = NextResponse.redirect(url);
 
-      response.cookies.set(AUTH_TOKEN_COOKIE_NAME, issuedToken, {
+      response.cookies.set(AUTH_TOKEN_COOKIE_NAME, issuedToken.token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
@@ -42,7 +42,8 @@ export const POST = async (request: NextRequest) => {
     } else {
       throw new Error('Token not found in response');
     }
-  } catch {
+  } catch (e) {
+    console.error('Error logging in:', e);
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);

@@ -148,6 +148,12 @@ const PartialRegionInput = ({ value, setValue }: Props<PartialRegion>) => {
             anchor="bottom"
             className="w-[var(--input-width)] shadow-md bg-white rounded-lg empty:invisible mt-4"
           >
+            <ComboboxOption
+              value={null}
+              className="data-[focus]:bg-blue-100 p-8"
+            >
+              전체
+            </ComboboxOption>
             {filteredCities.map((city) => (
               <ComboboxOption
                 key={city.regionId}

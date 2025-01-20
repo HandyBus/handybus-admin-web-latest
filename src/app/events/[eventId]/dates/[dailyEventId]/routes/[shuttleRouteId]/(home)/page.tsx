@@ -38,14 +38,24 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
       <header className="flex flex-row justify-between">
-        <h1 className="text-[32px] font-500">노선 상세</h1>
+        <h1 className="text-[32px] font-500">
+          <BlueLink href={`/events/${eventId}`}>
+            {route?.event?.eventName}
+          </BlueLink>{' '}
+          행사의{' '}
+          <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>
+            {formatDateString(
+              route?.event?.dailyEvents.find(
+                (dailyEvent) =>
+                  dailyEvent.dailyEventId === Number(dailyEventId),
+              )?.date,
+              'date',
+            )}
+          </BlueLink>{' '}
+          일자 노선 정보
+        </h1>
       </header>
-      <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
-        <BlueLink href={`/events/${eventId}`}>행사</BlueLink>
-        <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>
-          해당 일자 행사
-        </BlueLink>
-      </div>
+
       {isRoutePending && <div>Loading...</div>}
       {isRouteError && <div>Error: {routeError.message}</div>}
       {route && (

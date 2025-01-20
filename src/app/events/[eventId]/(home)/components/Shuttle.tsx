@@ -1,6 +1,5 @@
 import type { EventsView } from '@/types/v2/event.type';
 import Image from 'next/image';
-import Guide from '@/components/guide/Guide';
 import Stringifier from '@/utils/stringifier.util';
 import { formatDateString } from '@/utils/date.util';
 
@@ -37,10 +36,6 @@ const EventViewer = ({ event }: Props) => {
           </div>
         </div>
       </div>
-      <Guide>
-        셔틀 상태의 의미는 다음과 같습니다: OPEN - , ENDED - , INACTIVE -
-        비활성화됨
-      </Guide>
     </>
   );
 };

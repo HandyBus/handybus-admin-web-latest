@@ -6,12 +6,11 @@ import Image from 'next/image';
 const columnHelper = createColumnHelper<ShuttleDemandStatisics>();
 
 export const columnsForGroupByEventId = [
-  columnHelper.accessor('eventId', {
-    id: 'eventId',
-    header: '행사 ID',
-    cell: (info) => info.getValue(),
-  }),
-
+  // columnHelper.accessor('eventId', {
+  //   id: 'eventId',
+  //   header: '행사 ID',
+  //   cell: (info) => info.getValue(),
+  // }),
   columnHelper.display({
     id: 'image',
     header: '포스터',
@@ -91,7 +90,7 @@ export const columnsForGroupByEventId = [
     header: '액션',
     cell: (props) => (
       <BlueLink href={`/demands/${props.row.original.eventId}`}>
-        자세히 보기
+        이 행사의 일자별 수요 보기
       </BlueLink>
     ),
   }),
