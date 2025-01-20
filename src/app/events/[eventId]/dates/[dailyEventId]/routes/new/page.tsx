@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import { conform, type CreateShuttleRouteForm } from './form.type';
+import { type CreateShuttleRouteForm } from './form.type';
 import { postRoute } from '@/services/v2/shuttleRoute.services';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/input/Input';
@@ -15,6 +15,7 @@ import { useMemo } from 'react';
 import DateInput from '@/components/input/DateInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
 import { twMerge } from 'tailwind-merge';
+import { conform } from './conform.util';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -136,7 +137,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
   const {
     fields: toDestHubFields,
-    append: appendToDestHub,
+    prepend: prependToDestHub,
     remove: removeToDestHub,
     // update: updateHub,
     swap: swapToDestHub,
@@ -152,8 +153,13 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
       alert('등록에 성공했습니다.');
       router.push(`/events/${eventId}/dates/${dailyEventId}`);
     } catch (error) {
-      alert('오류가 발생했습니다.');
       console.error(error);
+      if (
+        error instanceof Error &&
+        error.message === 'arrivalTime is not validated'
+      )
+        alert('거점지들의 시간순서가 올바르지 않습니다. 확인해주세요.');
+      else alert('오류가 발생했습니다.');
     }
   };
 
@@ -334,7 +340,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
         <button
           type="button"
           onClick={() =>
-            appendToDestHub({
+            prependToDestHub({
               regionHubId: 0,
               arrivalTime: defaultDate,
             })
