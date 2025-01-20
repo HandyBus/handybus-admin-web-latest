@@ -10,7 +10,7 @@ import useTable from '@/hooks/useTable';
 import StatusFilter, { useEventStatusOptions } from './components/StatusFilter';
 
 const Page = () => {
-  const [eventStatus] = useEventStatusOptions();
+  const [eventStatus, setEventStatus] = useEventStatusOptions();
 
   const {
     data: events,
@@ -36,7 +36,7 @@ const Page = () => {
         <h1 className="text-[32px] font-500">행사 대시보드</h1>
         <BlueLink href="events/new">추가하기</BlueLink>
       </header>
-      <StatusFilter />
+      <StatusFilter eventStatus={eventStatus} setEventStatus={setEventStatus} />
       <ColumnFilter table={table} />
       {isLoading ? (
         <div>Loading...</div>

@@ -27,8 +27,8 @@ const Page = () => {
   return (
     <div>
       <h1 className="text-[32px] font-500">행사별 수요 조회</h1>
-
       <BaseTable table={table} />
+      {demands?.length === 0 && <div>수요가 없습니다.</div>}
       {isPending && <div>Loading...</div>}
       {isError && <div>Failed to load demands</div>}
     </div>

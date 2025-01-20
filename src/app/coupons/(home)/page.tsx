@@ -10,7 +10,8 @@ import { CouponType } from '@/types/v1/coupon.type';
 import { matches } from 'kled';
 import DebouncedInput from '@/components/input/DebouncedInput';
 import BlueLink from '@/components/link/BlueLink';
-import ManuallyFilteredInfiniteTable from '@/components/table/ManuallyFilteredInfiniteTable';
+import useTable from '@/hooks/useTable';
+import BaseTable from '@/components/table/BaseTable';
 
 const FILTER_LIST = ['전체', '진행중', '대기', '만료'] as const;
 type FilterType = (typeof FILTER_LIST)[number];
@@ -68,6 +69,12 @@ const Page = ({ searchParams }: Props) => {
     [coupons, value, searchParams.filter],
   );
 
+  const table = useTable({
+    columns,
+    data: filteredCoupons,
+    manualFiltering: true,
+  });
+
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
       <header className="flex items-center justify-between">
@@ -103,10 +110,7 @@ const Page = ({ searchParams }: Props) => {
             <Loader2Icon className="animate-spin" size={64} />
           </div>
         ) : (
-          <ManuallyFilteredInfiniteTable
-            data={filteredCoupons}
-            columns={columns}
-          />
+          <BaseTable table={table} />
         )}
       </section>
     </main>
