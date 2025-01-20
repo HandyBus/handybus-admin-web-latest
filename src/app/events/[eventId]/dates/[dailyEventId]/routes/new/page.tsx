@@ -401,7 +401,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                   <button
                     type="button"
                     onClick={() => index > 0 && swapToDestHub(index, index - 1)}
-                    disabled={index === 0}
+                    disabled={
+                      index === 0 || index === toDestHubFields.length - 1
+                    }
                     className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
                   >
                     위로
@@ -412,7 +414,10 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       index < toDestHubFields.length - 1 &&
                       swapToDestHub(index, index + 1)
                     }
-                    disabled={index === toDestHubFields.length - 1}
+                    disabled={
+                      index === toDestHubFields.length - 1 ||
+                      index === toDestHubFields.length - 2
+                    }
                     className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
                   >
                     아래로
@@ -420,7 +425,8 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                   <button
                     type="button"
                     onClick={() => removeToDestHub(index)}
-                    className="text-red-500"
+                    className="text-red-500 disabled:opacity-30"
+                    disabled={index === toDestHubFields.length - 1}
                   >
                     삭제
                   </button>
@@ -503,7 +509,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                     onClick={() =>
                       index > 0 && swapFromDestHub(index, index - 1)
                     }
-                    disabled={index === 0}
+                    disabled={index === 0 || index === 1}
                     className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
                   >
                     위로
@@ -514,7 +520,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       index < fromDestHubFields.length - 1 &&
                       swapFromDestHub(index, index + 1)
                     }
-                    disabled={index === fromDestHubFields.length - 1}
+                    disabled={
+                      index === fromDestHubFields.length - 1 || index === 0
+                    }
                     className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
                   >
                     아래로
@@ -522,7 +530,8 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                   <button
                     type="button"
                     onClick={() => removeFromDestHub(index)}
-                    className="text-red-500"
+                    className="text-red-500 disabled:opacity-30"
+                    disabled={index === 0}
                   >
                     삭제
                   </button>
