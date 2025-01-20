@@ -242,7 +242,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
           <div className="flex flex-col items-start gap-8">
             <label className="break-keep">
-              목적지행 {formated(watchRegularPrice.toDestination)}원
+              목적지행 {formatted(watchRegularPrice.toDestination)}원
             </label>
             <Input
               type="number"
@@ -254,7 +254,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
           <div className="flex flex-col items-start gap-8">
             <label className="break-keep">
-              귀가행 {formated(watchRegularPrice.fromDestination)}원
+              귀가행 {formatted(watchRegularPrice.fromDestination)}원
             </label>
             <Input
               type="number"
@@ -266,7 +266,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
           <div className="flex flex-col items-start gap-8">
             <label className="break-keep">
-              왕복 {formated(watchRegularPrice.roundTrip)}원
+              왕복 {formatted(watchRegularPrice.roundTrip)}원
             </label>
             <Input
               type="number"
@@ -280,7 +280,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
           <div className="flex flex-col items-start gap-8">
             <label className="break-keep">
-              목적지행 {formated(watchEarlybirdPrice.toDestination)}원
+              목적지행 {formatted(watchEarlybirdPrice.toDestination)}원
               {discountPercent(
                 watchRegularPrice.toDestination,
                 watchEarlybirdPrice.toDestination,
@@ -297,7 +297,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
           <div className="flex flex-col items-start gap-8">
             <label className="break-keep">
-              귀가행 {formated(watchEarlybirdPrice.fromDestination)}원
+              귀가행 {formatted(watchEarlybirdPrice.fromDestination)}원
               {discountPercent(
                 watchRegularPrice.fromDestination,
                 watchEarlybirdPrice.fromDestination,
@@ -314,7 +314,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
           <div className="flex flex-col items-start gap-8">
             <label className="break-keep">
-              왕복 {formated(watchEarlybirdPrice.roundTrip)}원
+              왕복 {formatted(watchEarlybirdPrice.roundTrip)}원
               {discountPercent(
                 watchRegularPrice.roundTrip,
                 watchEarlybirdPrice.roundTrip,
@@ -540,12 +540,12 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   );
 };
 
-const formated = (n: number) => {
+const formatted = (n: number) => {
   return n.toLocaleString('ko-KR');
 };
 
-const discountPercent = (price: number, priceAfterDiscound: number) => {
-  const amount = ((price - priceAfterDiscound) / price) * 100;
+const discountPercent = (price: number, priceAfterDiscount: number) => {
+  const amount = ((price - priceAfterDiscount) / price) * 100;
   if (amount < 0) return '(오류: 더 비싼 가격)';
   return '(-' + amount.toFixed(2) + '%)';
 };
