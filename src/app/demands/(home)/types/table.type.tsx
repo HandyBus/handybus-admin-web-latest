@@ -1,9 +1,9 @@
-import { ShuttleDemandStatisics } from '@/types/v2/demand.type';
+import { ShuttleDemandStatistics } from '@/types/v2/demand.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
 import Image from 'next/image';
 
-const columnHelper = createColumnHelper<ShuttleDemandStatisics>();
+const columnHelper = createColumnHelper<ShuttleDemandStatistics>();
 
 export const columnsForGroupByEventId = [
   // columnHelper.accessor('eventId', {

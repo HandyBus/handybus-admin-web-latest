@@ -1,6 +1,6 @@
 import { authInstance } from '../config';
 import { toSearchParamString } from '@/utils/searchParam.util';
-import { ShuttleDemandStatisics } from '@/types/v2/demand.type';
+import { ShuttleDemandStatistics } from '@/types/v2/demand.type';
 
 export interface GetDemandOption {
   groupBy:
@@ -23,7 +23,7 @@ export const getDemand = async (option: GetDemandOption) => {
     `/v2/shuttle-operation/admin/demands/all/stats${toSearchParamString({ ...option }, '?')}`,
     {
       shape: {
-        statistics: ShuttleDemandStatisics.array(),
+        statistics: ShuttleDemandStatistics.array(),
       },
     },
   );

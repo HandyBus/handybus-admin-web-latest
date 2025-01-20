@@ -4,7 +4,7 @@ import { z } from 'zod';
  * @remarks
  * Swagger에 따르면 이 타입은 ViewEntity가 아니고, ReadModel입니다. 재사용하지 않도록 주의해주세요.
  */
-export const ShuttleDemandStatisics = z
+export const ShuttleDemandStatistics = z
   .object({
     eventId: z.number().int(),
     eventName: z.string().nullable(),
@@ -23,4 +23,4 @@ export const ShuttleDemandStatisics = z
   })
   .strict();
 
-export type ShuttleDemandStatisics = z.infer<typeof ShuttleDemandStatisics>;
+export type ShuttleDemandStatistics = z.infer<typeof ShuttleDemandStatistics>;
