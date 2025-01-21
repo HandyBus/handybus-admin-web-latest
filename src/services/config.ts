@@ -46,6 +46,7 @@ class Instance {
       ...(body && { body: JSON.stringify(body, replacer) }),
     };
 
+    const getNotifiedUsingToast = shape !== undefined && method === 'GET';
     const schema = shape
       ? ApiResponseOkSchema(shape)
       : // NOTE this `as T` is safe because `shape` is undefined
@@ -58,10 +59,16 @@ class Instance {
       if (res.status >= 400) {
         throw new CustomError(res.status, 'No Content');
       }
-      return silentParse(schema, {
-        ok: true,
-        statusCode: res.status,
-      });
+      return silentParse(
+        schema,
+        {
+          ok: true,
+          statusCode: res.status,
+        },
+        {
+          useToast: getNotifiedUsingToast,
+        },
+      );
     }
     // response가 있는 경우
     const data = await res.json();
@@ -72,11 +79,10 @@ class Instance {
       );
     }
 
-    return silentParse(
-      schema,
-      data,
-      `${url}에 대한 응답이 실패했습니다. : ${data}`,
-    );
+    return silentParse(schema, data, {
+      debugHint: `${url}에 대한 응답이 실패했습니다. : ${data}`,
+      useToast: getNotifiedUsingToast,
+    });
   }
 
   async get<T extends z.ZodRawShape = EmptyShape>(
