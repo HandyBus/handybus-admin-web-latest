@@ -99,12 +99,12 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
           <header className="flex flex-row justify-between">
             <h3 className="text-[24px] font-500">거점지 - 목적지행</h3>
           </header>
-          <BaseTable table={fromHubTable} />
+          <BaseTable table={toHubTable} />
 
           <header className="flex flex-row justify-between">
             <h3 className="text-[24px] font-500">거점지 - 귀가행</h3>
           </header>
-          <BaseTable table={toHubTable} />
+          <BaseTable table={fromHubTable} />
 
           <Buses
             eventId={eventId}

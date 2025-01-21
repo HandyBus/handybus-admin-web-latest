@@ -11,7 +11,7 @@ const busColumnHelper = createColumnHelper<ShuttleBusesViewEntity>();
 export const busColumns = [
   busColumnHelper.accessor('shuttleBusId', {
     header: () => 'ID',
-    cell: (info) => info.getValue,
+    cell: (info) => info.getValue(),
   }),
   busColumnHelper.accessor('busType', {
     header: () => 'type',
@@ -28,10 +28,18 @@ export const busColumns = [
   busColumnHelper.display({
     id: 'actions',
     header: () => '오픈채팅방 링크',
-    cell: () => (
-      // TODO: href={props.row.original.openChatLink}>
-      <BlueLink href="TODO">오픈채팅 링크 열기</BlueLink>
-    ),
+    cell: (info) =>
+      info.row.original.openChatLink ? (
+        <BlueLink
+          href={info.row.original.openChatLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          오픈채팅 링크 열기
+        </BlueLink>
+      ) : (
+        <div>오픈채팅방 링크 없음</div>
+      ),
   }),
 ];
 

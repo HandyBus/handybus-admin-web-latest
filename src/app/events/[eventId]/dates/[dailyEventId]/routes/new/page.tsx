@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import { conform, type CreateShuttleRouteForm } from './form.type';
+import { type CreateShuttleRouteForm } from './form.type';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/input/Input';
 import { RegionHubInputSelfContained } from '@/components/input/HubInput';
@@ -16,6 +16,7 @@ import {
   usePostShuttleRoute,
 } from '@/services/shuttleOperation.service';
 import { EventsViewEntity } from '@/types/event.type';
+import { conform } from './conform.util';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -134,7 +135,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
   const {
     fields: toDestHubFields,
-    append: appendToDestHub,
+    prepend: prependToDestHub,
     remove: removeToDestHub,
     // update: updateHub,
     swap: swapToDestHub,
@@ -149,8 +150,13 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
       router.push(`/events/${eventId}/dates/${dailyEventId}`);
     },
     onError: (error) => {
-      alert('등록에 실패했습니다.');
       console.error(error);
+      if (
+        error instanceof Error &&
+        error.message === 'arrivalTime is not validated'
+      )
+        alert('거점지들의 시간순서가 올바르지 않습니다. 확인해주세요.');
+      else alert('오류가 발생했습니다.');
     },
   });
 
@@ -249,7 +255,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
           <div className="flex flex-col items-start gap-8">
             <label className="break-keep">
-              목적지행 {formated(watchRegularPrice.toDestination)}원
+              목적지행 {formatted(watchRegularPrice.toDestination)}원
             </label>
             <Input
               type="number"
@@ -261,7 +267,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
           <div className="flex flex-col items-start gap-8">
             <label className="break-keep">
-              귀가행 {formated(watchRegularPrice.fromDestination)}원
+              귀가행 {formatted(watchRegularPrice.fromDestination)}원
             </label>
             <Input
               type="number"
@@ -273,7 +279,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
           <div className="flex flex-col items-start gap-8">
             <label className="break-keep">
-              왕복 {formated(watchRegularPrice.roundTrip)}원
+              왕복 {formatted(watchRegularPrice.roundTrip)}원
             </label>
             <Input
               type="number"
@@ -287,7 +293,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
           <div className="flex flex-col items-start gap-8">
             <label className="break-keep">
-              목적지행 {formated(watchEarlybirdPrice.toDestination)}원
+              목적지행 {formatted(watchEarlybirdPrice.toDestination)}원
               {discountPercent(
                 watchRegularPrice.toDestination,
                 watchEarlybirdPrice.toDestination,
@@ -304,7 +310,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
           <div className="flex flex-col items-start gap-8">
             <label className="break-keep">
-              귀가행 {formated(watchEarlybirdPrice.fromDestination)}원
+              귀가행 {formatted(watchEarlybirdPrice.fromDestination)}원
               {discountPercent(
                 watchRegularPrice.fromDestination,
                 watchEarlybirdPrice.fromDestination,
@@ -321,7 +327,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
           <div className="flex flex-col items-start gap-8">
             <label className="break-keep">
-              왕복 {formated(watchEarlybirdPrice.roundTrip)}원
+              왕복 {formatted(watchEarlybirdPrice.roundTrip)}원
               {discountPercent(
                 watchRegularPrice.roundTrip,
                 watchEarlybirdPrice.roundTrip,
@@ -341,7 +347,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
         <button
           type="button"
           onClick={() =>
-            appendToDestHub({
+            prependToDestHub({
               regionHubId: 0,
               arrivalTime: defaultDate,
             })
@@ -408,7 +414,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                   <button
                     type="button"
                     onClick={() => index > 0 && swapToDestHub(index, index - 1)}
-                    disabled={index === 0}
+                    disabled={
+                      index === 0 || index === toDestHubFields.length - 1
+                    }
                     className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
                   >
                     위로
@@ -419,7 +427,10 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       index < toDestHubFields.length - 1 &&
                       swapToDestHub(index, index + 1)
                     }
-                    disabled={index === toDestHubFields.length - 1}
+                    disabled={
+                      index === toDestHubFields.length - 1 ||
+                      index === toDestHubFields.length - 2
+                    }
                     className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
                   >
                     아래로
@@ -427,7 +438,8 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                   <button
                     type="button"
                     onClick={() => removeToDestHub(index)}
-                    className="text-red-500"
+                    className="text-red-500 disabled:opacity-30"
+                    disabled={index === toDestHubFields.length - 1}
                   >
                     삭제
                   </button>
@@ -510,7 +522,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                     onClick={() =>
                       index > 0 && swapFromDestHub(index, index - 1)
                     }
-                    disabled={index === 0}
+                    disabled={index === 0 || index === 1}
                     className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
                   >
                     위로
@@ -521,7 +533,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       index < fromDestHubFields.length - 1 &&
                       swapFromDestHub(index, index + 1)
                     }
-                    disabled={index === fromDestHubFields.length - 1}
+                    disabled={
+                      index === fromDestHubFields.length - 1 || index === 0
+                    }
                     className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
                   >
                     아래로
@@ -529,7 +543,8 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                   <button
                     type="button"
                     onClick={() => removeFromDestHub(index)}
-                    className="text-red-500"
+                    className="text-red-500 disabled:opacity-30"
+                    disabled={index === 0}
                   >
                     삭제
                   </button>
@@ -547,12 +562,12 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   );
 };
 
-const formated = (n: number) => {
+const formatted = (n: number) => {
   return n.toLocaleString('ko-KR');
 };
 
-const discountPercent = (price: number, priceAfterDiscound: number) => {
-  const amount = ((price - priceAfterDiscound) / price) * 100;
+const discountPercent = (price: number, priceAfterDiscount: number) => {
+  const amount = ((price - priceAfterDiscount) / price) * 100;
   if (amount < 0) return '(오류: 더 비싼 가격)';
   return '(-' + amount.toFixed(2) + '%)';
 };
