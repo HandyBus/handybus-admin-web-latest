@@ -26,11 +26,6 @@ const validRegionID = (regionId: number | undefined): regionId is number =>
 
 const RegionHubInput = ({ regionId, value, setValue }: Props) => {
   const [query, setQuery] = useState('');
-  // const { data, isLoading, error } = useQuery({
-  //   queryKey: ['hub', regionId],
-  //   queryFn: async () =>
-  //     validRegionID(regionId) ? await getHubs(regionId) : [],
-  // });
 
   const { data, isLoading, error } = useGetRegionHubs(
     validRegionID(regionId) ? regionId : 0,
