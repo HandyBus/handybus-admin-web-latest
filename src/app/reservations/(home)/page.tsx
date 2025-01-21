@@ -6,7 +6,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import { LoaderCircleIcon } from 'lucide-react';
 import RowFilter from './components/ReservationFilter';
-import useColumnVisibility from '@/hooks/useColumnVisibility';
 import {
   EventDailyShuttlesInEventsViewEntity,
   EventsViewEntity,
@@ -22,6 +21,7 @@ import {
   useGetReservationsWithPagination,
   useGetShuttleRoutesOfDailyEvent,
 } from '@/services/shuttleOperation.service';
+import ColumnFilter from '@/components/table/ColumnFilter';
 
 const Page = () => {
   return (
@@ -179,18 +179,16 @@ const AllReservations = () => {
     manualFiltering: true,
   });
 
-  const [columnVisibility, ColumnFilter] = useColumnVisibility(columns);
-
   return (
     <section>
       <h2 className="text-24 font-500 pb-8 bg-grey-50 py-4 px-12 my-4 flex items-center">
         모든 예약 조회
       </h2>
       <RowFilter option={option} dispatch={dispatch} />
-      <ColumnFilter columnVisibility={columnVisibility} />
+      <ColumnFilter table={table} />
       {/* TODO virtualization */}
       <BaseTable table={table} />
-      {flatData.length === 0 && !isFetching && <p>데이터가 업습니다.</p>}
+      {flatData.length === 0 && !isFetching && <p>데이터가 없습니다.</p>}
       {isError ? <p>에러 : {error.message}</p> : null}
       {isFetching ? <LoaderCircleIcon className="animate-spin" /> : null}
       {hasNextPage && <div ref={ref} />}

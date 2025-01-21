@@ -7,7 +7,8 @@ import { useMemo, useState } from 'react';
 import { matches } from 'kled';
 import DebouncedInput from '@/components/input/DebouncedInput';
 import BlueLink from '@/components/link/BlueLink';
-import ManuallyFilteredInfiniteTable from '@/components/table/ManuallyFilteredInfiniteTable';
+import useTable from '@/hooks/useTable';
+import BaseTable from '@/components/table/BaseTable';
 import { useGetCoupons } from '@/services/billing.service';
 import { AdminCouponsResponseModel } from '@/types/coupon.type';
 
@@ -63,6 +64,12 @@ const Page = ({ searchParams }: Props) => {
     [coupons, value, searchParams.filter],
   );
 
+  const table = useTable({
+    columns,
+    data: filteredCoupons,
+    manualFiltering: true,
+  });
+
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
       <header className="flex items-center justify-between">
@@ -98,10 +105,7 @@ const Page = ({ searchParams }: Props) => {
             <Loader2Icon className="animate-spin" size={64} />
           </div>
         ) : (
-          <ManuallyFilteredInfiniteTable
-            data={filteredCoupons}
-            columns={columns}
-          />
+          <BaseTable table={table} />
         )}
       </section>
     </main>

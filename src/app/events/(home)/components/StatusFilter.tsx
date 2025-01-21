@@ -6,23 +6,20 @@ import {
   DisclosurePanel,
 } from '@headlessui/react';
 import { ChevronDownIcon, FilterIcon } from 'lucide-react';
-import useParamState, { ParamStateOptions } from '@/hooks/useParamState';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import Toggle from '@/components/button/Toggle';
 import Stringifier from '@/utils/stringifier.util';
-import { EventStatus, EventStatusEnum } from '@/types/event.type';
+import { useSearchParams } from 'next/navigation';
+import { EventStatusEnum } from '@/types/event.type';
+import { EventStatus } from '@/types/event.type';
 
-export function useEventStatusOptions() {
-  return useParamState<EventStatus | undefined>(
-    'OPEN',
-    'status',
-    encodeEventStatusOptions,
-  );
+interface Props {
+  eventStatus: EventStatus | undefined;
+  setEventStatus: Dispatch<SetStateAction<EventStatus | undefined>>;
 }
 
-function Filter() {
-  const [eventStatus, setEventStatus] = useEventStatusOptions();
-
+function Filter({ eventStatus, setEventStatus }: Props) {
   return (
     <Disclosure>
       <DisclosureButton
@@ -44,7 +41,9 @@ function Filter() {
             value={status === eventStatus}
             label={Stringifier.eventStatus(status)}
             onClick={() =>
-              setEventStatus((s) => (s === status ? undefined : status))
+              setEventStatus((s: EventStatus | undefined) =>
+                s === status ? undefined : conform(status),
+              )
             }
           />
         ))}
@@ -55,17 +54,24 @@ function Filter() {
 
 export default Filter;
 
-const encodeEventStatusOptions: ParamStateOptions<EventStatus | undefined> = {
-  // null (전체 필터)를 'ALL'로 인코딩
-  encoder: (s) => (s === undefined ? 'ALL' : s),
-  decoder: (s: string | null) => {
-    if (s === 'ALL') {
-      return undefined;
-    } else if (EventStatusEnum.options.includes(s as EventStatus)) {
-      return s as EventStatus;
-    } else {
-      // s === null 은 전체 필터를 의미하지 않음 - 빈 필터를 의미함. 기본 필터를 OPEN으로 설정
+export function useEventStatusOptions() {
+  const sp = useSearchParams();
+  const eventStatus = conform(sp.get('eventStatus'));
+  return useState<EventStatus | undefined>(eventStatus);
+}
+
+const conform = (s: string | undefined | null) => {
+  if (s === undefined || s === null) return undefined;
+  switch (s) {
+    case 'OPEN':
       return 'OPEN';
-    }
-  },
+    case 'CLOSED':
+      return 'CLOSED';
+    case 'ENDED':
+      return 'ENDED';
+    case 'INACTIVE':
+      return 'INACTIVE';
+    default:
+      return 'OPEN';
+  }
 };

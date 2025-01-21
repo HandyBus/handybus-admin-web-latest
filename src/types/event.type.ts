@@ -55,7 +55,7 @@ export const CreateEventRequestSchema = z.object({
   imageUrl: z.string().url(),
   regionId: z.number().int(),
   regionHubId: z.number().int(),
-  dailyEvents: z.object({}).array(),
+  dailyEvents: z.object({ date: z.date() }).array(),
   type: EventTypeEnum,
   artistIds: z.number().int().array(),
 });
