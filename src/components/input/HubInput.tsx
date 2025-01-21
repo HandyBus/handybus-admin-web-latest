@@ -22,6 +22,7 @@ interface Props {
 
 import { ChevronDown } from 'lucide-react';
 import RegionInput from './RegionInput';
+import Link from 'next/link';
 
 const validRegionID = (regionId: number | undefined): regionId is number =>
   typeof regionId === 'number' && !Number.isNaN(regionId);
@@ -100,6 +101,16 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
               {hub.name}
             </ComboboxOption>
           ))}
+          {data?.length === 0 && !isLoading && validRegionID(regionId) && (
+            <Link
+              href="/hubs/new"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block p-8 text-blue-500 hover:bg-blue-50"
+            >
+              + 새로운 거점 만들기
+            </Link>
+          )}
         </ComboboxOptions>
       </div>
     </Combobox>
