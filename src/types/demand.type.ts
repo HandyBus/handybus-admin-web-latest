@@ -57,11 +57,7 @@ export type ShuttleDemandsViewEntity = z.infer<
   typeof ShuttleDemandsViewEntitySchema
 >;
 
-/**
- * @remarks
- * Swagger에 따르면 이 타입은 ViewEntity가 아니고, ReadModel입니다. 재사용하지 않도록 주의해주세요.
- */
-export const ShuttleDemandStatisticsSchema = z
+export const ShuttleDemandStatisticsReadModelSchema = z
   .object({
     eventId: z.number().int(),
     eventName: z.string().nullable(),
@@ -79,6 +75,6 @@ export const ShuttleDemandStatisticsSchema = z
     fromDestinationCount: z.number().int(),
   })
   .strict();
-export type ShuttleDemandStatistics = z.infer<
-  typeof ShuttleDemandStatisticsSchema
+export type ShuttleDemandStatisticsReadModel = z.infer<
+  typeof ShuttleDemandStatisticsReadModelSchema
 >;

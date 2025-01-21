@@ -1,9 +1,9 @@
-import { ShuttleDemandStatistics } from '@/types/demand.type';
+import { ShuttleDemandStatisticsReadModel } from '@/types/demand.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
 import { toSearchParamString } from '@/utils/searchParam.util';
 
-const columnHelper = createColumnHelper<ShuttleDemandStatistics>();
+const columnHelper = createColumnHelper<ShuttleDemandStatisticsReadModel>();
 
 /**
  *

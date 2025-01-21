@@ -8,7 +8,6 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { toSearchParamString } from '@/utils/searchParam.util';
-import { ShuttleDemandStatisticsSchema } from '@/types/demand.type';
 import {
   CreateEventRequest,
   CreateEventRequestSchema,
@@ -42,6 +41,7 @@ import {
   TossPaymentsEntitySchema,
 } from '@/types/payment.type';
 import { silentParse } from '@/utils/parse.util';
+import { ShuttleDemandStatisticsReadModelSchema } from '@/types/demand.type';
 
 // ----- 조회 -----
 
@@ -101,7 +101,7 @@ export const getDemandsStats = async (options?: GetDemandOptions) => {
     `/v2/shuttle-operation/admin/demands/all/stats${toSearchParamString({ ...options }, '?')}`,
     {
       shape: {
-        statistics: ShuttleDemandStatisticsSchema.array(),
+        statistics: ShuttleDemandStatisticsReadModelSchema.array(),
       },
     },
   );
