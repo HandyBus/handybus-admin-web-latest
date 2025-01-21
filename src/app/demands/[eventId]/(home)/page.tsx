@@ -1,14 +1,16 @@
 'use client';
 
 import useTable from '@/hooks/useTable';
-import { getDemand, GetDemandOption } from '@/services/v2/demand.services';
 import { columnGroupByCity } from './types/table.type';
-import { useQuery } from '@tanstack/react-query';
 import BaseTable from '@/components/table/BaseTable';
-import { getEvent } from '@/services/v2/event.services';
-import { EventsView } from '@/types/v2/event.type';
 import { formatDateString } from '@/utils/date.util';
 import BlueLink from '@/components/link/BlueLink';
+import {
+  GetDemandOptions,
+  useGetDemandsStats,
+  useGetEvent,
+} from '@/services/shuttleOperation.service';
+import { EventDailyShuttlesInEventsViewEntity } from '@/types/event.type';
 
 interface Props {
   params: { eventId: number };
@@ -20,14 +22,7 @@ interface Props {
  * @returns
  */
 const Page = ({ params: { eventId } }: Props) => {
-  const {
-    data: event,
-    isPending,
-    isError,
-  } = useQuery({
-    queryKey: ['event', eventId],
-    queryFn: async () => await getEvent(eventId),
-  });
+  const { data: event, isPending, isError } = useGetEvent(eventId);
 
   if (isPending) return <div>Loading...</div>;
   if (isError) return <div>Failed to load event</div>;
@@ -60,20 +55,17 @@ export default Page;
 
 interface SubProps {
   eventId: number;
-  dailyEvent: EventsView['dailyEvents'][number];
+  dailyEvent: EventDailyShuttlesInEventsViewEntity;
 }
 
 const TablePerDailyEvent = ({ eventId, dailyEvent }: SubProps) => {
-  const options: GetDemandOption = {
+  const options: GetDemandOptions = {
     groupBy: 'CITY',
     eventId,
     dailyEventId: dailyEvent.dailyEventId,
   };
 
-  const { data, isPending, isError } = useQuery({
-    queryKey: ['demand', options],
-    queryFn: async () => await getDemand(options),
-  });
+  const { data, isPending, isError } = useGetDemandsStats(options);
 
   const table = useTable({
     data: data,

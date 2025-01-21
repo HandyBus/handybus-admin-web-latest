@@ -8,12 +8,12 @@ import {
 import { ChevronDownIcon, FilterIcon } from 'lucide-react';
 import useParamState, { ParamStateOptions } from '@/hooks/useParamState';
 import { twMerge } from 'tailwind-merge';
-import { EventsView, EventsViewEntity } from '@/types/v2/event.type';
 import Toggle from '@/components/button/Toggle';
 import Stringifier from '@/utils/stringifier.util';
+import { EventStatus, EventStatusEnum } from '@/types/event.type';
 
 export function useEventStatusOptions() {
-  return useParamState<EventsView['eventStatus'] | undefined>(
+  return useParamState<EventStatus | undefined>(
     'OPEN',
     'status',
     encodeEventStatusOptions,
@@ -38,7 +38,7 @@ function Filter() {
         <ChevronDownIcon className="w-5 group-data-[open]:rotate-180" />
       </DisclosureButton>
       <DisclosurePanel className="flex flex-row gap-4 bg-grey-50 rounded-xl p-8">
-        {EventsViewEntity.shape.eventStatus.options.map((status) => (
+        {EventStatusEnum.options.map((status) => (
           <Toggle
             key={status}
             value={status === eventStatus}
@@ -55,20 +55,14 @@ function Filter() {
 
 export default Filter;
 
-const encodeEventStatusOptions: ParamStateOptions<
-  EventsView['eventStatus'] | undefined
-> = {
+const encodeEventStatusOptions: ParamStateOptions<EventStatus | undefined> = {
   // null (전체 필터)를 'ALL'로 인코딩
   encoder: (s) => (s === undefined ? 'ALL' : s),
   decoder: (s: string | null) => {
     if (s === 'ALL') {
       return undefined;
-    } else if (
-      EventsViewEntity.shape.eventStatus.options.includes(
-        s as EventsView['eventStatus'],
-      )
-    ) {
-      return s as EventsView['eventStatus'];
+    } else if (EventStatusEnum.options.includes(s as EventStatus)) {
+      return s as EventStatus;
     } else {
       // s === null 은 전체 필터를 의미하지 않음 - 빈 필터를 의미함. 기본 필터를 OPEN으로 설정
       return 'OPEN';

@@ -1,10 +1,10 @@
 import { columns as passengerColumns } from '../types/passenger.table.type';
-import { ReservationView } from '@/types/v2/reservation.type';
 import useTable from '@/hooks/useTable';
 import BaseTable from '@/components/table/BaseTable';
+import { ReservationViewEntity } from '@/types/reservation.type';
 
 interface Props {
-  response: ReservationView;
+  response: ReservationViewEntity;
 }
 
 const PassengersInfo = ({ response }: Props) => {

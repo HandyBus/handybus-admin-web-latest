@@ -1,7 +1,7 @@
-import { ReservationView } from '@/types/v2/reservation.type';
+import { ReservationViewEntity } from '@/types/reservation.type';
 import { createColumnHelper } from '@tanstack/react-table';
 
-const columnHelper = createColumnHelper<ReservationView>();
+const columnHelper = createColumnHelper<ReservationViewEntity>();
 
 export const accountColumns = [
   columnHelper.accessor('userId', {

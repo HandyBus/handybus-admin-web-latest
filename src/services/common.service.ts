@@ -1,7 +1,7 @@
 'use client';
 
 import { z } from 'zod';
-import { authInstance } from '../config';
+import { authInstance } from './config';
 
 // TODO : v2 api가 준비되면 migrate
 export const getPresignedUrl = async (

@@ -2,12 +2,11 @@
 
 import BlueLink from '@/components/link/BlueLink';
 import { routeHubColumns } from './types/table.type';
-import { useQuery } from '@tanstack/react-query';
-import { getRoute } from '@/services/v2/shuttleRoute.services';
 import useTable from '@/hooks/useTable';
 import BaseTable from '@/components/table/BaseTable';
 import Buses from './components/Buses';
 import { formatDateString } from '@/utils/date.util';
+import { useGetShuttleRoute } from '@/services/shuttleOperation.service';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -19,11 +18,11 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
     isPending: isRoutePending,
     isError: isRouteError,
     error: routeError,
-  } = useQuery({
-    queryKey: ['routes', eventId, dailyEventId, shuttleRouteId],
-    queryFn: () =>
-      getRoute(Number(eventId), Number(dailyEventId), Number(shuttleRouteId)),
-  });
+  } = useGetShuttleRoute(
+    Number(eventId),
+    Number(dailyEventId),
+    Number(shuttleRouteId),
+  );
 
   const fromHubTable = useTable({
     data: route?.fromDestinationShuttleRouteHubs,

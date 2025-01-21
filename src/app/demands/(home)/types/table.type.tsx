@@ -1,4 +1,4 @@
-import { ShuttleDemandStatistics } from '@/types/v2/demand.type';
+import { ShuttleDemandStatistics } from '@/types/demand.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
 import Image from 'next/image';

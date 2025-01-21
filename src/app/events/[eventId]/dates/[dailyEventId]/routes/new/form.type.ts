@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-import { CreateShuttleRouteRequest } from '@/types/v2/shuttleRoute.type';
 import { formatDate } from '@/utils/date.util';
+import { CreateShuttleRouteRequest } from '@/types/shuttleRoute.type';
 
 export const CreateShuttleRouteFormSchema = z.object({
   name: z.string(),
@@ -80,7 +80,7 @@ export const conform = (
     reservationDeadline: formatDate(data.reservationDeadline, 'datetime'),
     earlybirdDeadline: data.earlybirdDeadline
       ? formatDate(data.earlybirdDeadline, 'datetime')
-      : null,
+      : undefined,
   } satisfies CreateShuttleRouteRequest;
   return x;
 };

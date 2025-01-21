@@ -1,9 +1,9 @@
 'use client';
 
-import { ArtistsView } from '@/types/v2/artist.type';
 import { createColumnHelper } from '@tanstack/react-table';
+import { ArtistsViewEntity } from '@/types/artist.type';
 
-const columnHelper = createColumnHelper<ArtistsView>();
+const columnHelper = createColumnHelper<ArtistsViewEntity>();
 
 export const columns = [
   columnHelper.accessor('artistId', {

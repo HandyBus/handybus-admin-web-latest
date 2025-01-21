@@ -2,19 +2,20 @@
 
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { conform, type CreateShuttleRouteForm } from './form.type';
-import { postRoute } from '@/services/v2/shuttleRoute.services';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/input/Input';
 import { RegionHubInputSelfContained } from '@/components/input/HubInput';
 import Guide from '@/components/guide/Guide';
-import { getEvent } from '@/services/v2/event.services';
-import { useQuery } from '@tanstack/react-query';
-import { EventsView } from '@/types/v2/event.type';
 import { parseDateString } from '@/utils/date.util';
 import { useMemo } from 'react';
 import DateInput from '@/components/input/DateInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
 import { twMerge } from 'tailwind-merge';
+import {
+  useGetEvent,
+  usePostShuttleRoute,
+} from '@/services/shuttleOperation.service';
+import { EventsViewEntity } from '@/types/event.type';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -28,10 +29,7 @@ const Page = ({ params }: Props) => {
     isPending,
     isError,
     error,
-  } = useQuery({
-    queryKey: ['event', eventId],
-    queryFn: async () => await getEvent(Number(eventId)),
-  });
+  } = useGetEvent(Number(eventId));
 
   const defaultDate = useMemo(() => {
     return parseDateString(
@@ -97,7 +95,7 @@ const Page = ({ params }: Props) => {
 export default Page;
 
 interface FormProps extends Props {
-  event: EventsView;
+  event: EventsViewEntity;
   defaultValues: CreateShuttleRouteForm;
   defaultDate: Date;
 }
@@ -145,15 +143,24 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     name: 'shuttleRouteHubsToDestination',
   });
 
-  const onSubmit = async (data: CreateShuttleRouteForm) => {
-    if (!confirm('등록하시겠습니까?')) return;
-    try {
-      await postRoute(Number(eventId), Number(dailyEventId), conform(data));
+  const { mutate: postRoute } = usePostShuttleRoute({
+    onSuccess: () => {
       alert('등록에 성공했습니다.');
       router.push(`/events/${eventId}/dates/${dailyEventId}`);
-    } catch (error) {
-      alert('오류가 발생했습니다.');
+    },
+    onError: (error) => {
+      alert('등록에 실패했습니다.');
       console.error(error);
+    },
+  });
+
+  const onSubmit = async (data: CreateShuttleRouteForm) => {
+    if (confirm('등록하시겠습니까?')) {
+      postRoute({
+        eventId: Number(eventId),
+        dailyEventId: Number(dailyEventId),
+        body: conform(data),
+      });
     }
   };
 

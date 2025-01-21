@@ -2,7 +2,6 @@
 
 import { useCallback } from 'react';
 import { useForm, useFieldArray, useWatch } from 'react-hook-form';
-import { postEvent } from '@/services/v2/event.services';
 import { type CreateEventFormData, conform } from './types/form.type';
 import { useRouter } from 'next/navigation';
 import ArtistInput from '@/components/input/ArtistInput';
@@ -15,6 +14,7 @@ import RegionHubInput from '@/components/input/HubInput';
 import Input from '@/components/input/Input';
 import dayjs from 'dayjs';
 import { today, toDateOnly } from '@/utils/date.util';
+import { usePostEvent } from '@/services/shuttleOperation.service';
 
 const defaultValues = {
   name: '',
@@ -60,26 +60,31 @@ const CreateEventForm = () => {
     name: 'artistIds',
   });
 
-  const onSubmit = useCallback(
-    async (data: CreateEventFormData) => {
-      if (confirm('행사를 추가하시겠습니까?') === false) return;
-      try {
-        await postEvent(conform(data));
-        alert('행사가 추가되었습니다.');
-        router.push('/events');
-      } catch (error) {
-        if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
-          throw error;
-        }
-        console.error('Error creating events:', error);
-        alert(
-          '행사 추가에 실패했습니다, ' +
-            (error instanceof Error && error.message),
-        );
+  const { mutate: postEvent } = usePostEvent({
+    onSuccess: () => {
+      alert('행사가 추가되었습니다.');
+      router.push('/events');
+    },
+    onError: (error) => {
+      if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
         throw error;
       }
+      console.error('Error creating events:', error);
+      alert(
+        '행사 추가에 실패했습니다, ' +
+          (error instanceof Error && error.message),
+      );
+      throw error;
     },
-    [router],
+  });
+
+  const onSubmit = useCallback(
+    async (data: CreateEventFormData) => {
+      if (confirm('행사를 추가하시겠습니까?')) {
+        postEvent(conform(data));
+      }
+    },
+    [router, postEvent],
   );
 
   return (

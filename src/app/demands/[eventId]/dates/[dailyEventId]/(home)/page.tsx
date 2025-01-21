@@ -1,8 +1,6 @@
 'use client';
 
 import useTable from '@/hooks/useTable';
-import { getDemand, GetDemandOption } from '@/services/v2/demand.services';
-import { useQuery } from '@tanstack/react-query';
 import { columnsFrom, columnsTo } from './types/table.type';
 import BaseTable from '@/components/table/BaseTable';
 import PartialRegionInput, {
@@ -11,9 +9,12 @@ import PartialRegionInput, {
 import { useState } from 'react';
 import BlueLink from '@/components/link/BlueLink';
 import { useSearchParams } from 'next/navigation';
-import { getEvent } from '@/services/v2/event.services';
 import { formatDateString } from '@/utils/date.util';
-// import useParamState, { nullableStringOpt } from '@/hooks/useParamState';
+import {
+  GetDemandOptions,
+  useGetDemandsStats,
+  useGetEvent,
+} from '@/services/shuttleOperation.service';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -29,18 +30,13 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     city,
   });
 
-  console.log('partialRegion', JSON.stringify(partialRegion));
-
-  const { data: event } = useQuery({
-    queryKey: ['event', eventId],
-    queryFn: async () => await getEvent(Number(eventId)),
-  });
+  const { data: event } = useGetEvent(Number(eventId));
 
   const dailyEvent = event?.dailyEvents.find(
     (d) => d.dailyEventId === Number(dailyEventId),
   );
 
-  const optionTo: GetDemandOption = {
+  const optionTo: GetDemandOptions = {
     groupBy: 'TO_DESTINATION_REGION_HUB',
     provinceFullName: partialRegion.province ?? undefined,
     cityFullName: partialRegion.city ?? undefined,
@@ -48,7 +44,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     eventId: Number(eventId),
   };
 
-  const optionFrom: GetDemandOption = {
+  const optionFrom: GetDemandOptions = {
     groupBy: 'FROM_DESTINATION_REGION_HUB',
     provinceFullName: partialRegion.province ?? undefined,
     cityFullName: partialRegion.city ?? undefined,
@@ -61,20 +57,14 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     isPending: isPendingTo,
     isError: isErrorTo,
     error: errorTo,
-  } = useQuery({
-    queryKey: ['demand', optionTo],
-    queryFn: async () => await getDemand(optionTo),
-  });
+  } = useGetDemandsStats(optionTo);
 
   const {
     data: dataFrom,
     isPending: isPendingFrom,
     isError: isErrorFrom,
     error: errorFrom,
-  } = useQuery({
-    queryKey: ['demand', optionFrom],
-    queryFn: async () => await getDemand(optionFrom),
-  });
+  } = useGetDemandsStats(optionFrom);
 
   const tableTo = useTable({
     data: dataTo,

@@ -87,9 +87,10 @@ class Instance {
   }
   async delete<T extends z.ZodRawShape = EmptyShape>(
     url: string,
+    body?: any,
     options?: RequestInitWithSchema<T>,
   ) {
-    return await this.fetchWithConfig<T>(url, 'DELETE', undefined, options);
+    return await this.fetchWithConfig<T>(url, 'DELETE', body, options);
   }
   async post<T extends z.ZodRawShape = EmptyShape>(
     url: string,
@@ -153,9 +154,10 @@ class AuthInstance {
   }
   async delete<T extends z.ZodRawShape = EmptyShape>(
     url: string,
+    body?: any,
     options?: RequestInitWithSchema<T>,
   ) {
-    return this.authFetchWithConfig<T>(url, 'DELETE', undefined, options);
+    return this.authFetchWithConfig<T>(url, 'DELETE', body, options);
   }
 
   async post<T extends z.ZodRawShape = EmptyShape>(

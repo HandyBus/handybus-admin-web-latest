@@ -1,9 +1,13 @@
 'use client';
 
 import { createColumnHelper } from '@tanstack/react-table';
-import { PassengerType } from '@/types/v1/passenger.type';
 
-const columnHelper = createColumnHelper<PassengerType>();
+type Passenger = {
+  name: string;
+  phoneNumber: string;
+};
+
+const columnHelper = createColumnHelper<Passenger>();
 
 export const columns = [
   columnHelper.accessor('name', {

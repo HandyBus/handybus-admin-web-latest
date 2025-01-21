@@ -1,11 +1,11 @@
-import { ReservationView } from '@/types/v2/reservation.type';
 import VerticalTable from '@/components/table/VerticalTable';
 import { columns as routeColumns } from '../types/route.table.type';
 import useTable from '@/hooks/useTable';
 import BlueLink from '@/components/link/BlueLink';
+import { ReservationViewEntity } from '@/types/reservation.type';
 
 interface Props {
-  response: ReservationView;
+  response: ReservationViewEntity;
 }
 
 const RouteInfo = ({ response }: Props) => {

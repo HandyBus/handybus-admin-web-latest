@@ -1,11 +1,11 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
-import { EventsView } from '@/types/v2/event.type';
+import { EventDailyShuttlesInEventsViewEntity } from '@/types/event.type';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
 
 const columnHelper =
-  createColumnHelper<ArrayElement<EventsView['dailyEvents']>>();
+  createColumnHelper<ArrayElement<EventDailyShuttlesInEventsViewEntity[]>>();
 
 export const columns = (eventId: number) => [
   columnHelper.accessor('dailyEventId', {

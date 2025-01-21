@@ -1,22 +1,17 @@
 'use client';
 
 import useTable from '@/hooks/useTable';
-import { getDemand } from '@/services/v2/demand.services';
 import { columnsForGroupByEventId } from './types/table.type';
-import { useQuery } from '@tanstack/react-query';
 import BaseTable from '@/components/table/BaseTable';
+import { useGetDemandsStats } from '@/services/shuttleOperation.service';
 
 const Page = () => {
   const {
     data: demands,
     isPending,
     isError,
-  } = useQuery({
-    queryKey: ['demand', 'event'],
-    queryFn: async () =>
-      await getDemand({
-        groupBy: 'EVENT',
-      }),
+  } = useGetDemandsStats({
+    groupBy: 'EVENT',
   });
 
   const table = useTable({

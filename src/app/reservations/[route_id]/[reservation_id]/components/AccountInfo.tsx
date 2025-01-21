@@ -1,10 +1,10 @@
 import { accountColumns } from '../types/account.table.type';
-import { ReservationView } from '@/types/v2/reservation.type';
 import VerticalTable from '@/components/table/VerticalTable';
 import useTable from '@/hooks/useTable';
+import { ReservationViewEntity } from '@/types/reservation.type';
 
 interface Props {
-  response: ReservationView;
+  response: ReservationViewEntity;
 }
 
 const AccountInfo = ({ response }: Props) => {

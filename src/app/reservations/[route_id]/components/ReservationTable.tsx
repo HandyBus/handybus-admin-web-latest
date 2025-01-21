@@ -1,13 +1,14 @@
 'use client';
 
 import useTable from '@/hooks/useTable';
-import { getReservations } from '@/services/v2/reservations.services';
-import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { reservationColumns } from '../types/table.type';
-import { updateReservation } from '@/services/v1/reservations.services';
 import { toast } from 'react-toastify';
 import BaseTable from '@/components/table/BaseTable';
+import {
+  useGetReservationsWithPagination,
+  usePutReservation,
+} from '@/services/shuttleOperation.service';
 
 interface Props {
   eventId: number;
@@ -16,23 +17,18 @@ interface Props {
 }
 
 const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
-  const { data, isLoading } = useQuery({
-    queryKey: ['reservation', eventId, dailyEventId, shuttleRouteId],
-    queryFn: () => {
-      return getReservations({
-        eventId,
-        dailyEventId,
-        shuttleRouteId,
-        reservationStatus: 'COMPLETE_PAYMENT',
-      });
-    },
+  const { data, isLoading } = useGetReservationsWithPagination({
+    eventId,
+    dailyEventId,
+    shuttleRouteId,
+    reservationStatus: 'COMPLETE_PAYMENT',
   });
 
   const baseArray = useMemo(() => [], []);
 
   const reservations = useMemo(
     () =>
-      data?.reservations.filter(
+      data.pages[0].reservations.filter(
         (reservation) => reservation.shuttleBusId === null,
       ) ?? baseArray,
     [data],
@@ -43,11 +39,13 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     data: reservations,
   });
 
+  const { mutate: putReservation } = usePutReservation();
+
   const rejectAllSupportedHandy = async () => {
-    const confirm = window.confirm(
+    const isConfirmed = confirm(
       '핸디 지원자들을 일괄 거절하시겠습니까? \n 모두에게 거절 알림톡이 전송됩니다.',
     );
-    if (!confirm) {
+    if (!isConfirmed) {
       return;
     }
 
@@ -58,8 +56,11 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     try {
       await Promise.all(
         reservationIds.map((reservationId) =>
-          updateReservation(reservationId, {
-            handyStatus: 'DECLINED',
+          putReservation({
+            reservationId,
+            body: {
+              handyStatus: 'DECLINED',
+            },
           }),
         ),
       );

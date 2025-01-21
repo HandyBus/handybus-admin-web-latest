@@ -1,6 +1,5 @@
 'use client';
-import { getRegions } from '@/services/v1/region.services';
-import { Region } from '@/types/v1/region.type';
+
 import {
   Combobox,
   ComboboxInput,
@@ -12,6 +11,8 @@ import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { ChevronDown, FileWarningIcon } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
+import { getRegions } from '@/services/location.service';
+import { Region } from '@/types/region';
 
 /**
  * PartialRegion 은 regionId가 없을 수 있는 지역 상태를 나타냅니다.

@@ -1,15 +1,15 @@
 import {
-  Payment,
-  RefundRequestsInPaymentsView,
-  Tosspayments,
-  TosspaymentsCancel,
-  TosspaymentsCashReceipts,
-} from '@/types/v2/payment.type';
+  PaymentsViewEntity,
+  RefundRequestsInPaymentsViewEntity,
+  TossPaymentsCancelsEntity,
+  TossPaymentsCashReceiptsEntity,
+  TossPaymentsEntity,
+} from '@/types/payment.type';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
 import { createColumnHelper } from '@tanstack/react-table';
 
-const columnHelper = createColumnHelper<Payment>();
+const columnHelper = createColumnHelper<PaymentsViewEntity>();
 
 export const paymentColumns = [
   columnHelper.accessor('paymentId', {
@@ -64,7 +64,7 @@ export const paymentColumns = [
 ];
 
 const refundRequestColumnHelper =
-  createColumnHelper<RefundRequestsInPaymentsView>();
+  createColumnHelper<RefundRequestsInPaymentsViewEntity>();
 
 export const refundRequestColumns = [
   refundRequestColumnHelper.accessor('refundRequestId', {
@@ -117,7 +117,7 @@ export const refundRequestColumns = [
   }),
 ];
 
-const tosspaymentsColumnHelper = createColumnHelper<Tosspayments>();
+const tosspaymentsColumnHelper = createColumnHelper<TossPaymentsEntity>();
 
 export const tosspaymentsColumns = [
   tosspaymentsColumnHelper.accessor('version', {
@@ -329,7 +329,8 @@ export const tosspaymentsColumns = [
   }),
 ];
 
-const tosspaymentsCancelColumnHelper = createColumnHelper<TosspaymentsCancel>();
+const tosspaymentsCancelColumnHelper =
+  createColumnHelper<TossPaymentsCancelsEntity>();
 
 export const tosspaymentsCancelColumns = [
   tosspaymentsCancelColumnHelper.accessor('cancelAmount', {
@@ -383,7 +384,7 @@ export const tosspaymentsCancelColumns = [
 ];
 
 const tosspaymentsCashReceiptsColumnHelper =
-  createColumnHelper<TosspaymentsCashReceipts>();
+  createColumnHelper<TossPaymentsCashReceiptsEntity>();
 
 export const tosspaymentsCashReceiptsColumns = [
   tosspaymentsCashReceiptsColumnHelper.accessor('receiptKey', {

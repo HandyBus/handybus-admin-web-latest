@@ -1,9 +1,9 @@
-import { ReservationView } from '@/types/v2/reservation.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import Stringifier from '@/utils/stringifier.util';
 import { formatDateString } from '@/utils/date.util';
+import { ReservationViewEntity } from '@/types/reservation.type';
 
-const columnHelper = createColumnHelper<ReservationView>();
+const columnHelper = createColumnHelper<ReservationViewEntity>();
 
 export const columns = [
   columnHelper.accessor('reservationId', {
@@ -20,7 +20,7 @@ export const columns = [
   }),
   columnHelper.accessor('type', {
     header: () => '예약 유형',
-    cell: (info) => Stringifier.reservationType(info.getValue()),
+    cell: (info) => Stringifier.tripType(info.getValue()),
   }),
   columnHelper.accessor('handyStatus', {
     header: () => '핸디 상태',

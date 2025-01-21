@@ -1,10 +1,10 @@
-import type { EventsView } from '@/types/v2/event.type';
 import Image from 'next/image';
 import Stringifier from '@/utils/stringifier.util';
 import { formatDateString } from '@/utils/date.util';
+import { EventsViewEntity } from '@/types/event.type';
 
 interface Props {
-  event: EventsView;
+  event: EventsViewEntity;
 }
 
 const EventViewer = ({ event }: Props) => {

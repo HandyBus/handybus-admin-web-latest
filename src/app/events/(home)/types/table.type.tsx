@@ -1,14 +1,14 @@
 'use client';
 
-import type { EventsView } from '@/types/v2/event.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import Image from 'next/image';
 import BlueLink from '@/components/link/BlueLink';
 import RegionHubViewerModal from '@/components/viewer/RegionHubViewerModal';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
+import { EventsViewEntity } from '@/types/event.type';
 
-const columnHelper = createColumnHelper<EventsView>();
+const columnHelper = createColumnHelper<EventsViewEntity>();
 
 export const columns = [
   columnHelper.accessor('eventId', {

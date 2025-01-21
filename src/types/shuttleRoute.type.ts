@@ -1,7 +1,27 @@
 import { z } from 'zod';
-import { EventsViewEntity } from './event.type';
+import { EventsViewEntitySchema } from './event.type';
 
-const ShuttleRouteHubsInShuttleRoutesViewEntity = z
+// ----- ENUM -----
+
+export const TripTypeEnum = z.enum([
+  'TO_DESTINATION', // 목적지행
+  'FROM_DESTINATION', // 귀가행
+  'ROUND_TRIP', // 왕복행
+]);
+export type TripType = z.infer<typeof TripTypeEnum>;
+
+export const ShuttleRouteStatusEnum = z.enum([
+  'OPEN', // 예약 모집 중
+  'CLOSED', // 예약 마감
+  'ENDED', // 운행 종료
+  'CANCELLED', // 무산
+  'INACTIVE', // 비활성
+]);
+export type ShuttleRouteStatus = z.infer<typeof ShuttleRouteStatusEnum>;
+
+// ----- GET -----
+
+export const ShuttleRouteHubsInShuttleRoutesViewEntitySchema = z
   .object({
     shuttleRouteHubId: z.number().int(),
     regionHubId: z.number().int(),
@@ -9,18 +29,18 @@ const ShuttleRouteHubsInShuttleRoutesViewEntity = z
     address: z.string(),
     latitude: z.number(),
     longitude: z.number(),
-    type: z.enum(['TO_DESTINATION', 'FROM_DESTINATION', 'ROUND_TRIP']),
+    type: TripTypeEnum,
     sequence: z.number().int(),
     arrivalTime: z.string(),
     status: z.enum(['ACTIVE', 'INACTIVE']),
   })
   .strict();
 
-export type ShuttleRouteHubsInShuttleRoutesView = z.infer<
-  typeof ShuttleRouteHubsInShuttleRoutesViewEntity
+export type ShuttleRouteHubsInShuttleRoutesViewEntity = z.infer<
+  typeof ShuttleRouteHubsInShuttleRoutesViewEntitySchema
 >;
 
-export const ShuttleRoutesViewEntity = z
+export const ShuttleRoutesViewEntitySchema = z
   .object({
     shuttleRouteId: z.number().int(),
     eventId: z.number().int(),
@@ -36,62 +56,50 @@ export const ShuttleRoutesViewEntity = z
     regularPriceFromDestination: z.number().int(),
     regularPriceRoundTrip: z.number().int(),
     remainingSeatCount: z.number().int(),
-    remainingSeatType: z.enum([
-      'TO_DESTINATION',
-      'FROM_DESTINATION',
-      'ROUND_TRIP',
-    ]),
+    remainingSeatType: TripTypeEnum,
     maxPassengerCount: z.number().int(),
     toDestinationCount: z.number().int(),
     fromDestinationCount: z.number().int(),
-    status: z.enum([
-      'OPEN',
-      'CLOSED',
-      'CONFIRMED',
-      'ENDED',
-      'CANCELLED',
-      'INACTIVE',
-    ]),
+    status: ShuttleRouteStatusEnum,
     toDestinationShuttleRouteHubs:
-      ShuttleRouteHubsInShuttleRoutesViewEntity.array(),
+      ShuttleRouteHubsInShuttleRoutesViewEntitySchema.array(),
     fromDestinationShuttleRouteHubs:
-      ShuttleRouteHubsInShuttleRoutesViewEntity.array(),
-    // TODO remove .nullable() after fixing the api
-    event: EventsViewEntity.optional(),
+      ShuttleRouteHubsInShuttleRoutesViewEntitySchema.array(),
+    event: EventsViewEntitySchema,
     createdAt: z.string(),
     updatedAt: z.string(),
   })
   .strict();
 
-export type ShuttleRoutesView = z.infer<typeof ShuttleRoutesViewEntity>;
+export type ShuttleRoutesViewEntity = z.infer<
+  typeof ShuttleRoutesViewEntitySchema
+>;
 
-//////////////////////// create request ////////////////////////
+// ----- POST & PUT -----
 
 export const CreateShuttleRouteRequestSchema = z
   .object({
     name: z.string(),
-    reservationDeadline: z.string(), // TODO not use corece.date() ?
+    reservationDeadline: z.string(),
     hasEarlybird: z.boolean(),
-    // nullable or undefined-able or .optional?
     earlybirdPrice: z
       .object({
         toDestination: z.number(),
         fromDestination: z.number(),
         roundTrip: z.number(),
       })
-      .nullable(),
+      .optional(),
     regularPrice: z.object({
       toDestination: z.number(),
       fromDestination: z.number(),
       roundTrip: z.number(),
     }),
-    // optional or nullable
-    earlybirdDeadline: z.string().nullable(),
+    earlybirdDeadline: z.string().optional(),
     maxPassengerCount: z.number(),
     shuttleRouteHubs: z
       .object({
         regionHubId: z.number().int(),
-        type: z.enum(['TO_DESTINATION', 'FROM_DESTINATION', 'ROUND_TRIP']),
+        type: TripTypeEnum,
         sequence: z.number().int().positive(),
         arrivalTime: z.string(),
       })

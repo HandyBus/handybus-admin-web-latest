@@ -1,12 +1,12 @@
 'use client';
 
-import { ReservationView } from '@/types/v2/reservation.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
 import Stringifier from '@/utils/stringifier.util';
 import { formatDateString } from '@/utils/date.util';
+import { ReservationViewEntity } from '@/types/reservation.type';
 
-const columnHelper = createColumnHelper<ReservationView>();
+const columnHelper = createColumnHelper<ReservationViewEntity>();
 
 export const columns = [
   columnHelper.accessor('reservationId', {

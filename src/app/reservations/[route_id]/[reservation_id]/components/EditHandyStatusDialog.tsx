@@ -19,27 +19,31 @@ import {
   ChevronDownIcon,
   MessageSquareWarningIcon,
 } from 'lucide-react';
-import { updateReservation } from '@/services/v1/reservations.services';
-import { conform, UpdateReservationHandyStatusFormType } from '../form.type';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { HANDY_STATUS, HandyStatusType } from '@/types/v1/reservation.type';
 import Stringifier from '@/utils/stringifier.util';
-import { ReservationView } from '@/types/v2/reservation.type';
+import {
+  PutReservationBody,
+  usePutReservation,
+} from '@/services/shuttleOperation.service';
+import {
+  HandyStatus,
+  HandyStatusEnum,
+  ReservationViewEntity,
+} from '@/types/reservation.type';
 
 interface Props {
-  response: ReservationView;
-  defaultHandyStatus?: HandyStatusType;
+  response: ReservationViewEntity;
+  defaultHandyStatus?: HandyStatus;
 }
 
 function EditHandyStatusDialog({ response, defaultHandyStatus }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { control, handleSubmit } =
-    useForm<UpdateReservationHandyStatusFormType>({
-      defaultValues: {
-        handyStatus: defaultHandyStatus ?? 'ACCEPTED',
-      },
-    });
+  const { control, handleSubmit } = useForm<{ handyStatus: HandyStatus }>({
+    defaultValues: {
+      handyStatus: defaultHandyStatus ?? 'ACCEPTED',
+    },
+  });
 
   const handyStatus = useWatch({ control, name: 'handyStatus' });
 
@@ -55,15 +59,23 @@ function EditHandyStatusDialog({ response, defaultHandyStatus }: Props) {
     setIsOpen(false);
   }, []);
 
+  const { mutate: putReservation } = usePutReservation({
+    onSuccess: () => {
+      alert('핸디 상태가 수정되었습니다.');
+      closeDialog();
+    },
+    onError: (error) => {
+      alert('핸디 상태 수정에 실패했습니다.');
+      console.error(error);
+    },
+  });
+
   const onSubmit = useCallback(
-    async (input: UpdateReservationHandyStatusFormType) => {
-      try {
-        await updateReservation(response.reservationId, conform(input));
-        alert('핸디 상태가 수정되었습니다.');
-        closeDialog();
-      } catch {
-        alert(`핸디 상태 수정에 실패했습니다`);
-      }
+    async (input: PutReservationBody) => {
+      putReservation({
+        reservationId: response.reservationId,
+        body: input,
+      });
     },
     [response, closeDialog],
   );
@@ -104,7 +116,7 @@ function EditHandyStatusDialog({ response, defaultHandyStatus }: Props) {
                     setValue={onChange}
                     toLabel={Stringifier.handyStatus}
                     toId={(v) => v}
-                    values={HANDY_STATUS}
+                    values={HandyStatusEnum.options}
                   />
                   {isAdvancedTo && (
                     <p className="text-red-500 font-600 text-12">

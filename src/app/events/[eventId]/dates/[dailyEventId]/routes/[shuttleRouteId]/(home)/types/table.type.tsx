@@ -1,12 +1,12 @@
 'use client';
 
 import { createColumnHelper } from '@tanstack/react-table';
-import type { ShuttleBusesView } from '@/types/v2/shuttleBus.type';
 import BlueLink from '@/components/link/BlueLink';
-import { ShuttleRouteHubsInShuttleRoutesView } from '@/types/v2/shuttleRoute.type';
 import { formatDateString } from '@/utils/date.util';
+import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
+import { ShuttleRouteHubsInShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 
-const busColumnHelper = createColumnHelper<ShuttleBusesView>();
+const busColumnHelper = createColumnHelper<ShuttleBusesViewEntity>();
 
 export const busColumns = [
   busColumnHelper.accessor('shuttleBusId', {
@@ -36,7 +36,7 @@ export const busColumns = [
 ];
 
 const routeHubColumnHelper =
-  createColumnHelper<ShuttleRouteHubsInShuttleRoutesView>();
+  createColumnHelper<ShuttleRouteHubsInShuttleRoutesViewEntity>();
 
 export const routeHubColumns = [
   routeHubColumnHelper.accessor('shuttleRouteHubId', {

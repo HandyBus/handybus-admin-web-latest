@@ -1,8 +1,6 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-
 import {
   Combobox,
   ComboboxInput,
@@ -11,8 +9,7 @@ import {
   ComboboxButton,
 } from '@headlessui/react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
-import { getHubs } from '@/services/v1/hub.services';
-import { RegionHub } from '@/types/v1/regionHub.type';
+import { RegionHub } from '@/types/hub.type';
 
 interface Props {
   regionId: number | undefined;
@@ -22,17 +19,22 @@ interface Props {
 
 import { ChevronDown } from 'lucide-react';
 import RegionInput from './RegionInput';
+import { useGetRegionHubs } from '@/services/location.service';
 
 const validRegionID = (regionId: number | undefined): regionId is number =>
   typeof regionId === 'number' && !Number.isNaN(regionId);
 
 const RegionHubInput = ({ regionId, value, setValue }: Props) => {
   const [query, setQuery] = useState('');
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['hub', regionId],
-    queryFn: async () =>
-      validRegionID(regionId) ? await getHubs(regionId) : [],
-  });
+  // const { data, isLoading, error } = useQuery({
+  //   queryKey: ['hub', regionId],
+  //   queryFn: async () =>
+  //     validRegionID(regionId) ? await getHubs(regionId) : [],
+  // });
+
+  const { data, isLoading, error } = useGetRegionHubs(
+    validRegionID(regionId) ? regionId : 0,
+  );
 
   const setSelectedHub = useCallback(
     (hub: RegionHub | null) => {
@@ -108,9 +110,6 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
 
 export default RegionHubInput;
 
-/**
- *
- */
 export const RegionHubInputSelfContained = ({
   value,
   setValue,

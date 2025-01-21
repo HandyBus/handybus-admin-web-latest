@@ -1,8 +1,6 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-
 import {
   Combobox,
   ComboboxInput,
@@ -12,8 +10,8 @@ import {
 } from '@headlessui/react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { ChevronDown } from 'lucide-react';
-import { ShuttleBusesView } from '@/types/v2/shuttleBus.type';
-import { getBuses } from '@/services/v2/shuttleBus.services';
+import { useGetShuttleBuses } from '@/services/shuttleOperation.service';
+import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
 
 interface Props {
   eventId: number;
@@ -31,25 +29,26 @@ const ShuttleBusInput = ({
   setValue,
 }: Props) => {
   const [query, setQuery] = useState('');
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['shuttleBus', eventId, dailyEventId, shuttleRouteId],
-    queryFn: async () => await getBuses(eventId, dailyEventId, shuttleRouteId),
-  });
+  const { data, isLoading, error } = useGetShuttleBuses(
+    eventId,
+    dailyEventId,
+    shuttleRouteId,
+  );
 
-  const setSelectedRoute: (route: ShuttleBusesView | null) => void =
+  const setSelectedRoute: (route: ShuttleBusesViewEntity | null) => void =
     useCallback(
-      (route: ShuttleBusesView | null) => {
+      (route: ShuttleBusesViewEntity | null) => {
         setValue(route?.shuttleBusId ?? null);
       },
       [setValue],
     );
 
-  const setSelectedBus: ShuttleBusesView | null = useMemo(
+  const setSelectedBus: ShuttleBusesViewEntity | null = useMemo(
     () => data?.find((ds) => ds.shuttleBusId === value) || null,
     [data, value],
   );
 
-  const filtered: ShuttleBusesView[] = useMemo(() => {
+  const filtered: ShuttleBusesViewEntity[] = useMemo(() => {
     return query
       ? filterByFuzzy(data ?? [], query, (p) => p.busName)
       : (data ?? []);
@@ -58,7 +57,7 @@ const ShuttleBusInput = ({
   if (error) return <div>Failed to load artists</div>;
 
   return (
-    <Combobox<ShuttleBusesView | null>
+    <Combobox<ShuttleBusesViewEntity | null>
       immediate
       value={setSelectedBus}
       onChange={setSelectedRoute}
@@ -79,7 +78,9 @@ const ShuttleBusInput = ({
                 : '버스 선택'
           }
           defaultValue={null}
-          displayValue={(bus: null | ShuttleBusesView) => bus?.busName ?? ''}
+          displayValue={(bus: null | ShuttleBusesViewEntity) =>
+            bus?.busName ?? ''
+          }
           onChange={(event) => setQuery(event.target.value)}
         />
 
