@@ -51,7 +51,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
 
   const baseArray = useMemo(() => [], []);
   const reservations = useMemo(
-    () => reservationData.pages[0]?.reservations ?? baseArray,
+    () => reservationData.pages?.[0]?.reservations ?? baseArray,
     [reservationData],
   );
 

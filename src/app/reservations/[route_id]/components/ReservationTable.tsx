@@ -28,7 +28,7 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
 
   const reservations = useMemo(
     () =>
-      data.pages[0].reservations.filter(
+      data.pages?.[0]?.reservations.filter(
         (reservation) => reservation.shuttleBusId === null,
       ) ?? baseArray,
     [data],
