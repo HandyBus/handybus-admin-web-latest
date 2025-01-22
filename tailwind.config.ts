@@ -33,7 +33,7 @@ const config: Config = {
       transparent: 'transparent',
       primary: {
         50: 'rgb(var(--primary-50) / <alpha-value>)',
-        100: 'rgb(var(--primary-100) / <alpha-value>)',
+        100: 'rgb(var(--primary-sub) / <alpha-value>)',
         200: 'rgb(var(--primary-200) / <alpha-value>)',
         300: 'rgb(var(--primary-300) / <alpha-value>)',
         400: 'rgb(var(--primary-400) / <alpha-value>)',
