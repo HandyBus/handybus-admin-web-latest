@@ -1,15 +1,6 @@
 import { ReactNode } from 'react';
 import { twMerge } from 'tailwind-merge';
-
-const BACKGROUND_COLOR_MAP = {
-  grey: 'bg-notion-grey',
-  yellow: 'bg-notion-yellow',
-  green: 'bg-notion-green',
-  blue: 'bg-notion-blue',
-  red: 'bg-notion-red',
-};
-
-type BackgroundColor = keyof typeof BACKGROUND_COLOR_MAP;
+import { BackgroundColor, BACKGROUND_COLOR_MAP } from './color.const';
 
 interface HeadingProps {
   children: ReactNode;
