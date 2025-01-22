@@ -1,10 +1,19 @@
-import tw from 'tailwind-styled-components';
-import Link from 'next/link';
+import Link, { LinkProps } from 'next/link';
+import { ReactNode } from 'react';
 
-const BlueLink = tw(Link)`
-  text-blue-500
-  after:content-['↗']
-  hover:underline
-`;
+interface Props extends LinkProps {
+  children: ReactNode;
+}
+
+const BlueLink = (props: Props) => {
+  return (
+    <Link
+      {...props}
+      className="text-blue-500 after:content-['↗'] hover:underline"
+    >
+      {props.children}
+    </Link>
+  );
+};
 
 export default BlueLink;
