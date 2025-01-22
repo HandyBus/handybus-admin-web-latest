@@ -52,13 +52,13 @@ const RouteReservations = () => {
 
   return (
     <section className="pb-40">
-      <h2 className="text-24 font-500 pb-8 bg-grey-50 py-4 px-12 my-4 flex items-center">
+      <h2 className="my-4 flex items-center bg-grey-50 px-12 py-4 pb-8 text-24 font-500">
         노선별 예약 조회
       </h2>
-      <div className="flex w-full justify-between h-500">
-        <article className="h-full w-400 flex flex-col">
-          <p className="font-500 text-20 pb-4 text-grey-900">행사 선택</p>
-          <ul className="grow overflow-scroll border border-grey-200 rounded-[4px]">
+      <div className="flex h-500 w-full justify-between">
+        <article className="flex h-full w-400 flex-col">
+          <p className="pb-4 text-20 font-500 text-grey-900">행사 선택</p>
+          <ul className="grow overflow-scroll rounded-[4px] border border-grey-200">
             {events?.map((event) => (
               <button
                 key={event.eventId}
@@ -77,18 +77,18 @@ const RouteReservations = () => {
                 }}
               >
                 {event.eventName}
-                <span className="text-14 text-grey-500 ml-auto block">
+                <span className="ml-auto block text-14 text-grey-500">
                   {Stringifier.eventStatus(event.eventStatus)}
                 </span>
               </button>
             ))}
           </ul>
         </article>
-        <article className="h-full w-400 flex flex-col">
-          <p className="font-500 text-20 pb-4 text-grey-900">
+        <article className="flex h-full w-400 flex-col">
+          <p className="pb-4 text-20 font-500 text-grey-900">
             일자별 행사 선택
           </p>
-          <ul className="grow overflow-scroll border border-grey-200 rounded-[4px]">
+          <ul className="grow overflow-scroll rounded-[4px] border border-grey-200">
             {selectedEvent ? (
               selectedEvent.dailyEvents.map((dailyEvent) => (
                 <button
@@ -107,17 +107,17 @@ const RouteReservations = () => {
                 </button>
               ))
             ) : (
-              <div className="h-full flex items-center justify-center text-grey-500">
+              <div className="flex h-full items-center justify-center text-grey-500">
                 행사를 선택해주세요.
               </div>
             )}
           </ul>
         </article>
-        <article className="h-full w-400 flex flex-col">
-          <p className="font-500 text-20 pb-4 text-grey-900">
+        <article className="flex h-full w-400 flex-col">
+          <p className="pb-4 text-20 font-500 text-grey-900">
             일자별 노선 선택
           </p>
-          <ul className="grow overflow-scroll border border-grey-200 rounded-[4px]">
+          <ul className="grow overflow-scroll rounded-[4px] border border-grey-200">
             {selectedDailyEvent ? (
               shuttleRoutes?.length !== 0 ? (
                 shuttleRoutes?.map((shuttleRoute) => (
@@ -127,7 +127,7 @@ const RouteReservations = () => {
                     className="block w-full border-b border-grey-100 px-12 py-12 text-left hover:bg-grey-50"
                   >
                     {shuttleRoute.name}
-                    <p className="text-14 text-grey-500 ml-auto flex gap-12">
+                    <p className="ml-auto flex gap-12 text-14 text-grey-500">
                       <span>
                         {Stringifier.shuttleRouteStatus(shuttleRoute.status)}
                       </span>
@@ -140,12 +140,12 @@ const RouteReservations = () => {
                   </Link>
                 ))
               ) : (
-                <div className="h-full flex items-center justify-center text-grey-500">
+                <div className="flex h-full items-center justify-center text-grey-500">
                   노선이 존재하지 않습니다.
                 </div>
               )
             ) : (
-              <div className="h-full flex items-center justify-center text-grey-500">
+              <div className="flex h-full items-center justify-center text-grey-500">
                 일자별 행사를 선택해주세요.
               </div>
             )}
@@ -162,7 +162,7 @@ const AllReservations = () => {
   const { data, fetchNextPage, isFetching, hasNextPage, isError, error } =
     useGetReservationsWithPagination({
       ...option,
-      page: 0,
+      page: undefined,
       limit: PAGINATION_LIMIT,
     });
 
@@ -181,7 +181,7 @@ const AllReservations = () => {
 
   return (
     <section>
-      <h2 className="text-24 font-500 pb-8 bg-grey-50 py-4 px-12 my-4 flex items-center">
+      <h2 className="my-4 flex items-center bg-grey-50 px-12 py-4 pb-8 text-24 font-500">
         모든 예약 조회
       </h2>
       <RowFilter option={option} dispatch={dispatch} />

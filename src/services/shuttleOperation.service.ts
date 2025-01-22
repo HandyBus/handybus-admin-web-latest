@@ -303,7 +303,7 @@ export interface GetReservationsOptions {
 }
 
 interface GetReservationsOptionsWithPagination extends GetReservationsOptions {
-  page: number;
+  page: string | undefined;
   limit: number;
 }
 
@@ -327,8 +327,9 @@ export const useGetReservationsWithPagination = (
 ) =>
   useInfiniteQuery({
     queryKey: ['reservation', option],
-    queryFn: ({ pageParam }) => getReservations({ ...option, page: pageParam }),
-    initialPageParam: 0,
+    queryFn: ({ pageParam }: { pageParam: string | undefined }) =>
+      getReservations({ ...option, page: pageParam }),
+    initialPageParam: undefined,
     initialData: { pages: [], pageParams: [] },
     getNextPageParam: (lastPage) => {
       return lastPage.nextPage;
