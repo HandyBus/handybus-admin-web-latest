@@ -6,6 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { PlusIcon } from 'lucide-react';
 import Input from '@/components/input/Input';
 import { usePostArtist } from '@/services/shuttleOperation.service';
+import Heading from '@/components/text/Heading';
 
 const NewArtistPage = () => {
   const router = useRouter();
@@ -42,8 +43,8 @@ const NewArtistPage = () => {
   );
 
   return (
-    <main className="h-full w-full bg-white flex flex-col gap-16">
-      <h2 className="text-24 font-500">아티스트 정보</h2>
+    <main className="flex h-full w-full flex-col gap-16 bg-white">
+      <Heading>아티스트 추가</Heading>
       <form
         className="flex flex-col gap-4"
         onSubmit={handleSubmit(onSubmit)}

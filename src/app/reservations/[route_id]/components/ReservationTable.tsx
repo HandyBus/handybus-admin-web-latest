@@ -9,6 +9,7 @@ import {
   useGetReservationsWithPagination,
   usePutReservation,
 } from '@/services/shuttleOperation.service';
+import Heading from '@/components/text/Heading';
 
 interface Props {
   eventId: number;
@@ -75,19 +76,19 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
   }
 
   return (
-    <section>
-      <h2 className="text-24 font-500 pb-8 bg-[#e0e0e0] py-4 px-12 my-4 flex items-center">
-        배차되지 않은 예약
-        <span className="text-14 font-400 text-grey-700 ml-20">
+    <section className="flex flex-col pb-20 pt-12">
+      <Heading.h2 className="flex items-baseline gap-20">
+        배차되지 않은 예약{' '}
+        <span className="text-14 font-400 text-grey-700">
           현재 유효한 예약만 표시됩니다.
         </span>
         <button
           onClick={rejectAllSupportedHandy}
-          className="text-14 font-500 rounded-[4px] border border-grey-300 px-12 py-4 bg-grey-100 ml-24"
+          className="rounded-[4px] border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
         >
           핸디 지원 일괄 거절
         </button>
-      </h2>
+      </Heading.h2>
       <BaseTable table={reservationTable} />
     </section>
   );

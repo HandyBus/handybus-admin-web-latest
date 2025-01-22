@@ -1,26 +1,29 @@
 import { ReactNode } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-type BackgroundColor = 'grey' | 'primary' | 'blue' | 'red';
-
 const BACKGROUND_COLOR_MAP = {
-  grey: 'bg-grey-100/60',
-  primary: 'bg-primary-100/60',
-  blue: 'bg-blue-100/50',
-  red: 'bg-red-100/60',
+  grey: 'bg-notion-grey',
+  yellow: 'bg-notion-yellow',
+  green: 'bg-notion-green',
+  blue: 'bg-notion-blue',
+  red: 'bg-notion-red',
 };
+
+type BackgroundColor = keyof typeof BACKGROUND_COLOR_MAP;
 
 interface HeadingProps {
   children: ReactNode;
   backgroundColor?: BackgroundColor;
+  className?: string;
 }
 
-const H1 = ({ children, backgroundColor }: HeadingProps) => {
+const H1 = ({ children, backgroundColor, className }: HeadingProps) => {
   return (
     <h1
       className={twMerge(
-        'my-[2px] px-[2px] text-[32px] font-600',
+        'my-4 h-56 p-4 text-[32px] font-600',
         backgroundColor && BACKGROUND_COLOR_MAP[backgroundColor],
+        className,
       )}
     >
       {children}
@@ -28,12 +31,13 @@ const H1 = ({ children, backgroundColor }: HeadingProps) => {
   );
 };
 
-const H2 = ({ children, backgroundColor }: HeadingProps) => {
+const H2 = ({ children, backgroundColor, className }: HeadingProps) => {
   return (
     <h2
       className={twMerge(
-        'my-[2px] px-[2px] text-28 font-500',
+        'my-4 h-[50px] p-4 text-28 font-500',
         backgroundColor && BACKGROUND_COLOR_MAP[backgroundColor],
+        className,
       )}
     >
       {children}
@@ -41,12 +45,13 @@ const H2 = ({ children, backgroundColor }: HeadingProps) => {
   );
 };
 
-const H3 = ({ children, backgroundColor }: HeadingProps) => {
+const H3 = ({ children, backgroundColor, className }: HeadingProps) => {
   return (
     <h3
       className={twMerge(
-        'my-[2px] px-[2px] text-24 font-500',
+        'my-4 h-44 p-4 text-24 font-500',
         backgroundColor && BACKGROUND_COLOR_MAP[backgroundColor],
+        className,
       )}
     >
       {children}
@@ -54,23 +59,40 @@ const H3 = ({ children, backgroundColor }: HeadingProps) => {
   );
 };
 
-const H4 = ({ children, backgroundColor }: HeadingProps) => {
+const H4 = ({ children, backgroundColor, className }: HeadingProps) => {
   return (
-    <h3
+    <h4
       className={twMerge(
-        'my-[2px] px-[2px] text-20 font-400',
+        'my-4 h-[38px] p-4 text-20 font-500',
         backgroundColor && BACKGROUND_COLOR_MAP[backgroundColor],
+        className,
       )}
     >
       {children}
-    </h3>
+    </h4>
   );
 };
 
-export const Heading = Object.assign(H1, {
-  H2,
-  H3,
-  H4,
+const H5 = ({ children, backgroundColor, className }: HeadingProps) => {
+  return (
+    <h4
+      className={twMerge(
+        'my-4 h-32 p-4 text-16 font-500',
+        backgroundColor && BACKGROUND_COLOR_MAP[backgroundColor],
+        className,
+      )}
+    >
+      {children}
+    </h4>
+  );
+};
+
+const Heading = Object.assign(H1, {
+  h1: H1,
+  h2: H2,
+  h3: H3,
+  h4: H4,
+  h5: H5,
 });
 
 export default Heading;

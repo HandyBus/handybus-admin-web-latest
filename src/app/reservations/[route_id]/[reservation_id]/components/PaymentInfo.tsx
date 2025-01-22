@@ -49,11 +49,11 @@ const PaymentInfo = ({ response }: Props) => {
   });
 
   return (
-    <>
+    <article className="flex flex-col">
       <details open>
-        <summary className="text-[18px] font-500 py-8">결제정보</summary>
+        <summary className="py-8 text-28 font-500">결제정보</summary>
         {response.payment ? (
-          <div className="flex flex-col gap-8 w-full">
+          <div className="flex w-full flex-col gap-8">
             <VerticalTable table={paymentTable} />
             {response.payment.refundRequests &&
               response.payment.refundRequests.length > 0 && (
@@ -68,9 +68,9 @@ const PaymentInfo = ({ response }: Props) => {
         )}
       </details>
       <details open>
-        <summary className="text-[18px] font-500 py-8">토스 결제정보</summary>
+        <summary className="py-8 text-28 font-500">토스 결제정보</summary>
         {response.tossPayments ? (
-          <div className="flex flex-col gap-8 w-full">
+          <div className="flex w-full flex-col gap-8">
             <VerticalTable table={tosspaymentsTable} />
           </div>
         ) : (
@@ -79,7 +79,7 @@ const PaymentInfo = ({ response }: Props) => {
         {response.tossPayments?.cancels &&
           response.tossPayments?.cancels.length > 0 && (
             <details>
-              <summary className="text-[14px] font-400 p-8">
+              <summary className="p-8 text-[14px] font-400">
                 토스 결제정보 - 토스 취소 정보 TosspaymentsCancel
               </summary>
               {response.tossPayments?.cancels.map((cancel) => (
@@ -93,7 +93,7 @@ const PaymentInfo = ({ response }: Props) => {
         {response.tossPayments?.cashReceipts &&
           response.tossPayments?.cashReceipts.length > 0 && (
             <details>
-              <summary className="text-[16px] font-400 p-8">
+              <summary className="p-8 text-28 font-400">
                 토스 결제정보 -토스 영수증 정보 TosspaymentsCashReceipts
               </summary>
               {response.tossPayments?.cashReceipts.map((cashReceipt) => (
@@ -105,7 +105,7 @@ const PaymentInfo = ({ response }: Props) => {
             </details>
           )}
       </details>
-    </>
+    </article>
   );
 };
 

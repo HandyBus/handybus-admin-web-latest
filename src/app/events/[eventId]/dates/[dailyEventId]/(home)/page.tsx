@@ -10,6 +10,9 @@ import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
 import { useGetShuttleRoutesOfDailyEvent } from '@/services/shuttleOperation.service';
 import { useGetEvent } from '@/services/shuttleOperation.service';
+import Heading from '@/components/text/Heading';
+import Callout from '@/components/text/Callout';
+import List from '@/components/text/List';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -56,22 +59,27 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
   }
 
   return (
-    <main className="flex h-full w-full flex-col gap-16 bg-white">
-      <header className="flex flex-row justify-between">
-        {thisDailyShuttle && (
-          <h1 className="text-[32px] font-500">
-            <BlueLink href={`/events/${eventId}`}>{shuttle.eventName}</BlueLink>{' '}
-            행사의 <b>{formatDateString(thisDailyShuttle.date)}</b>일자 상세
-            정보
-          </h1>
-        )}
-      </header>
+    <main>
+      <Heading>일자별 행사 상세 정보</Heading>
+      {thisDailyShuttle && (
+        <Callout>
+          <List>
+            <List.item title="행사명">
+              <BlueLink href={`/events/${eventId}`}>
+                {shuttle.eventName}
+              </BlueLink>
+            </List.item>
+            <List.item title="장소">{shuttle.eventLocationName}</List.item>
+            <List.item title="날짜">
+              {formatDateString(thisDailyShuttle.date)}
+            </List.item>
+            <List.item title="상태">
+              {Stringifier.dailyEventStatus(thisDailyShuttle?.status)}
+            </List.item>
+          </List>
+        </Callout>
+      )}
       <div className="flex flex-col gap-16">
-        <div>
-          상태:{' '}
-          {thisDailyShuttle?.status &&
-            Stringifier.dailyEventStatus(thisDailyShuttle?.status)}
-        </div>
         <header className="flex flex-row justify-between">
           <h1 className="text-[24px] font-500">노선 목록</h1>
           <BlueLink href={`${dailyEventId}/routes/new`}>추가하기</BlueLink>

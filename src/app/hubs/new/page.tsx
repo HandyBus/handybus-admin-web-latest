@@ -10,6 +10,7 @@ import RegionInput from '@/components/input/RegionInput';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { useGetRegions, usePostRegionHub } from '@/services/location.service';
 import { Region } from '@/types/region';
+import Heading from '@/components/text/Heading';
 
 const NewHubPage = () => {
   const router = useRouter();
@@ -67,8 +68,8 @@ const NewHubPage = () => {
   );
 
   return (
-    <main className="h-full w-full bg-white flex flex-col gap-16">
-      <h2 className="text-24 font-500">거점지 정보</h2>
+    <main>
+      <Heading>거점지 추가</Heading>
       <form
         className="flex flex-col"
         onSubmit={handleSubmit(onSubmit)}
@@ -95,7 +96,7 @@ const NewHubPage = () => {
           control={control}
           name={`regionId`}
           render={({ field: { onChange, value } }) => (
-            <div className="flex flex-col gap-2 items-start">
+            <div className="gap-2 flex flex-col items-start">
               {recommended && (
                 <button
                   type="button"

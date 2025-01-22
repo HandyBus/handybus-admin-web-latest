@@ -63,6 +63,12 @@
   --green-800: 33 85 33;
   --green-900: 26 64 26;
 
+  --notion-grey: 241 241 239;
+  --notion-yellow: 251 243 218;
+  --notion-green: 237 243 236;
+  --notion-blue: 230 243 247;
+  --notion-red: 253 235 235;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-smooth: never;

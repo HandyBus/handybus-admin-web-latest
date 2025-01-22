@@ -97,6 +97,13 @@ const config: Config = {
         800: 'rgb(var(--green-800) / <alpha-value>)',
         900: 'rgb(var(--green-900) / <alpha-value>)',
       },
+      notion: {
+        grey: 'rgb(var(--notion-grey) / <alpha-value>)',
+        yellow: 'rgb(var(--notion-yellow) / <alpha-value>)',
+        green: 'rgb(var(--notion-green) / <alpha-value>)',
+        blue: 'rgb(var(--notion-blue) / <alpha-value>)',
+        red: 'rgb(var(--notion-red) / <alpha-value>)',
+      },
     },
     fontSize: {
       10: '10px',
