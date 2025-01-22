@@ -1,14 +1,14 @@
 'use client';
 
-import { ReservationView } from '@/types/v2/reservation.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
 import Stringifier from '@/utils/stringifier.util';
-import { ShuttleBusesView } from '@/types/v2/shuttleBus.type';
 import EditHandyStatusDialog from '../[reservation_id]/components/EditHandyStatusDialog';
 import { formatDateString } from '@/utils/date.util';
+import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
+import { ReservationViewEntity } from '@/types/reservation.type';
 
-const busColumnHelper = createColumnHelper<ShuttleBusesView>();
+const busColumnHelper = createColumnHelper<ShuttleBusesViewEntity>();
 
 export const busColumns = [
   busColumnHelper.accessor('shuttleBusId', {
@@ -41,7 +41,7 @@ export const busColumns = [
   }),
 ];
 
-const reservationColumnHelper = createColumnHelper<ReservationView>();
+const reservationColumnHelper = createColumnHelper<ReservationViewEntity>();
 
 export const reservationColumns = [
   reservationColumnHelper.accessor('reservationId', {
@@ -71,7 +71,7 @@ export const reservationColumns = [
   reservationColumnHelper.accessor('type', {
     id: 'type',
     header: () => '예약 유형',
-    cell: (info) => Stringifier.reservationType(info.getValue()),
+    cell: (info) => Stringifier.tripType(info.getValue()),
   }),
   reservationColumnHelper.accessor('handyStatus', {
     id: 'handyStatus',

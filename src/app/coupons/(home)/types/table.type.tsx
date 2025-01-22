@@ -1,10 +1,10 @@
 'use client';
 
-import { CouponType } from '@/types/v1/coupon.type';
+import { AdminCouponsResponseModel } from '@/types/coupon.type';
 import { formatDateString } from '@/utils/date.util';
 import { createColumnHelper } from '@tanstack/react-table';
 
-const columnHelper = createColumnHelper<CouponType>();
+const columnHelper = createColumnHelper<AdminCouponsResponseModel>();
 
 export const columns = [
   columnHelper.accessor(
@@ -25,9 +25,9 @@ export const columns = [
             {name}
             <br />
             {type === 'AMOUNT'
-              ? `${amount.toLocaleString()}원 할인`
+              ? `${amount?.toLocaleString()}원 할인`
               : `${rate}% 할인`}{' '}
-            {`(최대 ${maxDiscount.toLocaleString()}원)`}
+            {`(최대 ${maxDiscount?.toLocaleString()}원)`}
           </span>
         );
       },

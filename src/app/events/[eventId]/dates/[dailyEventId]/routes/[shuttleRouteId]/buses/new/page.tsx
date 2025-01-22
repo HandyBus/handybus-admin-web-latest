@@ -7,9 +7,9 @@ import { conform, type CreateBusFormType } from './types/form.type';
 import Input from '@/components/input/Input';
 import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
 import { CheckIcon } from 'lucide-react';
-import { BusTypeSchema } from '@/types/v2/shuttleBus.type';
-import { postBus } from '@/services/v2/shuttleBus.services';
 import Stringifier from '@/utils/stringifier.util';
+import { usePostShuttleBus } from '@/services/shuttleOperation.service';
+import { BusTypeEnum } from '@/types/shuttleBus.type';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -29,25 +29,28 @@ const NewBusPage = ({
     },
   });
 
+  const { mutate: postBus } = usePostShuttleBus({
+    onSuccess: () => {
+      alert('버스가 추가되었습니다.');
+      router.push(
+        `/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`,
+      );
+    },
+    onError: (error) => {
+      alert('버스 추가에 실패했습니다');
+      console.error(error);
+    },
+  });
+
   const onSubmit = useCallback(
     (data: CreateBusFormType) => {
       if (confirm('버스를 추가하시겠습니까?')) {
-        postBus(
-          Number(eventId),
-          Number(dailyEventId),
-          Number(shuttleRouteId),
-          conform(data),
-        )
-          .then(() => {
-            alert('버스가 추가되었습니다.');
-            router.push(
-              `/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`,
-            );
-          })
-          .catch((e) => {
-            alert('버스 추가에 실패했습니다');
-            console.error(e);
-          });
+        postBus({
+          eventId: Number(eventId),
+          dailyEventId: Number(dailyEventId),
+          shuttleRouteId: Number(shuttleRouteId),
+          body: conform(data),
+        });
       }
     },
     [router, eventId, dailyEventId, shuttleRouteId],
@@ -101,20 +104,11 @@ const NewBusPage = ({
               onChange={(s) => onChange(s)}
               aria-label="Server size"
             >
-              {BusTypeSchema.options.map((plan) => (
+              {BusTypeEnum.options.map((plan) => (
                 <Field key={plan} className="flex items-center gap-2">
                   <Radio
                     value={plan}
-                    className="group flex size-fit items-center p-4 justify-center rounded-lg bg-white
-                    data-[checked]:bg-blue-400
-                    data-[checked]:text-white
-                    transition-transform
-                    hover:outline
-                    focus:outline
-                    hover:outline-blue-200
-                    focus:outline-blue-200
-                    active:scale-[0.9]
-                    "
+                    className="group flex size-fit items-center p-4 justify-center rounded-lg bg-white data-[checked]:bg-blue-400 data-[checked]:text-white transition-transform hover:outline focus:outline hover:outline-blue-200 focus:outline-blue-200 active:scale-[0.9]"
                   >
                     <CheckIcon
                       className="invisible group-data-[checked]:visible"

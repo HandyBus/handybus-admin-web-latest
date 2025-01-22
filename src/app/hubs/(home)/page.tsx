@@ -2,24 +2,17 @@
 
 import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';
-import { useQuery } from '@tanstack/react-query';
+
 import { useState } from 'react';
 import RegionInput from '@/components/input/RegionInput';
 import BlueLink from '@/components/link/BlueLink';
 import { columns } from './types/table.type';
-import { getHubs } from '@/services/v1/hub.services';
+import { useGetRegionHubs } from '@/services/location.service';
 
 const Page = () => {
   const [regionId, setRegionId] = useState<number | null>(null);
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['hubs', regionId],
-    queryFn: async () =>
-      regionId === null
-        ? Promise.reject('choose region')
-        : await getHubs(regionId),
-    enabled: regionId !== null,
-  });
+  const { data, isLoading, isError, error } = useGetRegionHubs(regionId ?? 0);
 
   const table = useTable({ data, columns });
 

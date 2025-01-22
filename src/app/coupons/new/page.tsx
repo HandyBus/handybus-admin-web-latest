@@ -1,9 +1,9 @@
 'use client';
 
-import { addCoupon } from '@/services/v1/coupon.services';
 import Input from '@/components/input/Input';
 import NumberInput from '@/components/input/NumberInput';
-import { CreateCouponFormType } from '@/types/v1/coupon.type';
+import { usePostCoupon } from '@/services/billing.service';
+import { CreateCouponRequest } from '@/types/coupon.type';
 import { Label, Radio } from '@headlessui/react';
 import { Field } from '@headlessui/react';
 import { RadioGroup } from '@headlessui/react';
@@ -22,24 +22,29 @@ const defaultValues = {
   maxCouponUsage: 0,
   validFrom: '',
   validTo: '',
-} satisfies CreateCouponFormType;
+} satisfies CreateCouponRequest;
 
 const Page = () => {
-  const { control, handleSubmit } = useForm<CreateCouponFormType>({
+  const { control, handleSubmit } = useForm<CreateCouponRequest>({
     defaultValues,
   });
 
-  const router = useRouter();
-  const onSubmit = async (data: CreateCouponFormType) => {
-    try {
-      await addCoupon(data);
+  const { mutate: postCoupon } = usePostCoupon({
+    onSuccess: () => {
+      alert('쿠폰이 생성되었습니다.');
       if (confirm('쿠폰이 생성되었습니다. 목록으로 돌아가시겠습니까?')) {
         router.push('/coupons');
       }
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error(error);
       alert('쿠폰 생성에 실패했습니다.');
-    }
+    },
+  });
+
+  const router = useRouter();
+  const onSubmit = async (data: CreateCouponRequest) => {
+    postCoupon(data);
   };
 
   return (
@@ -129,7 +134,7 @@ const Page = () => {
           control={control}
           name="maxDiscountAmount"
           render={({ field: { onChange, value } }) => (
-            <NumberInput value={value} setValue={onChange} />
+            <NumberInput value={value ?? 0} setValue={onChange} />
           )}
         />
         <label>발행 개수</label>

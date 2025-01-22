@@ -1,8 +1,6 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-
 import {
   Combobox,
   ComboboxInput,
@@ -18,30 +16,28 @@ interface Props {
 }
 
 import { ChevronDown } from 'lucide-react';
-import { getAllEvents } from '@/services/v2/event.services';
-import { EventsView } from '@/types/v2/event.type';
 import Image from 'next/image';
+import { useGetEvents } from '@/services/shuttleOperation.service';
+import { EventsViewEntity } from '@/types/event.type';
 
 const EventInput = ({ value, setValue }: Props) => {
   const [query, setQuery] = useState('');
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['shuttles'],
-    queryFn: async () => await getAllEvents(),
-  });
+
+  const { data, isLoading, error } = useGetEvents();
 
   const setSelectedShuttle = useCallback(
-    (shuttle: EventsView | null) => {
+    (shuttle: EventsViewEntity | null) => {
       setValue(shuttle?.eventId ?? null);
     },
     [setValue],
   );
 
-  const selectedShuttle: EventsView | null = useMemo(
+  const selectedShuttle: EventsViewEntity | null = useMemo(
     () => data?.find((event) => event.eventId === value) || null,
     [data, value],
   );
 
-  const filtered: EventsView[] = useMemo(() => {
+  const filtered: EventsViewEntity[] = useMemo(() => {
     return query
       ? filterByFuzzy(
           data ?? [],
@@ -76,7 +72,7 @@ const EventInput = ({ value, setValue }: Props) => {
                 : '셔틀 선택'
           }
           defaultValue={null}
-          displayValue={(shuttle: null | EventsView) =>
+          displayValue={(shuttle: null | EventsViewEntity) =>
             shuttle?.eventName ?? ''
           }
           onChange={(event) => setQuery(event.target.value)}

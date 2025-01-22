@@ -1,11 +1,10 @@
 'use client';
 
-import { getBuses } from '@/services/v2/shuttleBus.services';
-import { useQuery } from '@tanstack/react-query';
 import { busColumns } from '../types/table.type';
 import BlueLink from '@/components/link/BlueLink';
 import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';
+import { useGetShuttleBuses } from '@/services/shuttleOperation.service';
 
 interface Props {
   eventId: string;
@@ -19,11 +18,11 @@ const Buses = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     isPending: isBusPending,
     isError: isBusError,
     error: busError,
-  } = useQuery({
-    queryKey: ['buses', eventId, dailyEventId, shuttleRouteId],
-    queryFn: () =>
-      getBuses(Number(eventId), Number(dailyEventId), Number(shuttleRouteId)),
-  });
+  } = useGetShuttleBuses(
+    Number(eventId),
+    Number(dailyEventId),
+    Number(shuttleRouteId),
+  );
 
   const busTable = useTable({
     data: buses ?? [],

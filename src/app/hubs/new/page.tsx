@@ -1,27 +1,20 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-
 import { useCallback, useMemo } from 'react';
-
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { conform, type CreateHubFormType } from './types/form.type';
 import Input from '@/components/input/Input';
 import CoordInput from '@/components/input/CoordInput';
 import RegionInput from '@/components/input/RegionInput';
-import { useQuery } from '@tanstack/react-query';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
-import { Region } from '@/types/v1/region.type';
-import { getRegions } from '@/services/v1/region.services';
-import { addHub } from '@/services/v1/hub.services';
+import { useGetRegions, usePostRegionHub } from '@/services/location.service';
+import { Region } from '@/types/region';
 
 const NewHubPage = () => {
   const router = useRouter();
 
-  const { data: regions } = useQuery({
-    queryKey: ['regions'],
-    queryFn: () => getRegions(),
-  });
+  const { data: regions } = useGetRegions();
 
   const { control, handleSubmit } = useForm<CreateHubFormType>({
     defaultValues: {
@@ -48,6 +41,17 @@ const NewHubPage = () => {
     ).at(0);
   }, [regions, address]);
 
+  const { mutate: addHub } = usePostRegionHub({
+    onSuccess: () => {
+      alert('거점지가 추가되었습니다.');
+      router.push('/hubs');
+    },
+    onError: (error) => {
+      alert(`거점지 추가에 실패했습니다.`);
+      console.error(error);
+    },
+  });
+
   const onSubmit = useCallback(
     (data: CreateHubFormType) => {
       const target = regions?.find((r) => r.regionId === data.regionId);
@@ -56,16 +60,7 @@ const NewHubPage = () => {
           ? `거점지를 추가하시겠습니까?`
           : `선택한 주소 "${data.coord.address}"가 지역 "${target ? `${target.provinceFullName} ${target.cityFullName}` : '<오류: 알수 없는 위치>'}에 등록됩니다. 거점지를 추가하시겠습니까?`;
       if (confirm(confirmMessage)) {
-        addHub(data.regionId, conform(data))
-          .then(() => {
-            alert('거점지가 추가되었습니다.');
-          })
-          .catch((error) => {
-            const stack =
-              error instanceof Error ? error.stack : 'Unknown Error';
-            alert(`거점지 추가에 실패했습니다. 스택: ${stack}`);
-          })
-          .finally(() => router.push('/hubs'));
+        addHub({ regionId: data.regionId, body: conform(data) });
       }
     },
     [recommended, router, regions],

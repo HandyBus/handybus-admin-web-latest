@@ -1,7 +1,7 @@
-import { ShuttleDemandStatisics } from '@/types/v2/demand.type';
+import { ShuttleDemandStatisticsReadModel } from '@/types/demand.type';
 import { createColumnHelper } from '@tanstack/react-table';
 
-const columnHelper = createColumnHelper<ShuttleDemandStatisics>();
+const columnHelper = createColumnHelper<ShuttleDemandStatisticsReadModel>();
 
 export const columnsFrom = [
   columnHelper.accessor('provinceFullName', {

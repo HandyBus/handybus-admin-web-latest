@@ -1,17 +1,16 @@
 'use client';
 
-import { getAllCoupons } from '@/services/v1/coupon.services';
 import { columns } from './types/table.type';
-import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Loader2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { CouponType } from '@/types/v1/coupon.type';
 import { matches } from 'kled';
 import DebouncedInput from '@/components/input/DebouncedInput';
 import BlueLink from '@/components/link/BlueLink';
 import useTable from '@/hooks/useTable';
 import BaseTable from '@/components/table/BaseTable';
+import { useGetCoupons } from '@/services/billing.service';
+import { AdminCouponsResponseModel } from '@/types/coupon.type';
 
 const FILTER_LIST = ['전체', '진행중', '대기', '만료'] as const;
 type FilterType = (typeof FILTER_LIST)[number];
@@ -23,15 +22,11 @@ interface Props {
 }
 
 const Page = ({ searchParams }: Props) => {
-  const { data: coupons, isFetching } = useQuery({
-    queryKey: ['coupons'],
-    queryFn: () => getAllCoupons(),
-    initialData: [],
-  });
+  const { data: coupons, isFetching } = useGetCoupons();
 
   const [value, setValue] = useState('');
   const filterCoupon = (
-    coupon: CouponType,
+    coupon: AdminCouponsResponseModel,
     filter: { value: string; status: FilterType },
   ) => {
     const { value, status } = filter;
@@ -51,9 +46,9 @@ const Page = ({ searchParams }: Props) => {
     const stringToCompare =
       coupon.name +
       (coupon.discountType === 'AMOUNT'
-        ? `${coupon.discountAmount.toLocaleString()}원 할인`
-        : `${coupon.discountRate}% 할인`) +
-      `(최대 ${coupon.maxDiscountAmount.toLocaleString()}원)`;
+        ? `${coupon?.discountAmount?.toLocaleString()}원 할인`
+        : `${coupon?.discountRate}% 할인`) +
+      `(최대 ${coupon?.maxDiscountAmount?.toLocaleString()}원)`;
     const score =
       value.length > stringToCompare.length
         ? matches(stringToCompare, value)

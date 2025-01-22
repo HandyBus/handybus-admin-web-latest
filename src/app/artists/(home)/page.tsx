@@ -1,20 +1,12 @@
 'use client';
 
 import BaseTable from '@/components/table/BaseTable';
-import { getArtists } from '@/services/v2/artists.services';
 import { columns } from './types/table.type';
-import { useQuery } from '@tanstack/react-query';
 import useTable from '@/hooks/useTable';
+import { useGetArtists } from '@/services/shuttleOperation.service';
 
 const ArtistPage = () => {
-  const {
-    data: artists,
-    isError,
-    isPending,
-  } = useQuery({
-    queryKey: ['artists'],
-    queryFn: () => getArtists(),
-  });
+  const { data: artists, isPending, isError } = useGetArtists();
 
   const table = useTable({
     data: artists,
@@ -22,7 +14,6 @@ const ArtistPage = () => {
   });
 
   if (isPending) return <div>Loading...</div>;
-
   if (isError) return <div>Error</div>;
 
   return (

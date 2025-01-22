@@ -8,16 +8,15 @@ import {
 import { ChevronDownIcon, FilterIcon } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { EventsView, EventsViewEntity } from '@/types/v2/event.type';
 import Toggle from '@/components/button/Toggle';
 import Stringifier from '@/utils/stringifier.util';
 import { useSearchParams } from 'next/navigation';
+import { EventStatusEnum } from '@/types/event.type';
+import { EventStatus } from '@/types/event.type';
 
 interface Props {
-  eventStatus: EventsView['eventStatus'] | undefined;
-  setEventStatus: Dispatch<
-    SetStateAction<EventsView['eventStatus'] | undefined>
-  >;
+  eventStatus: EventStatus | undefined;
+  setEventStatus: Dispatch<SetStateAction<EventStatus | undefined>>;
 }
 
 function Filter({ eventStatus, setEventStatus }: Props) {
@@ -36,13 +35,13 @@ function Filter({ eventStatus, setEventStatus }: Props) {
         <ChevronDownIcon className="w-5 group-data-[open]:rotate-180" />
       </DisclosureButton>
       <DisclosurePanel className="flex flex-row gap-4 bg-grey-50 rounded-xl p-8">
-        {EventsViewEntity.shape.eventStatus.options.map((status) => (
+        {EventStatusEnum.options.map((status) => (
           <Toggle
             key={status}
             value={status === eventStatus}
             label={Stringifier.eventStatus(status)}
             onClick={() =>
-              setEventStatus((s: EventsView['eventStatus'] | undefined) =>
+              setEventStatus((s: EventStatus | undefined) =>
                 s === status ? undefined : conform(status),
               )
             }
@@ -58,7 +57,7 @@ export default Filter;
 export function useEventStatusOptions() {
   const sp = useSearchParams();
   const eventStatus = conform(sp.get('eventStatus'));
-  return useState<EventsView['eventStatus'] | undefined>(eventStatus);
+  return useState<EventStatus | undefined>(eventStatus);
 }
 
 const conform = (s: string | undefined | null) => {

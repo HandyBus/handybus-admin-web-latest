@@ -1,9 +1,9 @@
 import { createColumnHelper } from '@tanstack/react-table';
-import { ShuttleRoutesView } from '@/types/v2/shuttleRoute.type';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
+import { ShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 
-const columnHelper = createColumnHelper<ShuttleRoutesView>();
+const columnHelper = createColumnHelper<ShuttleRoutesViewEntity>();
 
 export const columns = [
   columnHelper.accessor('shuttleRouteId', {

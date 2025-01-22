@@ -3,9 +3,9 @@
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { addArtist } from '@/services/v1/artists.services';
 import { PlusIcon } from 'lucide-react';
 import Input from '@/components/input/Input';
+import { usePostArtist } from '@/services/shuttleOperation.service';
 
 const NewArtistPage = () => {
   const router = useRouter();
@@ -21,19 +21,21 @@ const NewArtistPage = () => {
     },
   });
 
+  const { mutate: postArtist } = usePostArtist({
+    onSuccess: () => {
+      alert('아티스트가 추가되었습니다.');
+      router.push('/artists');
+    },
+    onError: (error) => {
+      const stack = error instanceof Error ? error.stack : 'Unknown Error';
+      alert(`아티스트 추가에 실패했습니다. 스택: ${stack}`);
+    },
+  });
+
   const onSubmit = useCallback(
     ({ name }: { name: string }) => {
       if (confirm(`"${name}" 아티스트를 추가하시겠습니까?`)) {
-        addArtist(name)
-          .then(() => {
-            alert('아티스트가 추가되었습니다.');
-          })
-          .catch((error) => {
-            const stack =
-              error instanceof Error ? error.stack : 'Unknown Error';
-            alert(`아티스트 추가에 실패했습니다. 스택: ${stack}`);
-          })
-          .finally(() => router.push('/artists'));
+        postArtist({ name });
       }
     },
     [router],

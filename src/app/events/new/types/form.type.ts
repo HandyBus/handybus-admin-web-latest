@@ -1,4 +1,4 @@
-import { CreateEventRequest } from '@/types/v2/event.type';
+import { CreateEventRequest } from '@/types/event.type';
 import { z } from 'zod';
 
 export const CreateEventFormSchema = z.object({

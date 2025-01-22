@@ -1,10 +1,10 @@
 import { columns as reservationMetaColumns } from '../types/reservationMeta.type';
 import VerticalTable from '@/components/table/VerticalTable';
 import useTable from '@/hooks/useTable';
-import { ReservationView } from '@/types/v2/reservation.type';
+import { ReservationViewEntity } from '@/types/reservation.type';
 
 interface Props {
-  response: ReservationView;
+  response: ReservationViewEntity;
 }
 
 const ReservationMetaInfo = ({ response }: Props) => {

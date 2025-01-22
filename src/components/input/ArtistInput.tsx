@@ -1,16 +1,15 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { getArtists } from '@/services/v2/artists.services';
 import {
   Combobox,
   ComboboxInput,
   ComboboxOption,
   ComboboxOptions,
 } from '@headlessui/react';
-import { ArtistsView } from '@/types/v2/artist.type';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
+import { useGetArtists } from '@/services/shuttleOperation.service';
+import { ArtistsViewEntity } from '@/types/artist.type';
 
 interface Props {
   value: number | null;
@@ -19,13 +18,10 @@ interface Props {
 
 const ArtistInput = ({ value, setValue }: Props) => {
   const [query, setQuery] = useState('');
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['artists'],
-    queryFn: async () => await getArtists(),
-  });
+  const { data, isError, isLoading } = useGetArtists();
 
   const setSelectedArtist = useCallback(
-    (artist: ArtistsView) => {
+    (artist: ArtistsViewEntity) => {
       setValue(artist?.artistId);
     },
     [setValue],
@@ -36,7 +32,7 @@ const ArtistInput = ({ value, setValue }: Props) => {
     [data, value],
   );
 
-  const filtered: ArtistsView[] = useMemo(
+  const filtered: ArtistsViewEntity[] = useMemo(
     () =>
       query
         ? filterByFuzzy(data ?? [], query, (p) => p.artistName)
@@ -44,7 +40,7 @@ const ArtistInput = ({ value, setValue }: Props) => {
     [data, query],
   );
 
-  if (error) return <div>Failed to load artists</div>;
+  if (isError) return <div>Failed to load artists</div>;
 
   return (
     <Combobox
@@ -58,7 +54,9 @@ const ArtistInput = ({ value, setValue }: Props) => {
         aria-label="Assignee"
         placeholder={isLoading ? '로딩 중…' : '아티스트 선택'}
         defaultValue={null}
-        displayValue={(person: null | ArtistsView) => person?.artistName ?? ''}
+        displayValue={(person: null | ArtistsViewEntity) =>
+          person?.artistName ?? ''
+        }
         onChange={(event) => setQuery(event.target.value)}
       />
 

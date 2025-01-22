@@ -1,13 +1,12 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { getAllEvents } from '@/services/v2/event.services';
 import BlueLink from '@/components/link/BlueLink';
 import ColumnFilter from '@/components/table/ColumnFilter';
 import BaseTable from '@/components/table/BaseTable';
 import { columns, initialColumnVisibility } from './types/table.type';
 import useTable from '@/hooks/useTable';
 import StatusFilter, { useEventStatusOptions } from './components/StatusFilter';
+import { useGetEvents } from '@/services/shuttleOperation.service';
 
 const Page = () => {
   const [eventStatus, setEventStatus] = useEventStatusOptions();
@@ -17,9 +16,8 @@ const Page = () => {
     isLoading,
     isError,
     error,
-  } = useQuery({
-    queryKey: ['events', eventStatus],
-    queryFn: () => getAllEvents(eventStatus),
+  } = useGetEvents({
+    status: eventStatus,
   });
 
   const table = useTable({

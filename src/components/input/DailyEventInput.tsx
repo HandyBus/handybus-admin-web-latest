@@ -1,8 +1,6 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-
 import {
   Combobox,
   ComboboxInput,
@@ -11,6 +9,10 @@ import {
   ComboboxButton,
 } from '@headlessui/react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
+import { ChevronDown } from 'lucide-react';
+import dayjs from 'dayjs';
+import { useGetEvent } from '@/services/shuttleOperation.service';
+import { EventDailyShuttlesInEventsViewEntity } from '@/types/event.type';
 
 interface Props {
   eventId: number;
@@ -18,22 +20,16 @@ interface Props {
   setValue: (value: number | null) => void;
 }
 
-import { ChevronDown } from 'lucide-react';
-import { getEvent } from '@/services/v2/event.services';
-import { EventsView } from '@/types/v2/event.type';
-import dayjs from 'dayjs';
-
-type DailyEvent = ArrayElement<EventsView['dailyEvents']>;
-
-const DailyEventInput = ({ eventId, value, setValue }: Props) => {
+const EventDailyShuttlesInEventsViewEntityInput = ({
+  eventId,
+  value,
+  setValue,
+}: Props) => {
   const [query, setQuery] = useState('');
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['shuttle', eventId],
-    queryFn: async () => await getEvent(eventId),
-  });
+  const { data, isLoading, error } = useGetEvent(eventId);
 
   const setSelectedDailyShuttle = useCallback(
-    (dailyEvent: DailyEvent | null) => {
+    (dailyEvent: EventDailyShuttlesInEventsViewEntity | null) => {
       setValue(dailyEvent?.dailyEventId ?? null);
     },
     [setValue],
@@ -44,7 +40,7 @@ const DailyEventInput = ({ eventId, value, setValue }: Props) => {
     [data, value],
   );
 
-  const filtered: DailyEvent[] = useMemo(() => {
+  const filtered: EventDailyShuttlesInEventsViewEntity[] = useMemo(() => {
     return query
       ? filterByFuzzy(data?.dailyEvents ?? [], query, (p) =>
           dayjs(p.date).format('YYYY-MM-DD'),
@@ -55,7 +51,7 @@ const DailyEventInput = ({ eventId, value, setValue }: Props) => {
   if (error) return <div>Failed to load artists</div>;
 
   return (
-    <Combobox<DailyEvent | null>
+    <Combobox<EventDailyShuttlesInEventsViewEntity | null>
       immediate
       value={selectedDailyShuttle}
       onChange={setSelectedDailyShuttle}
@@ -76,9 +72,9 @@ const DailyEventInput = ({ eventId, value, setValue }: Props) => {
                 : '날짜 선택'
           }
           defaultValue={null}
-          displayValue={(dailyEvent: DailyEvent | null) =>
-            dailyEvent?.date ?? ''
-          }
+          displayValue={(
+            dailyEvent: EventDailyShuttlesInEventsViewEntity | null,
+          ) => dailyEvent?.date ?? ''}
           onChange={(event) => setQuery(event.target.value)}
         />
 
@@ -103,4 +99,4 @@ const DailyEventInput = ({ eventId, value, setValue }: Props) => {
   );
 };
 
-export default DailyEventInput;
+export default EventDailyShuttlesInEventsViewEntityInput;

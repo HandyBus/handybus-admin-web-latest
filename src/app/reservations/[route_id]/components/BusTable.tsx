@@ -1,23 +1,26 @@
 'use client';
 
-import { getReservations } from '@/services/v2/reservations.services';
-import { getBuses, postAssignBus } from '@/services/v2/shuttleBus.services';
-import { ReservationView } from '@/types/v2/reservation.type';
-import { AssignBusRequest, ShuttleBusesView } from '@/types/v2/shuttleBus.type';
 import Stringifier from '@/utils/stringifier.util';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import EditHandyStatusDialog from '../[reservation_id]/components/EditHandyStatusDialog';
 import BlueLink from '@/components/link/BlueLink';
+import {
+  useGetReservationsWithPagination,
+  useGetShuttleBuses,
+  usePostBulkAssignBus,
+} from '@/services/shuttleOperation.service';
+import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
+import { ReservationViewEntity } from '@/types/reservation.type';
+import { TripType } from '@/types/shuttleRoute.type';
 
 type BusAndReservation = {
-  bus: ShuttleBusesView;
-  reservation: ReservationView;
+  bus: ShuttleBusesViewEntity;
+  reservation: ReservationViewEntity;
 };
 
 type BusWithSeat = {
-  bus: ShuttleBusesView;
+  bus: ShuttleBusesViewEntity;
   maxSeat: number;
   toDestinationFilledSeat: number;
   fromDestinationFilledSeat: number;
@@ -30,39 +33,30 @@ interface Props {
 }
 
 const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
-  const { data: buses, isLoading: isBusesLoading } = useQuery({
-    queryKey: ['bus', eventId, dailyEventId, shuttleRouteId],
-    queryFn: async () => await getBuses(eventId, dailyEventId, shuttleRouteId),
-  });
+  const { data: buses, isLoading: isBusesLoading } = useGetShuttleBuses(
+    eventId,
+    dailyEventId,
+    shuttleRouteId,
+  );
 
-  const { data: reservationData, isLoading: isReservationsLoading } = useQuery({
-    queryKey: ['reservation', eventId, dailyEventId, shuttleRouteId],
-    queryFn: () => {
-      return getReservations({
-        eventId,
-        dailyEventId,
-        shuttleRouteId,
-        reservationStatus: 'COMPLETE_PAYMENT',
-      });
-    },
-  });
+  const { data: reservationData, isLoading: isReservationsLoading } =
+    useGetReservationsWithPagination({
+      eventId,
+      dailyEventId,
+      shuttleRouteId,
+      reservationStatus: 'COMPLETE_PAYMENT',
+    });
 
   const isLoading = isBusesLoading || isReservationsLoading;
 
   const baseArray = useMemo(() => [], []);
   const reservations = useMemo(
-    () => reservationData?.reservations ?? baseArray,
+    () => reservationData.pages?.[0]?.reservations ?? baseArray,
     [reservationData],
   );
 
-  const queryClient = useQueryClient();
-  const assignBusMutation = useMutation({
-    mutationFn: (body: AssignBusRequest) =>
-      postAssignBus(eventId, dailyEventId, shuttleRouteId, body),
+  const assignBusMutation = usePostBulkAssignBus({
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['reservation', eventId, dailyEventId, shuttleRouteId],
-      });
       setIsEditMode(false);
       initBusAndReservation();
     },
@@ -190,7 +184,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
   const findAvailableBus = (
     busWithSeats: BusWithSeat[],
     requiredSeat: number,
-    seatType: ReservationView['type'],
+    seatType: TripType,
   ) => {
     return busWithSeats.find((busWithSeat) => {
       const { toDestinationFilledSeat, fromDestinationFilledSeat, maxSeat } =
@@ -214,7 +208,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
   const updateBusWithSeats = (
     busId: number,
     requiredSeat: number,
-    seatType: ReservationView['type'],
+    seatType: TripType,
   ) => {
     setEditingBusWithSeats((prev) =>
       prev.map((busWithSeat) =>
@@ -251,14 +245,19 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
       shuttleBusId: busAndReservation.bus.shuttleBusId,
     }));
 
-    assignBusMutation.mutate({ reservationShuttleBusMap: body });
+    assignBusMutation.mutate({
+      eventId,
+      dailyEventId,
+      shuttleRouteId,
+      body: { reservationShuttleBusMap: body },
+    });
   };
 
   // 버스 변경
   const handleChangeBus = (
     shuttleBusId: number,
-    buses: ShuttleBusesView[],
-    reservation: ReservationView,
+    buses: ShuttleBusesViewEntity[],
+    reservation: ReservationViewEntity,
   ) => {
     const selectedBus = buses.find((bus) => bus.shuttleBusId === shuttleBusId);
     const reservationId = reservation.reservationId;
@@ -439,12 +438,12 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
 
 interface PassengerItemProps {
   busAndReservation: BusAndReservation;
-  buses: ShuttleBusesView[];
+  buses: ShuttleBusesViewEntity[];
   isEditMode: boolean;
   handleChangeBus: (
     shuttleBusId: number,
-    buses: ShuttleBusesView[],
-    reservation: ReservationView,
+    buses: ShuttleBusesViewEntity[],
+    reservation: ReservationViewEntity,
   ) => void;
 }
 
@@ -467,7 +466,7 @@ const PassengerItem = ({
         {reservation.passengers.length}인
       </p>
       <p className="text-14 font-400 text-grey-700">
-        {Stringifier.reservationType(reservation.type)}
+        {Stringifier.tripType(reservation.type)}
       </p>
       <p
         className={`text-14 font-400 ${

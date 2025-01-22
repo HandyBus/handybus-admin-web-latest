@@ -1,8 +1,8 @@
-import { ReservationView } from '@/types/v2/reservation.type';
 import dayjs from 'dayjs';
+import { ReservationViewEntity } from '@/types/reservation.type';
 
 interface Props {
-  reservation: ReservationView;
+  reservation: ReservationViewEntity;
 }
 
 const ReservationViewer = ({ reservation }: Props) => {

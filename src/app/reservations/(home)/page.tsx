@@ -1,27 +1,27 @@
 'use client';
 
-import { getReservations } from '@/services/v2/reservations.services';
 import { columns } from './types/table.type';
-import { useCallback, useMemo, useState } from 'react';
-import {
-  keepPreviousData,
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import { LoaderCircleIcon } from 'lucide-react';
 import RowFilter from './components/ReservationFilter';
-import ColumnFilter from '@/components/table/ColumnFilter';
-import { getAllEvents } from '@/services/v2/event.services';
-import { EventsView } from '@/types/v2/event.type';
-import { getRoutes } from '@/services/v2/shuttleRoute.services';
+import {
+  EventDailyShuttlesInEventsViewEntity,
+  EventsViewEntity,
+} from '@/types/event.type';
 import Link from 'next/link';
 import Stringifier from '@/utils/stringifier.util';
 import { PAGINATION_LIMIT } from '@/constants/config';
 import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';
 import useReservationFilter from './hooks/userReservationFilter';
+import {
+  useGetEvents,
+  useGetReservationsWithPagination,
+  useGetShuttleRoutesOfDailyEvent,
+} from '@/services/shuttleOperation.service';
+import ColumnFilter from '@/components/table/ColumnFilter';
 
 const Page = () => {
   return (
@@ -36,31 +36,19 @@ const Page = () => {
 export default Page;
 
 const RouteReservations = () => {
-  const [selectedEvent, setSelectedEvent] = useState<EventsView | null>(null);
-  const [selectedDailyEvent, setSelectedDailyEvent] = useState<
-    EventsView['dailyEvents'][number] | null
-  >(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventsViewEntity | null>(
+    null,
+  );
+  const [selectedDailyEvent, setSelectedDailyEvent] =
+    useState<EventDailyShuttlesInEventsViewEntity | null>(null);
 
   const queryClient = useQueryClient();
-  const { data: events } = useQuery({
-    queryKey: ['event'],
-    queryFn: () => getAllEvents(),
-  });
 
-  const { data: shuttleRoutes } = useQuery({
-    queryKey: [
-      'shuttleRoute',
-      selectedEvent?.eventId,
-      selectedDailyEvent?.dailyEventId,
-    ],
-    queryFn: () => {
-      if (!selectedEvent || !selectedDailyEvent) {
-        return [];
-      }
-      return getRoutes(selectedEvent.eventId, selectedDailyEvent.dailyEventId);
-    },
-    enabled: !!selectedEvent && !!selectedDailyEvent,
-  });
+  const { data: events } = useGetEvents();
+  const { data: shuttleRoutes } = useGetShuttleRoutesOfDailyEvent(
+    selectedEvent?.eventId ?? 0,
+    selectedDailyEvent?.dailyEventId ?? 0,
+  );
 
   return (
     <section className="pb-40">
@@ -171,28 +159,13 @@ const RouteReservations = () => {
 const AllReservations = () => {
   const [option, dispatch] = useReservationFilter();
 
-  const queryFn = useCallback(
-    ({ pageParam }: { pageParam: number }) => {
-      return getReservations({
-        ...option,
-        page: pageParam,
-        limit: PAGINATION_LIMIT,
-      });
-    },
-    [option],
-  );
+  const { data, fetchNextPage, isFetching, hasNextPage, isError, error } =
+    useGetReservationsWithPagination({
+      ...option,
+      page: 0,
+      limit: PAGINATION_LIMIT,
+    });
 
-  const infiniteDataQuery = useInfiniteQuery({
-    queryKey: ['reservations', option],
-    queryFn: queryFn,
-    initialPageParam: 0,
-    initialData: { pages: [], pageParams: [] },
-    getNextPageParam: (lastPage) => {
-      return lastPage.nextPage;
-    },
-    placeholderData: keepPreviousData,
-  });
-  const { data, fetchNextPage, isFetching, hasNextPage } = infiniteDataQuery;
   const ref = useInfiniteScroll(fetchNextPage);
 
   const flatData = useMemo(
@@ -216,9 +189,7 @@ const AllReservations = () => {
       {/* TODO virtualization */}
       <BaseTable table={table} />
       {flatData.length === 0 && !isFetching && <p>데이터가 없습니다.</p>}
-      {infiniteDataQuery.isError ? (
-        <p>에러 : {infiniteDataQuery.error.message}</p>
-      ) : null}
+      {isError ? <p>에러 : {error.message}</p> : null}
       {isFetching ? <LoaderCircleIcon className="animate-spin" /> : null}
       {hasNextPage && <div ref={ref} />}
     </section>

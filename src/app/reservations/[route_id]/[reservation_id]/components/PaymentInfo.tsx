@@ -6,17 +6,17 @@ import {
   tosspaymentsColumns,
 } from '../types/payment.table.type';
 import Guide from '@/components/guide/Guide';
-import { ReservationView } from '@/types/v2/reservation.type';
-import { Payment, Tosspayments } from '@/types/v2/payment.type';
 import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';
 import VerticalTable from '@/components/table/VerticalTable';
+import { ReservationViewEntity } from '@/types/reservation.type';
+import { PaymentsViewEntity, TossPaymentsEntity } from '@/types/payment.type';
 
 interface Props {
   response: {
-    reservation: ReservationView;
-    payment: Payment;
-    tossPayments: Tosspayments;
+    reservation: ReservationViewEntity;
+    payment: PaymentsViewEntity;
+    tossPayments: TossPaymentsEntity;
   };
 }
 

@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
-export const ArtistViewEntity = z
+export const ArtistsViewEntitySchema = z
   .object({
     artistId: z.number().int(),
     artistName: z.string(),
   })
   .strict();
 
-export type ArtistsView = z.infer<typeof ArtistViewEntity>;
+export type ArtistsViewEntity = z.infer<typeof ArtistsViewEntitySchema>;

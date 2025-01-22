@@ -1,10 +1,9 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import BusTable from './components/BusTable';
 import ReservationTable from './components/ReservationTable';
-import { getRoute } from '@/services/v2/shuttleRoute.services';
 import { formatDateString } from '@/utils/date.util';
+import { useGetShuttleRoute } from '@/services/shuttleOperation.service';
 
 interface Props {
   params: {
@@ -21,10 +20,11 @@ const Page = ({ params, searchParams }: Props) => {
   const dailyEventId = Number(searchParams.dailyEventId);
   const shuttleRouteId = Number(params.route_id);
 
-  const { data: shuttleRoute } = useQuery({
-    queryKey: ['shuttleRoute', shuttleRouteId],
-    queryFn: () => getRoute(eventId, dailyEventId, shuttleRouteId),
-  });
+  const { data: shuttleRoute } = useGetShuttleRoute(
+    eventId,
+    dailyEventId,
+    shuttleRouteId,
+  );
 
   const eventName = shuttleRoute?.event?.eventName;
   const dailyEventDate = formatDateString(

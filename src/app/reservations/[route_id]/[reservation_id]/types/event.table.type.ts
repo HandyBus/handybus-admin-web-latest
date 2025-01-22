@@ -1,7 +1,7 @@
 import { createColumnHelper } from '@tanstack/react-table';
-import { ReservationView } from '@/types/v2/reservation.type';
+import { ReservationViewEntity } from '@/types/reservation.type';
 
-const columnHelper = createColumnHelper<ReservationView>();
+const columnHelper = createColumnHelper<ReservationViewEntity>();
 
 export const columns = [
   columnHelper.accessor('shuttleRoute.event.eventId', {

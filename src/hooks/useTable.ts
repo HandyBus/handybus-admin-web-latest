@@ -14,7 +14,7 @@ import { useState } from 'react';
  * @returns
  */
 const useTable = <TData>(
-  option: AllowUndefind<Omit<TableOptions<TData>, 'getCoreRowModel'>, 'data'>,
+  option: AllowUndefined<Omit<TableOptions<TData>, 'getCoreRowModel'>, 'data'>,
 ) => {
   const [empty] = useState<TData[]>([]);
 

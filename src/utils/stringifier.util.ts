@@ -1,12 +1,15 @@
-import { BusSortType } from '@/types/v1/bus.type';
-import { HandyStatusType } from '@/types/v1/reservation.type';
-import { EventsView } from '@/types/v2/event.type';
-import { RefundRequestsInPaymentsView } from '@/types/v2/payment.type';
-import { ReservationView } from '@/types/v2/reservation.type';
-import { ShuttleRoutesView } from '@/types/v2/shuttleRoute.type';
+import { EventStatus } from '@/types/event.type';
+import { RefundStatus } from '@/types/payment.type';
+import {
+  CancelStatus,
+  HandyStatus,
+  ReservationStatus,
+} from '@/types/reservation.type';
+import { BusType } from '@/types/shuttleBus.type';
+import { ShuttleRouteStatus, TripType } from '@/types/shuttleRoute.type';
 
 const Stringifier = Object.freeze({
-  handyStatus(v: HandyStatusType) {
+  handyStatus(v: HandyStatus) {
     switch (v) {
       case 'NOT_SUPPORTED':
         return '지원하지 않음';
@@ -18,7 +21,7 @@ const Stringifier = Object.freeze({
         return '승인됨';
     }
   },
-  busType(v: BusSortType) {
+  busType(v: BusType) {
     switch (v) {
       case 'LARGE_BUS_41':
         return '41인승 대형버스';
@@ -42,7 +45,7 @@ const Stringifier = Object.freeze({
         return '12인승 밴';
     }
   },
-  eventStatus(v: EventsView['eventStatus']) {
+  eventStatus(v: EventStatus) {
     switch (v) {
       case 'INACTIVE':
         return '행사 비활성';
@@ -54,7 +57,7 @@ const Stringifier = Object.freeze({
         return '행사 종료';
     }
   },
-  dailyEventStatus(v: EventsView['dailyEvents'][number]['status']) {
+  dailyEventStatus(v: EventStatus) {
     switch (v) {
       case 'INACTIVE':
         return '이 일자의 행사 비활성';
@@ -66,7 +69,7 @@ const Stringifier = Object.freeze({
         return '이 일자의 행사 종료';
     }
   },
-  shuttleRouteStatus(v: ShuttleRoutesView['status']) {
+  shuttleRouteStatus(v: ShuttleRouteStatus) {
     switch (v) {
       case 'OPEN':
         return '예약 모집 중';
@@ -80,7 +83,7 @@ const Stringifier = Object.freeze({
         return '비활성';
     }
   },
-  reservationStatus(v: ReservationView['reservationStatus']) {
+  reservationStatus(v: ReservationStatus) {
     switch (v) {
       case 'NOT_PAYMENT':
         return '미결제';
@@ -90,7 +93,7 @@ const Stringifier = Object.freeze({
         return '취소';
     }
   },
-  cancelStatus(v: ReservationView['cancelStatus']) {
+  cancelStatus(v: CancelStatus) {
     switch (v) {
       case 'NONE':
         return 'X';
@@ -100,7 +103,7 @@ const Stringifier = Object.freeze({
         return '환불 완료';
     }
   },
-  refundStatus(v: RefundRequestsInPaymentsView['status']) {
+  refundStatus(v: RefundStatus) {
     switch (v) {
       case 'REQUESTED':
         return '환불 요청';
@@ -110,7 +113,7 @@ const Stringifier = Object.freeze({
         return '환불 거절';
     }
   },
-  reservationType(v: ReservationView['type']) {
+  tripType(v: TripType) {
     switch (v) {
       case 'TO_DESTINATION':
         return '콘서트행';

@@ -1,10 +1,12 @@
 'use client';
 
-import { ReservationPassengersInReservationsView } from '@/types/v2/reservation.type';
 import { createColumnHelper } from '@tanstack/react-table';
 
-const columnHelper =
-  createColumnHelper<ReservationPassengersInReservationsView>();
+const columnHelper = createColumnHelper<{
+  passengerId: number;
+  passengerName: string;
+  passengerPhoneNumber: string;
+}>();
 
 export const columns = [
   columnHelper.accessor('passengerId', {

@@ -1,7 +1,7 @@
-import { GetReservationOption } from '@/services/v2/reservations.services';
+import { GetReservationsOptions } from '@/services/shuttleOperation.service';
 import { useReducer } from 'react';
 
-const empty: GetReservationOption = {
+const empty: GetReservationsOptions = {
   eventId: undefined,
   dailyEventId: undefined,
   shuttleRouteId: undefined,
@@ -16,48 +16,48 @@ const empty: GetReservationOption = {
 export type ReservationFilterAction =
   | {
       type: 'SET_EVENT_ID';
-      eventId: GetReservationOption['eventId'];
+      eventId: GetReservationsOptions['eventId'];
     }
   | {
       type: 'SET_DAILY_EVENT_ID';
-      dailyEventId: GetReservationOption['dailyEventId'];
+      dailyEventId: GetReservationsOptions['dailyEventId'];
     }
   | {
       type: 'SET_SHUTTLE_ROUTE_ID';
-      shuttleRouteId: GetReservationOption['shuttleRouteId'];
+      shuttleRouteId: GetReservationsOptions['shuttleRouteId'];
     }
   | {
       type: 'SET_SHUTTLE_BUS_ID';
-      shuttleBusId: GetReservationOption['shuttleBusId'];
+      shuttleBusId: GetReservationsOptions['shuttleBusId'];
     }
   | {
       type: 'SET_USER_NICKNAME';
-      userNickname: GetReservationOption['userNickname'];
+      userNickname: GetReservationsOptions['userNickname'];
     }
   | {
       type: 'SET_PASSENGER_NAME';
-      passengerName: GetReservationOption['passengerName'];
+      passengerName: GetReservationsOptions['passengerName'];
     }
   | {
       type: 'SET_HANDY_STATUS';
-      handyStatus: GetReservationOption['handyStatus'];
+      handyStatus: GetReservationsOptions['handyStatus'];
     }
   | {
       type: 'SET_RESERVATION_STATUS';
-      reservationStatus: GetReservationOption['reservationStatus'];
+      reservationStatus: GetReservationsOptions['reservationStatus'];
     }
   | {
       type: 'SET_CANCEL_STATUS';
-      cancelStatus: GetReservationOption['cancelStatus'];
+      cancelStatus: GetReservationsOptions['cancelStatus'];
     }
   | {
       type: 'RESET';
     };
 
 const reducer = (
-  prevState: GetReservationOption,
+  prevState: GetReservationsOptions,
   action: ReservationFilterAction,
-): GetReservationOption => {
+): GetReservationsOptions => {
   switch (action.type) {
     case 'SET_EVENT_ID':
       return {
@@ -120,7 +120,9 @@ const reducer = (
   }
 };
 
-const useReservationFilter = (partial: Partial<GetReservationOption> = {}) => {
+const useReservationFilter = (
+  partial: Partial<GetReservationsOptions> = {},
+) => {
   return useReducer(reducer, {
     ...empty,
     ...partial,

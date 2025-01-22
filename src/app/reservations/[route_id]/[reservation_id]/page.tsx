@@ -1,9 +1,7 @@
 'use client';
 
 import EditHandyStatusDialog from './components/EditHandyStatusDialog';
-import { useQuery } from '@tanstack/react-query';
 import JSONViewer from '@/components/json/JSONViewer';
-import { getReservationAndPayments } from '@/services/v2/reservations.services';
 import AccountInfo from './components/AccountInfo';
 import PassengersInfo from './components/PassengersInfo';
 import ReservationMetaInfo from './components/\bReservationMetaInfo';
@@ -11,6 +9,7 @@ import EventInfo from './components/EventInfo';
 import PaymentInfo from './components/PaymentInfo';
 import RouteInfo from './components/RouteInfo';
 import RouteHubInfo from './components/RouteHubInfo';
+import { useGetReservation } from '@/services/shuttleOperation.service';
 
 interface Props {
   params: {
@@ -19,10 +18,9 @@ interface Props {
 }
 
 const Page = ({ params: { reservation_id } }: Props) => {
-  const { data, isPending, isError, error } = useQuery({
-    queryKey: ['reservations', reservation_id],
-    queryFn: () => getReservationAndPayments(Number(reservation_id)),
-  });
+  const { data, isPending, isError, error } = useGetReservation(
+    Number(reservation_id),
+  );
 
   if (isPending) return <p>로딩중...</p>;
   if (isError) return <p>에러 : {error.message}</p>;

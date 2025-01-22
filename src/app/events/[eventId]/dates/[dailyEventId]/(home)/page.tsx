@@ -3,14 +3,13 @@
 import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';
 import BlueLink from '@/components/link/BlueLink';
-import { getRoutes } from '@/services/v2/shuttleRoute.services';
-import { getEvent } from '@/services/v2/event.services';
 import { notFound } from 'next/navigation';
 import { columns } from './types/table.type';
-import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
+import { useGetShuttleRoutesOfDailyEvent } from '@/services/shuttleOperation.service';
+import { useGetEvent } from '@/services/shuttleOperation.service';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -22,20 +21,14 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     isPending: isShuttlePending,
     isError: isShuttleError,
     error: shuttleError,
-  } = useQuery({
-    queryKey: ['events', eventId],
-    queryFn: () => getEvent(Number(eventId)),
-  });
+  } = useGetEvent(Number(eventId));
 
   const {
     data: routes,
     isPending: isRoutesPending,
     isError: isRoutesError,
     error: routesError,
-  } = useQuery({
-    queryKey: ['routes', eventId, dailyEventId],
-    queryFn: () => getRoutes(Number(eventId), Number(dailyEventId)),
-  });
+  } = useGetShuttleRoutesOfDailyEvent(Number(eventId), Number(dailyEventId));
 
   const table = useTable({ data: routes, columns });
 
