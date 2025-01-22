@@ -7,15 +7,17 @@ import { conform, type CreateBusFormType } from './types/form.type';
 import Input from '@/components/input/Input';
 import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
 import { CheckIcon } from 'lucide-react';
-import { BusSortSchema } from '@/types/v1/bus.type';
-import { addBus } from '@/services/v1/bus.services';
 import Stringifier from '@/utils/stringifier.util';
+import { usePostShuttleBus } from '@/services/shuttleOperation.service';
+import { BusTypeEnum } from '@/types/shuttleBus.type';
 
 interface Props {
-  params: { shuttle_id: string; daily_id: string; route_id: string };
+  params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
 }
 
-const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
+const NewBusPage = ({
+  params: { eventId, dailyEventId, shuttleRouteId },
+}: Props) => {
   const router = useRouter();
 
   const { control, handleSubmit } = useForm<CreateBusFormType>({
@@ -24,39 +26,41 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
       name: '',
       number: '',
       phoneNumber: '',
-      openChatLink: '',
+    },
+  });
+
+  const { mutate: postBus } = usePostShuttleBus({
+    onSuccess: () => {
+      alert('버스가 추가되었습니다.');
+      router.push(
+        `/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`,
+      );
+    },
+    onError: (error) => {
+      alert('버스 추가에 실패했습니다');
+      console.error(error);
     },
   });
 
   const onSubmit = useCallback(
     (data: CreateBusFormType) => {
       if (confirm('버스를 추가하시겠습니까?')) {
-        addBus(
-          Number(shuttle_id),
-          Number(daily_id),
-          Number(route_id),
-          conform(data),
-        )
-          .then(() => {
-            alert('버스가 추가되었습니다.');
-            router.push(
-              `/shuttles/${shuttle_id}/dates/${daily_id}/routes/${route_id}`,
-            );
-          })
-          .catch((e) => {
-            alert('버스 추가에 실패했습니다');
-            console.error(e);
-          });
+        postBus({
+          eventId: Number(eventId),
+          dailyEventId: Number(dailyEventId),
+          shuttleRouteId: Number(shuttleRouteId),
+          body: conform(data),
+        });
       }
     },
-    [router, shuttle_id, daily_id, route_id],
+    [router, eventId, dailyEventId, shuttleRouteId],
   );
 
   return (
     <main className="h-full w-full bg-white flex flex-col gap-16">
       <h2 className="text-24 font-500">거점지 정보</h2>
       <form
-        className="flex flex-col"
+        className="flex flex-col gap-8"
         onSubmit={handleSubmit(onSubmit)}
         method="post"
       >
@@ -88,18 +92,6 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
             />
           )}
         />
-        <label>오픈채팅 링크</label>
-        <Controller
-          control={control}
-          name="openChatLink"
-          render={({ field: { onChange, value } }) => (
-            <Input
-              value={value}
-              placeholder="https://open.kakao.com/..."
-              setValue={onChange}
-            />
-          )}
-        />
 
         <label>버스 유형</label>
         <Controller
@@ -112,20 +104,11 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
               onChange={(s) => onChange(s)}
               aria-label="Server size"
             >
-              {BusSortSchema.options.map((plan) => (
+              {BusTypeEnum.options.map((plan) => (
                 <Field key={plan} className="flex items-center gap-2">
                   <Radio
                     value={plan}
-                    className="group flex size-fit items-center p-4 justify-center rounded-lg bg-white
-                    data-[checked]:bg-blue-400
-                    data-[checked]:text-white
-                    transition-transform
-                    hover:outline
-                    focus:outline
-                    hover:outline-blue-200
-                    focus:outline-blue-200
-                    active:scale-[0.9]
-                    "
+                    className="group flex size-fit items-center p-4 justify-center rounded-lg bg-white data-[checked]:bg-blue-400 data-[checked]:text-white transition-transform hover:outline focus:outline hover:outline-blue-200 focus:outline-blue-200 active:scale-[0.9]"
                   >
                     <CheckIcon
                       className="invisible group-data-[checked]:visible"
@@ -139,7 +122,12 @@ const NewBusPage = ({ params: { shuttle_id, daily_id, route_id } }: Props) => {
           )}
         />
 
-        <button type="submit">버스 추가하기</button>
+        <button
+          className="bg-blue-500 text-white active:scale-95 transition-all p-4 rounded-xl hover:opacity-75"
+          type="submit"
+        >
+          버스 추가하기
+        </button>
       </form>
     </main>
   );

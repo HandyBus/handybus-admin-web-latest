@@ -1,13 +1,13 @@
 import {
-  CreateBusRequestSchema,
-  type CreateBusRequestType,
-} from '@/types/v1/bus.type';
+  CreateShuttleBusRequest,
+  CreateShuttleBusRequestSchema,
+} from '@/types/shuttleBus.type';
 import { z } from 'zod';
 
-export const CreateBusFormSchema = CreateBusRequestSchema;
+export const CreateBusFormSchema = CreateShuttleBusRequestSchema;
 
-export type CreateBusFormType = z.infer<typeof CreateBusRequestSchema>;
+export type CreateBusFormType = z.infer<typeof CreateBusFormSchema>;
 
-export const conform = (data: CreateBusFormType): CreateBusRequestType => {
+export const conform = (data: CreateBusFormType): CreateShuttleBusRequest => {
   return data;
 };

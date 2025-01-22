@@ -1,8 +1,6 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-
 import {
   Combobox,
   ComboboxInput,
@@ -11,44 +9,44 @@ import {
   ComboboxButton,
 } from '@headlessui/react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
+import { ChevronDown } from 'lucide-react';
+import { useGetShuttleRoutesOfDailyEvent } from '@/services/shuttleOperation.service';
+import { ShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 
 interface Props {
-  shuttleId: number;
-  dailyShuttleId: number;
+  eventId: number;
+  dailyEventId: number;
   value: number | null;
   setValue: (value: number | null) => void;
 }
 
-import { ChevronDown } from 'lucide-react';
-import { getRoutes } from '@/services/v2/shuttleRoute.services';
-import { ShuttleRoutesViewType } from '@/types/v2/shuttleRoute.type';
-
 const ShuttleRouteInput = ({
-  shuttleId,
-  dailyShuttleId,
+  eventId,
+  dailyEventId,
   value,
   setValue,
 }: Props) => {
   const [query, setQuery] = useState('');
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['shuttleRoutes', shuttleId, dailyShuttleId],
-    queryFn: async () => await getRoutes(shuttleId, dailyShuttleId),
-  });
 
-  const setSelectedRoute: (route: ShuttleRoutesViewType | null) => void =
+  const { data, isLoading, error } = useGetShuttleRoutesOfDailyEvent(
+    eventId,
+    dailyEventId,
+  );
+
+  const setSelectedRoute: (route: ShuttleRoutesViewEntity | null) => void =
     useCallback(
-      (route: ShuttleRoutesViewType | null) => {
+      (route: ShuttleRoutesViewEntity | null) => {
         setValue(route?.shuttleRouteId ?? null);
       },
       [setValue],
     );
 
-  const selectedRoute: ShuttleRoutesViewType | null = useMemo(
+  const selectedRoute: ShuttleRoutesViewEntity | null = useMemo(
     () => data?.find((ds) => ds.shuttleRouteId === value) || null,
     [data, value],
   );
 
-  const filtered: ShuttleRoutesViewType[] = useMemo(() => {
+  const filtered: ShuttleRoutesViewEntity[] = useMemo(() => {
     return query
       ? filterByFuzzy(data ?? [], query, (p) => p.name)
       : (data ?? []);
@@ -57,7 +55,7 @@ const ShuttleRouteInput = ({
   if (error) return <div>Failed to load artists</div>;
 
   return (
-    <Combobox<ShuttleRoutesViewType | null>
+    <Combobox<ShuttleRoutesViewEntity | null>
       immediate
       value={selectedRoute}
       onChange={setSelectedRoute}
@@ -78,7 +76,7 @@ const ShuttleRouteInput = ({
                 : '노선 선택'
           }
           defaultValue={null}
-          displayValue={(route: null | ShuttleRoutesViewType) =>
+          displayValue={(route: null | ShuttleRoutesViewEntity) =>
             route?.name ?? ''
           }
           onChange={(event) => setQuery(event.target.value)}

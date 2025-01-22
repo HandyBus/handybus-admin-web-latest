@@ -5,28 +5,34 @@ import {
   type DetailedHTMLProps,
   type InputHTMLAttributes,
 } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface Props
   extends DetailedHTMLProps<
     InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   > {
-  value: string;
-  setValue: (value: string) => void;
+  value?: string;
+  setValue?: (value: string) => void;
+  className?: string;
   placeholder?: string;
 }
 
 const Input = (
-  { value, setValue, ...props }: Props,
+  { className, value, setValue, ...props }: Props,
   ref: Ref<HTMLInputElement>,
 ) => {
   return (
     <input
       ref={ref}
-      {...props}
       value={value}
-      onChange={(e) => setValue(e.target.value)}
-      className="w-full p-8 border border-grey-200 rounded-lg focus:outline-blue-400"
+      onWheel={(event) => (event.target as HTMLElement).blur()}
+      onChange={setValue && ((e) => setValue(e.target.value))}
+      {...props}
+      className={twMerge(
+        'w-full p-8 border border-grey-200 rounded-lg focus:outline-blue-400',
+        className,
+      )}
     />
   );
 };

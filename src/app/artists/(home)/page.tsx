@@ -1,28 +1,25 @@
 'use client';
 
-import DataTable from '@/components/table/DataTable';
-import { getArtists } from '@/services/v1/artists.services';
-import { columns } from './\btypes/table.type';
-import { useQuery } from '@tanstack/react-query';
+import BaseTable from '@/components/table/BaseTable';
+import { columns } from './types/table.type';
+import useTable from '@/hooks/useTable';
+import { useGetArtists } from '@/services/shuttleOperation.service';
 
 const ArtistPage = () => {
-  const {
+  const { data: artists, isPending, isError } = useGetArtists();
+
+  const table = useTable({
     data: artists,
-    isError,
-    isPending,
-  } = useQuery({
-    queryKey: ['artists'],
-    queryFn: getArtists,
+    columns,
   });
 
   if (isPending) return <div>Loading...</div>;
-
   if (isError) return <div>Error</div>;
 
   return (
     <div>
       <h2 className="text-[24px] font-500">아티스트 목록</h2>
-      <DataTable data={artists} columns={columns} />
+      <BaseTable table={table} />
     </div>
   );
 };

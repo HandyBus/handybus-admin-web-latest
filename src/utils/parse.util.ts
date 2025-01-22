@@ -2,6 +2,11 @@ import { z } from 'zod';
 import { toast } from 'react-toastify';
 import { isServer } from '@tanstack/react-query';
 
+interface SilentParseOptions {
+  useToast?: boolean;
+  debugHint?: string;
+}
+
 /**
  * zod schema를 이용하여 데이터를 파싱합니다.
  * 파싱에 실패하더라도 오류를 throw하지 않고, 대신 콘솔 및 toast에 오류를 출력합니다.
@@ -13,16 +18,17 @@ import { isServer } from '@tanstack/react-query';
 export const silentParse = <T extends z.ZodTypeAny>(
   zod: T,
   input: unknown,
+  options: SilentParseOptions = {},
 ): z.infer<T> => {
   const parseResult = zod.safeParse(input);
   if (!parseResult.success) {
-    if (!isServer) {
+    if (!isServer && options.useToast) {
       toast.error(
         '파싱 과정에서 타입 오류가 발생했습니다. 자세한 내용은 어드민 개발팀에 문의해주세요.',
       );
     }
     console.error(
-      `데이터를 파싱하는데에 실패했습니다. 다음 오류 정보를 참고하세요.`,
+      `데이터를 파싱하는데에 실패했습니다. ${options.debugHint ?? ''}`,
       parseResult.error,
     );
     return input as z.infer<T>;

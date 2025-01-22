@@ -1,41 +1,50 @@
 'use client';
 
 import { createColumnHelper } from '@tanstack/react-table';
-import { type BusType } from '@/types/v1/bus.type';
 import BlueLink from '@/components/link/BlueLink';
-import dayjs from 'dayjs';
-import { RouteHubType } from '@/types/v1/routeHub.type';
+import { formatDateString } from '@/utils/date.util';
+import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
+import { ShuttleRouteHubsInShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 
-const busColumnHelper = createColumnHelper<BusType>();
+const busColumnHelper = createColumnHelper<ShuttleBusesViewEntity>();
 
 export const busColumns = [
   busColumnHelper.accessor('shuttleBusId', {
     header: () => 'ID',
-    cell: (info) => info.getValue,
+    cell: (info) => info.getValue(),
   }),
-  busColumnHelper.accessor('type', {
+  busColumnHelper.accessor('busType', {
     header: () => 'type',
     cell: (info) => info.getValue(),
   }),
-  busColumnHelper.accessor('name', {
+  busColumnHelper.accessor('busName', {
     header: () => '호차',
     cell: (info) => info.getValue(),
   }),
-  busColumnHelper.accessor('phoneNumber', {
+  busColumnHelper.accessor('busDriverPhoneNumber', {
     header: () => '기사님 전화번호',
     cell: (info) => info.getValue(),
   }),
   busColumnHelper.display({
     id: 'actions',
     header: () => '오픈채팅방 링크',
-    cell: () => (
-      // TODO: href={props.row.original.openChatLink}>
-      <BlueLink href="TODO">오픈채팅 링크 열기</BlueLink>
-    ),
+    cell: (info) =>
+      info.row.original.openChatLink ? (
+        <BlueLink
+          href={info.row.original.openChatLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          오픈채팅 링크 열기
+        </BlueLink>
+      ) : (
+        <div>오픈채팅방 링크 없음</div>
+      ),
   }),
 ];
 
-const routeHubColumnHelper = createColumnHelper<RouteHubType>();
+const routeHubColumnHelper =
+  createColumnHelper<ShuttleRouteHubsInShuttleRoutesViewEntity>();
 
 export const routeHubColumns = [
   routeHubColumnHelper.accessor('shuttleRouteHubId', {
@@ -52,6 +61,6 @@ export const routeHubColumns = [
   }),
   routeHubColumnHelper.accessor('arrivalTime', {
     header: () => '도착시간',
-    cell: (info) => dayjs(info.getValue()).format('YYYY-MM-DD HH:mm:ss'),
+    cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
 ];

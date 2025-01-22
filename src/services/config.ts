@@ -11,11 +11,11 @@ type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-const EmptyShape = {};
-type EmptyShape = typeof EmptyShape;
+const emptyShape = {};
+type EmptyShape = typeof emptyShape;
 
-interface RequestInitWithSchema<T extends z.ZodRawShape> extends RequestInit {
-  shape?: T;
+interface RequestInitWithSchema<O extends z.ZodRawShape> extends RequestInit {
+  shape?: O;
 }
 
 const ApiResponseOkSchema = <T extends z.ZodRawShape>(rawShape: T) =>
@@ -34,6 +34,7 @@ class Instance {
     options: RequestInitWithSchema<T> = {},
   ) {
     const { shape, ...pure } = options;
+
     const config: RequestInit = {
       method,
       cache: 'no-store',
@@ -45,10 +46,11 @@ class Instance {
       ...(body && { body: JSON.stringify(body, replacer) }),
     };
 
+    const getNotifiedUsingToast = shape !== undefined && method === 'GET';
     const schema = shape
       ? ApiResponseOkSchema(shape)
       : // NOTE this `as T` is safe because `shape` is undefined
-        ApiResponseOkSchema(EmptyShape as T);
+        ApiResponseOkSchema(emptyShape as T);
 
     const res = await fetch(new URL(url, this.baseUrl).toString(), config);
 
@@ -57,10 +59,16 @@ class Instance {
       if (res.status >= 400) {
         throw new CustomError(res.status, 'No Content');
       }
-      return silentParse(schema, {
-        ok: true,
-        statusCode: res.status,
-      });
+      return silentParse(
+        schema,
+        {
+          ok: true,
+          statusCode: res.status,
+        },
+        {
+          useToast: getNotifiedUsingToast,
+        },
+      );
     }
     // response가 있는 경우
     const data = await res.json();
@@ -71,7 +79,10 @@ class Instance {
       );
     }
 
-    return silentParse(schema, data);
+    return silentParse(schema, data, {
+      debugHint: `${url}에 대한 응답이 실패했습니다. : ${data}`,
+      useToast: getNotifiedUsingToast,
+    });
   }
 
   async get<T extends z.ZodRawShape = EmptyShape>(
@@ -82,9 +93,10 @@ class Instance {
   }
   async delete<T extends z.ZodRawShape = EmptyShape>(
     url: string,
+    body?: any,
     options?: RequestInitWithSchema<T>,
   ) {
-    return await this.fetchWithConfig<T>(url, 'DELETE', undefined, options);
+    return await this.fetchWithConfig<T>(url, 'DELETE', body, options);
   }
   async post<T extends z.ZodRawShape = EmptyShape>(
     url: string,
@@ -148,9 +160,10 @@ class AuthInstance {
   }
   async delete<T extends z.ZodRawShape = EmptyShape>(
     url: string,
+    body?: any,
     options?: RequestInitWithSchema<T>,
   ) {
-    return this.authFetchWithConfig<T>(url, 'DELETE', undefined, options);
+    return this.authFetchWithConfig<T>(url, 'DELETE', body, options);
   }
 
   async post<T extends z.ZodRawShape = EmptyShape>(
@@ -178,3 +191,19 @@ class AuthInstance {
 }
 
 export const authInstance = new AuthInstance();
+
+//////////////// utility for shape option ////////////////
+
+type PaginatedResponse<Shape extends z.ZodRawShape> = Shape & {
+  totalCount: z.ZodNumber;
+  nextPage: z.ZodNullable<z.ZodNumber>;
+};
+
+export const withPagination = <Shape extends z.ZodRawShape>(
+  shape: Shape,
+): PaginatedResponse<Shape> =>
+  ({
+    ...shape,
+    totalCount: z.number(),
+    nextPage: z.number().nullable(),
+  }) satisfies PaginatedResponse<Shape>;

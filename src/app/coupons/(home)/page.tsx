@@ -1,16 +1,16 @@
 'use client';
 
-import { getAllCoupons } from '@/services/v1/coupon.services';
 import { columns } from './types/table.type';
-import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Loader2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { CouponType } from '@/types/v1/coupon.type';
 import { matches } from 'kled';
 import DebouncedInput from '@/components/input/DebouncedInput';
 import BlueLink from '@/components/link/BlueLink';
-import ManuallyFilteredInfiniteTable from '@/components/table/ManuallyFilteredInfiniteTable';
+import useTable from '@/hooks/useTable';
+import BaseTable from '@/components/table/BaseTable';
+import { useGetCoupons } from '@/services/billing.service';
+import { AdminCouponsResponseModel } from '@/types/coupon.type';
 
 const FILTER_LIST = ['전체', '진행중', '대기', '만료'] as const;
 type FilterType = (typeof FILTER_LIST)[number];
@@ -22,15 +22,11 @@ interface Props {
 }
 
 const Page = ({ searchParams }: Props) => {
-  const { data: coupons, isFetching } = useQuery({
-    queryKey: ['coupons'],
-    queryFn: () => getAllCoupons(),
-    initialData: [],
-  });
+  const { data: coupons, isFetching } = useGetCoupons();
 
   const [value, setValue] = useState('');
   const filterCoupon = (
-    coupon: CouponType,
+    coupon: AdminCouponsResponseModel,
     filter: { value: string; status: FilterType },
   ) => {
     const { value, status } = filter;
@@ -39,10 +35,10 @@ const Page = ({ searchParams }: Props) => {
       status === '전체' || !status
         ? true
         : status === '진행중'
-          ? coupon.isActive && now > coupon.validFrom
+          ? coupon.isActive && now > new Date(coupon.validFrom)
           : status === '대기'
-            ? !coupon.isActive && now < coupon.validFrom
-            : !coupon.isActive && now > coupon.validFrom;
+            ? !coupon.isActive && now < new Date(coupon.validFrom)
+            : !coupon.isActive && now > new Date(coupon.validFrom);
     if (!value) {
       return isFilteredByStatus;
     }
@@ -50,9 +46,9 @@ const Page = ({ searchParams }: Props) => {
     const stringToCompare =
       coupon.name +
       (coupon.discountType === 'AMOUNT'
-        ? `${coupon.discountAmount.toLocaleString()}원 할인`
-        : `${coupon.discountRate}% 할인`) +
-      `(최대 ${coupon.maxDiscountAmount.toLocaleString()}원)`;
+        ? `${coupon?.discountAmount?.toLocaleString()}원 할인`
+        : `${coupon?.discountRate}% 할인`) +
+      `(최대 ${coupon?.maxDiscountAmount?.toLocaleString()}원)`;
     const score =
       value.length > stringToCompare.length
         ? matches(stringToCompare, value)
@@ -67,6 +63,12 @@ const Page = ({ searchParams }: Props) => {
       ),
     [coupons, value, searchParams.filter],
   );
+
+  const table = useTable({
+    columns,
+    data: filteredCoupons,
+    manualFiltering: true,
+  });
 
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
@@ -103,10 +105,7 @@ const Page = ({ searchParams }: Props) => {
             <Loader2Icon className="animate-spin" size={64} />
           </div>
         ) : (
-          <ManuallyFilteredInfiniteTable
-            data={filteredCoupons}
-            columns={columns}
-          />
+          <BaseTable table={table} />
         )}
       </section>
     </main>

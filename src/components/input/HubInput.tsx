@@ -1,8 +1,6 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-
 import {
   Combobox,
   ComboboxInput,
@@ -11,8 +9,11 @@ import {
   ComboboxButton,
 } from '@headlessui/react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
-import { getHubs } from '@/services/v1/hub.services';
-import { HubType } from '@/types/v1/regionHub.type';
+import { RegionHub } from '@/types/hub.type';
+import { ChevronDown } from 'lucide-react';
+import RegionInput from './RegionInput';
+import { useGetRegionHubs } from '@/services/location.service';
+import Link from 'next/link';
 
 interface Props {
   regionId: number | undefined;
@@ -20,21 +21,18 @@ interface Props {
   setValue: (value: number | null) => void;
 }
 
-import { ChevronDown } from 'lucide-react';
-
 const validRegionID = (regionId: number | undefined): regionId is number =>
   typeof regionId === 'number' && !Number.isNaN(regionId);
 
-const HubInput = ({ regionId, value, setValue }: Props) => {
+const RegionHubInput = ({ regionId, value, setValue }: Props) => {
   const [query, setQuery] = useState('');
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['hub', regionId],
-    queryFn: async () =>
-      validRegionID(regionId) ? await getHubs(regionId) : [],
-  });
+
+  const { data, isLoading, error } = useGetRegionHubs(
+    validRegionID(regionId) ? regionId : 0,
+  );
 
   const setSelectedHub = useCallback(
-    (hub: HubType | null) => {
+    (hub: RegionHub | null) => {
       setValue(hub?.regionHubId ?? null);
     },
     [setValue],
@@ -45,7 +43,7 @@ const HubInput = ({ regionId, value, setValue }: Props) => {
     [data, value],
   );
 
-  const filtered: HubType[] = useMemo(() => {
+  const filtered: RegionHub[] = useMemo(() => {
     const filterByID =
       regionId === undefined
         ? data
@@ -56,7 +54,7 @@ const HubInput = ({ regionId, value, setValue }: Props) => {
       : (filterByID ?? []);
   }, [data, query, regionId]);
 
-  if (error) return <div>Failed to load artists</div>;
+  if (error) return <div>Failed to load hubs</div>;
 
   return (
     <Combobox
@@ -82,7 +80,7 @@ const HubInput = ({ regionId, value, setValue }: Props) => {
                   : '거점지 선택'
           }
           defaultValue={null}
-          displayValue={(hub: null | HubType) => hub?.name ?? ''}
+          displayValue={(hub: null | RegionHub) => hub?.name ?? ''}
           onChange={(event) => setQuery(event.target.value)}
         />
 
@@ -99,10 +97,37 @@ const HubInput = ({ regionId, value, setValue }: Props) => {
               {hub.name}
             </ComboboxOption>
           ))}
+          {data?.length === 0 && !isLoading && validRegionID(regionId) && (
+            <Link
+              href="/hubs/new"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block p-8 text-blue-500 hover:bg-blue-50"
+            >
+              + 새로운 거점 만들기
+            </Link>
+          )}
         </ComboboxOptions>
       </div>
     </Combobox>
   );
 };
 
-export default HubInput;
+export default RegionHubInput;
+
+export const RegionHubInputSelfContained = ({
+  value,
+  setValue,
+}: Omit<Props, 'regionId'>) => {
+  const [regionId, setRegionId] = useState<number | null>(null);
+  return (
+    <div className="flex flex-col">
+      <RegionInput value={regionId} setValue={setRegionId} />
+      <RegionHubInput
+        regionId={regionId ?? undefined}
+        value={value}
+        setValue={setValue}
+      />
+    </div>
+  );
+};

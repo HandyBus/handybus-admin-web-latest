@@ -1,9 +1,15 @@
-import { BusSortType } from '@/types/v1/bus.type';
-import { HandyStatusType } from '@/types/v1/reservation.type';
-import { EventsViewType } from '@/types/v2/event.type';
+import { EventStatus } from '@/types/event.type';
+import { RefundStatus } from '@/types/payment.type';
+import {
+  CancelStatus,
+  HandyStatus,
+  ReservationStatus,
+} from '@/types/reservation.type';
+import { BusType } from '@/types/shuttleBus.type';
+import { ShuttleRouteStatus, TripType } from '@/types/shuttleRoute.type';
 
 const Stringifier = Object.freeze({
-  handyStatus(v: HandyStatusType) {
+  handyStatus(v: HandyStatus) {
     switch (v) {
       case 'NOT_SUPPORTED':
         return '지원하지 않음';
@@ -15,7 +21,7 @@ const Stringifier = Object.freeze({
         return '승인됨';
     }
   },
-  busType(v: BusSortType) {
+  busType(v: BusType) {
     switch (v) {
       case 'LARGE_BUS_41':
         return '41인승 대형버스';
@@ -39,16 +45,82 @@ const Stringifier = Object.freeze({
         return '12인승 밴';
     }
   },
-  eventStatus(v: EventsViewType['eventStatus']) {
+  eventStatus(v: EventStatus) {
     switch (v) {
       case 'INACTIVE':
-        return '비활성화됨';
+        return '행사 비활성';
       case 'OPEN':
-        return '열림';
+        return '행사 수요조사 모집 중';
       case 'CLOSED':
-        return '닫힘';
+        return '행사 수요조사 모집 종료';
       case 'ENDED':
-        return '종료됨';
+        return '행사 종료';
+    }
+  },
+  dailyEventStatus(v: EventStatus) {
+    switch (v) {
+      case 'INACTIVE':
+        return '이 일자의 행사 비활성';
+      case 'OPEN':
+        return '이 일자의 행사 수요조사 모집 중';
+      case 'CLOSED':
+        return '이 일자의 행사 수요조사 모집 종료';
+      case 'ENDED':
+        return '이 일자의 행사 종료';
+    }
+  },
+  shuttleRouteStatus(v: ShuttleRouteStatus) {
+    switch (v) {
+      case 'OPEN':
+        return '예약 모집 중';
+      case 'CLOSED':
+        return '예약 마감';
+      case 'ENDED':
+        return '운행 종료';
+      case 'CANCELLED':
+        return '무산';
+      case 'INACTIVE':
+        return '비활성';
+    }
+  },
+  reservationStatus(v: ReservationStatus) {
+    switch (v) {
+      case 'NOT_PAYMENT':
+        return '미결제';
+      case 'COMPLETE_PAYMENT':
+        return '결제 완료';
+      case 'CANCEL':
+        return '취소';
+    }
+  },
+  cancelStatus(v: CancelStatus) {
+    switch (v) {
+      case 'NONE':
+        return 'X';
+      case 'CANCEL_REQUEST':
+        return '환불 요청';
+      case 'CANCEL_COMPLETE':
+        return '환불 완료';
+    }
+  },
+  refundStatus(v: RefundStatus) {
+    switch (v) {
+      case 'REQUESTED':
+        return '환불 요청';
+      case 'COMPLETED':
+        return '환불 완료';
+      case 'FAILED':
+        return '환불 거절';
+    }
+  },
+  tripType(v: TripType) {
+    switch (v) {
+      case 'TO_DESTINATION':
+        return '콘서트행';
+      case 'FROM_DESTINATION':
+        return '귀가행';
+      case 'ROUND_TRIP':
+        return '왕복';
     }
   },
 });

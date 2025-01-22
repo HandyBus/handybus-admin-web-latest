@@ -1,4 +1,4 @@
-import { CreateHubRequestType } from '@/types/v1/regionHub.type';
+import { CreateHubRequest } from '@/types/hub.type';
 import { z } from 'zod';
 
 export const CreateHubFormSchema = z.object({
@@ -13,10 +13,10 @@ export const CreateHubFormSchema = z.object({
 
 export type CreateHubFormType = z.infer<typeof CreateHubFormSchema>;
 
-export const conform = (data: CreateHubFormType): CreateHubRequestType => {
+export const conform = (data: CreateHubFormType): CreateHubRequest => {
   const { coord, name } = data;
   return {
     name,
     ...coord,
-  } satisfies CreateHubRequestType;
+  } satisfies CreateHubRequest;
 };

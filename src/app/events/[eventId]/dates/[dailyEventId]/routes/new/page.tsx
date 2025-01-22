@@ -1,66 +1,126 @@
 'use client';
 
-import { useForm, useFieldArray } from 'react-hook-form';
-import { conform, type CreateShuttleRouteFormType } from './form.type';
-import { addRoute } from '@/services/v1/route.services';
+import { useForm, useFieldArray, Controller } from 'react-hook-form';
+import { type CreateShuttleRouteForm } from './form.type';
 import { useRouter } from 'next/navigation';
-import tw from 'tailwind-styled-components';
+import Input from '@/components/input/Input';
+import { RegionHubInputSelfContained } from '@/components/input/HubInput';
+import { parseDateString } from '@/utils/date.util';
+import { useMemo } from 'react';
+import DateInput from '@/components/input/DateInput';
+import DateTimeInput from '@/components/input/DateTimeInput';
+import { twMerge } from 'tailwind-merge';
+import {
+  useGetEvent,
+  usePostShuttleRoute,
+} from '@/services/shuttleOperation.service';
+import { EventsViewEntity } from '@/types/event.type';
+import { conform } from './conform.util';
+import Guide from '@/components/guide/Guide';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
 }
 
-const Input = tw.input`
-  rounded-lg
-  border
-  border-grey-100
-  p-8
-`;
+const Page = ({ params }: Props) => {
+  const { eventId, dailyEventId } = params;
 
-const defaultValues: CreateShuttleRouteFormType = {
-  name: '',
-  maxPassengerCount: 0,
-  earlybirdDeadline: new Date(),
-  reservationDeadline: new Date(),
-  hasEarlybird: false,
-  earlybirdPrice: {
-    toDestination: 1000000,
-    fromDestination: 1000000,
-    roundTrip: 1000000,
-  },
-  regularPrice: {
-    toDestination: 1000000,
-    fromDestination: 1000000,
-    roundTrip: 1000000,
-  },
-  shuttleRouteHubsFromDestination: [
-    {
-      regionHubId: 0,
-      arrivalTime: new Date(),
-    },
-  ],
-  shuttleRouteHubsToDestination: [
-    {
-      regionHubId: 0,
-      arrivalTime: new Date(),
-    },
-  ],
+  const {
+    data: event,
+    isPending,
+    isError,
+    error,
+  } = useGetEvent(Number(eventId));
+
+  const defaultDate = useMemo(() => {
+    return parseDateString(
+      event?.dailyEvents.find((de) => de.dailyEventId === Number(dailyEventId))
+        ?.date,
+    );
+  }, [event, dailyEventId]);
+
+  const defaultValues: CreateShuttleRouteForm = useMemo(
+    () => ({
+      name: '',
+      maxPassengerCount: 0,
+      earlybirdDeadline: defaultDate,
+      reservationDeadline: defaultDate,
+      hasEarlybird: false,
+      earlybirdPrice: {
+        toDestination: 1000000,
+        fromDestination: 1000000,
+        roundTrip: 1000000,
+      },
+      regularPrice: {
+        toDestination: 1000000,
+        fromDestination: 1000000,
+        roundTrip: 1000000,
+      },
+      shuttleRouteHubsFromDestination: [
+        {
+          regionHubId: null,
+          arrivalTime: defaultDate,
+        },
+        {
+          regionHubId: null,
+          arrivalTime: defaultDate,
+        },
+      ],
+      shuttleRouteHubsToDestination: [
+        {
+          regionHubId: null,
+          arrivalTime: defaultDate,
+        },
+        {
+          regionHubId: null,
+          arrivalTime: defaultDate,
+        },
+      ],
+    }),
+    [defaultDate],
+  );
+
+  if (isPending) return <div>Loading...</div>;
+  if (isError) return <div>Error! {error?.message}</div>;
+
+  return (
+    <Form
+      event={event}
+      params={params}
+      defaultValues={defaultValues}
+      defaultDate={defaultDate}
+    />
+  );
 };
 
-const Page = ({ params: { eventId, dailyEventId } }: Props) => {
+export default Page;
+
+interface FormProps extends Props {
+  event: EventsViewEntity;
+  defaultValues: CreateShuttleRouteForm;
+  defaultDate: Date;
+}
+
+const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
+  const { eventId, dailyEventId } = params;
   const router = useRouter();
+  console.log('defaultValues', defaultValues);
   const {
     register,
     control,
     watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateShuttleRouteFormType>({
+  } = useForm<CreateShuttleRouteForm>({
     // resolver: zodResolver(CreateShuttleRouteRequestSchema),
     defaultValues,
   });
 
   const watchHasEarlybird = watch('hasEarlybird');
+
+  const watchRegularPrice = watch('regularPrice');
+
+  const watchEarlybirdPrice = watch('earlybirdPrice');
 
   const {
     fields: fromDestHubFields,
@@ -75,7 +135,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
 
   const {
     fields: toDestHubFields,
-    append: appendToDestHub,
+    prepend: prependToDestHub,
     remove: removeToDestHub,
     // update: updateHub,
     swap: swapToDestHub,
@@ -84,22 +144,36 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     name: 'shuttleRouteHubsToDestination',
   });
 
-  const onSubmit = async (data: CreateShuttleRouteFormType) => {
-    if (!confirm('등록하시겠습니까?')) return;
-    try {
-      await addRoute(Number(eventId), Number(dailyEventId), conform(data));
+  const { mutate: postRoute } = usePostShuttleRoute({
+    onSuccess: () => {
       alert('등록에 성공했습니다.');
-      router.push(`/shuttles/${eventId}/dates/${dailyEventId}`);
-    } catch (error) {
-      alert('오류가 발생했습니다.');
+      router.push(`/events/${eventId}/dates/${dailyEventId}`);
+    },
+    onError: (error) => {
       console.error(error);
+      if (
+        error instanceof Error &&
+        error.message === 'arrivalTime is not validated'
+      )
+        alert('거점지들의 시간순서가 올바르지 않습니다. 확인해주세요.');
+      else alert('오류가 발생했습니다.');
+    },
+  });
+
+  const onSubmit = async (data: CreateShuttleRouteForm) => {
+    if (confirm('등록하시겠습니까?')) {
+      postRoute({
+        eventId: Number(eventId),
+        dailyEventId: Number(dailyEventId),
+        body: conform(data),
+      });
     }
   };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 flex flex-col gap-16 bg-grey-50 rounded-lg p-16  "
+      className="flex flex-col gap-16 space-y-4 rounded-lg bg-grey-50 p-16  "
     >
       <div className="space-y-2">
         <label htmlFor="name" className="block">
@@ -107,16 +181,6 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
         </label>
         <Input {...register('name')} />
         {errors.name && <p className="text-red-500">{errors.name.message}</p>}
-      </div>
-
-      <div className="space-y-2">
-        <label htmlFor="reservationDeadline" className="block">
-          예약 마감일
-        </label>
-        <Input type="datetime-local" {...register('reservationDeadline')} />
-        {errors.reservationDeadline && (
-          <p className="text-red-500">{errors.reservationDeadline.message}</p>
-        )}
       </div>
 
       <label htmlFor="maxPassengerCount" className="block">
@@ -130,89 +194,152 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
         )}
       </label>
 
-      <label className="block">
-        <Input type="checkbox" {...register('hasEarlybird')} />
-        얼리버드 여부
-      </label>
-
-      <label htmlFor="earlybirdDeadline" className="block">
-        얼리버드 마감일
-        <Input
-          type="datetime-local"
-          {...register('earlybirdDeadline')}
-          disabled={!watchHasEarlybird}
+      <div className="flex flex-row items-center gap-8">
+        <Controller
+          control={control}
+          name="reservationDeadline"
+          render={({ field: { onChange, value } }) => (
+            <div className="space-y-2">
+              <label htmlFor="reservationDeadline" className="block">
+                예약 마감일
+              </label>
+              <DateInput value={value} setValue={onChange} />
+              {errors.reservationDeadline && (
+                <p className="text-red-500">
+                  {errors.reservationDeadline.message}
+                </p>
+              )}
+            </div>
+          )}
         />
-        {errors.earlybirdDeadline && (
-          <p className="text-red-500">{errors.earlybirdDeadline.message}</p>
-        )}
-      </label>
 
-      <div className="space-y-2">
-        <h3>얼리버드 가격</h3>
+        <div className="space-y-2">
+          <label
+            htmlFor="hasEarlybird"
+            className="flex flex-row items-center justify-start"
+          >
+            <Input
+              id="hasEarlybird"
+              type="checkbox"
+              className="w-fit"
+              {...register('hasEarlybird')}
+            />
+            얼리버드 예약 마감일
+          </label>
 
-        <label className="block">
-          목적지행
-          <Input
-            type="number"
-            {...register('earlybirdPrice.toDestination', {
-              valueAsNumber: true,
-            })}
-            disabled={!watchHasEarlybird}
+          <Controller
+            control={control}
+            name="earlybirdDeadline"
+            render={({ field: { onChange, value } }) => (
+              <>
+                <DateInput
+                  disabled={!watchHasEarlybird}
+                  value={value}
+                  setValue={onChange}
+                />
+                {errors.reservationDeadline && (
+                  <p className="text-red-500">
+                    {errors.reservationDeadline.message}
+                  </p>
+                )}
+              </>
+            )}
           />
-        </label>
-
-        <label className="block">
-          출발지행
-          <Input
-            type="number"
-            {...register('earlybirdPrice.fromDestination', {
-              valueAsNumber: true,
-            })}
-            disabled={!watchHasEarlybird}
-          />
-        </label>
-
-        <label className="block">
-          왕복
-          <Input
-            type="number"
-            {...register('earlybirdPrice.roundTrip', { valueAsNumber: true })}
-            disabled={!watchHasEarlybird}
-          />
-        </label>
+        </div>
       </div>
 
-      {/* Price inputs would need to be implemented as arrays */}
-      <div className="space-y-2">
-        <h3>정상가격</h3>
+      <div className="flex flex-row items-center gap-8">
+        {/* Price inputs would need to be implemented as arrays */}
+        <div className="space-y-2">
+          <h3>정상가격</h3>
 
-        <label className="block">
-          목적지행
-          <Input
-            type="number"
-            {...register('regularPrice.toDestination', {
-              valueAsNumber: true,
-            })}
-          />
-        </label>
+          <div className="flex flex-col items-start gap-8">
+            <label className="break-keep">
+              목적지행 {formatted(watchRegularPrice.toDestination)}원
+            </label>
+            <Input
+              type="number"
+              {...register('regularPrice.toDestination', {
+                valueAsNumber: true,
+              })}
+            />
+          </div>
 
-        <label className="block">
-          출발지행
-          <Input
-            type="number"
-            {...register('regularPrice.fromDestination', {
-              valueAsNumber: true,
-            })}
-          />
-        </label>
+          <div className="flex flex-col items-start gap-8">
+            <label className="break-keep">
+              귀가행 {formatted(watchRegularPrice.fromDestination)}원
+            </label>
+            <Input
+              type="number"
+              {...register('regularPrice.fromDestination', {
+                valueAsNumber: true,
+              })}
+            />
+          </div>
 
-        <label className="block">
-          왕복
-          <Input
-            type="number"
-            {...register('regularPrice.roundTrip', { valueAsNumber: true })}
-          />
-        </label>
+          <div className="flex flex-col items-start gap-8">
+            <label className="break-keep">
+              왕복 {formatted(watchRegularPrice.roundTrip)}원
+            </label>
+            <Input
+              type="number"
+              {...register('regularPrice.roundTrip', { valueAsNumber: true })}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <h3>얼리버드 가격</h3>
+
+          <div className="flex flex-col items-start gap-8">
+            <label className="break-keep">
+              목적지행 {formatted(watchEarlybirdPrice.toDestination)}원
+              {discountPercent(
+                watchRegularPrice.toDestination,
+                watchEarlybirdPrice.toDestination,
+              )}
+            </label>
+            <Input
+              type="number"
+              {...register('earlybirdPrice.toDestination', {
+                valueAsNumber: true,
+              })}
+              disabled={!watchHasEarlybird}
+            />
+          </div>
+
+          <div className="flex flex-col items-start gap-8">
+            <label className="break-keep">
+              귀가행 {formatted(watchEarlybirdPrice.fromDestination)}원
+              {discountPercent(
+                watchRegularPrice.fromDestination,
+                watchEarlybirdPrice.fromDestination,
+              )}
+            </label>
+            <Input
+              type="number"
+              {...register('earlybirdPrice.fromDestination', {
+                valueAsNumber: true,
+              })}
+              disabled={!watchHasEarlybird}
+            />
+          </div>
+
+          <div className="flex flex-col items-start gap-8">
+            <label className="break-keep">
+              왕복 {formatted(watchEarlybirdPrice.roundTrip)}원
+              {discountPercent(
+                watchRegularPrice.roundTrip,
+                watchEarlybirdPrice.roundTrip,
+              )}
+            </label>
+            <Input
+              type="number"
+              {...register('earlybirdPrice.roundTrip', { valueAsNumber: true })}
+              disabled={!watchHasEarlybird}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="space-y-2">
@@ -220,42 +347,66 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
         <button
           type="button"
           onClick={() =>
-            appendFromDestHub({
+            prependToDestHub({
               regionHubId: 0,
-              arrivalTime: new Date(),
+              arrivalTime: defaultDate,
             })
           }
-          className="text-blue-500 px-2 py-1 rounded text-sm"
+          className="px-2 py-1 text-sm rounded text-blue-500"
         >
           추가
         </button>
-        <div className="space-y-2">
+        <Guide>
+          주의! 목적지행 경유지 목록의 마지막 경유지는 노선이 행사 장소에 도착할
+          때 운행을 종료하는 최종 거점지가 되어야 합니다. 꼭 설정해주세요.
+        </Guide>
+        <div className="flex flex-col gap-20">
           {toDestHubFields.map((field, index) => {
             return (
               <div key={field.id}>
-                <div className="flex items-center gap-2">
-                  <label>
-                    경유지 ID
-                    <Input
-                      type="number"
-                      {...register(
-                        `shuttleRouteHubsToDestination.${index}.regionHubId` as const,
-                        {
-                          valueAsNumber: true,
-                        },
-                      )}
-                      placeholder="Hub ID"
-                    />
+                <div
+                  className={twMerge(
+                    'flex items-center gap-20',
+                    index === toDestHubFields.length - 1
+                      ? 'rounded-lg bg-primary-200'
+                      : '',
+                  )}
+                >
+                  <label className="flex flex-row ">
+                    {index === toDestHubFields.length - 1 ? (
+                      <>
+                        목적지 근처
+                        <br />
+                        도착 거점지
+                      </>
+                    ) : (
+                      <>경유 거점지</>
+                    )}
                   </label>
-
-                  <label>타입 : 목적지행</label>
+                  <div className="flex flex-row">
+                    <Controller
+                      control={control}
+                      name={
+                        `shuttleRouteHubsToDestination.${index}.regionHubId` as const
+                      }
+                      render={({ field: { onChange, value } }) => (
+                        <RegionHubInputSelfContained
+                          value={value}
+                          setValue={onChange}
+                        />
+                      )}
+                    />
+                  </div>
 
                   <label>
                     시간
-                    <Input
-                      type="datetime-local"
-                      {...register(
-                        `shuttleRouteHubsToDestination.${index}.arrivalTime` as const,
+                    <Controller
+                      control={control}
+                      name={
+                        `shuttleRouteHubsToDestination.${index}.arrivalTime` as const
+                      }
+                      render={({ field: { onChange, value } }) => (
+                        <DateTimeInput value={value} setValue={onChange} />
                       )}
                     />
                   </label>
@@ -263,7 +414,9 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
                   <button
                     type="button"
                     onClick={() => index > 0 && swapToDestHub(index, index - 1)}
-                    disabled={index === 0}
+                    disabled={
+                      index === 0 || index === toDestHubFields.length - 1
+                    }
                     className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
                   >
                     위로
@@ -274,7 +427,10 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
                       index < toDestHubFields.length - 1 &&
                       swapToDestHub(index, index + 1)
                     }
-                    disabled={index === toDestHubFields.length - 1}
+                    disabled={
+                      index === toDestHubFields.length - 1 ||
+                      index === toDestHubFields.length - 2
+                    }
                     className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
                   >
                     아래로
@@ -282,7 +438,8 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
                   <button
                     type="button"
                     onClick={() => removeToDestHub(index)}
-                    className="text-red-500"
+                    className="text-red-500 disabled:opacity-30"
+                    disabled={index === toDestHubFields.length - 1}
                   >
                     삭제
                   </button>
@@ -298,42 +455,64 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
         <button
           type="button"
           onClick={() =>
-            appendToDestHub({
+            appendFromDestHub({
               regionHubId: 0,
-              arrivalTime: new Date(),
+              arrivalTime: defaultDate,
             })
           }
-          className="text-blue-500 px-2 py-1 rounded text-sm"
+          className="px-2 py-1 text-sm rounded text-blue-500"
         >
           추가
         </button>
-        <div className="space-y-2">
+        <Guide>
+          주의! 귀가행 경유지 목록의 첫번째 경유지는 노선이 행사 장소에서 출발할
+          때 운행을 시작하는 최초 거점지가 되어야 합니다. 꼭 설정해주세요.
+        </Guide>
+        <div className="flex flex-col gap-20">
           {fromDestHubFields.map((field, index) => {
             return (
               <div key={field.id}>
-                <div className="flex items-center gap-2">
-                  <label>
-                    경유지 ID
-                    <Input
-                      type="number"
-                      {...register(
-                        `shuttleRouteHubsFromDestination.${index}.regionHubId` as const,
-                        {
-                          valueAsNumber: true,
-                        },
-                      )}
-                      placeholder="Hub ID"
-                    />
+                <div
+                  className={twMerge(
+                    'flex items-center gap-20',
+                    index === 0 ? 'rounded-lg bg-primary-200' : '',
+                  )}
+                >
+                  <label className="flex flex-row ">
+                    {index === 0 ? (
+                      <>
+                        목적지 근처
+                        <br />
+                        귀가 출발지
+                      </>
+                    ) : (
+                      <>경유 거점지</>
+                    )}
                   </label>
-
-                  <label>타입 : 귀가행</label>
+                  <div className="flex flex-row">
+                    <Controller
+                      control={control}
+                      name={
+                        `shuttleRouteHubsFromDestination.${index}.regionHubId` as const
+                      }
+                      render={({ field: { onChange, value } }) => (
+                        <RegionHubInputSelfContained
+                          value={value}
+                          setValue={onChange}
+                        />
+                      )}
+                    />
+                  </div>
 
                   <label>
                     시간
-                    <Input
-                      type="datetime-local"
-                      {...register(
-                        `shuttleRouteHubsFromDestination.${index}.arrivalTime` as const,
+                    <Controller
+                      control={control}
+                      name={
+                        `shuttleRouteHubsFromDestination.${index}.arrivalTime` as const
+                      }
+                      render={({ field: { onChange, value } }) => (
+                        <DateTimeInput value={value} setValue={onChange} />
                       )}
                     />
                   </label>
@@ -343,7 +522,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
                     onClick={() =>
                       index > 0 && swapFromDestHub(index, index - 1)
                     }
-                    disabled={index === 0}
+                    disabled={index === 0 || index === 1}
                     className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
                   >
                     위로
@@ -354,7 +533,9 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
                       index < fromDestHubFields.length - 1 &&
                       swapFromDestHub(index, index + 1)
                     }
-                    disabled={index === fromDestHubFields.length - 1}
+                    disabled={
+                      index === fromDestHubFields.length - 1 || index === 0
+                    }
                     className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
                   >
                     아래로
@@ -362,7 +543,8 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
                   <button
                     type="button"
                     onClick={() => removeFromDestHub(index)}
-                    className="text-red-500"
+                    className="text-red-500 disabled:opacity-30"
+                    disabled={index === 0}
                   >
                     삭제
                   </button>
@@ -373,11 +555,19 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
         </div>
       </div>
 
-      <button type="submit" className="bg-blue-500 text-white p-8 rounded">
+      <button type="submit" className="rounded bg-blue-500 p-8 text-white">
         추가
       </button>
     </form>
   );
 };
 
-export default Page;
+const formatted = (n: number) => {
+  return n.toLocaleString('ko-KR');
+};
+
+const discountPercent = (price: number, priceAfterDiscount: number) => {
+  const amount = ((price - priceAfterDiscount) / price) * 100;
+  if (amount < 0) return '(오류: 더 비싼 가격)';
+  return '(-' + amount.toFixed(2) + '%)';
+};

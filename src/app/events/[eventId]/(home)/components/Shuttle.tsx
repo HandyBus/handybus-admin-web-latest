@@ -1,43 +1,43 @@
-import type { ShuttleType } from '@/types/v1/shuttle.type';
 import Image from 'next/image';
-import Guide from '@/components/guide/Guide';
 import Stringifier from '@/utils/stringifier.util';
+import { formatDateString } from '@/utils/date.util';
+import { EventsViewEntity } from '@/types/event.type';
 
 interface Props {
-  shuttle: ShuttleType;
+  event: EventsViewEntity;
 }
 
-const Shuttle = ({ shuttle }: Props) => {
+const EventViewer = ({ event }: Props) => {
   return (
     <>
       <div className="rounded-lg bg-grey-50 p-8">
         <div className="flex flex-row gap-8 p-8">
           <Image
-            src={shuttle.image}
-            alt={shuttle.name}
+            src={event.eventImageUrl}
+            alt={event.eventName}
             width={80}
             height={110}
           />
           <div className="flex flex-col">
-            <h1>제목: {shuttle.name}</h1>
-            <p>장소: {shuttle.destination.name}</p>
-            <p>출연: {shuttle.participants.map((p) => p.name).join(', ')}</p>
+            <h1>제목: {event.eventName}</h1>
+            {/* TODO use rich viewer */}
+            <p>장소: {event.eventLocationName}</p>
+            <p>
+              출연:{' '}
+              {event.eventArtists?.map((p) => p.artistName).join(', ') ?? '-'}
+            </p>
             <p>
               날짜:{' '}
-              {shuttle.dailyShuttles
-                .map((ds) => ds.date.toLocaleDateString('ko-KR'))
+              {event.dailyEvents
+                .map((ds) => formatDateString(ds.date))
                 .join(', ')}
             </p>
-            <p>상태: {Stringifier.eventStatus(shuttle.status)}</p>
+            <p>상태: {Stringifier.eventStatus(event.eventStatus)}</p>
           </div>
         </div>
       </div>
-      <Guide>
-        셔틀 상태의 의미는 다음과 같습니다: OPEN - , ENDED - , INACTIVE -
-        비활성화됨
-      </Guide>
     </>
   );
 };
 
-export default Shuttle;
+export default EventViewer;
