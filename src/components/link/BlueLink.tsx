@@ -1,17 +1,16 @@
 import Link, { LinkProps } from 'next/link';
-import { ReactNode } from 'react';
+import { AnchorHTMLAttributes } from 'react';
 
-interface Props extends LinkProps {
-  children: ReactNode;
-}
+type Props = LinkProps &
+  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps>;
 
-const BlueLink = (props: Props) => {
+const BlueLink = ({ className, children, ...props }: Props) => {
   return (
     <Link
       {...props}
-      className="text-blue-500 after:content-['↗'] hover:underline"
+      className={`text-blue-500 after:content-['↗'] hover:underline ${className || ''}`}
     >
-      {props.children}
+      {children}
     </Link>
   );
 };
