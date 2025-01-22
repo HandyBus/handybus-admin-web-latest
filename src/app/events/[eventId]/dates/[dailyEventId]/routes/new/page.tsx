@@ -5,7 +5,6 @@ import { type CreateShuttleRouteForm } from './form.type';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/input/Input';
 import { RegionHubInputSelfContained } from '@/components/input/HubInput';
-import Guide from '@/components/guide/Guide';
 import { parseDateString } from '@/utils/date.util';
 import { useMemo } from 'react';
 import DateInput from '@/components/input/DateInput';
@@ -17,6 +16,7 @@ import {
 } from '@/services/shuttleOperation.service';
 import { EventsViewEntity } from '@/types/event.type';
 import { conform } from './conform.util';
+import Guide from '@/components/guide/Guide';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -173,7 +173,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 flex flex-col gap-16 bg-grey-50 rounded-lg p-16  "
+      className="flex flex-col gap-16 space-y-4 rounded-lg bg-grey-50 p-16  "
     >
       <div className="space-y-2">
         <label htmlFor="name" className="block">
@@ -352,7 +352,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
               arrivalTime: defaultDate,
             })
           }
-          className="text-blue-500 px-2 py-1 rounded text-sm"
+          className="px-2 py-1 text-sm rounded text-blue-500"
         >
           추가
         </button>
@@ -368,7 +368,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                   className={twMerge(
                     'flex items-center gap-20',
                     index === toDestHubFields.length - 1
-                      ? 'bg-primary-200 rounded-lg'
+                      ? 'rounded-lg bg-primary-200'
                       : '',
                   )}
                 >
@@ -460,7 +460,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
               arrivalTime: defaultDate,
             })
           }
-          className="text-blue-500 px-2 py-1 rounded text-sm"
+          className="px-2 py-1 text-sm rounded text-blue-500"
         >
           추가
         </button>
@@ -475,7 +475,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                 <div
                   className={twMerge(
                     'flex items-center gap-20',
-                    index === 0 ? 'bg-primary-200 rounded-lg' : '',
+                    index === 0 ? 'rounded-lg bg-primary-200' : '',
                   )}
                 >
                   <label className="flex flex-row ">
@@ -555,7 +555,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
         </div>
       </div>
 
-      <button type="submit" className="bg-blue-500 text-white p-8 rounded">
+      <button type="submit" className="rounded bg-blue-500 p-8 text-white">
         추가
       </button>
     </form>
