@@ -26,12 +26,16 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
   );
 
   const fromHubTable = useTable({
-    data: route?.fromDestinationShuttleRouteHubs,
+    data: route?.fromDestinationShuttleRouteHubs.sort(
+      (a, b) => a.sequence - b.sequence,
+    ),
     columns: routeHubColumns,
   });
 
   const toHubTable = useTable({
-    data: route?.toDestinationShuttleRouteHubs,
+    data: route?.toDestinationShuttleRouteHubs.sort(
+      (a, b) => a.sequence - b.sequence,
+    ),
     columns: routeHubColumns,
   });
 
