@@ -53,13 +53,19 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
           </BlueLink>{' '}
           일자 노선 정보
         </h1>
+        <BlueLink
+          href={`/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/edit`}
+          className="text-[32px] font-500"
+        >
+          수정하기
+        </BlueLink>
       </header>
 
       {isRoutePending && <div>Loading...</div>}
       {isRouteError && <div>Error: {routeError.message}</div>}
       {route && (
         <div className="flex flex-col gap-16">
-          <div className="grid grid-cols-4 gap-4 bg-grey-50 p-16 rounded-xl">
+          <div className="grid grid-cols-4 gap-4 rounded-xl bg-grey-50 p-16">
             <ul>
               <li>노선 ID: {route.shuttleRouteId}</li>
               <li>노선 이름: {route.name}</li>
