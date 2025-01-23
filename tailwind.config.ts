@@ -33,7 +33,7 @@ const config: Config = {
       transparent: 'transparent',
       primary: {
         50: 'rgb(var(--primary-50) / <alpha-value>)',
-        100: 'rgb(var(--primary-100) / <alpha-value>)',
+        100: 'rgb(var(--primary-sub) / <alpha-value>)',
         200: 'rgb(var(--primary-200) / <alpha-value>)',
         300: 'rgb(var(--primary-300) / <alpha-value>)',
         400: 'rgb(var(--primary-400) / <alpha-value>)',
@@ -96,6 +96,13 @@ const config: Config = {
         700: 'rgb(var(--green-700) / <alpha-value>)',
         800: 'rgb(var(--green-800) / <alpha-value>)',
         900: 'rgb(var(--green-900) / <alpha-value>)',
+      },
+      notion: {
+        grey: 'rgb(var(--notion-grey) / <alpha-value>)',
+        yellow: 'rgb(var(--notion-yellow) / <alpha-value>)',
+        green: 'rgb(var(--notion-green) / <alpha-value>)',
+        blue: 'rgb(var(--notion-blue) / <alpha-value>)',
+        red: 'rgb(var(--notion-red) / <alpha-value>)',
       },
     },
     fontSize: {

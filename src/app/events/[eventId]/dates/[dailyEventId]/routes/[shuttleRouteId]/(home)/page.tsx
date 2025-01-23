@@ -7,6 +7,7 @@ import BaseTable from '@/components/table/BaseTable';
 import Buses from './components/Buses';
 import { formatDateString } from '@/utils/date.util';
 import { useGetShuttleRoute } from '@/services/shuttleOperation.service';
+import Heading from '@/components/text/Heading';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -37,7 +38,7 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
       <header className="flex flex-row justify-between">
-        <h1 className="text-[32px] font-500">
+        <Heading>
           <BlueLink href={`/events/${eventId}`}>
             {route?.event?.eventName}
           </BlueLink>{' '}
@@ -52,14 +53,14 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
             )}
           </BlueLink>{' '}
           일자 노선 정보
-        </h1>
+        </Heading>
       </header>
 
       {isRoutePending && <div>Loading...</div>}
       {isRouteError && <div>Error: {routeError.message}</div>}
       {route && (
         <div className="flex flex-col gap-16">
-          <div className="grid grid-cols-4 gap-4 bg-grey-50 p-16 rounded-xl">
+          <div className="grid grid-cols-4 gap-4 rounded-xl bg-grey-50 p-16">
             <ul>
               <li>노선 ID: {route.shuttleRouteId}</li>
               <li>노선 이름: {route.name}</li>

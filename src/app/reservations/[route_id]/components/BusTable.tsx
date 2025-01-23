@@ -13,6 +13,7 @@ import {
 import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
 import { ReservationViewEntity } from '@/types/reservation.type';
 import { TripType } from '@/types/shuttleRoute.type';
+import Heading from '@/components/text/Heading';
 
 type BusAndReservation = {
   bus: ShuttleBusesViewEntity;
@@ -306,28 +307,28 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
   }
 
   return (
-    <section>
-      <h2 className="text-24 font-500 pb-8 bg-[#e0e0e0] py-4 px-12 my-4 flex items-center">
+    <section className="flex flex-col">
+      <Heading.h2 className="flex items-baseline gap-20">
         버스 배차 현황
         {isEditMode ? (
-          <div className="flex items-center gap-4 ml-40">
+          <div className="ml-40 flex items-center gap-4">
             <button
               type="button"
-              className="text-14 font-500 bg-primary rounded-md border border-grey-300 px-12 py-[3px]"
+              className="rounded-md border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
               onClick={handleAssignBus}
             >
               확인
             </button>
             <button
               type="button"
-              className="text-14 font-500 bg-grey-100 rounded-md border border-grey-300 px-12 py-[3px]"
+              className="rounded-md border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
               onClick={() => setIsEditMode(false)}
             >
               취소
             </button>
             <button
               type="button"
-              className="text-14 font-500 bg-grey-100 rounded-md border border-grey-300 px-12 py-[3px] ml-16"
+              className="ml-16 rounded-md border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
               onClick={handleFillUnassignedReservation}
             >
               배차되지 않은 승객 채우기
@@ -336,7 +337,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
         ) : (
           <button
             type="button"
-            className="text-14 font-500 bg-grey-100 rounded-md ml-40 border border-grey-300 px-12 py-[3px]"
+            className="ml-40 rounded-md border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
             onClick={() => {
               setIsEditMode(true);
               initEditing();
@@ -345,7 +346,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
             수정하기
           </button>
         )}
-      </h2>
+      </Heading.h2>
       <section className="flex flex-col gap-16">
         {/* 각 버스 매핑 */}
         {(isEditMode ? editingBusWithSeats : busWithSeats)?.map(
@@ -354,26 +355,30 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
               key={busWithSeat.bus.shuttleBusId}
               className="flex flex-col gap-8"
             >
-              <h3 className="flex items-center gap-12 bg-[#ebebeb] py-4 px-12">
-                <p className="text-16 font-500 text-grey-900">
-                  {busWithSeat.bus.busName}
-                </p>
-                <p className="text-14 font-500 text-grey-600">
+              <Heading.h4
+                backgroundColor="grey"
+                className="flex items-center gap-12"
+              >
+                <span>{busWithSeat.bus.busName}</span>
+                <span className="text-14 font-500 text-grey-600">
                   {Stringifier.busType(busWithSeat.bus.busType)}
-                </p>
-                <p className="text-14 font-500 text-grey-500">
+                </span>
+                <span className="text-14 font-500 text-grey-500">
                   {busWithSeat.bus.busNumber}
-                </p>
-              </h3>
+                </span>
+              </Heading.h4>
               {/* 버스 내 행 매핑 */}
               <div className="grid grid-cols-2 gap-8">
                 <ul>
-                  <h4 className="flex items-center gap-12 bg-[#f3f3f3] py-4 px-12 text-14 font-500">
-                    콘서트행{' '}
-                    <span className="text-14 font-500 text-grey-500 ml-12">
+                  <Heading.h5
+                    backgroundColor="blue"
+                    className="flex items-center gap-12"
+                  >
+                    <span>콘서트행</span>
+                    <span className="ml-12 text-14 font-500 text-grey-500">
                       {`(${busWithSeat.toDestinationFilledSeat}/${busWithSeat.maxSeat})`}
                     </span>
-                  </h4>
+                  </Heading.h5>
                   {/* 배차된 예약 매핑 */}
                   {(isEditMode
                     ? editingBusAndReservations
@@ -398,12 +403,15 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
                   })}
                 </ul>
                 <ul>
-                  <h4 className="flex items-center gap-12 bg-[#f3f3f3] py-4 px-12 text-14 font-500">
-                    귀가행
-                    <span className="text-14 font-500 text-grey-500 ml-12">
+                  <Heading.h5
+                    backgroundColor="yellow"
+                    className="flex items-center gap-12"
+                  >
+                    <span> 귀가행</span>
+                    <span className="ml-12 text-14 font-500 text-grey-500">
                       {`(${busWithSeat.fromDestinationFilledSeat}/${busWithSeat.maxSeat})`}
                     </span>
-                  </h4>
+                  </Heading.h5>
                   {/* 배차된 예약 매핑 */}
                   {(isEditMode
                     ? editingBusAndReservations
@@ -455,7 +463,7 @@ const PassengerItem = ({
 }: PassengerItemProps) => {
   const { reservation, bus } = busAndReservation;
   return (
-    <li className="flex items-center gap-20 border-b border-grey-300 py-4 px-12">
+    <li className="flex items-center gap-20 border-b border-grey-300 px-12 py-4">
       <p className="text-14 font-500 text-grey-900">
         {reservation.userNickname}
       </p>
@@ -495,7 +503,7 @@ const PassengerItem = ({
           ))}
         </select>
       )}
-      <div className="flex items-center gap-12 ml-auto">
+      <div className="ml-auto flex items-center gap-12">
         {reservation.handyStatus !== 'NOT_SUPPORTED' && (
           <p>
             <EditHandyStatusDialog response={reservation} />

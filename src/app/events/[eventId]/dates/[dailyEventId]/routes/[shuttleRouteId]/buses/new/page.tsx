@@ -10,6 +10,7 @@ import { CheckIcon } from 'lucide-react';
 import Stringifier from '@/utils/stringifier.util';
 import { usePostShuttleBus } from '@/services/shuttleOperation.service';
 import { BusTypeEnum } from '@/types/shuttleBus.type';
+import Heading from '@/components/text/Heading';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -57,8 +58,8 @@ const NewBusPage = ({
   );
 
   return (
-    <main className="h-full w-full bg-white flex flex-col gap-16">
-      <h2 className="text-24 font-500">거점지 정보</h2>
+    <main className="flex h-full w-full flex-col gap-16 bg-white">
+      <Heading>버스 추가하기</Heading>
       <form
         className="flex flex-col gap-8"
         onSubmit={handleSubmit(onSubmit)}
@@ -100,15 +101,15 @@ const NewBusPage = ({
           render={({ field: { onChange, value } }) => (
             <RadioGroup
               value={value}
-              className="flex flex-row gap-4 flex-wrap"
+              className="flex flex-row flex-wrap gap-4"
               onChange={(s) => onChange(s)}
               aria-label="Server size"
             >
               {BusTypeEnum.options.map((plan) => (
-                <Field key={plan} className="flex items-center gap-2">
+                <Field key={plan} className="gap-2 flex items-center">
                   <Radio
                     value={plan}
-                    className="group flex size-fit items-center p-4 justify-center rounded-lg bg-white data-[checked]:bg-blue-400 data-[checked]:text-white transition-transform hover:outline focus:outline hover:outline-blue-200 focus:outline-blue-200 active:scale-[0.9]"
+                    className="group flex size-fit items-center justify-center rounded-lg bg-white p-4 transition-transform hover:outline hover:outline-blue-200 focus:outline focus:outline-blue-200 active:scale-[0.9] data-[checked]:bg-blue-400 data-[checked]:text-white"
                   >
                     <CheckIcon
                       className="invisible group-data-[checked]:visible"
@@ -123,7 +124,7 @@ const NewBusPage = ({
         />
 
         <button
-          className="bg-blue-500 text-white active:scale-95 transition-all p-4 rounded-xl hover:opacity-75"
+          className="rounded-xl bg-blue-500 p-4 text-white transition-all hover:opacity-75 active:scale-95"
           type="submit"
         >
           버스 추가하기

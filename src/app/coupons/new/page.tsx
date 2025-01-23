@@ -2,6 +2,7 @@
 
 import Input from '@/components/input/Input';
 import NumberInput from '@/components/input/NumberInput';
+import Heading from '@/components/text/Heading';
 import { usePostCoupon } from '@/services/billing.service';
 import { CreateCouponRequest } from '@/types/coupon.type';
 import { Label, Radio } from '@headlessui/react';
@@ -49,16 +50,14 @@ const Page = () => {
 
   return (
     <main>
-      <header className="flex items-center justify-between">
-        <h1 className="text-[32px] font-500">쿠폰 추가</h1>
-      </header>
+      <Heading>쿠폰 추가</Heading>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="py-20 max-w-[500px] flex flex-col gap-8"
+        className="flex max-w-[500px] flex-col gap-8 py-20"
       >
         <label>
           쿠폰 코드{' '}
-          <span className="text-red-500 text-12">
+          <span className="text-12 text-red-500">
             쿠폰 코드는 중복될 수 없습니다.
           </span>
         </label>
@@ -88,18 +87,18 @@ const Page = () => {
               onChange={(type) => onChange(type)}
             >
               {['RATE', 'AMOUNT'].map((type) => (
-                <Field key={type} className="flex items-center gap-2">
+                <Field key={type} className="gap-2 flex items-center">
                   <Radio
                     value={type}
-                    className="group flex size-fit items-center p-4 justify-center rounded-lg bg-white
-                    data-[checked]:bg-blue-400
-                    data-[checked]:text-white
+                    className="group flex size-fit items-center justify-center rounded-lg bg-white p-4
                     transition-transform
                     hover:outline
-                    focus:outline
                     hover:outline-blue-200
+                    focus:outline
                     focus:outline-blue-200
                     active:scale-[0.9]
+                    data-[checked]:bg-blue-400
+                    data-[checked]:text-white
                     "
                   >
                     <CheckIcon
@@ -172,7 +171,7 @@ const Page = () => {
         </div>
         <button
           type="submit"
-          className="py-8 bg-primary-main rounded-lg text-white my-20 font-700"
+          className="my-20 rounded-lg bg-primary-main py-8 font-700 text-white"
         >
           생성하기
         </button>

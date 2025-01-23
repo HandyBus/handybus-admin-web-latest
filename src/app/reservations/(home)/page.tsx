@@ -22,11 +22,12 @@ import {
   useGetShuttleRoutesOfDailyEvent,
 } from '@/services/shuttleOperation.service';
 import ColumnFilter from '@/components/table/ColumnFilter';
+import Heading from '@/components/text/Heading';
 
 const Page = () => {
   return (
-    <main className="flex h-full w-full flex-col gap-16 bg-white">
-      <h1 className="text-[32px] font-500">예약 관리</h1>
+    <main>
+      <Heading>예약 대시보드</Heading>
       <RouteReservations />
       <AllReservations />
     </main>
@@ -51,13 +52,11 @@ const RouteReservations = () => {
   );
 
   return (
-    <section className="pb-40">
-      <h2 className="my-4 flex items-center bg-grey-50 px-12 py-4 pb-8 text-24 font-500">
-        노선별 예약 조회
-      </h2>
+    <section className="pb-20">
+      <Heading.h2>노선별 예약 조회</Heading.h2>
       <div className="flex h-500 w-full justify-between">
         <article className="flex h-full w-400 flex-col">
-          <p className="pb-4 text-20 font-500 text-grey-900">행사 선택</p>
+          <Heading.h4>행사 선택</Heading.h4>
           <ul className="grow overflow-scroll rounded-[4px] border border-grey-200">
             {events?.map((event) => (
               <button
@@ -85,9 +84,7 @@ const RouteReservations = () => {
           </ul>
         </article>
         <article className="flex h-full w-400 flex-col">
-          <p className="pb-4 text-20 font-500 text-grey-900">
-            일자별 행사 선택
-          </p>
+          <Heading.h4>일자별 행사 선택</Heading.h4>
           <ul className="grow overflow-scroll rounded-[4px] border border-grey-200">
             {selectedEvent ? (
               selectedEvent.dailyEvents.map((dailyEvent) => (
@@ -114,9 +111,7 @@ const RouteReservations = () => {
           </ul>
         </article>
         <article className="flex h-full w-400 flex-col">
-          <p className="pb-4 text-20 font-500 text-grey-900">
-            일자별 노선 선택
-          </p>
+          <Heading.h4>일자별 노선 선택</Heading.h4>
           <ul className="grow overflow-scroll rounded-[4px] border border-grey-200">
             {selectedDailyEvent ? (
               shuttleRoutes?.length !== 0 ? (
@@ -181,9 +176,7 @@ const AllReservations = () => {
 
   return (
     <section>
-      <h2 className="my-4 flex items-center bg-grey-50 px-12 py-4 pb-8 text-24 font-500">
-        모든 예약 조회
-      </h2>
+      <Heading.h2>모든 예약 조회</Heading.h2>
       <RowFilter option={option} dispatch={dispatch} />
       <ColumnFilter table={table} />
       {/* TODO virtualization */}

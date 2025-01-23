@@ -7,6 +7,7 @@ import { columns, initialColumnVisibility } from './types/table.type';
 import useTable from '@/hooks/useTable';
 import StatusFilter, { useEventStatusOptions } from './components/StatusFilter';
 import { useGetEvents } from '@/services/shuttleOperation.service';
+import Heading from '@/components/text/Heading';
 
 const Page = () => {
   const [eventStatus, setEventStatus] = useEventStatusOptions();
@@ -29,11 +30,13 @@ const Page = () => {
   });
 
   return (
-    <main className="flex h-full w-full flex-col gap-16 bg-white">
-      <header className="flex flex-row justify-between">
-        <h1 className="text-[32px] font-500">행사 대시보드</h1>
-        <BlueLink href="events/new">추가하기</BlueLink>
-      </header>
+    <main>
+      <Heading className="flex items-baseline gap-20">
+        행사 대시보드
+        <BlueLink href="events/new" className="text-14">
+          추가하기
+        </BlueLink>
+      </Heading>
       <StatusFilter eventStatus={eventStatus} setEventStatus={setEventStatus} />
       <ColumnFilter table={table} />
       {isLoading ? (
