@@ -520,7 +520,7 @@ interface PutShuttleRouteBody {
   shuttleRouteHubs?: {
     shuttleRouteHubId?: number;
     regionHubId?: number;
-    type?: TripType;
+    type?: Omit<TripType, 'ROUND_TRIP'>;
     sequence?: number;
     arrivalTime?: string;
   }[];
@@ -539,7 +539,13 @@ export const putShuttleRoute = async (
   );
 };
 
-export const usePutShuttleRoute = () => {
+export const usePutShuttleRoute = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess?: () => void;
+  onError?: (error: unknown) => void;
+} = {}) => {
   return useMutation({
     mutationFn: ({
       eventId,
@@ -552,6 +558,8 @@ export const usePutShuttleRoute = () => {
       shuttleRouteId: number;
       body: PutShuttleRouteBody;
     }) => putShuttleRoute(eventId, dailyEventId, shuttleRouteId, body),
+    onSuccess,
+    onError,
   });
 };
 

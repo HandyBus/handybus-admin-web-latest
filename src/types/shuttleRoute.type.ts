@@ -25,11 +25,12 @@ export const ShuttleRouteHubsInShuttleRoutesViewEntitySchema = z
   .object({
     shuttleRouteHubId: z.number().int(),
     regionHubId: z.number().int(),
+    regionId: z.number().int(),
     name: z.string(),
     address: z.string(),
     latitude: z.number(),
     longitude: z.number(),
-    type: TripTypeEnum,
+    type: TripTypeEnum.extract(['TO_DESTINATION', 'FROM_DESTINATION']),
     sequence: z.number().int(),
     arrivalTime: z.string(),
     status: z.enum(['ACTIVE', 'INACTIVE']),
@@ -109,4 +110,27 @@ export const CreateShuttleRouteRequestSchema = z
 
 export type CreateShuttleRouteRequest = z.infer<
   typeof CreateShuttleRouteRequestSchema
+>;
+
+export const UpdateShuttleRouteHubPropsSchema = z.object({
+  shuttleRouteHubId: z.number().int().optional(),
+  regionHubId: z.number().int(),
+  type: TripTypeEnum.extract(['TO_DESTINATION', 'FROM_DESTINATION']),
+  sequence: z.number().int().positive(),
+  arrivalTime: z.string(),
+});
+
+export type UpdateShuttleRouteHubProps = z.infer<
+  typeof UpdateShuttleRouteHubPropsSchema
+>;
+
+export const UpdateShuttleRouteRequestSchema = z.object({
+  name: z.string(),
+  reservationDeadline: z.string(),
+  maxPassengerCount: z.number().int(),
+  shuttleRouteHubs: UpdateShuttleRouteHubPropsSchema.array(),
+});
+
+export type UpdateShuttleRouteRequest = z.infer<
+  typeof UpdateShuttleRouteRequestSchema
 >;

@@ -63,12 +63,12 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
       onChange={setSelectedHub}
       onClose={() => setQuery('')}
     >
-      <div className="relative group">
+      <div className="group relative">
         <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-grey-400 group-focus:text-blue-500">
           <ChevronDown />
         </ComboboxButton>
         <ComboboxInput
-          className="p-8 size-full border border-grey-200 rounded-lg focus:outline-blue-400"
+          className="size-full rounded-lg border border-grey-200 p-8 focus:outline-blue-400"
           aria-label="Assignee"
           placeholder={
             !validRegionID(regionId)
@@ -86,13 +86,13 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
 
         <ComboboxOptions
           anchor="bottom"
-          className="w-[var(--input-width)] shadow-md bg-white rounded-lg empty:invisible mt-4"
+          className="mt-4 w-[var(--input-width)] rounded-lg bg-white shadow-md empty:invisible"
         >
           {filtered.map((hub) => (
             <ComboboxOption
               key={hub.regionHubId}
               value={hub}
-              className="data-[focus]:bg-blue-100 p-8"
+              className="p-8 data-[focus]:bg-blue-100"
             >
               {hub.name}
             </ComboboxOption>
@@ -118,8 +118,11 @@ export default RegionHubInput;
 export const RegionHubInputSelfContained = ({
   value,
   setValue,
-}: Omit<Props, 'regionId'>) => {
-  const [regionId, setRegionId] = useState<number | null>(null);
+  initialRegionId,
+}: Omit<Props, 'regionId'> & { initialRegionId?: number }) => {
+  const [regionId, setRegionId] = useState<number | null>(
+    initialRegionId ?? null,
+  );
   return (
     <div className="flex flex-col">
       <RegionInput value={regionId} setValue={setRegionId} />

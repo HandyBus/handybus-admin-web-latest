@@ -26,12 +26,16 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
   );
 
   const fromHubTable = useTable({
-    data: route?.fromDestinationShuttleRouteHubs,
+    data: route?.fromDestinationShuttleRouteHubs.sort(
+      (a, b) => a.sequence - b.sequence,
+    ),
     columns: routeHubColumns,
   });
 
   const toHubTable = useTable({
-    data: route?.toDestinationShuttleRouteHubs,
+    data: route?.toDestinationShuttleRouteHubs.sort(
+      (a, b) => a.sequence - b.sequence,
+    ),
     columns: routeHubColumns,
   });
 
@@ -53,6 +57,12 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
             )}
           </BlueLink>{' '}
           일자 노선 정보
+          <BlueLink
+            href={`/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/edit`}
+            className="text-[32px] font-500"
+          >
+            수정하기
+          </BlueLink>
         </Heading>
       </header>
 
