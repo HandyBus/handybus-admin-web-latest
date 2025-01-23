@@ -157,7 +157,7 @@ const AllReservations = () => {
   const { data, fetchNextPage, isFetching, hasNextPage, isError, error } =
     useGetReservationsWithPagination({
       ...option,
-      page: 0,
+      page: undefined,
       limit: PAGINATION_LIMIT,
     });
 

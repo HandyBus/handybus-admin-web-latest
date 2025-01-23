@@ -1,4 +1,3 @@
-import { formatDate } from '@/utils/date.util';
 import { CreateShuttleRouteForm } from './form.type';
 import { CreateShuttleRouteRequest } from '@/types/shuttleRoute.type';
 
@@ -41,27 +40,27 @@ export const conform = (
   const froms: CreateShuttleRouteRequest['shuttleRouteHubs'] =
     data.shuttleRouteHubsFromDestination
       .filter(
-        (dest): dest is { regionHubId: number; arrivalTime: Date } =>
+        (dest): dest is { regionHubId: number; arrivalTime: string } =>
           dest.regionHubId !== null,
       )
       .map((v, idx) => ({
         ...v,
         sequence: idx + 1,
         type: 'FROM_DESTINATION',
-        arrivalTime: formatDate(v.arrivalTime, 'datetime'),
+        arrivalTime: v.arrivalTime,
       })) satisfies CreateShuttleRouteRequest['shuttleRouteHubs'];
 
   const tos: CreateShuttleRouteRequest['shuttleRouteHubs'] =
     data.shuttleRouteHubsToDestination
       .filter(
-        (dest): dest is { regionHubId: number; arrivalTime: Date } =>
+        (dest): dest is { regionHubId: number; arrivalTime: string } =>
           dest.regionHubId !== null,
       )
       .map((v, idx) => ({
         ...v,
         sequence: idx + 1,
         type: 'TO_DESTINATION',
-        arrivalTime: formatDate(v.arrivalTime, 'datetime'),
+        arrivalTime: v.arrivalTime,
       })) satisfies CreateShuttleRouteRequest['shuttleRouteHubs'];
 
   const {
@@ -78,9 +77,9 @@ export const conform = (
   const x = {
     ...rest,
     shuttleRouteHubs: froms.concat(tos),
-    reservationDeadline: formatDate(data.reservationDeadline, 'datetime'),
+    reservationDeadline: data.reservationDeadline,
     earlybirdDeadline: data.earlybirdDeadline
-      ? formatDate(data.earlybirdDeadline, 'datetime')
+      ? data.earlybirdDeadline
       : undefined,
   } satisfies CreateShuttleRouteRequest;
   return x;
