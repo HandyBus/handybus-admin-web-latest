@@ -8,7 +8,7 @@ const Breadcrumbs = () => {
   const pathnames = pathname.split('/').filter((x) => x);
 
   return (
-    <div className="text-12 text-grey-600 flex items-center gap-4">
+    <div className="flex shrink-0 items-center gap-4 text-12 text-grey-600">
       <Link href="/" className="underline">
         Home
       </Link>

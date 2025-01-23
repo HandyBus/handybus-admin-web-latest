@@ -7,6 +7,7 @@ import BaseTable from '@/components/table/BaseTable';
 import Buses from './components/Buses';
 import { formatDateString } from '@/utils/date.util';
 import { useGetShuttleRoute } from '@/services/shuttleOperation.service';
+import Heading from '@/components/text/Heading';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -37,7 +38,7 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
       <header className="flex flex-row justify-between">
-        <h1 className="text-[32px] font-500">
+        <Heading>
           <BlueLink href={`/events/${eventId}`}>
             {route?.event?.eventName}
           </BlueLink>{' '}
@@ -52,13 +53,13 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
             )}
           </BlueLink>{' '}
           일자 노선 정보
-        </h1>
-        <BlueLink
-          href={`/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/edit`}
-          className="text-[32px] font-500"
-        >
-          수정하기
-        </BlueLink>
+          <BlueLink
+            href={`/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/edit`}
+            className="text-[32px] font-500"
+          >
+            수정하기
+          </BlueLink>
+        </Heading>
       </header>
 
       {isRoutePending && <div>Loading...</div>}

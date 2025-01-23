@@ -3,6 +3,7 @@ import { columns as eventColumns } from '../types/event.table.type';
 import useTable from '@/hooks/useTable';
 import BlueLink from '@/components/link/BlueLink';
 import { ReservationViewEntity } from '@/types/reservation.type';
+import Heading from '@/components/text/Heading';
 
 interface Props {
   response: ReservationViewEntity;
@@ -15,15 +16,18 @@ const EventInfo = ({ response }: Props) => {
   });
 
   return (
-    <>
-      <div className="flex flex-row justify-between items-center">
-        <h2 className="text-[18px] font-500">이벤트 정보</h2>
-        <BlueLink href={`/events/${response.shuttleRoute.event?.eventId}`}>
-          이벤트 바로가기
+    <article className="flex flex-col">
+      <Heading.h2>
+        행사 정보{' '}
+        <BlueLink
+          href={`/events/${response.shuttleRoute.event?.eventId}`}
+          className="ml-auto text-14"
+        >
+          행사 바로가기
         </BlueLink>
-      </div>
+      </Heading.h2>
       <VerticalTable table={table} />
-    </>
+    </article>
   );
 };
 

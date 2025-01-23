@@ -9,6 +9,7 @@ import JSONViewer from '@/components/json/JSONViewer';
 import useTable from '@/hooks/useTable';
 import BaseTable from '@/components/table/BaseTable';
 import { useGetEvent } from '@/services/shuttleOperation.service';
+import Heading from '@/components/text/Heading';
 
 interface Props {
   params: { eventId: string };
@@ -36,23 +37,19 @@ const Page = ({ params: { eventId } }: Props) => {
 
   return (
     <main className="flex size-full flex-col gap-16 bg-white ">
-      <h1 className="text-[32px] font-500">
-        <b>{event?.eventName}</b> 행사의 상세 정보
-      </h1>
-      <div className="flex flex-col gap-16">
-        <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
-          <JSONViewer value={event} />
-          <BlueLink href={`${eventId}/edit`}>수정</BlueLink>
-          <BlueLink href={`/demands/${eventId}`}>
-            이 행사의 수요 조사 조회
-          </BlueLink>
-        </div>
-        <EventViewer event={event} />
-        <header className="flex flex-row justify-between pt-32  ">
-          <h2 className="text-[24px] font-500">행사 일자 목록</h2>
-        </header>
-        <BaseTable table={table} />
+      <Heading>행사 상세 정보</Heading>
+      <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
+        <JSONViewer value={event} />
+        <BlueLink href={`${eventId}/edit`}>수정</BlueLink>
+        <BlueLink href={`/demands/${eventId}`}>
+          이 행사의 수요 조사 조회
+        </BlueLink>
       </div>
+      <EventViewer event={event} />
+      <section className="flex flex-col">
+        <Heading.h2>일자별 행사</Heading.h2>
+        <BaseTable table={table} />
+      </section>
     </main>
   );
 };

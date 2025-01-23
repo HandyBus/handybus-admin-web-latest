@@ -12,7 +12,7 @@ const Stringifier = Object.freeze({
   handyStatus(v: HandyStatus) {
     switch (v) {
       case 'NOT_SUPPORTED':
-        return '지원하지 않음';
+        return '미지원';
       case 'SUPPORTED':
         return '지원함';
       case 'DECLINED':
@@ -48,13 +48,13 @@ const Stringifier = Object.freeze({
   eventStatus(v: EventStatus) {
     switch (v) {
       case 'INACTIVE':
-        return '행사 비활성';
+        return '비활성';
       case 'OPEN':
-        return '행사 수요조사 모집 중';
+        return '수요조사 모집 중';
       case 'CLOSED':
-        return '행사 수요조사 모집 종료';
+        return '수요조사 모집 종료';
       case 'ENDED':
-        return '행사 종료';
+        return '종료';
     }
   },
   dailyEventStatus(v: EventStatus) {
@@ -116,7 +116,7 @@ const Stringifier = Object.freeze({
   tripType(v: TripType) {
     switch (v) {
       case 'TO_DESTINATION':
-        return '콘서트행';
+        return '목적지행';
       case 'FROM_DESTINATION':
         return '귀가행';
       case 'ROUND_TRIP':

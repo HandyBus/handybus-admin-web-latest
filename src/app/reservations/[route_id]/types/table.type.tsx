@@ -78,16 +78,13 @@ export const reservationColumns = [
     header: '핸디 지원 유무',
     cell: (info) => {
       const handyStatus = Stringifier.handyStatus(info.getValue());
-      switch (handyStatus) {
-        case '승인됨':
-          return <b className="text-green-500">승인됨</b>;
-        case '거절됨':
-          return <b className="text-red-500">거절됨</b>;
-        case '지원하지 않음':
-          return <b className="text-grey-500">미지원</b>;
-        case '지원함':
-          return <b className="text-grey-900">지원</b>;
-      }
+      const style = {
+        승인됨: 'text-green-500',
+        거절됨: 'text-red-500',
+        미지원: 'text-grey-500',
+        지원함: 'text-grey-900',
+      };
+      return <b className={style[handyStatus]}>{handyStatus}</b>;
     },
   }),
   reservationColumnHelper.display({

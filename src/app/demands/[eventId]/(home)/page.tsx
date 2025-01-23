@@ -11,16 +11,14 @@ import {
   useGetEvent,
 } from '@/services/shuttleOperation.service';
 import { EventDailyShuttlesInEventsViewEntity } from '@/types/event.type';
+import Heading from '@/components/text/Heading';
+import Callout from '@/components/text/Callout';
+import List from '@/components/text/List';
 
 interface Props {
   params: { eventId: number };
 }
 
-/**
- *
- * @param param0
- * @returns
- */
 const Page = ({ params: { eventId } }: Props) => {
   const { data: event, isPending, isError } = useGetEvent(eventId);
 
@@ -28,26 +26,34 @@ const Page = ({ params: { eventId } }: Props) => {
   if (isError) return <div>Failed to load event</div>;
 
   return (
-    <div className="flex flex-col gap-16">
-      <h1 className="text-[32px] font-500">
-        <BlueLink href={`/events/${event.eventId}`}>{event.eventName}</BlueLink>
-        의 셔틀 수요
-      </h1>
-      {event.dailyEvents.length === 0 ? (
-        <div>
-          이 행사에 등록된 일정이 없습니다. 이 상황은 일반적이지 않습니다.
-          어드민 개발팀에 문의해주세요.
-        </div>
-      ) : (
-        event.dailyEvents.map((dailyEvent) => (
-          <TablePerDailyEvent
-            key={dailyEvent.dailyEventId}
-            eventId={eventId}
-            dailyEvent={dailyEvent}
-          />
-        ))
-      )}
-    </div>
+    <main>
+      <Heading>일자별 행사 수요 조회</Heading>
+      <Callout>
+        <List>
+          <List.item title="행사명">
+            <BlueLink href={`/events/${event.eventId}`}>
+              {event.eventName}
+            </BlueLink>
+          </List.item>
+        </List>
+      </Callout>
+      <section className="flex flex-col gap-16 pt-20">
+        {event.dailyEvents.length === 0 ? (
+          <div>
+            이 행사에 등록된 일정이 없습니다. 이 상황은 일반적이지 않습니다.
+            어드민 개발팀에 문의해주세요.
+          </div>
+        ) : (
+          event.dailyEvents.map((dailyEvent) => (
+            <TablePerDailyEvent
+              key={dailyEvent.dailyEventId}
+              eventId={eventId}
+              dailyEvent={dailyEvent}
+            />
+          ))
+        )}
+      </section>
+    </main>
   );
 };
 
@@ -76,15 +82,16 @@ const TablePerDailyEvent = ({ eventId, dailyEvent }: SubProps) => {
   if (isError) return <div>Failed to load demand</div>;
 
   return (
-    <article>
-      <header className="flex flex-row items-center gap-4">
-        <h1 className="text-[24px] font-500">
-          {formatDateString(dailyEvent.date, 'date')} 일자 수요
-        </h1>
-        <BlueLink href={`./${eventId}/dates/${dailyEvent.dailyEventId}`}>
-          자세히
+    <article className="flex flex-col">
+      <Heading.h2 className="flex items-baseline gap-20">
+        {formatDateString(dailyEvent.date, 'date')} 일자 수요
+        <BlueLink
+          href={`./${eventId}/dates/${dailyEvent.dailyEventId}`}
+          className="text-14"
+        >
+          {formatDateString(dailyEvent.date, 'date')}
         </BlueLink>
-      </header>
+      </Heading.h2>
       {data.length === 0 ? (
         '이 날짜에 해당하는 수요가 현재 없습니다.'
       ) : (

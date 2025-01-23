@@ -1,5 +1,6 @@
 import { columns as reservationMetaColumns } from '../types/reservationMeta.type';
 import VerticalTable from '@/components/table/VerticalTable';
+import Heading from '@/components/text/Heading';
 import useTable from '@/hooks/useTable';
 import { ReservationViewEntity } from '@/types/reservation.type';
 
@@ -14,10 +15,10 @@ const ReservationMetaInfo = ({ response }: Props) => {
   });
 
   return (
-    <>
-      <h2 className="text-[18px] font-500">예약 정보</h2>
+    <article className="flex flex-col">
+      <Heading.h2>예약 정보</Heading.h2>
       <VerticalTable table={table} />
-    </>
+    </article>
   );
 };
 

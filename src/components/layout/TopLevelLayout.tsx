@@ -4,11 +4,11 @@ import type { ReactNode } from 'react';
 
 const TopLevelLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
   return (
-    <div className="h-dvh w-dvw">
+    <div className="flex h-dvh w-dvw flex-col">
       <Nav />
-      <div className="h-full w-full overflow-scroll bg-white p-32">
+      <div className="flex grow flex-col overflow-scroll bg-white p-32">
         <Breadcrumbs />
-        <div>{children}</div>
+        {children}
       </div>
     </div>
   );

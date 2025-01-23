@@ -11,6 +11,7 @@ import useTable from '@/hooks/useTable';
 import BaseTable from '@/components/table/BaseTable';
 import { useGetCoupons } from '@/services/billing.service';
 import { AdminCouponsResponseModel } from '@/types/coupon.type';
+import Heading from '@/components/text/Heading';
 
 const FILTER_LIST = ['전체', '진행중', '대기', '만료'] as const;
 type FilterType = (typeof FILTER_LIST)[number];
@@ -71,11 +72,13 @@ const Page = ({ searchParams }: Props) => {
   });
 
   return (
-    <main className="flex h-full w-full flex-col gap-16 bg-white">
-      <header className="flex items-center justify-between">
-        <h1 className="text-[32px] font-500">쿠폰 관리</h1>
-        <BlueLink href="/coupons/new">쿠폰 추가</BlueLink>
-      </header>
+    <main>
+      <Heading className="flex items-baseline gap-20">
+        쿠폰 대시보드
+        <BlueLink href="/coupons/new" className="text-14">
+          추가하기
+        </BlueLink>
+      </Heading>
       <nav className="flex gap-40 text-20 font-600">
         {FILTER_LIST.map((filter) => (
           <Link
@@ -99,7 +102,7 @@ const Page = ({ searchParams }: Props) => {
           placeholder="쿠폰 이름으로 검색"
         />
       </div>
-      <section>
+      <section className="flex flex-col">
         {isFetching ? (
           <div>
             <Loader2Icon className="animate-spin" size={64} />

@@ -10,6 +10,7 @@ import PaymentInfo from './components/PaymentInfo';
 import RouteInfo from './components/RouteInfo';
 import RouteHubInfo from './components/RouteHubInfo';
 import { useGetReservation } from '@/services/shuttleOperation.service';
+import Heading from '@/components/text/Heading';
 
 interface Props {
   params: {
@@ -26,27 +27,27 @@ const Page = ({ params: { reservation_id } }: Props) => {
   if (isError) return <p>에러 : {error.message}</p>;
 
   return (
-    <main className="flex h-full w-full flex-col gap-16 bg-white">
-      <header className="flex flex-row justify-between">
-        <h1 className="text-[32px] font-500">예약 상세보기</h1>
-      </header>
+    <main>
+      <Heading>예약 상세 정보</Heading>
       <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
         <JSONViewer value={data} />
         <EditHandyStatusDialog response={data.reservation} />
       </div>
-      <ReservationMetaInfo response={data.reservation} />
-      <AccountInfo response={data.reservation} />
-      <PassengersInfo response={data.reservation} />
-      <EventInfo response={data.reservation} />
-      <RouteInfo response={data.reservation} />
-      <RouteHubInfo response={data.reservation} />
-      <PaymentInfo
-        response={{
-          reservation: data.reservation,
-          payment: data.payment,
-          tossPayments: data.tossPayments,
-        }}
-      />
+      <section className="flex w-full flex-col gap-16 py-20">
+        <ReservationMetaInfo response={data.reservation} />
+        <AccountInfo response={data.reservation} />
+        <PassengersInfo response={data.reservation} />
+        <EventInfo response={data.reservation} />
+        <RouteInfo response={data.reservation} />
+        <RouteHubInfo response={data.reservation} />
+        <PaymentInfo
+          response={{
+            reservation: data.reservation,
+            payment: data.payment,
+            tossPayments: data.tossPayments,
+          }}
+        />
+      </section>
     </main>
   );
 };

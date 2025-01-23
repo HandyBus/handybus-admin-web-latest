@@ -4,7 +4,7 @@ import LogoIcon from 'public/icons/logo.svg';
 
 const Nav = () => {
   return (
-    <nav className="flex bg-grey-800 gap-28 h-64 border-b border-grey-200 items-center px-28">
+    <nav className="sticky top-0 flex h-64 shrink-0 items-center gap-28 border-b border-grey-200 bg-grey-800 px-28">
       <Link href="/">
         <LogoIcon width={40} height={40} viewBox="0 0 145 144" />
       </Link>
