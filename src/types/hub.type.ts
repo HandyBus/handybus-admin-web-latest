@@ -8,7 +8,7 @@ export const RouteHubSchema = z.object({
   sequence: z.number().int().positive(),
   regionId: z.number().int(),
   regionHubId: z.number().int(),
-  arrivalTime: z.coerce.date(),
+  arrivalTime: z.string(),
 });
 export type RouteHubType = z.infer<typeof RouteHubSchema>;
 

@@ -5,7 +5,7 @@ import { type CreateShuttleRouteForm } from './form.type';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/input/Input';
 import { RegionHubInputSelfContained } from '@/components/input/HubInput';
-import { parseDateString } from '@/utils/date.util';
+import Guide from '@/components/guide/Guide';
 import { useMemo } from 'react';
 import DateInput from '@/components/input/DateInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
@@ -16,7 +16,6 @@ import {
 } from '@/services/shuttleOperation.service';
 import { EventsViewEntity } from '@/types/event.type';
 import { conform } from './conform.util';
-import Guide from '@/components/guide/Guide';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -33,18 +32,17 @@ const Page = ({ params }: Props) => {
   } = useGetEvent(Number(eventId));
 
   const defaultDate = useMemo(() => {
-    return parseDateString(
-      event?.dailyEvents.find((de) => de.dailyEventId === Number(dailyEventId))
-        ?.date,
-    );
+    return event?.dailyEvents.find(
+      (de) => de.dailyEventId === Number(dailyEventId),
+    )?.date;
   }, [event, dailyEventId]);
 
   const defaultValues: CreateShuttleRouteForm = useMemo(
     () => ({
       name: '',
       maxPassengerCount: 0,
-      earlybirdDeadline: defaultDate,
-      reservationDeadline: defaultDate,
+      earlybirdDeadline: defaultDate ?? '',
+      reservationDeadline: defaultDate ?? '',
       hasEarlybird: false,
       earlybirdPrice: {
         toDestination: 1000000,
@@ -59,21 +57,21 @@ const Page = ({ params }: Props) => {
       shuttleRouteHubsFromDestination: [
         {
           regionHubId: null,
-          arrivalTime: defaultDate,
+          arrivalTime: defaultDate ?? '',
         },
         {
           regionHubId: null,
-          arrivalTime: defaultDate,
+          arrivalTime: defaultDate ?? '',
         },
       ],
       shuttleRouteHubsToDestination: [
         {
           regionHubId: null,
-          arrivalTime: defaultDate,
+          arrivalTime: defaultDate ?? '',
         },
         {
           regionHubId: null,
-          arrivalTime: defaultDate,
+          arrivalTime: defaultDate ?? '',
         },
       ],
     }),
@@ -88,7 +86,7 @@ const Page = ({ params }: Props) => {
       event={event}
       params={params}
       defaultValues={defaultValues}
-      defaultDate={defaultDate}
+      defaultDate={defaultDate ?? ''}
     />
   );
 };
@@ -98,7 +96,7 @@ export default Page;
 interface FormProps extends Props {
   event: EventsViewEntity;
   defaultValues: CreateShuttleRouteForm;
-  defaultDate: Date;
+  defaultDate: string;
 }
 
 const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
@@ -406,7 +404,10 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         `shuttleRouteHubsToDestination.${index}.arrivalTime` as const
                       }
                       render={({ field: { onChange, value } }) => (
-                        <DateTimeInput value={value} setValue={onChange} />
+                        <DateTimeInput
+                          value={new Date(value)}
+                          setValue={onChange}
+                        />
                       )}
                     />
                   </label>
@@ -512,7 +513,10 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         `shuttleRouteHubsFromDestination.${index}.arrivalTime` as const
                       }
                       render={({ field: { onChange, value } }) => (
-                        <DateTimeInput value={value} setValue={onChange} />
+                        <DateTimeInput
+                          value={new Date(value)}
+                          setValue={onChange}
+                        />
                       )}
                     />
                   </label>

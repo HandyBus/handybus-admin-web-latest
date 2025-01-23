@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const CreateShuttleRouteFormSchema = z.object({
   name: z.string(),
-  reservationDeadline: z.coerce.date(),
+  reservationDeadline: z.string(),
   hasEarlybird: z.boolean(),
   earlybirdPrice: z.object({
     toDestination: z.number(),
@@ -14,18 +14,18 @@ export const CreateShuttleRouteFormSchema = z.object({
     fromDestination: z.number(),
     roundTrip: z.number(),
   }),
-  earlybirdDeadline: z.coerce.date(),
+  earlybirdDeadline: z.string(),
   maxPassengerCount: z.number(),
   shuttleRouteHubsToDestination: z.array(
     z.object({
       regionHubId: z.number().nullable(),
-      arrivalTime: z.coerce.date(),
+      arrivalTime: z.string(),
     }),
   ),
   shuttleRouteHubsFromDestination: z.array(
     z.object({
       regionHubId: z.number().nullable(),
-      arrivalTime: z.coerce.date(),
+      arrivalTime: z.string(),
     }),
   ),
 });
