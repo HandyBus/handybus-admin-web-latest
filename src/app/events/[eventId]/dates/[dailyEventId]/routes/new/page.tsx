@@ -8,7 +8,6 @@ import { RegionHubInputSelfContained } from '@/components/input/HubInput';
 import { useMemo } from 'react';
 import DateInput from '@/components/input/DateInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
-import { twMerge } from 'tailwind-merge';
 import {
   useGetEvent,
   usePostShuttleRoute,
@@ -16,6 +15,7 @@ import {
 import { EventsViewEntity } from '@/types/event.type';
 import { conform } from './conform.util';
 import Heading from '@/components/text/Heading';
+import FormContainer from '@/components/form/Form';
 import Callout from '@/components/text/Callout';
 
 interface Props {
@@ -176,20 +176,18 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   return (
     <main>
       <Heading>노선 추가하기</Heading>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-16 space-y-4 rounded-lg bg-grey-50 p-16  "
-      >
-        <div className="space-y-2">
-          <label htmlFor="name" className="block">
-            경로 이름
-          </label>
-          <Input {...register('name')} />
+      <FormContainer onSubmit={handleSubmit(onSubmit)}>
+        <FormContainer.section>
+          <FormContainer.label htmlFor="name" required>
+            노선 이름
+          </FormContainer.label>
+          <Input {...register('name')} placeholder="노선 이름을 입력해주세요" />
           {errors.name && <p className="text-red-500">{errors.name.message}</p>}
-        </div>
-
-        <label htmlFor="maxPassengerCount" className="block">
-          최대 승객 수
+        </FormContainer.section>
+        <FormContainer.section>
+          <FormContainer.label htmlFor="maxPassengerCount" required>
+            최대 승객 수
+          </FormContainer.label>
           <Input
             type="number"
             {...register('maxPassengerCount', { valueAsNumber: true })}
@@ -197,206 +195,203 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
           {errors.maxPassengerCount && (
             <p className="text-red-500">{errors.maxPassengerCount.message}</p>
           )}
-        </label>
-
-        <div className="flex flex-row items-center gap-8">
-          <Controller
-            control={control}
-            name="reservationDeadline"
-            render={({ field: { onChange, value } }) => (
-              <div className="space-y-2">
-                <label htmlFor="reservationDeadline" className="block">
-                  예약 마감일
-                </label>
-                <DateInput value={value} setValue={onChange} />
-                {errors.reservationDeadline && (
-                  <p className="text-red-500">
-                    {errors.reservationDeadline.message}
-                  </p>
-                )}
-              </div>
-            )}
-          />
-
-          <div className="space-y-2">
-            <label
-              htmlFor="hasEarlybird"
-              className="flex flex-row items-center justify-start"
-            >
+        </FormContainer.section>
+        <FormContainer.section>
+          <div className="flex items-baseline gap-20">
+            <FormContainer.label required>가격</FormContainer.label>
+            <div className="flex gap-8">
+              <span className="text-14 text-blue-600">얼리버드 적용</span>
               <Input
                 id="hasEarlybird"
                 type="checkbox"
                 className="w-fit"
                 {...register('hasEarlybird')}
               />
-              얼리버드 예약 마감일
-            </label>
-
-            <Controller
-              control={control}
-              name="earlybirdDeadline"
-              render={({ field: { onChange, value } }) => (
-                <>
-                  <DateInput
-                    disabled={!watchHasEarlybird}
-                    value={value}
-                    setValue={onChange}
-                  />
-                  {errors.reservationDeadline && (
-                    <p className="text-red-500">
-                      {errors.reservationDeadline.message}
-                    </p>
-                  )}
-                </>
-              )}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-row items-center gap-8">
-          {/* Price inputs would need to be implemented as arrays */}
-          <div className="space-y-2">
-            <h3>정상가격</h3>
-
-            <div className="flex flex-col items-start gap-8">
-              <label className="break-keep">
-                목적지행 {formatted(watchRegularPrice.toDestination)}원
-              </label>
-              <Input
-                type="number"
-                {...register('regularPrice.toDestination', {
-                  valueAsNumber: true,
-                })}
-              />
-            </div>
-
-            <div className="flex flex-col items-start gap-8">
-              <label className="break-keep">
-                귀가행 {formatted(watchRegularPrice.fromDestination)}원
-              </label>
-              <Input
-                type="number"
-                {...register('regularPrice.fromDestination', {
-                  valueAsNumber: true,
-                })}
-              />
-            </div>
-
-            <div className="flex flex-col items-start gap-8">
-              <label className="break-keep">
-                왕복 {formatted(watchRegularPrice.roundTrip)}원
-              </label>
-              <Input
-                type="number"
-                {...register('regularPrice.roundTrip', { valueAsNumber: true })}
-              />
             </div>
           </div>
-
-          <div className="space-y-2">
-            <h3>얼리버드 가격</h3>
-
-            <div className="flex flex-col items-start gap-8">
-              <label className="break-keep">
-                목적지행 {formatted(watchEarlybirdPrice.toDestination)}원
-                {discountPercent(
-                  watchRegularPrice.toDestination,
-                  watchEarlybirdPrice.toDestination,
-                )}
-              </label>
-              <Input
-                type="number"
-                {...register('earlybirdPrice.toDestination', {
-                  valueAsNumber: true,
-                })}
-                disabled={!watchHasEarlybird}
-              />
-            </div>
-
-            <div className="flex flex-col items-start gap-8">
-              <label className="break-keep">
-                귀가행 {formatted(watchEarlybirdPrice.fromDestination)}원
-                {discountPercent(
-                  watchRegularPrice.fromDestination,
-                  watchEarlybirdPrice.fromDestination,
-                )}
-              </label>
-              <Input
-                type="number"
-                {...register('earlybirdPrice.fromDestination', {
-                  valueAsNumber: true,
-                })}
-                disabled={!watchHasEarlybird}
-              />
-            </div>
-
-            <div className="flex flex-col items-start gap-8">
-              <label className="break-keep">
-                왕복 {formatted(watchEarlybirdPrice.roundTrip)}원
-                {discountPercent(
-                  watchRegularPrice.roundTrip,
-                  watchEarlybirdPrice.roundTrip,
-                )}
-              </label>
-              <Input
-                type="number"
-                {...register('earlybirdPrice.roundTrip', {
-                  valueAsNumber: true,
-                })}
-                disabled={!watchHasEarlybird}
-              />
-            </div>
-          </div>
-        </div>
-
-        <Callout>
-          주의! <br />-{' '}
-          <span className="text-red-700">거점지들의 시간 순서에 유의</span>
-          해주세요. 시간 순서는 아래와 같습니다. <br />
-          거점지 → 거점지 → ··· → 목적지 →→→ 출발지 → 거점지 → ··· → 거점지{' '}
-          <br /> <br />- 목적지행의 거점지들은 귀가행의 거점지들보다 시각이
-          이전이어야 합니다. <br />- 시간 순서가 맞지 않을 경우 노선 수정이
-          완료되지 않습니다.
-        </Callout>
-
-        <div className="space-y-2">
-          <h3>경유지 목적지행</h3>
-          <button
-            type="button"
-            onClick={() =>
-              prependToDestHub({
-                regionHubId: 0,
-                arrivalTime: defaultDate,
-              })
-            }
-            className="px-2 py-1 text-sm rounded text-blue-500"
-          >
-            추가
-          </button>
-          <div className="flex flex-col gap-20">
-            {toDestHubFields.map((field, index) => {
-              return (
-                <div key={field.id}>
-                  <div
-                    className={twMerge(
-                      'flex items-center gap-20',
-                      index === toDestHubFields.length - 1
-                        ? 'rounded-lg bg-primary-200'
-                        : '',
-                    )}
-                  >
-                    <label className="flex flex-row ">
-                      {index === toDestHubFields.length - 1 ? (
-                        <>
-                          목적지 근처
-                          <br />
-                          도착 거점지
-                        </>
-                      ) : (
-                        <>경유 거점지</>
-                      )}
+          <article className="grid w-full grid-cols-2 gap-12">
+            <div className="flex flex-col gap-8 rounded-[4px] p-8">
+              <Heading.h5 backgroundColor="yellow">일반 가격</Heading.h5>
+              <Controller
+                control={control}
+                name="reservationDeadline"
+                render={({ field: { onChange, value } }) => (
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="reservationDeadline"
+                      className="block text-16 font-500"
+                    >
+                      예약 마감일
                     </label>
-                    <div className="flex flex-row">
+                    <DateInput value={value} setValue={onChange} />
+                    {errors.reservationDeadline && (
+                      <p className="text-red-500">
+                        {errors.reservationDeadline.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+              {/* Price inputs would need to be implemented as arrays */}
+              <div className="flex flex-col gap-12">
+                <div className="flex flex-col items-start gap-8">
+                  <label className="block break-keep text-16 font-500">
+                    목적지행
+                  </label>
+                  <Input
+                    {...register('regularPrice.toDestination', {
+                      valueAsNumber: true,
+                    })}
+                  />
+                </div>
+                <div className="flex flex-col items-start gap-8">
+                  <label className="block break-keep text-16 font-500">
+                    귀가행
+                  </label>
+                  <Input
+                    type="number"
+                    {...register('regularPrice.fromDestination', {
+                      valueAsNumber: true,
+                    })}
+                  />
+                </div>
+                <div className="flex flex-col items-start gap-8">
+                  <label className="block break-keep text-16 font-500">
+                    왕복
+                  </label>
+                  <Input
+                    type="number"
+                    {...register('regularPrice.roundTrip', {
+                      valueAsNumber: true,
+                    })}
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              className={`flex flex-col gap-8 rounded-[4px] p-8 ${watchHasEarlybird ? '' : 'bg-notion-grey'}`}
+            >
+              <Heading.h5 backgroundColor="blue">얼리버드 가격</Heading.h5>
+              <label className="block text-16 font-500">예약 마감일</label>
+              <Controller
+                control={control}
+                name="earlybirdDeadline"
+                render={({ field: { onChange, value } }) => (
+                  <>
+                    <DateInput
+                      disabled={!watchHasEarlybird}
+                      value={value}
+                      setValue={onChange}
+                    />
+                    {errors.reservationDeadline && (
+                      <p className="text-red-500">
+                        {errors.reservationDeadline.message}
+                      </p>
+                    )}
+                  </>
+                )}
+              />
+              <div className="flex flex-col gap-12">
+                <div className="flex flex-col items-start gap-8">
+                  <label className="block break-keep text-16 font-500">
+                    목적지행
+                    <span className="ml-4 text-14 text-blue-500">
+                      {discountPercent(
+                        watchRegularPrice.toDestination,
+                        watchEarlybirdPrice.toDestination,
+                      )}
+                    </span>
+                  </label>
+                  <Input
+                    type="number"
+                    {...register('earlybirdPrice.toDestination', {
+                      valueAsNumber: true,
+                    })}
+                    disabled={!watchHasEarlybird}
+                  />
+                </div>
+
+                <div className="flex flex-col items-start gap-8">
+                  <label className="block break-keep text-16 font-500">
+                    귀가행
+                    <span className="ml-4 text-14 text-blue-500">
+                      {discountPercent(
+                        watchRegularPrice.fromDestination,
+                        watchEarlybirdPrice.fromDestination,
+                      )}
+                    </span>
+                  </label>
+                  <Input
+                    type="number"
+                    {...register('earlybirdPrice.fromDestination', {
+                      valueAsNumber: true,
+                    })}
+                    disabled={!watchHasEarlybird}
+                  />
+                </div>
+
+                <div className="flex flex-col items-start gap-8">
+                  <label className="block break-keep text-16 font-500">
+                    왕복
+                    <span className="ml-4 text-14 text-blue-500">
+                      {discountPercent(
+                        watchRegularPrice.roundTrip,
+                        watchEarlybirdPrice.roundTrip,
+                      )}
+                    </span>
+                  </label>
+                  <Input
+                    type="number"
+                    {...register('earlybirdPrice.roundTrip', {
+                      valueAsNumber: true,
+                    })}
+                    disabled={!watchHasEarlybird}
+                  />
+                </div>
+              </div>
+            </div>
+          </article>
+        </FormContainer.section>
+
+        <FormContainer.section>
+          <FormContainer.label>경유지</FormContainer.label>
+          <Callout className="text-14">
+            초록색으로 표시된 경유지는 행사 장소 근처 경유지에 해당합니다. (ex.
+            인스파이어 아레나)
+            <br />
+            반드시 목적지행과 귀가행 마다 두개 이상의 경유지를 입력해주세요.
+            <br />
+            경유지는 시간순서대로 입력해주세요.
+            <br />
+            경유지는 거점지들 중 선택 가능합니다.
+          </Callout>
+          <section className="pb-12">
+            <Heading.h5 backgroundColor="yellow">
+              목적지행
+              <button
+                type="button"
+                onClick={() =>
+                  prependToDestHub({
+                    regionHubId: 0,
+                    arrivalTime: defaultDate,
+                  })
+                }
+                className="ml-8 text-14 text-blue-500"
+              >
+                추가
+              </button>
+            </Heading.h5>
+            <ul className="flex flex-col gap-8">
+              {toDestHubFields.map((field, index) => {
+                return (
+                  <li
+                    key={field.id}
+                    className={`flex justify-between rounded-[6px] p-12 ${index === toDestHubFields.length - 1 ? 'bg-notion-blue' : 'bg-notion-grey/50'}`}
+                  >
+                    <h5 className="my-auto text-16 font-500">{index + 1}</h5>
+                    <div className="w-[1px] rounded-full bg-grey-100" />
+                    <div className="flex flex-col">
+                      <label className="text-16 font-500">거점지</label>
                       <Controller
                         control={control}
                         name={
@@ -410,9 +405,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         )}
                       />
                     </div>
-
-                    <label>
-                      시간
+                    <div className="w-[1px] rounded-full bg-grey-100" />
+                    <div className="flex flex-col gap-12">
+                      <label className="text-16 font-500">시간</label>
                       <Controller
                         control={control}
                         name={
@@ -425,85 +420,76 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                           />
                         )}
                       />
-                    </label>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        index > 0 && swapToDestHub(index, index - 1)
-                      }
-                      disabled={
-                        index === 0 || index === toDestHubFields.length - 1
-                      }
-                      className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-                    >
-                      위로
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        index < toDestHubFields.length - 1 &&
-                        swapToDestHub(index, index + 1)
-                      }
-                      disabled={
-                        index === toDestHubFields.length - 1 ||
-                        index === toDestHubFields.length - 2
-                      }
-                      className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-                    >
-                      아래로
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => removeToDestHub(index)}
-                      className="text-red-500 disabled:opacity-30"
-                      disabled={index === toDestHubFields.length - 1}
-                    >
-                      삭제
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <h3>경유지 귀가행</h3>
-          <button
-            type="button"
-            onClick={() =>
-              appendFromDestHub({
-                regionHubId: 0,
-                arrivalTime: defaultDate,
-              })
-            }
-            className="px-2 py-1 text-sm rounded text-blue-500"
-          >
-            추가
-          </button>
-          <div className="flex flex-col gap-20">
-            {fromDestHubFields.map((field, index) => {
-              return (
-                <div key={field.id}>
-                  <div
-                    className={twMerge(
-                      'flex items-center gap-20',
-                      index === 0 ? 'rounded-lg bg-primary-200' : '',
-                    )}
+                    </div>
+                    <div className="w-[1px] rounded-full bg-grey-100" />
+                    <div className="flex items-center gap-8">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          index > 0 && swapToDestHub(index, index - 1)
+                        }
+                        disabled={
+                          index === 0 || index === toDestHubFields.length - 1
+                        }
+                        className="hover:text-gray-700 text-grey-500 disabled:opacity-30"
+                      >
+                        위로
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          index < toDestHubFields.length - 1 &&
+                          swapToDestHub(index, index + 1)
+                        }
+                        disabled={
+                          index === toDestHubFields.length - 1 ||
+                          index === toDestHubFields.length - 2
+                        }
+                        className="hover:text-gray-700 text-grey-500 disabled:opacity-30"
+                      >
+                        아래로
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeToDestHub(index)}
+                        className="text-red-500 disabled:opacity-30"
+                        disabled={index === toDestHubFields.length - 1}
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+          <section>
+            <Heading.h5 backgroundColor="green">
+              귀가행
+              <button
+                type="button"
+                onClick={() =>
+                  appendFromDestHub({
+                    regionHubId: 0,
+                    arrivalTime: defaultDate,
+                  })
+                }
+                className="ml-8 text-14 text-blue-500"
+              >
+                추가
+              </button>
+            </Heading.h5>
+            <ul className="flex flex-col gap-8">
+              {fromDestHubFields.map((field, index) => {
+                return (
+                  <li
+                    key={field.id}
+                    className={`flex justify-between rounded-[6px] p-12 ${index === 0 ? 'bg-notion-blue' : 'bg-notion-grey/50'}`}
                   >
-                    <label className="flex flex-row ">
-                      {index === 0 ? (
-                        <>
-                          목적지 근처
-                          <br />
-                          귀가 출발지
-                        </>
-                      ) : (
-                        <>경유 거점지</>
-                      )}
-                    </label>
-                    <div className="flex flex-row">
+                    <h5 className="my-auto text-16 font-500">{index + 1}</h5>
+                    <div className="w-[1px] rounded-full bg-grey-100" />
+                    <div className="flex flex-col">
+                      <label className="text-16 font-500">거점지</label>
                       <Controller
                         control={control}
                         name={
@@ -517,9 +503,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         )}
                       />
                     </div>
-
-                    <label>
-                      시간
+                    <div className="w-[1px] rounded-full bg-grey-100" />
+                    <div className="flex flex-col gap-12">
+                      <label className="text-16 font-500">시간</label>
                       <Controller
                         control={control}
                         name={
@@ -532,60 +518,55 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                           />
                         )}
                       />
-                    </label>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        index > 0 && swapFromDestHub(index, index - 1)
-                      }
-                      disabled={index === 0 || index === 1}
-                      className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-                    >
-                      위로
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        index < fromDestHubFields.length - 1 &&
-                        swapFromDestHub(index, index + 1)
-                      }
-                      disabled={
-                        index === fromDestHubFields.length - 1 || index === 0
-                      }
-                      className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-                    >
-                      아래로
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => removeFromDestHub(index)}
-                      className="text-red-500 disabled:opacity-30"
-                      disabled={index === 0}
-                    >
-                      삭제
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <button type="submit" className="rounded bg-blue-500 p-8 text-white">
-          추가
-        </button>
-      </form>
+                    </div>
+                    <div className="w-[1px] rounded-full bg-grey-100" />
+                    <div className="flex items-center gap-8">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          index > 0 && swapFromDestHub(index, index - 1)
+                        }
+                        disabled={index === 0 || index === 1}
+                        className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
+                      >
+                        위로
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          index < fromDestHubFields.length - 1 &&
+                          swapFromDestHub(index, index + 1)
+                        }
+                        disabled={
+                          index === fromDestHubFields.length - 1 || index === 0
+                        }
+                        className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
+                      >
+                        아래로
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeFromDestHub(index)}
+                        className="text-red-500 disabled:opacity-30"
+                        disabled={index === 0}
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        </FormContainer.section>
+        <FormContainer.submitButton>추가하기</FormContainer.submitButton>
+      </FormContainer>
     </main>
   );
 };
 
-const formatted = (n: number) => {
-  return n.toLocaleString('ko-KR');
-};
-
 const discountPercent = (price: number, priceAfterDiscount: number) => {
   const amount = ((price - priceAfterDiscount) / price) * 100;
-  if (amount < 0) return '(오류: 더 비싼 가격)';
-  return '(-' + amount.toFixed(2) + '%)';
+  if (amount < 0) return '(오류: 얼리버드가 더 비쌉니다.)';
+  return '(' + amount.toFixed(2) + '% 할인)';
 };

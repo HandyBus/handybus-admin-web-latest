@@ -1,4 +1,5 @@
 'use client';
+
 import {
   forwardRef,
   type Ref,
@@ -28,7 +29,7 @@ const NumberInput = (
       value={value}
       onChange={(e) => setValue(Number(e.target.value))}
       onWheel={(e) => e.target instanceof HTMLElement && e.target.blur()}
-      className="w-full p-8 border border-grey-200 rounded-lg focus:outline-blue-400"
+      className="w-full rounded-lg border border-grey-200 p-8 focus:outline-blue-400"
     />
   );
 };
