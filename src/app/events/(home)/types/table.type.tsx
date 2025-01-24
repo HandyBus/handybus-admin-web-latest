@@ -7,6 +7,7 @@ import RegionHubViewerModal from '@/components/viewer/RegionHubViewerModal';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
 import { EventsViewEntity } from '@/types/event.type';
+import { DEFAULT_EVENT_IMAGE } from '@/constants/common';
 
 const columnHelper = createColumnHelper<EventsViewEntity>();
 
@@ -21,7 +22,7 @@ export const columns = [
     header: '포스터',
     cell: (props) => (
       <Image
-        src={props.row.original.eventImageUrl}
+        src={props.row.original.eventImageUrl || DEFAULT_EVENT_IMAGE}
         alt="Event"
         width={40}
         height={55}

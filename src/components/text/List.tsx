@@ -2,10 +2,15 @@ import { ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
+  className?: string;
 }
 
-const List = ({ children }: Props) => {
-  return <article className="grid grid-cols-[72px_1fr]">{children}</article>;
+const List = ({ children, className }: Props) => {
+  return (
+    <article className={`grid grid-cols-[72px_1fr] ${className}`}>
+      {children}
+    </article>
+  );
 };
 
 export default List;

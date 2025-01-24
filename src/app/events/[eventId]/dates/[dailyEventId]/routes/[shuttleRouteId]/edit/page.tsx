@@ -4,7 +4,6 @@ import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/input/Input';
 import { RegionHubInputSelfContained } from '@/components/input/HubInput';
-import Guide from '@/components/guide/Guide';
 import { useMemo } from 'react';
 import DateInput from '@/components/input/DateInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
@@ -15,6 +14,8 @@ import {
 } from '@/services/shuttleOperation.service';
 import { UpdateShuttleRouteRequestFormData } from './form.type';
 import { conform } from './conform.util';
+import Heading from '@/components/text/Heading';
+import Callout from '@/components/text/Callout';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -147,24 +148,28 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
       );
     },
     onError: (error) => {
-      console.error(error);
+      alert(
+        '오류가 발생했습니다.\n' + (error instanceof Error && error.message),
+      );
+    },
+  });
+
+  const onSubmit = async (data: UpdateShuttleRouteRequestFormData) => {
+    if (!confirm('수정하시겠습니까?')) return;
+    try {
+      const shuttleRouteHubs = conform(data);
+      putRoute({
+        eventId: Number(eventId),
+        dailyEventId: Number(dailyEventId),
+        shuttleRouteId: Number(shuttleRouteId),
+        body: shuttleRouteHubs,
+      });
+    } catch (error) {
       if (
         error instanceof Error &&
         error.message === 'arrivalTime is not validated'
       )
         alert('거점지들의 시간순서가 올바르지 않습니다. 확인해주세요.');
-      else alert('오류가 발생했습니다.');
-    },
-  });
-
-  const onSubmit = async (data: UpdateShuttleRouteRequestFormData) => {
-    if (confirm('수정하시겠습니까?')) {
-      putRoute({
-        eventId: Number(eventId),
-        dailyEventId: Number(dailyEventId),
-        shuttleRouteId: Number(shuttleRouteId),
-        body: conform(data),
-      });
     }
   };
 
@@ -173,6 +178,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-16 space-y-4 rounded-lg bg-grey-50 p-16  "
     >
+      <Heading>노선 수정하기</Heading>
       <div className="space-y-2">
         <label htmlFor="name" className="block">
           경로 이름
@@ -210,6 +216,16 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
         )}
       />
 
+      <Callout>
+        주의! <br />-{' '}
+        <span className="text-red-700">거점지들의 시간 순서에 유의</span>
+        해주세요. 시간 순서는 아래와 같습니다. <br />
+        거점지 → 거점지 → ··· → 목적지 →→→ 출발지 → 거점지 → ··· → 거점지 <br />{' '}
+        <br />- 목적지행의 거점지들은 귀가행의 거점지들보다 시각이 이전이어야
+        합니다. <br />- 시간 순서가 맞지 않을 경우 노선 수정이 완료되지
+        않습니다.
+      </Callout>
+
       <div className="space-y-2">
         <h3>경유지 목적지행</h3>
         <button
@@ -224,10 +240,6 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
         >
           추가
         </button>
-        <Guide>
-          주의! 목적지행 경유지 목록의 마지막 경유지는 노선이 행사 장소에 도착할
-          때 운행을 종료하는 최종 거점지가 되어야 합니다. 꼭 설정해주세요.
-        </Guide>
         <div className="flex flex-col gap-20">
           {toDestHubFields.map((field, index) => {
             return (
@@ -339,10 +351,6 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
         >
           추가
         </button>
-        <Guide>
-          주의! 귀가행 경유지 목록의 첫번째 경유지는 노선이 행사 장소에서 출발할
-          때 운행을 시작하는 최초 거점지가 되어야 합니다. 꼭 설정해주세요.
-        </Guide>
         <div className="flex flex-col gap-20">
           {fromDestHubFields.map((field, index) => {
             return (
