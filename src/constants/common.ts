@@ -1,1 +1,1 @@
-export const DEFAULT_EVENT_IMAGE = '/images/default-event.png';
+export const DEFAULT_EVENT_IMAGE = '/default-event.png';
