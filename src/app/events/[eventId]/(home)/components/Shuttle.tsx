@@ -4,6 +4,7 @@ import { formatDateString } from '@/utils/date.util';
 import { EventsViewEntity } from '@/types/event.type';
 import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
+import { DEFAULT_EVENT_IMAGE } from '@/constants/common';
 
 interface Props {
   event: EventsViewEntity;
@@ -14,7 +15,7 @@ const EventViewer = ({ event }: Props) => {
     <Callout>
       <div className="flex flex-row gap-8 p-8">
         <Image
-          src={event.eventImageUrl}
+          src={event.eventImageUrl || DEFAULT_EVENT_IMAGE}
           alt={event.eventName}
           width={80}
           height={110}
