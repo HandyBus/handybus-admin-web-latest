@@ -310,8 +310,16 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     <section className="flex flex-col">
       <Heading.h2 className="flex items-baseline gap-20">
         버스 배차 현황
+        <BlueLink
+          href={`/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/buses/new`}
+          className="text-14"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          버스 추가하기
+        </BlueLink>
         {isEditMode ? (
-          <div className="ml-40 flex items-center gap-4">
+          <div className="flex items-center gap-4">
             <button
               type="button"
               className="rounded-md border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
@@ -337,7 +345,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
         ) : (
           <button
             type="button"
-            className="ml-40 rounded-md border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
+            className="rounded-md border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
             onClick={() => {
               setIsEditMode(true);
               initEditing();

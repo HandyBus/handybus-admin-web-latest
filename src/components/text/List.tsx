@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface Props {
   children: ReactNode;
@@ -7,7 +8,7 @@ interface Props {
 
 const List = ({ children, className }: Props) => {
   return (
-    <article className={`grid grid-cols-[72px_1fr] ${className}`}>
+    <article className={twMerge('grid grid-cols-[72px_1fr]', className)}>
       {children}
     </article>
   );

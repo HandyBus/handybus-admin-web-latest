@@ -79,11 +79,13 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
           </List>
         </Callout>
       )}
-      <div className="flex flex-col gap-16">
-        <header className="flex flex-row justify-between">
-          <h1 className="text-[24px] font-500">노선 목록</h1>
-          <BlueLink href={`${dailyEventId}/routes/new`}>추가하기</BlueLink>
-        </header>
+      <div className="flex flex-col">
+        <Heading.h2 className="flex items-baseline gap-20">
+          노선 목록
+          <BlueLink href={`${dailyEventId}/routes/new`} className="text-14">
+            추가하기
+          </BlueLink>
+        </Heading.h2>
         <BaseTable table={table} />
       </div>
     </main>
