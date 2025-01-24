@@ -7,7 +7,6 @@ import { RegionHubInputSelfContained } from '@/components/input/HubInput';
 import { useMemo } from 'react';
 import DateInput from '@/components/input/DateInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
-import { twMerge } from 'tailwind-merge';
 import {
   useGetShuttleRoute,
   usePutShuttleRoute,
@@ -16,6 +15,7 @@ import { UpdateShuttleRouteRequestFormData } from './form.type';
 import { conform } from './conform.util';
 import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
+import FormContainer from '@/components/form/Form';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -89,11 +89,14 @@ const Page = ({ params }: Props) => {
   if (isRouteError) return <div>Error! {routeError?.message}</div>;
 
   return (
-    <Form
-      params={params}
-      defaultValues={defaultValues}
-      defaultDate={defaultDate}
-    />
+    <main>
+      <Heading>노선 수정하기</Heading>
+      <Form
+        params={params}
+        defaultValues={defaultValues}
+        defaultDate={defaultDate}
+      />
+    </main>
   );
 };
 
@@ -174,21 +177,18 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-16 space-y-4 rounded-lg bg-grey-50 p-16  "
-    >
-      <Heading>노선 수정하기</Heading>
-      <div className="space-y-2">
-        <label htmlFor="name" className="block">
-          경로 이름
-        </label>
+    <FormContainer onSubmit={handleSubmit(onSubmit)}>
+      <FormContainer.section>
+        <FormContainer.label htmlFor="name" required>
+          노선 이름
+        </FormContainer.label>
         <Input {...register('name')} />
         {errors.name && <p className="text-red-500">{errors.name.message}</p>}
-      </div>
-
-      <label htmlFor="maxPassengerCount" className="block">
-        최대 승객 수
+      </FormContainer.section>
+      <FormContainer.section>
+        <FormContainer.label htmlFor="maxPassengerCount" required>
+          최대 승객 수
+        </FormContainer.label>
         <Input
           type="number"
           {...register('maxPassengerCount', { valueAsNumber: true })}
@@ -196,74 +196,66 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
         {errors.maxPassengerCount && (
           <p className="text-red-500">{errors.maxPassengerCount.message}</p>
         )}
-      </label>
+      </FormContainer.section>
+      <FormContainer.section>
+        <FormContainer.label htmlFor="reservationDeadline" required>
+          예약 마감일
+        </FormContainer.label>
+        <Controller
+          control={control}
+          name="reservationDeadline"
+          render={({ field: { onChange, value } }) => (
+            <>
+              <DateInput value={value} setValue={onChange} />
+              {errors.reservationDeadline && (
+                <p className="text-red-500">
+                  {errors.reservationDeadline.message}
+                </p>
+              )}
+            </>
+          )}
+        />
+      </FormContainer.section>
 
-      <Controller
-        control={control}
-        name="reservationDeadline"
-        render={({ field: { onChange, value } }) => (
-          <div className="space-y-2">
-            <label htmlFor="reservationDeadline" className="block">
-              예약 마감일
-            </label>
-            <DateInput value={value} setValue={onChange} />
-            {errors.reservationDeadline && (
-              <p className="text-red-500">
-                {errors.reservationDeadline.message}
-              </p>
-            )}
-          </div>
-        )}
-      />
-
-      <Callout>
-        주의! <br />-{' '}
-        <span className="text-red-700">거점지들의 시간 순서에 유의</span>
-        해주세요. 시간 순서는 아래와 같습니다. <br />
-        거점지 → 거점지 → ··· → 목적지 →→→ 출발지 → 거점지 → ··· → 거점지 <br />{' '}
-        <br />- 목적지행의 거점지들은 귀가행의 거점지들보다 시각이 이전이어야
-        합니다. <br />- 시간 순서가 맞지 않을 경우 노선 수정이 완료되지
-        않습니다.
-      </Callout>
-
-      <div className="space-y-2">
-        <h3>경유지 목적지행</h3>
-        <button
-          type="button"
-          onClick={() =>
-            prependToDestHub({
-              regionHubId: 0,
-              arrivalTime: defaultDate ?? '',
-            })
-          }
-          className="px-2 py-1 text-sm rounded text-blue-500"
-        >
-          추가
-        </button>
-        <div className="flex flex-col gap-20">
-          {toDestHubFields.map((field, index) => {
-            return (
-              <div key={field.id}>
-                <div
-                  className={twMerge(
-                    'flex items-center gap-20',
-                    index === toDestHubFields.length - 1
-                      ? 'rounded-lg bg-primary-200'
-                      : '',
-                  )}
+      <FormContainer.section>
+        <FormContainer.label>경유지</FormContainer.label>
+        <Callout className="text-14">
+          초록색으로 표시된 경유지는 행사 장소 근처 경유지에 해당합니다. (ex.
+          인스파이어 아레나)
+          <br />
+          반드시 목적지행과 귀가행 마다 두개 이상의 경유지를 입력해주세요.
+          <br />
+          경유지는 시간순서대로 입력해주세요.
+          <br />
+          경유지는 거점지들 중 선택 가능합니다.
+        </Callout>
+        <section className="pb-12">
+          <Heading.h5 backgroundColor="yellow">
+            목적지행
+            <button
+              type="button"
+              onClick={() =>
+                prependToDestHub({
+                  regionHubId: 0,
+                  arrivalTime: defaultDate ?? '',
+                })
+              }
+              className="ml-8 text-14 text-blue-500"
+            >
+              추가
+            </button>
+          </Heading.h5>
+          <ul className="flex flex-col gap-20">
+            {toDestHubFields.map((field, index) => {
+              return (
+                <li
+                  key={field.id}
+                  className={`flex justify-between rounded-[6px] p-12 ${index === toDestHubFields.length - 1 ? 'bg-notion-blue' : 'bg-notion-grey/50'}`}
                 >
-                  <label className="flex flex-row ">
-                    {index === toDestHubFields.length - 1 ? (
-                      <>
-                        목적지 근처
-                        <br />
-                        도착 거점지
-                      </>
-                    ) : (
-                      <>경유 거점지</>
-                    )}
-                  </label>
-                  <div className="flex flex-row">
+                  <h5 className="my-auto text-16 font-500">{index + 1}</h5>
+                  <div className="w-[1px] rounded-full bg-grey-100" />
+                  <div className="flex flex-col">
+                    <label className="text-16 font-500">거점지</label>
                     <Controller
                       control={control}
                       name={`shuttleRouteHubsToDestination.${index}` as const}
@@ -281,8 +273,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       )}
                     />
                   </div>
-
-                  <label>
+                  <div className="w-[1px] rounded-full bg-grey-100" />
+                  <div className="flex flex-col gap-12">
+                    <label className="text-16 font-500">시간</label>
                     시간
                     <Controller
                       control={control}
@@ -296,83 +289,77 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         />
                       )}
                     />
-                  </label>
+                  </div>
+                  <div className="w-[1px] rounded-full bg-grey-100" />
+                  <div className="flex items-center gap-8">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        index > 0 && swapToDestHub(index, index - 1)
+                      }
+                      disabled={
+                        index === 0 || index === toDestHubFields.length - 1
+                      }
+                      className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
+                    >
+                      위로
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        index < toDestHubFields.length - 1 &&
+                        swapToDestHub(index, index + 1)
+                      }
+                      disabled={
+                        index === toDestHubFields.length - 1 ||
+                        index === toDestHubFields.length - 2
+                      }
+                      className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
+                    >
+                      아래로
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => removeToDestHub(index)}
+                      className="text-red-500 disabled:opacity-30"
+                      disabled={index === toDestHubFields.length - 1}
+                    >
+                      삭제
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
 
-                  <button
-                    type="button"
-                    onClick={() => index > 0 && swapToDestHub(index, index - 1)}
-                    disabled={
-                      index === 0 || index === toDestHubFields.length - 1
-                    }
-                    className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-                  >
-                    위로
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      index < toDestHubFields.length - 1 &&
-                      swapToDestHub(index, index + 1)
-                    }
-                    disabled={
-                      index === toDestHubFields.length - 1 ||
-                      index === toDestHubFields.length - 2
-                    }
-                    className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-                  >
-                    아래로
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => removeToDestHub(index)}
-                    className="text-red-500 disabled:opacity-30"
-                    disabled={index === toDestHubFields.length - 1}
-                  >
-                    삭제
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <h3>경유지 귀가행</h3>
-        <button
-          type="button"
-          onClick={() =>
-            appendFromDestHub({
-              regionHubId: 0,
-              arrivalTime: defaultDate ?? '',
-            })
-          }
-          className="px-2 py-1 text-sm rounded text-blue-500"
-        >
-          추가
-        </button>
-        <div className="flex flex-col gap-20">
-          {fromDestHubFields.map((field, index) => {
-            return (
-              <div key={field.id}>
-                <div
-                  className={twMerge(
-                    'flex items-center gap-20',
-                    index === 0 ? 'rounded-lg bg-primary-200' : '',
-                  )}
+        <section>
+          <Heading.h5 backgroundColor="yellow">
+            귀가행
+            <button
+              type="button"
+              onClick={() =>
+                appendFromDestHub({
+                  regionHubId: 0,
+                  arrivalTime: defaultDate ?? '',
+                })
+              }
+              className="ml-8 text-14 text-blue-500"
+            >
+              추가
+            </button>
+          </Heading.h5>
+          <ul className="flex flex-col gap-20">
+            {fromDestHubFields.map((field, index) => {
+              return (
+                <li
+                  key={field.id}
+                  className={`flex justify-between rounded-[6px] p-12 ${index === 0 ? 'bg-notion-blue' : 'bg-notion-grey/50'}`}
                 >
-                  <label className="flex flex-row ">
-                    {index === 0 ? (
-                      <>
-                        목적지 근처
-                        <br />
-                        귀가 출발지
-                      </>
-                    ) : (
-                      <>경유 거점지</>
-                    )}
-                  </label>
-                  <div className="flex flex-row">
+                  <h5 className="my-auto text-16 font-500">{index + 1}</h5>
+                  <div className="w-[1px] rounded-full bg-grey-100" />
+                  <div className="flex flex-col">
+                    <label className="text-16 font-500">거점지</label>
                     <Controller
                       control={control}
                       name={`shuttleRouteHubsFromDestination.${index}` as const}
@@ -390,9 +377,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       )}
                     />
                   </div>
-
-                  <label>
-                    시간
+                  <div className="w-[1px] rounded-full bg-grey-100" />
+                  <div className="flex flex-col gap-12">
+                    <label className="text-16 font-500">시간</label>
                     <Controller
                       control={control}
                       name={
@@ -405,49 +392,51 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         />
                       )}
                     />
-                  </label>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      index > 0 && swapFromDestHub(index, index - 1)
-                    }
-                    disabled={index === 0 || index === 1}
-                    className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-                  >
-                    위로
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      index < fromDestHubFields.length - 1 &&
-                      swapFromDestHub(index, index + 1)
-                    }
-                    disabled={
-                      index === fromDestHubFields.length - 1 || index === 0
-                    }
-                    className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-                  >
-                    아래로
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => removeFromDestHub(index)}
-                    className="text-red-500 disabled:opacity-30"
-                    disabled={index === 0}
-                  >
-                    삭제
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+                  </div>
+                  <div className="w-[1px] rounded-full bg-grey-100" />
+                  <div className="flex items-center gap-8">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        index > 0 && swapFromDestHub(index, index - 1)
+                      }
+                      disabled={index === 0 || index === 1}
+                      className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
+                    >
+                      위로
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        index < fromDestHubFields.length - 1 &&
+                        swapFromDestHub(index, index + 1)
+                      }
+                      disabled={
+                        index === fromDestHubFields.length - 1 || index === 0
+                      }
+                      className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
+                    >
+                      아래로
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => removeFromDestHub(index)}
+                      className="text-red-500 disabled:opacity-30"
+                      disabled={index === 0}
+                    >
+                      삭제
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      </FormContainer.section>
 
       <button type="submit" className="rounded bg-blue-500 p-8 text-white">
         수정하기
       </button>
-    </form>
+    </FormContainer>
   );
 };
