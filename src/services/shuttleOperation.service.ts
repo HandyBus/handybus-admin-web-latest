@@ -119,14 +119,15 @@ export const getEvents = async (options?: { status?: EventStatus }) => {
   const res = await authInstance.get(
     `/v2/shuttle-operation/admin/events${toSearchParamString({ ...options }, '?')}`,
     {
-      shape: {
+      shape: withPagination({
         events: EventsViewEntitySchema.array(),
-      },
+      }),
     },
   );
   return res.events;
 };
 
+// TODO 추후에 pagination으로 변경
 export const useGetEvents = (options?: { status?: EventStatus }) => {
   return useQuery({
     queryKey: ['event', options],
@@ -169,14 +170,15 @@ export const getShuttleRoutesOfDailyEvent = async (
   const res = await authInstance.get(
     `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes${toSearchParamString({ ...options }, '?')}`,
     {
-      shape: {
+      shape: withPagination({
         shuttleRoutes: ShuttleRoutesViewEntitySchema.array(),
-      },
+      }),
     },
   );
   return res.shuttleRoutes;
 };
 
+// TODO 추후에 pagination으로 변경
 export const useGetShuttleRoutesOfDailyEvent = (
   eventId: number,
   dailyEventId: number,
@@ -194,14 +196,15 @@ export const getShuttleRoutes = async (options?: GetShuttleRoutesOptions) => {
   const response = await authInstance.get(
     `/v2/shuttle-operation/admin/events/all/dates/all/routes${toSearchParamString({ ...options }, '?')}`,
     {
-      shape: {
+      shape: withPagination({
         shuttleRoutes: ShuttleRoutesViewEntitySchema.array(),
-      },
+      }),
     },
   );
   return response.shuttleRoutes;
 };
 
+// TODO 추후에 pagination으로 변경
 export const useGetShuttleRoutes = (options?: GetShuttleRoutesOptions) => {
   return useQuery({
     queryKey: ['shuttleRoute', options],
@@ -307,7 +310,6 @@ interface GetReservationsOptionsWithPagination extends GetReservationsOptions {
   limit: number;
 }
 
-// limit이 없을 경우 전체 데이터 조회
 export const getReservations = async (
   option?: Partial<GetReservationsOptionsWithPagination>,
 ) => {

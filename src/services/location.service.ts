@@ -41,6 +41,15 @@ export const useGetRegionHubs = (regionId: number) => {
   });
 };
 
+// // TODO 추후 주석 해제. v2 버전임.
+// export const getRegionHubs = async (regionId: number) => {
+//   const res = await authInstance.get(
+//     `/v1/location/admin/regions/${regionId}/hubs`,
+//     { shape: withPagination({ regionHubs: RegionHubSchema.array() }) },
+//   );
+//   return res.regionHubs;
+// };
+
 export const getRegionHub = async (regionId: number, regionHubId: number) => {
   const res = await authInstance.get(
     `/v1/location/admin/regions/${regionId}/hubs/${regionHubId}`,
