@@ -15,6 +15,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
+  const kakaoMapRef = useRef<kakao.maps.Map | null>(null);
   const markerRef = useRef<kakao.maps.Marker | null>(null);
 
   const setCoordWithAddress = useCallback(
@@ -48,6 +49,23 @@ const CoordInput = ({ coord, setCoord }: Props) => {
     }
   }, [coord, setMarker]);
 
+  const setBoundOnSearch = (
+    data: kakao.maps.services.PlacesSearchResult,
+    status: kakao.maps.services.Status,
+  ) => {
+    if (status === kakao.maps.services.Status.OK) {
+      const bounds = new window.kakao.maps.LatLngBounds();
+
+      data.forEach((item) =>
+        bounds.extend(
+          new window.kakao.maps.LatLng(Number(item.y), Number(item.x)),
+        ),
+      );
+
+      kakaoMapRef.current?.setBounds(bounds);
+    }
+  };
+
   const initializeMap = useCallback(() => {
     try {
       if (window.kakao && mapRef.current) {
@@ -57,6 +75,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
         };
 
         const map = new window.kakao.maps.Map(mapRef.current, options);
+        kakaoMapRef.current = map;
         const marker = new kakao.maps.Marker({
           position: map.getCenter(),
         });
@@ -70,6 +89,20 @@ const CoordInput = ({ coord, setCoord }: Props) => {
             setCoordWithAddress(mouseEvent.latLng);
           },
         );
+
+        const ps = new window.kakao.maps.services.Places();
+
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+          searchInput.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key !== 'Enter') {
+              return;
+            }
+            event.preventDefault();
+            const target = event.target as HTMLInputElement;
+            ps.keywordSearch(target.value, setBoundOnSearch);
+          });
+        }
       }
     } catch (error) {
       setError(true);
@@ -93,10 +126,18 @@ const CoordInput = ({ coord, setCoord }: Props) => {
             (error || loading) && 'opacity-50',
           )}
         />
+        <div className="absolute left-20 top-20 z-10 h-40 w-240 overflow-hidden rounded-[8px] border border-grey-200">
+          <input
+            id="search-input"
+            type="text"
+            placeholder="키워드로 검색"
+            className="h-full w-full p-12 outline-none"
+          />
+        </div>
         <div
           className={
             loading
-              ? 'touch-none absolute size-full top-0 left-0 z-10 flex items-center justify-center bg-none'
+              ? 'absolute left-0 top-0 z-10 flex size-full touch-none items-center justify-center bg-none'
               : 'hidden'
           }
         >
@@ -106,7 +147,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
         <div
           className={
             error
-              ? 'touch-none absolute size-full top-0 left-0 z-10 flex items-center justify-center bg-white bg-opacity-75 text-red-500'
+              ? 'absolute left-0 top-0 z-10 flex size-full touch-none items-center justify-center bg-white bg-opacity-75 text-red-500'
               : 'hidden'
           }
         >
