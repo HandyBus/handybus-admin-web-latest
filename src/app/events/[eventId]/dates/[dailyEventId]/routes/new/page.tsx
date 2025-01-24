@@ -149,23 +149,27 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
       router.push(`/events/${eventId}/dates/${dailyEventId}`);
     },
     onError: (error) => {
-      console.error(error);
+      alert(
+        '오류가 발생했습니다.\n' + (error instanceof Error && error.message),
+      );
+    },
+  });
+
+  const onSubmit = async (data: CreateShuttleRouteForm) => {
+    if (!confirm('수정하시겠습니까?')) return;
+    try {
+      const shuttleRouteHubs = conform(data);
+      postRoute({
+        eventId: Number(eventId),
+        dailyEventId: Number(dailyEventId),
+        body: shuttleRouteHubs,
+      });
+    } catch (error) {
       if (
         error instanceof Error &&
         error.message === 'arrivalTime is not validated'
       )
         alert('거점지들의 시간순서가 올바르지 않습니다. 확인해주세요.');
-      else alert('오류가 발생했습니다.');
-    },
-  });
-
-  const onSubmit = async (data: CreateShuttleRouteForm) => {
-    if (confirm('등록하시겠습니까?')) {
-      postRoute({
-        eventId: Number(eventId),
-        dailyEventId: Number(dailyEventId),
-        body: conform(data),
-      });
     }
   };
 
