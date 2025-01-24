@@ -11,6 +11,7 @@ import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { useGetRegions, usePostRegionHub } from '@/services/location.service';
 import { Region } from '@/types/region';
 import Heading from '@/components/text/Heading';
+import Form from '@/components/form/Form';
 
 const NewHubPage = () => {
   const router = useRouter();
@@ -70,51 +71,53 @@ const NewHubPage = () => {
   return (
     <main>
       <Heading>거점지 추가</Heading>
-      <form
-        className="flex flex-col"
-        onSubmit={handleSubmit(onSubmit)}
-        method="post"
-      >
-        <label>거점지 이름</label>
-        <Controller
-          control={control}
-          name={`name`}
-          render={({ field: { onChange, value } }) => (
-            <Input value={value} setValue={onChange} />
-          )}
-        />
-        <label>위치 및 좌표</label>
-        <Controller
-          control={control}
-          name={`coord`}
-          render={({ field: { onChange, value } }) => (
-            <CoordInput coord={value} setCoord={onChange} />
-          )}
-        />
-        <label>지역</label>
-        <Controller
-          control={control}
-          name={`regionId`}
-          render={({ field: { onChange, value } }) => (
-            <div className="gap-2 flex flex-col items-start">
-              {recommended && (
-                <button
-                  type="button"
-                  className="text-blue-500 hover:underline"
-                  onClick={() => {
-                    onChange(recommended.regionId);
-                  }}
-                >
-                  이 지역이 맞나요?: {recommended.provinceFullName}{' '}
-                  {recommended.cityFullName}
-                </button>
-              )}
-              <RegionInput value={value} setValue={onChange} />
-            </div>
-          )}
-        />
-        <button type="submit">거점지 추가하기</button>
-      </form>
+      <Form onSubmit={handleSubmit(onSubmit)} method="post">
+        <Form.section>
+          <Form.label required>거점지 이름</Form.label>
+          <Controller
+            control={control}
+            name={`name`}
+            render={({ field: { onChange, value } }) => (
+              <Input value={value} setValue={onChange} />
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label>위치 및 좌표</Form.label>
+          <Controller
+            control={control}
+            name={`coord`}
+            render={({ field: { onChange, value } }) => (
+              <CoordInput coord={value} setCoord={onChange} />
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label>지역</Form.label>
+          <Controller
+            control={control}
+            name={`regionId`}
+            render={({ field: { onChange, value } }) => (
+              <div className="gap-2 flex flex-col items-start">
+                {recommended && (
+                  <button
+                    type="button"
+                    className="text-blue-500 hover:underline"
+                    onClick={() => {
+                      onChange(recommended.regionId);
+                    }}
+                  >
+                    이 지역이 맞나요?: {recommended.provinceFullName}{' '}
+                    {recommended.cityFullName}
+                  </button>
+                )}
+                <RegionInput value={value} setValue={onChange} />
+              </div>
+            )}
+          />
+        </Form.section>
+        <Form.submitButton>추가하기</Form.submitButton>
+      </Form>
     </main>
   );
 };

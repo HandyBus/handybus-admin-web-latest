@@ -1,10 +1,17 @@
-import { FormHTMLAttributes, PropsWithChildren, ReactNode } from 'react';
+import {
+  FormHTMLAttributes,
+  LabelHTMLAttributes,
+  PropsWithChildren,
+  ReactNode,
+} from 'react';
 import { twMerge } from 'tailwind-merge';
 
-interface Props extends FormHTMLAttributes<HTMLFormElement> {
+interface Form {
   children: ReactNode;
   className?: string;
 }
+
+type Props = FormHTMLAttributes<HTMLFormElement> & Form;
 
 const Form = ({ children, className, ...props }: Props) => {
   return (
@@ -22,9 +29,14 @@ const Form = ({ children, className, ...props }: Props) => {
 
 export default Form;
 
-const Section = ({ children }: PropsWithChildren) => {
+const Section = ({ children, className }: Form) => {
   return (
-    <section className="flex w-full flex-col gap-12 rounded-[6px] border border-grey-100 bg-white p-24 shadow-sm">
+    <section
+      className={twMerge(
+        'flex w-full flex-col gap-12 rounded-[6px] border border-grey-100 bg-white p-24 shadow-sm',
+        className,
+      )}
+    >
       {children}
     </section>
   );
@@ -32,10 +44,26 @@ const Section = ({ children }: PropsWithChildren) => {
 
 Form.section = Section;
 
-const Label = ({ children }: PropsWithChildren) => {
+interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
+  required?: boolean;
+}
+
+const Label = ({
+  children,
+  className,
+  required = false,
+  ...props
+}: LabelProps) => {
   return (
-    <label className="flex items-center gap-4 text-18 font-500">
+    <label
+      {...props}
+      className={twMerge(
+        'flex items-baseline gap-[6px] text-18 font-500',
+        className,
+      )}
+    >
       {children}
+      {required && <span className="text-red-500">*</span>}
     </label>
   );
 };
@@ -46,7 +74,7 @@ const SubmitButton = ({ children }: PropsWithChildren) => {
   return (
     <button
       type="submit"
-      className="rounded-lg bg-blue-500 p-8 font-500 text-white hover:bg-blue-600"
+      className="flex items-center justify-center gap-8 rounded-lg bg-blue-500 p-8 font-500 text-white hover:bg-blue-600"
     >
       {children}
     </button>

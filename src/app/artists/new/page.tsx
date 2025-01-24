@@ -7,6 +7,7 @@ import { PlusIcon } from 'lucide-react';
 import Input from '@/components/input/Input';
 import { usePostArtist } from '@/services/shuttleOperation.service';
 import Heading from '@/components/text/Heading';
+import Form from '@/components/form/Form';
 
 const NewArtistPage = () => {
   const router = useRouter();
@@ -45,39 +46,37 @@ const NewArtistPage = () => {
   return (
     <main className="flex h-full w-full flex-col gap-16 bg-white">
       <Heading>아티스트 추가</Heading>
-      <form
-        className="flex flex-col gap-4"
-        onSubmit={handleSubmit(onSubmit)}
-        method="post"
-      >
-        <Controller
-          control={control}
-          name="name"
-          rules={{
-            required: '필수 입력',
-            pattern: {
-              value: /^(?!\s*$).+/,
-              message: '공백으로만 이루어진 입력은 허용되지 않습니다.',
-            },
-          }}
-          render={({ field: { onChange, value } }) => (
-            <>
-              <Input
-                value={value}
-                setValue={onChange}
-                placeholder="아티스트 이름을 입력해주세요."
-              />
-              {errors?.name && (
-                <p className="text-red-500">{errors.name.message}</p>
-              )}
-            </>
-          )}
-        />
-
-        <button type="submit" className="rounded-lg bg-blue-500 p-8 text-white">
-          <PlusIcon />
-        </button>
-      </form>
+      <Form onSubmit={handleSubmit(onSubmit)} method="post">
+        <Form.section>
+          <Form.label required>아티스트 이름</Form.label>
+          <Controller
+            control={control}
+            name="name"
+            rules={{
+              required: '필수 입력',
+              pattern: {
+                value: /^(?!\s*$).+/,
+                message: '공백으로만 이루어진 입력은 허용되지 않습니다.',
+              },
+            }}
+            render={({ field: { onChange, value } }) => (
+              <>
+                <Input
+                  value={value}
+                  setValue={onChange}
+                  placeholder="아티스트 이름을 입력해주세요."
+                />
+                {errors?.name && (
+                  <p className="text-red-500">{errors.name.message}</p>
+                )}
+              </>
+            )}
+          />
+        </Form.section>
+        <Form.submitButton>
+          추가하기 <PlusIcon />
+        </Form.submitButton>
+      </Form>
     </main>
   );
 };

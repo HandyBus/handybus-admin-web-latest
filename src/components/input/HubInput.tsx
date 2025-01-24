@@ -124,7 +124,7 @@ export const RegionHubInputSelfContained = ({
     initialRegionId ?? null,
   );
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-4">
       <RegionInput value={regionId} setValue={setRegionId} />
       <RegionHubInput
         regionId={regionId ?? undefined}

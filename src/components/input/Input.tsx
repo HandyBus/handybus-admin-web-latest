@@ -30,7 +30,7 @@ const Input = (
       onChange={setValue && ((e) => setValue(e.target.value))}
       {...props}
       className={twMerge(
-        'w-full p-8 border border-grey-200 rounded-lg focus:outline-blue-400',
+        'w-full rounded-lg border border-grey-200 p-8 focus:outline-blue-400',
         className,
       )}
     />
