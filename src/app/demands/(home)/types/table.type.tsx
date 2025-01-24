@@ -2,6 +2,7 @@ import { ShuttleDemandStatisticsReadModel } from '@/types/demand.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
 import Image from 'next/image';
+import { DEFAULT_EVENT_IMAGE } from '@/constants/common';
 
 const columnHelper = createColumnHelper<ShuttleDemandStatisticsReadModel>();
 
@@ -16,7 +17,7 @@ export const columnsForGroupByEventId = [
     header: '포스터',
     cell: (props) => (
       <Image
-        src={props.row.original.eventImageUrl ?? ''}
+        src={props.row.original.eventImageUrl || DEFAULT_EVENT_IMAGE}
         alt="포스터 이미지"
         width={80}
         height={110}
