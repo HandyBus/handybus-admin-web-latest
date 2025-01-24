@@ -22,6 +22,10 @@ export const columns = [
     header: () => '예약 유형',
     cell: (info) => Stringifier.tripType(info.getValue()),
   }),
+  columnHelper.accessor('passengerCount', {
+    header: () => '탑승객 수',
+    cell: (info) => info.getValue() + '인',
+  }),
   columnHelper.accessor('handyStatus', {
     header: () => '핸디 상태',
     cell: (info) => Stringifier.handyStatus(info.getValue()),
