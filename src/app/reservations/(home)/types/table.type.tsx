@@ -28,10 +28,10 @@ export const columns = [
     header: () => '생성일',
     cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
-  columnHelper.accessor('passengers', {
-    id: 'passengersLength',
+  columnHelper.accessor('passengerCount', {
+    id: 'passengerCount',
     header: () => '예약 인원',
-    cell: (info) => info.getValue().length + '인',
+    cell: (info) => info.getValue() + '인',
   }),
   columnHelper.accessor('reservationStatus', {
     id: 'reservationStatus',
@@ -54,15 +54,15 @@ export const columns = [
       )?.date;
       return (
         <p>
-          <span className="font-500 text-16">
+          <span className="text-16 font-500">
             {reservation.shuttleRoute?.event?.eventName}
           </span>
           <br />
-          <span className="font-400 text-grey-600 text-14">
+          <span className="text-14 font-400 text-grey-600">
             {date && new Date(date).toLocaleDateString()}
           </span>
           <br />
-          <span className="font-500 text-grey-700 text-14">
+          <span className="text-14 font-500 text-grey-700">
             {reservation.shuttleRoute?.name}
           </span>
         </p>

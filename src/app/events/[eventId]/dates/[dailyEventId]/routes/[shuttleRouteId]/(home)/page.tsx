@@ -10,6 +10,7 @@ import { useGetShuttleRoute } from '@/services/shuttleOperation.service';
 import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
+import Stringifier from '@/utils/stringifier.util';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -42,16 +43,16 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
   });
 
   return (
-    <main className="flex h-full w-full flex-col gap-16 bg-white">
-      <header className="flex flex-row justify-between">
-        <Heading>노선 정보</Heading>
+    <main>
+      <Heading className="flex items-baseline gap-20">
+        노선 정보
         <BlueLink
           href={`/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/edit`}
-          className="text-[24px] font-500"
+          className="text-14"
         >
           수정하기
         </BlueLink>
-      </header>
+      </Heading>
 
       {isRoutePending && <div>Loading...</div>}
       {isRouteError && <div>Error: {routeError.message}</div>}
@@ -92,13 +93,13 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
                       {formatDateString(route.earlybirdDeadline)}
                     </List.item>
                     <List.item title="귀가행 얼리버드 가격">
-                      {route.earlybirdPriceFromDestination}
+                      {route.earlybirdPriceFromDestination?.toLocaleString()}
                     </List.item>
                     <List.item title="목적지행 얼리버드 가격">
-                      {route.earlybirdPriceToDestination}
+                      {route.earlybirdPriceToDestination?.toLocaleString()}
                     </List.item>
                     <List.item title="왕복 얼리버드 가격">
-                      {route.earlybirdPriceRoundTrip}
+                      {route.earlybirdPriceRoundTrip?.toLocaleString()}
                     </List.item>
                   </>
                 )}
@@ -108,30 +109,32 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
                   {formatDateString(route.reservationDeadline)}
                 </List.item>
                 <List.item title="귀가행 가격">
-                  {route.regularPriceFromDestination}
+                  {route.regularPriceFromDestination.toLocaleString()}
                 </List.item>
                 <List.item title="목적지행 가격">
-                  {route.regularPriceToDestination}
+                  {route.regularPriceToDestination.toLocaleString()}
                 </List.item>
                 <List.item title="왕복 가격">
-                  {route.regularPriceRoundTrip}
+                  {route.regularPriceRoundTrip.toLocaleString()}
                 </List.item>
               </List>
               <List className="grid-cols-[72px_1fr]">
-                <List.item title="상태">{route.status}</List.item>
+                <List.item title="상태">
+                  {Stringifier.shuttleRouteStatus(route.status)}
+                </List.item>
               </List>
             </div>
           </Callout>
 
-          <header className="flex flex-row justify-between">
-            <h3 className="text-[24px] font-500">거점지 - 목적지행</h3>
-          </header>
-          <BaseTable table={toHubTable} />
+          <section className="flex flex-col">
+            <Heading.h2>경유지 - 목적지행</Heading.h2>
+            <BaseTable table={toHubTable} />
+          </section>
 
-          <header className="flex flex-row justify-between">
-            <h3 className="text-[24px] font-500">거점지 - 귀가행</h3>
-          </header>
-          <BaseTable table={fromHubTable} />
+          <section className="flex flex-col">
+            <Heading.h2>경유지 - 귀가행</Heading.h2>
+            <BaseTable table={fromHubTable} />
+          </section>
 
           <Buses
             eventId={eventId}

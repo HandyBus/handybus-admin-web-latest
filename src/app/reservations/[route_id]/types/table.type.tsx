@@ -63,10 +63,9 @@ export const reservationColumns = [
     header: () => '예약일',
     cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
-  reservationColumnHelper.accessor('passengers', {
-    id: 'passengersLength',
+  reservationColumnHelper.accessor('passengerCount', {
     header: () => '예약 인원',
-    cell: (info) => info.getValue().length + '인',
+    cell: (info) => info.getValue() + '인',
   }),
   reservationColumnHelper.accessor('type', {
     id: 'type',

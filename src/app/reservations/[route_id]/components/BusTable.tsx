@@ -104,15 +104,15 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
         if (busWithSeatIndex !== -1) {
           if (reservation.type === 'TO_DESTINATION') {
             newBusWithSeats[busWithSeatIndex].toDestinationFilledSeat +=
-              reservation.passengers.length;
+              reservation.passengerCount;
           } else if (reservation.type === 'FROM_DESTINATION') {
             newBusWithSeats[busWithSeatIndex].fromDestinationFilledSeat +=
-              reservation.passengers.length;
+              reservation.passengerCount;
           } else {
             newBusWithSeats[busWithSeatIndex].toDestinationFilledSeat +=
-              reservation.passengers.length;
+              reservation.passengerCount;
             newBusWithSeats[busWithSeatIndex].fromDestinationFilledSeat +=
-              reservation.passengers.length;
+              reservation.passengerCount;
           }
         }
       }
@@ -151,7 +151,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
       ) {
         return;
       }
-      const requiredSeat = reservation.passengers.length;
+      const requiredSeat = reservation.passengerCount;
       const requiredSeatType = reservation.type;
 
       // 좌석이 충분한 버스 찾기
@@ -291,13 +291,13 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     // 이동되는 버스의 좌석 수 추가
     updateBusWithSeats(
       shuttleBusId,
-      reservation.passengers.length,
+      reservation.passengerCount,
       reservation.type,
     );
     // 기존에 있던 버스의 좌석 수 감소
     updateBusWithSeats(
       prevBusId,
-      reservation.passengers.length * -1,
+      reservation.passengerCount * -1,
       reservation.type,
     );
   };
@@ -310,8 +310,16 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     <section className="flex flex-col">
       <Heading.h2 className="flex items-baseline gap-20">
         버스 배차 현황
+        <BlueLink
+          href={`/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/buses/new`}
+          className="text-14"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          버스 추가하기
+        </BlueLink>
         {isEditMode ? (
-          <div className="ml-40 flex items-center gap-4">
+          <div className="flex items-center gap-4">
             <button
               type="button"
               className="rounded-md border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
@@ -337,7 +345,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
         ) : (
           <button
             type="button"
-            className="ml-40 rounded-md border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
+            className="rounded-md border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
             onClick={() => {
               setIsEditMode(true);
               initEditing();
@@ -471,7 +479,7 @@ const PassengerItem = ({
         {reservation.userPhoneNumber}
       </p>
       <p className="text-14 font-400 text-grey-700">
-        {reservation.passengers.length}인
+        {reservation.passengerCount}인
       </p>
       <p className="text-14 font-400 text-grey-700">
         {Stringifier.tripType(reservation.type)}
