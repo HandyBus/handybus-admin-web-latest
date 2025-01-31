@@ -2,12 +2,7 @@
 
 import Heading from '@/components/text/Heading';
 import { postLogin } from '@/services/auth.service';
-import {
-  getIsLoggedIn,
-  logout,
-  setIsLoggedIn,
-  setToken,
-} from '@/utils/handleToken.util';
+import { getToken, logout, setToken } from '@/utils/handleToken.util';
 import { useRouter } from 'next/navigation';
 import { SyntheticEvent, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -22,7 +17,6 @@ const LoginPage = () => {
     try {
       const res = await postLogin({ identifier, password });
       setToken(res);
-      setIsLoggedIn();
       router.push('/');
       toast.success('로그인 되었습니다.');
     } catch {
@@ -31,7 +25,7 @@ const LoginPage = () => {
   };
 
   const handleLogout = () => {
-    const isLoggedIn = getIsLoggedIn();
+    const isLoggedIn = !!getToken();
     if (!isLoggedIn) {
       toast.error('로그인 상태가 아닙니다.');
       return;
