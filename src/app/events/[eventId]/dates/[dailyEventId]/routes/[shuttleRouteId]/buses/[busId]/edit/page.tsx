@@ -15,7 +15,6 @@ import { BusTypeEnum } from '@/types/shuttleBus.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
 import { conform, EditBusFormType } from './types/form.type';
-import { CustomError } from '@/services/custom-error';
 import Callout from '@/components/text/Callout';
 
 interface Props {
@@ -84,8 +83,9 @@ const EditForm = ({ defaultValues, params }: EditFormProps) => {
         `/events/${params.eventId}/dates/${params.dailyEventId}/routes/${params.shuttleRouteId}`,
       );
     },
-    onError: (error: CustomError) => {
-      alert('버스 수정에 실패했습니다\n' + error.message);
+    onError: (error: unknown) => {
+      const stack = error instanceof Error ? error.stack : 'Unknown Error';
+      alert(`버스 수정에 실패했습니다. 스택: ${stack}`);
     },
   });
 

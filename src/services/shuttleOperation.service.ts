@@ -42,7 +42,6 @@ import {
 } from '@/types/payment.type';
 import { silentParse } from '@/utils/parse.util';
 import { ShuttleDemandStatisticsReadModelSchema } from '@/types/demand.type';
-import { CustomError } from './custom-error';
 
 // ----- 조회 -----
 
@@ -680,7 +679,7 @@ export const usePutShuttleBus = ({
   onError,
 }: {
   onSuccess: () => void;
-  onError: (error: CustomError) => void;
+  onError: (error: unknown) => void;
 }) => {
   return useMutation({
     mutationFn: ({
