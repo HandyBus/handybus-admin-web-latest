@@ -143,7 +143,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
   const { mutate: postRoute } = usePostShuttleRoute({
     onSuccess: () => {
-      alert('등록에 성공했습니다.');
+      alert('노선이 추가되었습니다.');
       router.push(`/events/${eventId}/dates/${dailyEventId}`);
     },
     onError: (error) => {

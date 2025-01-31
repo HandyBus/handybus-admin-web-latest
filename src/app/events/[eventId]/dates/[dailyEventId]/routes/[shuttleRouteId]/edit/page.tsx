@@ -144,7 +144,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
   const { mutate: putRoute } = usePutShuttleRoute({
     onSuccess: () => {
-      alert('수정에 성공했습니다.');
+      alert('노선이 수정되었습니다.');
       router.push(
         `/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`,
       );
@@ -219,7 +219,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
       <FormContainer.section>
         <FormContainer.label>경유지</FormContainer.label>
         <Callout className="text-14">
-          초록색으로 표시된 경유지는 행사 장소 근처 경유지에 해당합니다. (ex.
+          파란색으로 표시된 경유지는 행사 장소 근처 경유지에 해당합니다. (ex.
           인스파이어 아레나)
           <br />
           반드시 목적지행과 귀가행 마다 두개 이상의 경유지를 입력해주세요.
