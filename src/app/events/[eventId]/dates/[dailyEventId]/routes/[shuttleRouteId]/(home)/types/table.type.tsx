@@ -6,7 +6,13 @@ import { formatDateString } from '@/utils/date.util';
 import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
 import { ShuttleRouteHubsInShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 
-const busColumnHelper = createColumnHelper<ShuttleBusesViewEntity>();
+type ExtendedShuttleBusesViewEntity = ShuttleBusesViewEntity & {
+  eventId: number;
+  dailyEventId: number;
+  shuttleRouteId: number;
+};
+
+const busColumnHelper = createColumnHelper<ExtendedShuttleBusesViewEntity>();
 
 export const busColumns = [
   busColumnHelper.accessor('shuttleBusId', {
@@ -40,6 +46,19 @@ export const busColumns = [
       ) : (
         <div>오픈채팅방 링크 없음</div>
       ),
+  }),
+  busColumnHelper.display({
+    id: 'actions',
+    header: () => 'actions',
+    cell: (info) => (
+      <div>
+        <BlueLink
+          href={`/events/${info.row.original.eventId}/dates/${info.row.original.dailyEventId}/routes/${info.row.original.shuttleRouteId}/buses/${info.row.original.shuttleBusId}/edit`}
+        >
+          버스 수정하기
+        </BlueLink>
+      </div>
+    ),
   }),
 ];
 

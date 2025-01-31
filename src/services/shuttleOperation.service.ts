@@ -22,13 +22,13 @@ import {
   TripType,
 } from '@/types/shuttleRoute.type';
 import {
-  AdminUpdateShuttleBusRequest,
-  AdminUpdateShuttleBusRequestSchema,
   BulkAssignBusRequest,
   BulkAssignBusRequestSchema,
   CreateShuttleBusRequest,
   CreateShuttleBusRequestSchema,
   ShuttleBusesViewEntitySchema,
+  AdminUpdateShuttleBusRequest,
+  AdminUpdateShuttleBusRequestSchema,
 } from '@/types/shuttleBus.type';
 import {
   CancelStatus,
@@ -270,9 +270,10 @@ export const getShuttleBus = async (
   eventId: number,
   dailyEventId: number,
   shuttleRouteId: number,
+  shuttleBusId: number,
 ) => {
   const res = await authInstance.get(
-    `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/buses`,
+    `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/buses/${shuttleBusId}`,
     {
       shape: {
         shuttleBus: ShuttleBusesViewEntitySchema,
@@ -286,10 +287,18 @@ export const useGetShuttleBus = (
   eventId: number,
   dailyEventId: number,
   shuttleRouteId: number,
+  shuttleBusId: number,
 ) => {
   return useQuery({
-    queryKey: ['shuttleBus', eventId, dailyEventId, shuttleRouteId],
-    queryFn: () => getShuttleBuses(eventId, dailyEventId, shuttleRouteId),
+    queryKey: [
+      'shuttleBus',
+      eventId,
+      dailyEventId,
+      shuttleRouteId,
+      shuttleBusId,
+    ],
+    queryFn: () =>
+      getShuttleBus(eventId, dailyEventId, shuttleRouteId, shuttleBusId),
   });
 };
 
@@ -665,7 +674,13 @@ export const putShuttleBus = async (
   );
 };
 
-export const usePutShuttleBus = () => {
+export const usePutShuttleBus = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess: () => void;
+  onError: (error: unknown) => void;
+}) => {
   return useMutation({
     mutationFn: ({
       eventId,
@@ -681,6 +696,8 @@ export const usePutShuttleBus = () => {
       body: AdminUpdateShuttleBusRequest;
     }) =>
       putShuttleBus(eventId, dailyEventId, shuttleRouteId, shuttleBusId, body),
+    onSuccess,
+    onError,
   });
 };
 
