@@ -25,7 +25,12 @@ const Buses = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
   );
 
   const busTable = useTable({
-    data: buses ?? [],
+    data: (buses ?? []).map((bus) => ({
+      ...bus,
+      eventId: Number(eventId),
+      dailyEventId: Number(dailyEventId),
+      shuttleRouteId: Number(shuttleRouteId),
+    })),
     columns: busColumns,
   });
 
