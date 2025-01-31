@@ -16,6 +16,7 @@ import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
 import { conform, EditBusFormType } from './types/form.type';
 import { CustomError } from '@/services/custom-error';
+import Callout from '@/components/text/Callout';
 
 interface Props {
   params: {
@@ -181,6 +182,13 @@ const EditForm = ({ defaultValues, params }: EditFormProps) => {
         </Form.section>
         <Form.section>
           <Form.label>오픈채팅방 링크</Form.label>
+          <Callout>
+            오픈채팅방 링크를 입력해주세요. 첫 등록 이후에는 링크는 지울 수
+            없고, 오직 변경만 가능합니다.
+            <br />
+            또, 오픈채팅방 링크가 등록되면 탑승객에게 카카오톡 알림이
+            발송됩니다.
+          </Callout>
           <Controller
             control={control}
             name="openChatLink"
