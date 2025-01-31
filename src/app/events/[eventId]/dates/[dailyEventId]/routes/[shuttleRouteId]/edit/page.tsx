@@ -110,7 +110,6 @@ interface FormProps extends Props {
 const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   const { eventId, dailyEventId, shuttleRouteId } = params;
   const router = useRouter();
-  console.log('defaultValues', defaultValues);
   const {
     register,
     control,
