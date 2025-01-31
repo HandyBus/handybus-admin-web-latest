@@ -17,6 +17,7 @@ import { conform } from './conform.util';
 import Heading from '@/components/text/Heading';
 import FormContainer from '@/components/form/Form';
 import Callout from '@/components/text/Callout';
+import NumberInput from '@/components/input/NumberInput';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -103,7 +104,6 @@ interface FormProps extends Props {
 const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   const { eventId, dailyEventId } = params;
   const router = useRouter();
-  console.log('defaultValues', defaultValues);
   const {
     register,
     control,
@@ -116,9 +116,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   });
 
   const watchHasEarlybird = watch('hasEarlybird');
-
   const watchRegularPrice = watch('regularPrice');
-
   const watchEarlybirdPrice = watch('earlybirdPrice');
 
   const {
@@ -145,7 +143,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
   const { mutate: postRoute } = usePostShuttleRoute({
     onSuccess: () => {
-      alert('등록에 성공했습니다.');
+      alert('노선이 추가되었습니다.');
       router.push(`/events/${eventId}/dates/${dailyEventId}`);
     },
     onError: (error) => {
@@ -156,7 +154,12 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   });
 
   const onSubmit = async (data: CreateShuttleRouteForm) => {
-    if (!confirm('수정하시겠습니까?')) return;
+    if (
+      !confirm(
+        '추가하시겠습니까? 확인을 누르시면 가격은 더 이상 변경할 수 없습니다. ',
+      )
+    )
+      return;
     try {
       const shuttleRouteHubs = conform(data);
       postRoute({
@@ -209,6 +212,10 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
               />
             </div>
           </div>
+          <Callout className="text-14">
+            <b>주의: </b>가격은 노선 추가 후{' '}
+            <b className="text-red-500">변경이 불가</b>합니다.
+          </Callout>
           <article className="grid w-full grid-cols-2 gap-12">
             <div className="flex flex-col gap-8 rounded-[4px] p-8">
               <Heading.h5 backgroundColor="yellow">일반 가격</Heading.h5>
@@ -238,32 +245,36 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                   <label className="block break-keep text-16 font-500">
                     목적지행
                   </label>
-                  <Input
-                    {...register('regularPrice.toDestination', {
-                      valueAsNumber: true,
-                    })}
+                  <Controller
+                    control={control}
+                    name="regularPrice.toDestination"
+                    render={({ field: { onChange, value } }) => (
+                      <NumberInput value={value ?? 0} setValue={onChange} />
+                    )}
                   />
                 </div>
                 <div className="flex flex-col items-start gap-8">
                   <label className="block break-keep text-16 font-500">
                     귀가행
                   </label>
-                  <Input
-                    type="number"
-                    {...register('regularPrice.fromDestination', {
-                      valueAsNumber: true,
-                    })}
+                  <Controller
+                    control={control}
+                    name="regularPrice.fromDestination"
+                    render={({ field: { onChange, value } }) => (
+                      <NumberInput value={value ?? 0} setValue={onChange} />
+                    )}
                   />
                 </div>
                 <div className="flex flex-col items-start gap-8">
                   <label className="block break-keep text-16 font-500">
                     왕복
                   </label>
-                  <Input
-                    type="number"
-                    {...register('regularPrice.roundTrip', {
-                      valueAsNumber: true,
-                    })}
+                  <Controller
+                    control={control}
+                    name="regularPrice.roundTrip"
+                    render={({ field: { onChange, value } }) => (
+                      <NumberInput value={value ?? 0} setValue={onChange} />
+                    )}
                   />
                 </div>
               </div>
@@ -302,15 +313,14 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       )}
                     </span>
                   </label>
-                  <Input
-                    type="number"
-                    {...register('earlybirdPrice.toDestination', {
-                      valueAsNumber: true,
-                    })}
-                    disabled={!watchHasEarlybird}
+                  <Controller
+                    control={control}
+                    name="earlybirdPrice.toDestination"
+                    render={({ field: { onChange, value } }) => (
+                      <NumberInput value={value ?? 0} setValue={onChange} />
+                    )}
                   />
                 </div>
-
                 <div className="flex flex-col items-start gap-8">
                   <label className="block break-keep text-16 font-500">
                     귀가행
@@ -321,15 +331,14 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       )}
                     </span>
                   </label>
-                  <Input
-                    type="number"
-                    {...register('earlybirdPrice.fromDestination', {
-                      valueAsNumber: true,
-                    })}
-                    disabled={!watchHasEarlybird}
+                  <Controller
+                    control={control}
+                    name="earlybirdPrice.fromDestination"
+                    render={({ field: { onChange, value } }) => (
+                      <NumberInput value={value ?? 0} setValue={onChange} />
+                    )}
                   />
                 </div>
-
                 <div className="flex flex-col items-start gap-8">
                   <label className="block break-keep text-16 font-500">
                     왕복
@@ -340,12 +349,12 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       )}
                     </span>
                   </label>
-                  <Input
-                    type="number"
-                    {...register('earlybirdPrice.roundTrip', {
-                      valueAsNumber: true,
-                    })}
-                    disabled={!watchHasEarlybird}
+                  <Controller
+                    control={control}
+                    name="earlybirdPrice.roundTrip"
+                    render={({ field: { onChange, value } }) => (
+                      <NumberInput value={value ?? 0} setValue={onChange} />
+                    )}
                   />
                 </div>
               </div>
@@ -356,7 +365,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
         <FormContainer.section>
           <FormContainer.label>경유지</FormContainer.label>
           <Callout className="text-14">
-            초록색으로 표시된 경유지는 행사 장소 근처 경유지에 해당합니다. (ex.
+            파란색으로 표시된 경유지는 행사 장소 근처 경유지에 해당합니다. (ex.
             인스파이어 아레나)
             <br />
             반드시 목적지행과 귀가행 마다 두개 이상의 경유지를 입력해주세요.
