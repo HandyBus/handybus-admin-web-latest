@@ -5,12 +5,12 @@ import {
   tosspaymentsCashReceiptsColumns,
   tosspaymentsColumns,
 } from '../types/payment.table.type';
-import Guide from '@/components/guide/Guide';
 import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';
 import VerticalTable from '@/components/table/VerticalTable';
 import { ReservationViewEntity } from '@/types/reservation.type';
 import { PaymentsViewEntity, TossPaymentsEntity } from '@/types/payment.type';
+import Callout from '@/components/text/Callout';
 
 interface Props {
   response: {
@@ -64,7 +64,7 @@ const PaymentInfo = ({ response }: Props) => {
               )}
           </div>
         ) : (
-          <Guide> 결제정보가 없습니다.</Guide>
+          <Callout> 결제정보가 없습니다.</Callout>
         )}
       </details>
       <details open>
@@ -74,7 +74,7 @@ const PaymentInfo = ({ response }: Props) => {
             <VerticalTable table={tosspaymentsTable} />
           </div>
         ) : (
-          <Guide> 토스 결제정보가 없습니다.</Guide>
+          <Callout> 토스 결제정보가 없습니다.</Callout>
         )}
         {response.tossPayments?.cancels &&
           response.tossPayments?.cancels.length > 0 && (

@@ -3,6 +3,7 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
 import { ShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
+import Stringifier from '@/utils/stringifier.util';
 
 const columnHelper = createColumnHelper<ShuttleRoutesViewEntity>();
 
@@ -17,7 +18,7 @@ export const columns = [
   }),
   columnHelper.accessor('status', {
     header: () => '상태',
-    cell: (info) => info.getValue(),
+    cell: (info) => Stringifier.shuttleRouteStatus(info.getValue()),
   }),
   columnHelper.display({
     id: 'actions',

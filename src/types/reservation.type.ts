@@ -30,17 +30,6 @@ export type CancelStatus = z.infer<typeof CancelStatusEnum>;
 
 // ----- GET -----
 
-export const ReservationPassengersInReservationsViewEntitySchema = z
-  .object({
-    passengerId: z.number().int(),
-    passengerName: z.string(),
-    passengerPhoneNumber: z.string(),
-  })
-  .strict();
-export type ReservationPassengersInReservationsView = z.infer<
-  typeof ReservationPassengersInReservationsViewEntitySchema
->;
-
 export const ReservationViewEntitySchema = z
   .object({
     reservationId: z.number().int(),
@@ -64,7 +53,7 @@ export const ReservationViewEntitySchema = z
     paymentCreatedAt: z.string().nullable(),
     paymentUpdatedAt: z.string().nullable(),
     shuttleBusId: z.number().int().nullable(),
-    passengers: ReservationPassengersInReservationsViewEntitySchema.array(),
+    passengerCount: z.number().int(),
     shuttleRoute: ShuttleRoutesViewEntitySchema,
     createdAt: z.string(),
     updatedAt: z.string(),

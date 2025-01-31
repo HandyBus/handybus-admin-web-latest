@@ -431,7 +431,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         disabled={
                           index === 0 || index === toDestHubFields.length - 1
                         }
-                        className="hover:text-gray-700 text-grey-500 disabled:opacity-30"
+                        className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
                       >
                         위로
                       </button>
@@ -445,7 +445,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                           index === toDestHubFields.length - 1 ||
                           index === toDestHubFields.length - 2
                         }
-                        className="hover:text-gray-700 text-grey-500 disabled:opacity-30"
+                        className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
                       >
                         아래로
                       </button>
@@ -464,7 +464,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
             </ul>
           </section>
           <section>
-            <Heading.h5 backgroundColor="green">
+            <Heading.h5 backgroundColor="yellow">
               귀가행
               <button
                 type="button"
@@ -527,7 +527,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                           index > 0 && swapFromDestHub(index, index - 1)
                         }
                         disabled={index === 0 || index === 1}
-                        className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
+                        className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
                       >
                         위로
                       </button>
@@ -540,7 +540,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         disabled={
                           index === fromDestHubFields.length - 1 || index === 0
                         }
-                        className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
+                        className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
                       >
                         아래로
                       </button>

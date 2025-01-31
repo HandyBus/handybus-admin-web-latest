@@ -39,15 +39,17 @@ const Page = () => {
       </Heading>
       <StatusFilter eventStatus={eventStatus} setEventStatus={setEventStatus} />
       <ColumnFilter table={table} />
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : isError ? (
-        <div>Error: {error.message}</div>
-      ) : events ? (
-        <BaseTable table={table} />
-      ) : (
-        <div>No data</div>
-      )}
+      <section className="flex flex-col">
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : isError ? (
+          <div>Error: {error.message}</div>
+        ) : events ? (
+          <BaseTable table={table} />
+        ) : (
+          <div>No data</div>
+        )}
+      </section>
     </main>
   );
 };

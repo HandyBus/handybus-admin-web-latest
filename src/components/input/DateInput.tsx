@@ -18,6 +18,7 @@ const DateInput = ({ disabled, value, setValue }: Props) => {
       onChange={(date) => date && setValue(toDateOnly(date).toISOString())}
       showIcon
       dateFormat="yyyy-MM-dd"
+      className="rounded-[4px] border border-grey-200"
     />
   );
 };
