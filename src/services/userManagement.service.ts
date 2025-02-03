@@ -27,8 +27,9 @@ import {
   ReservationViewEntitySchema,
 } from '@/types/reservation.type';
 import { ReviewsViewEntitySchema } from '@/types/reviews.type';
+import { ActiveStatus } from '@/types/common.type';
 
-type GetUsersOptions = {
+export interface GetUsersOptions {
   nickname?: string;
   phoneNumber?: string;
   gender?: Gender;
@@ -37,9 +38,12 @@ type GetUsersOptions = {
   authChannelType?: AuthChannelType;
   orderBy?: 'nickname'; // orderBy 쿼리 퍼포먼스가 좋지 않기에 기본값으로 사용하는 건 권장하지 않음
   additionalOrderOptions?: 'ASC' | 'DESC'; // orderBy 와 additionalOrderOptions은 항상 함께 전달해야 함
-};
+  status?: ActiveStatus;
+  lastLoginFrom?: string;
+  lastLoginTo?: string;
+}
 
-interface GetUsersOptionsWithPagination extends GetUsersOptions {
+export interface GetUsersOptionsWithPagination extends GetUsersOptions {
   page: string | undefined;
   limit?: number; // 최대 50, 없으면 전체 조회
 }

@@ -10,8 +10,11 @@ import Callout from '@/components/text/Callout';
 import { PAGINATION_LIMIT } from '@/constants/config';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import Loading from '@/components/loading/Loading';
+import useUserFilter from './hooks/useUserFilter';
+import UserFilter from './components/UserFilter';
 
 const Page = () => {
+  const [option, dispatch] = useUserFilter();
   const {
     data: users,
     hasNextPage,
@@ -19,6 +22,7 @@ const Page = () => {
     isFetching,
     isFetchingNextPage,
   } = useGetUsersWithPagination({
+    ...option,
     page: undefined,
     limit: PAGINATION_LIMIT,
   });
@@ -48,6 +52,7 @@ const Page = () => {
           유저들입니다.
         </span>
       </Callout>
+      <UserFilter option={option} dispatch={dispatch} />
       {isFetching ? <Loading /> : <BaseTable table={table} />}
       {isFetchingNextPage && <Loading />}
       {hasNextPage && <div ref={ref} />}

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ArtistsViewEntitySchema } from './artist.type';
+import { ActiveStatusEnum } from './common.type';
 
 // ----- ENUM -----
 
@@ -75,6 +76,7 @@ export const UsersViewEntitySchema = z
         isCompleted: z.boolean(),
       })
       .array(),
+    status: ActiveStatusEnum,
   })
   .strict();
 export type UsersViewEntity = z.infer<typeof UsersViewEntitySchema>;

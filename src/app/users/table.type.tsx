@@ -1,5 +1,6 @@
 'use client';
 
+import BlueLink from '@/components/link/BlueLink';
 import { DEFAULT_PROFILE_IMAGE } from '@/constants/common';
 import { ID_TO_REGION } from '@/constants/regions';
 import { UsersViewEntity } from '@/types/user.type';
@@ -65,5 +66,12 @@ export const columns = [
   columnHelper.accessor('lastLoginAt', {
     header: () => '마지막 접속 시간',
     cell: (info) => formatDateString(info.getValue(), 'datetime', '-'),
+  }),
+  columnHelper.display({
+    id: 'detail',
+    header: () => '상세',
+    cell: (info) => (
+      <BlueLink href={`/users/${info.row.original.userId}`}>상세 보기</BlueLink>
+    ),
   }),
 ];
