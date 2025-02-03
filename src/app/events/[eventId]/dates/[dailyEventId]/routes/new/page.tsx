@@ -181,7 +181,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
   const handleMirrorHub = () => {
     const isConfirmed = confirm(
-      '목적지행의 경유지들을 귀가행에 미러링하시겠습니까?\n기존에 귀가행에 있던 경유지들은 모두 삭제됩니다.',
+      '목적지행의 경유지들을 귀가행에 미러링하시겠습니까?\n\n주의: 기존에 귀가행에 있던 경유지들은 모두 삭제됩니다.\n미러링을 진행한 이후 시간 순서를 확인해주세요.',
     );
     if (!isConfirmed) {
       return;
@@ -378,7 +378,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
           </article>
         </FormContainer.section>
         <FormContainer.section>
-          <FormContainer.label>경유지</FormContainer.label>
+          <FormContainer.label required>경유지</FormContainer.label>
           <Callout className="text-14">
             파란색으로 표시된 경유지는 행사 장소 근처 경유지에 해당합니다. (ex.
             인스파이어 아레나)
