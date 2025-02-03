@@ -20,6 +20,8 @@ const EMPTY_USER_FILTER: GetUsersOptions = {
   orderBy: undefined,
   additionalOrderOptions: 'ASC',
   status: 'ACTIVE',
+  onboardingComplete: true,
+  marketingConsent: undefined,
 };
 
 export type UserFilterAction =
@@ -58,6 +60,14 @@ export type UserFilterAction =
   | {
       type: 'SET_STATUS';
       status: GetUsersOptions['status'];
+    }
+  | {
+      type: 'SET_ONBOARDING_COMPLETE';
+      onboardingComplete: GetUsersOptions['onboardingComplete'];
+    }
+  | {
+      type: 'SET_MARKETING_CONSENT';
+      marketingConsent: GetUsersOptions['marketingConsent'];
     }
   | {
       type: 'RESET';
@@ -116,6 +126,16 @@ const reducer = (
       return {
         ...prevState,
         status: action.status,
+      };
+    case 'SET_ONBOARDING_COMPLETE':
+      return {
+        ...prevState,
+        onboardingComplete: action.onboardingComplete,
+      };
+    case 'SET_MARKETING_CONSENT':
+      return {
+        ...prevState,
+        marketingConsent: action.marketingConsent,
       };
     case 'RESET':
       return {

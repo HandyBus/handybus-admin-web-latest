@@ -19,6 +19,8 @@ const Page = () => {
   const { data: totalUsers } = useGetUsersWithPagination({
     page: undefined,
     limit: 1,
+    status: 'ACTIVE',
+    onboardingComplete: true,
   });
   const totalUserCount = totalUsers?.pages[0]?.totalCount;
 
@@ -29,12 +31,22 @@ const Page = () => {
   });
   const inactiveUserCount = inactiveUsers?.pages[0]?.totalCount;
 
-  // const { data: isOnboardingUsers } = useGetUsersWithPagination({
-  //   page: undefined,
-  //   limit: 1,
-  //   isOnboarding: true,
-  // });
-  // const isOnboardingUserCount = isOnboardingUsers?.pages[0]?.totalCount;
+  const { data: onboardingUsers } = useGetUsersWithPagination({
+    page: undefined,
+    limit: 1,
+    status: 'ACTIVE',
+    onboardingComplete: false,
+  });
+  const onboardingUserCount = onboardingUsers?.pages[0]?.totalCount;
+
+  const { data: marketingAgreedUsers } = useGetUsersWithPagination({
+    page: undefined,
+    limit: 1,
+    status: 'ACTIVE',
+    onboardingComplete: true,
+    marketingConsent: true,
+  });
+  const marketingAgreedUserCount = marketingAgreedUsers?.pages[0]?.totalCount;
 
   // 테이블에 보여지는 유저 데이터
   const [option, dispatch] = useUserFilter();
@@ -65,23 +77,29 @@ const Page = () => {
   });
 
   return (
-    <main className="flex flex-col">
+    <main className="flex grow flex-col">
       <Heading>유저 대시보드</Heading>
       <Callout>
-        <section>
-          <span className="flex items-center gap-8">
+        <section className="grid max-w-500 grid-cols-2 gap-8">
+          <div className="flex items-center gap-8">
             총 유저 수: <b>{totalUserCount}</b>
             <ToolTip>
               <b>온보딩을 완료하지 않은 유저</b>들과 <b>탈퇴한 유저</b>들을
               제외한 수입니다.
             </ToolTip>
-          </span>
-        </section>
-        <section>
-          탈퇴한 유저 수: <b>{inactiveUserCount}</b>
+          </div>
+          <div>
+            탈퇴한 유저 수: <b>{inactiveUserCount}</b>
+          </div>
+          <div>
+            온보딩을 완료하지 않은 유저 수: <b>{onboardingUserCount}</b>
+          </div>
+          <div>
+            마케팅 동의 유저 수: <b>{marketingAgreedUserCount}</b>
+          </div>
         </section>
         <br />
-        <span className="text-14">
+        <span className="text-14 text-grey-800">
           성별, 연령대, 지역이 없는 유저들은 온보딩을 완료하지 않은
           유저들입니다.
         </span>

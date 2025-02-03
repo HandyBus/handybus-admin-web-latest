@@ -139,6 +139,48 @@ const UserFilter = ({ option, dispatch }: Props) => {
               ))}
             </div>
           </article>
+          <article>
+            <Label>온보딩 완료 여부</Label>
+            <div className="flex flex-row gap-4">
+              {[true, false].map((onboardingComplete) => (
+                <Toggle
+                  key={String(onboardingComplete)}
+                  label={onboardingComplete ? '완료' : '미완료'}
+                  value={onboardingComplete === option.onboardingComplete}
+                  setValue={() =>
+                    dispatch({
+                      type: 'SET_ONBOARDING_COMPLETE',
+                      onboardingComplete:
+                        onboardingComplete === option.onboardingComplete
+                          ? undefined
+                          : onboardingComplete,
+                    })
+                  }
+                />
+              ))}
+            </div>
+          </article>
+          <article>
+            <Label>마케팅 약관 동의 여부</Label>
+            <div className="flex flex-row gap-4">
+              {[true, false].map((marketingConsent) => (
+                <Toggle
+                  key={String(marketingConsent)}
+                  label={marketingConsent ? '동의' : '미동의'}
+                  value={marketingConsent === option.marketingConsent}
+                  setValue={() =>
+                    dispatch({
+                      type: 'SET_MARKETING_CONSENT',
+                      marketingConsent:
+                        marketingConsent === option.marketingConsent
+                          ? undefined
+                          : marketingConsent,
+                    })
+                  }
+                />
+              ))}
+            </div>
+          </article>
         </div>
       </DisclosurePanel>
     </Disclosure>

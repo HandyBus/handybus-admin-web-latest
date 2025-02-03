@@ -41,6 +41,11 @@ export interface GetUsersOptions {
   status?: ActiveStatus;
   lastLoginFrom?: string;
   lastLoginTo?: string;
+  marketingConsent?: boolean;
+  serviceTermsAgreement?: boolean;
+  personalInfoConsent?: boolean;
+  onboardingComplete?: boolean;
+  paymentComplete?: boolean;
 }
 
 export interface GetUsersOptionsWithPagination extends GetUsersOptions {
