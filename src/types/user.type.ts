@@ -57,7 +57,7 @@ export const UserStatsReadModel = z
   .strict();
 export type UserStatsReadModel = z.infer<typeof UserStatsReadModel>;
 
-export const UsersViewEntity = z
+export const UsersViewEntitySchema = z
   .object({
     userId: z.number(),
     nickname: z.string(),
@@ -65,9 +65,9 @@ export const UsersViewEntity = z
     phoneNumber: z.string(),
     gender: GenderEnum,
     ageRange: AgeRangeEnum,
+    regionId: z.number().nullable(),
     authChannelType: AuthChannelTypeEnum,
     lastLoginAt: z.string().nullable(),
-    regionId: z.number(),
     favoriteArtists: ArtistsViewEntitySchema.array().nullable(),
     progresses: z
       .object({
@@ -77,4 +77,4 @@ export const UsersViewEntity = z
       .array(),
   })
   .strict();
-export type UsersViewEntity = z.infer<typeof UsersViewEntity>;
+export type UsersViewEntity = z.infer<typeof UsersViewEntitySchema>;

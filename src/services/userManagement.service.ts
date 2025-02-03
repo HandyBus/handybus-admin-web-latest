@@ -1,6 +1,16 @@
-import { useQuery } from '@tanstack/react-query';
-import { authInstance } from './config';
-import { UserStatsReadModel, UsersViewEntity } from '@/types/user.type';
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useQuery,
+} from '@tanstack/react-query';
+import { authInstance, withPagination } from './config';
+import {
+  AgeRange,
+  AuthChannelType,
+  Gender,
+  UserStatsReadModel,
+  UsersViewEntitySchema,
+} from '@/types/user.type';
 import { IssuedCouponsViewEntity } from '@/types/coupon.type';
 import {
   ShuttleDemandStatus,
@@ -18,6 +28,68 @@ import {
 } from '@/types/reservation.type';
 import { ReviewsViewEntitySchema } from '@/types/reviews.type';
 
+type GetUsersOptions = {
+  nickname?: string;
+  phoneNumber?: string;
+  gender?: Gender;
+  ageRange?: AgeRange;
+  regionId?: number;
+  authChannelType?: AuthChannelType;
+  orderBy?: 'nickname'; // orderBy 쿼리 퍼포먼스가 좋지 않기에 기본값으로 사용하는 건 권장하지 않음
+  additionalOrderOptions?: 'ASC' | 'DESC'; // orderBy 와 additionalOrderOptions은 항상 함께 전달해야 함
+};
+
+interface GetUsersOptionsWithPagination extends GetUsersOptions {
+  page: string | undefined;
+  limit?: number; // 최대 50, 없으면 전체 조회
+}
+
+export const getUsers = async (option?: GetUsersOptionsWithPagination) => {
+  const res = await authInstance.get(
+    `/v2/user-management/admin/users${toSearchParamString({ ...option }, '?')}`,
+    {
+      shape: withPagination({
+        users: UsersViewEntitySchema.array(),
+      }),
+    },
+  );
+  return res;
+};
+
+export const useGetUsersWithPagination = (
+  option?: GetUsersOptionsWithPagination,
+) =>
+  useInfiniteQuery({
+    queryKey: ['user', option],
+    queryFn: ({ pageParam }: { pageParam: string | undefined }) =>
+      getUsers({ ...option, page: pageParam }),
+    initialPageParam: undefined,
+    initialData: { pages: [], pageParams: [] },
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextPage;
+    },
+    placeholderData: keepPreviousData,
+  });
+
+export const getUser = async (userId: number) => {
+  const res = await authInstance.get(
+    `/v2/user-management/admin/users/${userId}`,
+    {
+      shape: {
+        user: UsersViewEntitySchema,
+      },
+    },
+  );
+  return res.user;
+};
+
+export const useGetUser = (userId: number) => {
+  return useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => getUser(userId),
+  });
+};
+
 export const getUserStats = async (userId: number) => {
   const res = await authInstance.get(
     `/v1/user-management/admin/users/${userId}/stats`,
@@ -34,25 +106,6 @@ export const useGetUserStats = (userId: number) => {
   return useQuery({
     queryKey: ['user', 'stats', userId],
     queryFn: () => getUserStats(userId),
-  });
-};
-
-export const getUser = async (userId: number) => {
-  const res = await authInstance.get(
-    `/v2/user-management/admin/users/${userId}`,
-    {
-      shape: {
-        user: UsersViewEntity,
-      },
-    },
-  );
-  return res.user;
-};
-
-export const useGetUser = (userId: number) => {
-  return useQuery({
-    queryKey: ['user', userId],
-    queryFn: () => getUser(userId),
   });
 };
 
