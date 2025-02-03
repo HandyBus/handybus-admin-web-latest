@@ -13,6 +13,7 @@ import Loading from '@/components/loading/Loading';
 import useUserFilter from './hooks/useUserFilter';
 import UserFilter from './components/UserFilter';
 import ToolTip from '@/components/tool-tip/ToolTip';
+import dayjs from 'dayjs';
 
 const Page = () => {
   // 유저 수를 가져오기 위한 쿼리
@@ -48,6 +49,15 @@ const Page = () => {
   });
   const marketingAgreedUserCount = marketingAgreedUsers?.pages[0]?.totalCount;
 
+  const { data: todayLoggedInUsers } = useGetUsersWithPagination({
+    page: undefined,
+    limit: 1,
+    status: 'ACTIVE',
+    onboardingComplete: true,
+    lastLoginFrom: dayjs().startOf('day').toISOString(),
+  });
+  const todayLoggedInUserCount = todayLoggedInUsers?.pages[0]?.totalCount;
+
   // 테이블에 보여지는 유저 데이터
   const [option, dispatch] = useUserFilter();
   const {
@@ -80,13 +90,16 @@ const Page = () => {
     <main className="flex grow flex-col">
       <Heading>유저 대시보드</Heading>
       <Callout>
-        <section className="grid max-w-500 grid-cols-2 gap-8">
+        <section className="grid max-w-500 grid-cols-3 gap-8">
           <div className="flex items-center gap-8">
             총 유저 수: <b>{totalUserCount}</b>
             <ToolTip>
               <b>온보딩을 완료하지 않은 유저</b>들과 <b>탈퇴한 유저</b>들을
               제외한 수입니다.
             </ToolTip>
+          </div>
+          <div>
+            오늘 접속한 유저 수: <b>{todayLoggedInUserCount}</b>
           </div>
           <div>
             탈퇴한 유저 수: <b>{inactiveUserCount}</b>

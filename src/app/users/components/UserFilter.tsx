@@ -16,6 +16,8 @@ import { UserFilterAction } from '../hooks/useUserFilter';
 import { Dispatch, ReactNode } from 'react';
 import { ActiveStatusEnum } from '@/types/common.type';
 import DebouncedInput from '@/components/input/DebouncedInput';
+import DateTimeInput from '@/components/input/DateTimeInput';
+import dayjs from 'dayjs';
 
 interface Props {
   option: GetUsersOptions;
@@ -29,7 +31,7 @@ const UserFilter = ({ option, dispatch }: Props) => {
         <FilterIcon size={16} />
         <ChevronDownIcon className="w-5 group-data-[open]:rotate-180" />
       </DisclosureButton>
-      <DisclosurePanel className="mb-8 flex flex-col gap-4 rounded-[4px] bg-notion-yellow p-16">
+      <DisclosurePanel className="mb-8 flex flex-col gap-4 rounded-[4px] bg-notion-yellow/80 p-16">
         <div className="grid grid-cols-2 gap-12">
           <article>
             <Label>닉네임</Label>
@@ -179,6 +181,35 @@ const UserFilter = ({ option, dispatch }: Props) => {
                   }
                 />
               ))}
+            </div>
+          </article>
+          <article>
+            <Label>마지막 접속 시간</Label>
+            <div className="flex flex-row gap-4">
+              <DateTimeInput
+                value={
+                  option.lastLoginFrom ? new Date(option.lastLoginFrom) : null
+                }
+                setValue={(value) =>
+                  dispatch({
+                    type: 'SET_LAST_LOGIN_FROM',
+                    lastLoginFrom: value
+                      ? dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+                      : undefined,
+                  })
+                }
+              />
+              <DateTimeInput
+                value={option.lastLoginTo ? new Date(option.lastLoginTo) : null}
+                setValue={(value) =>
+                  dispatch({
+                    type: 'SET_LAST_LOGIN_TO',
+                    lastLoginTo: value
+                      ? dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+                      : undefined,
+                  })
+                }
+              />
             </div>
           </article>
         </div>

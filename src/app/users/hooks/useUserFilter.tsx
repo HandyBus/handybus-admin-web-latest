@@ -20,6 +20,8 @@ const EMPTY_USER_FILTER: GetUsersOptions = {
   orderBy: undefined,
   additionalOrderOptions: 'ASC',
   status: 'ACTIVE',
+  lastLoginFrom: undefined,
+  lastLoginTo: undefined,
   onboardingComplete: true,
   marketingConsent: undefined,
 };
@@ -60,6 +62,14 @@ export type UserFilterAction =
   | {
       type: 'SET_STATUS';
       status: GetUsersOptions['status'];
+    }
+  | {
+      type: 'SET_LAST_LOGIN_FROM';
+      lastLoginFrom: GetUsersOptions['lastLoginFrom'];
+    }
+  | {
+      type: 'SET_LAST_LOGIN_TO';
+      lastLoginTo: GetUsersOptions['lastLoginTo'];
     }
   | {
       type: 'SET_ONBOARDING_COMPLETE';
@@ -126,6 +136,16 @@ const reducer = (
       return {
         ...prevState,
         status: action.status,
+      };
+    case 'SET_LAST_LOGIN_FROM':
+      return {
+        ...prevState,
+        lastLoginFrom: action.lastLoginFrom,
+      };
+    case 'SET_LAST_LOGIN_TO':
+      return {
+        ...prevState,
+        lastLoginTo: action.lastLoginTo,
       };
     case 'SET_ONBOARDING_COMPLETE':
       return {
