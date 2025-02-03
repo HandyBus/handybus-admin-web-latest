@@ -12,8 +12,31 @@ import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import Loading from '@/components/loading/Loading';
 import useUserFilter from './hooks/useUserFilter';
 import UserFilter from './components/UserFilter';
+import ToolTip from '@/components/tool-tip/ToolTip';
 
 const Page = () => {
+  // 유저 수를 가져오기 위한 쿼리
+  const { data: totalUsers } = useGetUsersWithPagination({
+    page: undefined,
+    limit: 1,
+  });
+  const totalUserCount = totalUsers?.pages[0]?.totalCount;
+
+  const { data: inactiveUsers } = useGetUsersWithPagination({
+    page: undefined,
+    limit: 1,
+    status: 'INACTIVE',
+  });
+  const inactiveUserCount = inactiveUsers?.pages[0]?.totalCount;
+
+  // const { data: isOnboardingUsers } = useGetUsersWithPagination({
+  //   page: undefined,
+  //   limit: 1,
+  //   isOnboarding: true,
+  // });
+  // const isOnboardingUserCount = isOnboardingUsers?.pages[0]?.totalCount;
+
+  // 테이블에 보여지는 유저 데이터
   const [option, dispatch] = useUserFilter();
   const {
     data: users,
@@ -33,7 +56,7 @@ const Page = () => {
     () => users?.pages.flatMap((page) => page.users) || [],
     [users],
   );
-  const totalUserCount = users?.pages?.[0]?.totalCount;
+  const currentUserCount = users?.pages?.[0]?.totalCount;
 
   const table = useTable({
     columns,
@@ -45,7 +68,18 @@ const Page = () => {
     <main className="flex flex-col">
       <Heading>유저 대시보드</Heading>
       <Callout>
-        총 유저 수: <b>{totalUserCount}</b>
+        <section>
+          <span className="flex items-center gap-8">
+            총 유저 수: <b>{totalUserCount}</b>
+            <ToolTip>
+              <b>온보딩을 완료하지 않은 유저</b>들과 <b>탈퇴한 유저</b>들을
+              제외한 수입니다.
+            </ToolTip>
+          </span>
+        </section>
+        <section>
+          탈퇴한 유저 수: <b>{inactiveUserCount}</b>
+        </section>
         <br />
         <span className="text-14">
           성별, 연령대, 지역이 없는 유저들은 온보딩을 완료하지 않은
@@ -53,6 +87,9 @@ const Page = () => {
         </span>
       </Callout>
       <UserFilter option={option} dispatch={dispatch} />
+      <p className="text-14 text-grey-800">
+        {currentUserCount}건의 검색 결과가 있습니다.
+      </p>
       {isFetching ? <Loading /> : <BaseTable table={table} />}
       {isFetchingNextPage && <Loading />}
       {hasNextPage && <div ref={ref} />}
