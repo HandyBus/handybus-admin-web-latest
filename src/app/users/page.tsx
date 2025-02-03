@@ -9,12 +9,15 @@ import BaseTable from '@/components/table/BaseTable';
 import Callout from '@/components/text/Callout';
 import { PAGINATION_LIMIT } from '@/constants/config';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
+import Loading from '@/components/loading/Loading';
 
 const Page = () => {
   const {
     data: users,
     hasNextPage,
     fetchNextPage,
+    isFetching,
+    isFetchingNextPage,
   } = useGetUsersWithPagination({
     page: undefined,
     limit: PAGINATION_LIMIT,
@@ -45,7 +48,8 @@ const Page = () => {
           유저들입니다.
         </span>
       </Callout>
-      <BaseTable table={table} />
+      {isFetching ? <Loading /> : <BaseTable table={table} />}
+      {isFetchingNextPage && <Loading />}
       {hasNextPage && <div ref={ref} />}
     </main>
   );
