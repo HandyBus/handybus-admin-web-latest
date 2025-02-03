@@ -105,10 +105,16 @@ const Page = () => {
         </span>
       </Callout>
       <UserFilter option={option} dispatch={dispatch} />
-      <p className="text-14 text-grey-800">
-        {currentUserCount}건의 검색 결과가 있습니다.
-      </p>
-      {isFetching ? <Loading /> : <BaseTable table={table} />}
+      {isFetching ? (
+        <Loading />
+      ) : (
+        <>
+          <p className="text-14 text-grey-800">
+            {currentUserCount}건의 검색 결과가 있습니다.
+          </p>
+          <BaseTable table={table} />
+        </>
+      )}
       {isFetchingNextPage && <Loading />}
       {hasNextPage && <div ref={ref} />}
     </main>
