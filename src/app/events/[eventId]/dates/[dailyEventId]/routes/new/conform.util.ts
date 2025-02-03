@@ -40,26 +40,36 @@ export const conform = (
   const froms: CreateShuttleRouteRequest['shuttleRouteHubs'] =
     data.shuttleRouteHubsFromDestination
       .filter(
-        (dest): dest is { regionHubId: number; arrivalTime: string } =>
-          dest.regionHubId !== null,
+        (
+          dest,
+        ): dest is {
+          regionId: number;
+          regionHubId: number;
+          arrivalTime: string;
+        } => dest.regionHubId !== null,
       )
       .map((v, idx) => ({
-        ...v,
         sequence: idx + 1,
         type: 'FROM_DESTINATION',
+        regionHubId: v.regionHubId,
         arrivalTime: v.arrivalTime,
       })) satisfies CreateShuttleRouteRequest['shuttleRouteHubs'];
 
   const tos: CreateShuttleRouteRequest['shuttleRouteHubs'] =
     data.shuttleRouteHubsToDestination
       .filter(
-        (dest): dest is { regionHubId: number; arrivalTime: string } =>
-          dest.regionHubId !== null,
+        (
+          dest,
+        ): dest is {
+          regionId: number;
+          regionHubId: number;
+          arrivalTime: string;
+        } => dest.regionHubId !== null,
       )
       .map((v, idx) => ({
-        ...v,
         sequence: idx + 1,
         type: 'TO_DESTINATION',
+        regionHubId: v.regionHubId,
         arrivalTime: v.arrivalTime,
       })) satisfies CreateShuttleRouteRequest['shuttleRouteHubs'];
 

@@ -116,7 +116,6 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     handleSubmit,
     formState: { errors },
   } = useForm<UpdateShuttleRouteRequestFormData>({
-    // resolver: zodResolver(CreateShuttleRouteRequestSchema),
     defaultValues,
   });
 
@@ -124,7 +123,6 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     fields: fromDestHubFields,
     append: appendFromDestHub,
     remove: removeFromDestHub,
-    // update: updateHub,
     swap: swapFromDestHub,
   } = useFieldArray({
     control,
@@ -135,7 +133,6 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     fields: toDestHubFields,
     prepend: prependToDestHub,
     remove: removeToDestHub,
-    // update: updateHub,
     swap: swapToDestHub,
   } = useFieldArray({
     control,
@@ -260,14 +257,14 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       name={`shuttleRouteHubsToDestination.${index}` as const}
                       render={({ field: { onChange, value } }) => (
                         <RegionHubInputSelfContained
-                          value={value.regionHubId}
-                          setValue={(newValue) =>
-                            onChange({
-                              ...value,
-                              regionHubId: newValue,
-                            })
+                          regionId={value.regionId ?? null}
+                          setRegionId={(regionId) =>
+                            onChange({ ...value, regionId })
                           }
-                          initialRegionId={value.regionId}
+                          regionHubId={value.regionHubId ?? null}
+                          setRegionHubId={(regionHubId) =>
+                            onChange({ ...value, regionHubId })
+                          }
                         />
                       )}
                     />
@@ -364,14 +361,14 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       name={`shuttleRouteHubsFromDestination.${index}` as const}
                       render={({ field: { onChange, value } }) => (
                         <RegionHubInputSelfContained
-                          value={value.regionHubId}
-                          setValue={(newValue) =>
-                            onChange({
-                              ...value,
-                              regionHubId: newValue,
-                            })
+                          regionId={value.regionId ?? null}
+                          setRegionId={(regionId) =>
+                            onChange({ ...value, regionId })
                           }
-                          initialRegionId={value.regionId}
+                          regionHubId={value.regionHubId ?? null}
+                          setRegionHubId={(regionHubId) =>
+                            onChange({ ...value, regionHubId })
+                          }
                         />
                       )}
                     />

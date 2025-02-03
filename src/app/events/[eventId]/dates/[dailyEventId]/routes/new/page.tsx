@@ -58,20 +58,24 @@ const Page = ({ params }: Props) => {
       },
       shuttleRouteHubsFromDestination: [
         {
+          regionId: null,
           regionHubId: null,
           arrivalTime: defaultDate ?? '',
         },
         {
+          regionId: null,
           regionHubId: null,
           arrivalTime: defaultDate ?? '',
         },
       ],
       shuttleRouteHubsToDestination: [
         {
+          regionId: null,
           regionHubId: null,
           arrivalTime: defaultDate ?? '',
         },
         {
+          regionId: null,
           regionHubId: null,
           arrivalTime: defaultDate ?? '',
         },
@@ -110,8 +114,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     watch,
     handleSubmit,
     formState: { errors },
+    getValues,
+    setValue,
   } = useForm<CreateShuttleRouteForm>({
-    // resolver: zodResolver(CreateShuttleRouteRequestSchema),
     defaultValues,
   });
 
@@ -123,7 +128,6 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     fields: fromDestHubFields,
     append: appendFromDestHub,
     remove: removeFromDestHub,
-    // update: updateHub,
     swap: swapFromDestHub,
   } = useFieldArray({
     control,
@@ -134,7 +138,6 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     fields: toDestHubFields,
     prepend: prependToDestHub,
     remove: removeToDestHub,
-    // update: updateHub,
     swap: swapToDestHub,
   } = useFieldArray({
     control,
@@ -174,6 +177,19 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
       )
         alert('거점지들의 시간순서가 올바르지 않습니다. 확인해주세요.');
     }
+  };
+
+  const handleMirrorHub = () => {
+    const isConfirmed = confirm(
+      '목적지행의 경유지들을 귀가행에 미러링하시겠습니까?\n기존에 귀가행에 있던 경유지들은 모두 삭제됩니다.',
+    );
+    if (!isConfirmed) {
+      return;
+    }
+    const reversedToDestinationHubs = getValues(
+      'shuttleRouteHubsToDestination',
+    ).toReversed();
+    setValue('shuttleRouteHubsFromDestination', reversedToDestinationHubs);
   };
 
   return (
@@ -361,7 +377,6 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
             </div>
           </article>
         </FormContainer.section>
-
         <FormContainer.section>
           <FormContainer.label>경유지</FormContainer.label>
           <Callout className="text-14">
@@ -381,7 +396,8 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                 type="button"
                 onClick={() =>
                   prependToDestHub({
-                    regionHubId: 0,
+                    regionId: null,
+                    regionHubId: null,
                     arrivalTime: defaultDate,
                   })
                 }
@@ -403,13 +419,17 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       <label className="text-16 font-500">거점지</label>
                       <Controller
                         control={control}
-                        name={
-                          `shuttleRouteHubsToDestination.${index}.regionHubId` as const
-                        }
+                        name={`shuttleRouteHubsToDestination.${index}` as const}
                         render={({ field: { onChange, value } }) => (
                           <RegionHubInputSelfContained
-                            value={value}
-                            setValue={onChange}
+                            regionId={value.regionId}
+                            setRegionId={(regionId) =>
+                              onChange({ ...value, regionId })
+                            }
+                            regionHubId={value.regionHubId}
+                            setRegionHubId={(regionHubId) =>
+                              onChange({ ...value, regionHubId })
+                            }
                           />
                         )}
                       />
@@ -473,19 +493,27 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
             </ul>
           </section>
           <section>
-            <Heading.h5 backgroundColor="yellow">
+            <Heading.h5 backgroundColor="yellow" className="flex">
               귀가행
               <button
                 type="button"
                 onClick={() =>
                   appendFromDestHub({
-                    regionHubId: 0,
+                    regionId: null,
+                    regionHubId: null,
                     arrivalTime: defaultDate,
                   })
                 }
                 className="ml-8 text-14 text-blue-500"
               >
                 추가
+              </button>
+              <button
+                type="button"
+                onClick={handleMirrorHub}
+                className="ml-auto block text-14 text-blue-500 underline underline-offset-2"
+              >
+                목적지행을 미러링하기
               </button>
             </Heading.h5>
             <ul className="flex flex-col gap-8">
@@ -502,12 +530,18 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       <Controller
                         control={control}
                         name={
-                          `shuttleRouteHubsFromDestination.${index}.regionHubId` as const
+                          `shuttleRouteHubsFromDestination.${index}` as const
                         }
                         render={({ field: { onChange, value } }) => (
                           <RegionHubInputSelfContained
-                            value={value}
-                            setValue={onChange}
+                            regionId={value.regionId}
+                            setRegionId={(regionId) =>
+                              onChange({ ...value, regionId })
+                            }
+                            regionHubId={value.regionHubId}
+                            setRegionHubId={(regionHubId) =>
+                              onChange({ ...value, regionHubId })
+                            }
                           />
                         )}
                       />
