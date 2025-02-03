@@ -90,7 +90,7 @@ const Page = () => {
     <main className="flex grow flex-col">
       <Heading>유저 대시보드</Heading>
       <Callout>
-        <section className="grid max-w-500 grid-cols-3 gap-8">
+        <section className="grid max-w-740 grid-cols-3 gap-8">
           <div className="flex items-center gap-8">
             총 유저 수: <b>{totalUserCount}</b>
             <ToolTip>
