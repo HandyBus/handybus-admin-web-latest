@@ -21,9 +21,6 @@ interface Props {
   setValue: (value: number | null) => void;
 }
 
-const validRegionID = (regionId: number | undefined): regionId is number =>
-  typeof regionId === 'number' && !Number.isNaN(regionId);
-
 const RegionHubInput = ({ regionId, value, setValue }: Props) => {
   const [query, setQuery] = useState('');
 
@@ -82,6 +79,7 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
           defaultValue={null}
           displayValue={(hub: null | RegionHub) => hub?.name ?? ''}
           onChange={(event) => setQuery(event.target.value)}
+          autoComplete="off"
         />
 
         <ComboboxOptions
@@ -116,21 +114,27 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
 export default RegionHubInput;
 
 export const RegionHubInputSelfContained = ({
-  value,
-  setValue,
-  initialRegionId,
-}: Omit<Props, 'regionId'> & { initialRegionId?: number }) => {
-  const [regionId, setRegionId] = useState<number | null>(
-    initialRegionId ?? null,
-  );
+  regionId,
+  setRegionId,
+  regionHubId,
+  setRegionHubId,
+}: {
+  regionId: number | null;
+  setRegionId: (value: number | null) => void;
+  regionHubId: number | null;
+  setRegionHubId: (value: number | null) => void;
+}) => {
   return (
     <div className="flex flex-col gap-4">
       <RegionInput value={regionId} setValue={setRegionId} />
       <RegionHubInput
         regionId={regionId ?? undefined}
-        value={value}
-        setValue={setValue}
+        value={regionHubId}
+        setValue={setRegionHubId}
       />
     </div>
   );
 };
+
+const validRegionID = (regionId: number | undefined): regionId is number =>
+  typeof regionId === 'number' && !Number.isNaN(regionId);

@@ -36,7 +36,6 @@ export const ShuttleRouteHubsInShuttleRoutesViewEntitySchema = z
     status: z.enum(['ACTIVE', 'INACTIVE']),
   })
   .strict();
-
 export type ShuttleRouteHubsInShuttleRoutesViewEntity = z.infer<
   typeof ShuttleRouteHubsInShuttleRoutesViewEntitySchema
 >;
@@ -71,7 +70,6 @@ export const ShuttleRoutesViewEntitySchema = z
     updatedAt: z.string(),
   })
   .strict();
-
 export type ShuttleRoutesViewEntity = z.infer<
   typeof ShuttleRoutesViewEntitySchema
 >;
@@ -107,7 +105,6 @@ export const CreateShuttleRouteRequestSchema = z
       .array(),
   })
   .strict();
-
 export type CreateShuttleRouteRequest = z.infer<
   typeof CreateShuttleRouteRequestSchema
 >;
@@ -119,7 +116,6 @@ export const UpdateShuttleRouteHubPropsSchema = z.object({
   sequence: z.number().int().positive(),
   arrivalTime: z.string(),
 });
-
 export type UpdateShuttleRouteHubProps = z.infer<
   typeof UpdateShuttleRouteHubPropsSchema
 >;
@@ -130,7 +126,6 @@ export const UpdateShuttleRouteRequestSchema = z.object({
   maxPassengerCount: z.number().int(),
   shuttleRouteHubs: UpdateShuttleRouteHubPropsSchema.array(),
 });
-
 export type UpdateShuttleRouteRequest = z.infer<
   typeof UpdateShuttleRouteRequestSchema
 >;

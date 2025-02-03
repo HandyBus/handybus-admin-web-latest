@@ -18,12 +18,14 @@ export const CreateShuttleRouteFormSchema = z.object({
   maxPassengerCount: z.number(),
   shuttleRouteHubsToDestination: z.array(
     z.object({
+      regionId: z.number().nullable(),
       regionHubId: z.number().nullable(),
       arrivalTime: z.string(),
     }),
   ),
   shuttleRouteHubsFromDestination: z.array(
     z.object({
+      regionId: z.number().nullable(),
       regionHubId: z.number().nullable(),
       arrivalTime: z.string(),
     }),
