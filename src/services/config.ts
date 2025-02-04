@@ -5,6 +5,7 @@ import replacer from './replacer';
 import { z } from 'zod';
 import { silentParse } from '@/utils/parse.util';
 import { getToken, logout } from '@/utils/handleToken.util';
+import { toast } from 'react-toastify';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -151,6 +152,11 @@ class AuthInstance {
       return await instance.fetchWithConfig<T>(url, method, body, authOptions);
     } catch (e) {
       const error = e as CustomError;
+      if (error.statusCode === 429) {
+        console.error('요청이 너무 많습니다.');
+        toast.error('요청이 너무 많습니다. 잠시 후 다시 시도해주세요.');
+        throw new CustomError(429, '요청이 너무 많습니다.');
+      }
       if (error.statusCode === 401) {
         console.error('로그인 시간 만료: ', error.message);
         logout();
