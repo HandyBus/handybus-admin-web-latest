@@ -2,36 +2,79 @@
 
 import { useCallback } from 'react';
 import { useForm, useFieldArray, useWatch } from 'react-hook-form';
-import { type CreateEventFormData, conform } from './types/form.type';
+import { type EditEventFormData, conform } from './types/form.type';
 import { useRouter } from 'next/navigation';
 import ArtistInput from '@/components/input/ArtistInput';
 import { Controller } from 'react-hook-form';
 import RegionInput from '@/components/input/RegionInput';
-import { CheckIcon, PlusIcon, XIcon } from 'lucide-react';
+import { ArrowBigRight, CheckIcon, PlusIcon, XIcon } from 'lucide-react';
 import { Button, Field, Label, RadioGroup, Radio } from '@headlessui/react';
 import ImageFileInput from '@/components/input/ImageFileInput';
 import RegionHubInput from '@/components/input/HubInput';
 import Input from '@/components/input/Input';
 import dayjs from 'dayjs';
-import { today, toDateOnly } from '@/utils/date.util';
-import { usePostEvent } from '@/services/shuttleOperation.service';
+import { useGetEvent, usePutEvent } from '@/services/shuttleOperation.service';
 import Form from '@/components/form/Form';
-import { EventTypeEnum } from '@/types/event.type';
+import { EventsViewEntity, EventTypeEnum } from '@/types/event.type';
+import Heading from '@/components/text/Heading';
 
-const defaultValues = {
-  name: '',
-  imageUrl: '',
-  regionId: 0,
-  regionHubId: 0,
-  type: 'CONCERT',
-  dailyEvents: [],
-  artistIds: [],
-} satisfies CreateEventFormData;
+interface Props {
+  params: { eventId: string };
+}
 
-const CreateEventForm = () => {
+const EditEventPage = ({ params }: Props) => {
+  const { eventId } = params;
+  const {
+    data: event,
+    isLoading,
+    isError,
+    error,
+  } = useGetEvent(Number(eventId));
+
+  return (
+    <>
+      <Heading>행사 수정하기</Heading>
+      {isLoading && <div>Loading...</div>}
+      {isError && <div>{error?.message}</div>}
+      {event && <EditEventForm event={event} />}
+    </>
+  );
+};
+
+export default EditEventPage;
+
+interface EditEventFormProps {
+  event: EventsViewEntity;
+}
+
+const EditEventForm = ({ event }: EditEventFormProps) => {
   const router = useRouter();
 
-  const { control, handleSubmit } = useForm<CreateEventFormData>({
+  const defaultValues = {
+    status: event?.eventStatus,
+    name: event?.eventName,
+    imageUrl: event?.eventImageUrl,
+    regionId: event?.regionId,
+    regionHubId: event?.regionHubId,
+    type: event?.eventType,
+    dailyEvents: event?.dailyEvents?.map((dailyEvent) => ({
+      status: dailyEvent.status,
+      dailyEventId: dailyEvent.dailyEventId,
+      date: dailyEvent.date,
+    })),
+    artistIds:
+      event?.eventArtists?.map((artist) => ({
+        artistId: artist.artistId ?? null,
+      })) ?? [],
+  };
+
+  const previousDailyEvents = event?.dailyEvents?.map((dailyEvent) => ({
+    status: dailyEvent.status,
+    dailyEventId: dailyEvent.dailyEventId,
+    date: dailyEvent.date,
+  }));
+
+  const { control, handleSubmit } = useForm<EditEventFormData>({
     defaultValues,
   });
 
@@ -44,7 +87,7 @@ const CreateEventForm = () => {
     fields: dailyFields,
     append: appendDaily,
     remove: removeDaily,
-  } = useFieldArray<CreateEventFormData>({
+  } = useFieldArray<EditEventFormData>({
     control,
     name: 'dailyEvents',
   });
@@ -53,32 +96,32 @@ const CreateEventForm = () => {
     fields: concertArtistFields,
     append: appendArtist,
     remove: removeArtist,
-  } = useFieldArray<CreateEventFormData>({
+  } = useFieldArray<EditEventFormData>({
     control,
     name: 'artistIds',
   });
 
-  const { mutate: postEvent } = usePostEvent({
+  const { mutate: putEvent } = usePutEvent({
     onSuccess: () => {
-      alert('행사가 추가되었습니다.');
-      router.push('/events');
+      alert('행사가 수정되었습니다.');
+      router.push(`/events/${event.eventId}`);
     },
     onError: (error) => {
-      console.error('Error creating events:', error);
+      console.error('Error editing events:', error);
       alert(
-        '행사 추가에 실패했습니다, ' +
+        '행사 수정에 실패했습니다, ' +
           (error instanceof Error && error.message),
       );
     },
   });
 
   const onSubmit = useCallback(
-    (data: CreateEventFormData) => {
-      if (confirm('행사를 추가하시겠습니까?')) {
-        postEvent(conform(data));
+    (data: EditEventFormData) => {
+      if (confirm('행사를 수정하시겠습니까?')) {
+        putEvent({ eventId: event.eventId, body: conform(data) });
       }
     },
-    [postEvent],
+    [event, putEvent],
   );
 
   return (
@@ -92,7 +135,7 @@ const CreateEventForm = () => {
             <Input
               type="text"
               value={value}
-              placeholder="셔틀 이름"
+              placeholder="행사 이름"
               setValue={onChange}
             />
           )}
@@ -127,35 +170,67 @@ const CreateEventForm = () => {
           날짜
           <button
             type="button"
-            onClick={() => appendDaily({ date: today() })}
+            onClick={() =>
+              appendDaily({
+                date: dayjs().format('YYYY-MM-DD'),
+              })
+            }
             className="w-fit text-blue-500"
           >
             <PlusIcon />
           </button>
         </Form.label>
-        <div className="flex w-full flex-col gap-4">
-          {dailyFields.map((field, index) => (
-            <Controller
-              key={field.id}
-              control={control}
-              name={`dailyEvents.${index}.date` as const}
-              render={({ field: { onChange, value } }) => (
-                <div className="flex w-full flex-col">
-                  <div className="flex w-full flex-row items-center">
-                    <Input
-                      type="date"
-                      className="w-full"
-                      value={dayjs(value).format('YYYY-MM-DD')}
-                      setValue={(str) => onChange(toDateOnly(new Date(str)))}
-                    />
-                    <button type="button" onClick={() => removeDaily(index)}>
-                      <XIcon />
-                    </button>
+        <div className="flex gap-4">
+          <div className="flex w-full flex-col gap-4">
+            {previousDailyEvents?.map((dailyEvent) => (
+              <div
+                key={dailyEvent.dailyEventId}
+                className="flex w-full items-center gap-4"
+              >
+                <Input
+                  type="date"
+                  value={dayjs(dailyEvent.date).format('YYYY-MM-DD')}
+                  className="w-full"
+                  disabled={true}
+                />
+                <ArrowBigRight />
+              </div>
+            ))}
+          </div>
+          <div className="flex w-full flex-col gap-4">
+            {dailyFields.map((field, index) => (
+              <Controller
+                key={field.id}
+                control={control}
+                name={`dailyEvents.${index}` as const}
+                render={({ field: { onChange, value } }) => (
+                  <div className="flex w-full flex-col">
+                    <div className="flex w-full flex-row items-center">
+                      <Input
+                        type="date"
+                        className="w-full"
+                        value={dayjs(value.date).format('YYYY-MM-DD')}
+                        setValue={(str) =>
+                          onChange({
+                            ...value,
+                            date: dayjs(str).format('YYYY-MM-DD'),
+                          })
+                        }
+                      />
+                      {!value.dailyEventId && (
+                        <button
+                          type="button"
+                          onClick={() => removeDaily(index)}
+                        >
+                          <XIcon />
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
-            />
-          ))}
+                )}
+              />
+            ))}
+          </div>
         </div>
       </Form.section>
       <Form.section>
@@ -246,9 +321,7 @@ const CreateEventForm = () => {
           ))}
         </div>
       </Form.section>
-      <Form.submitButton>추가하기</Form.submitButton>
+      <Form.submitButton>수정하기</Form.submitButton>
     </Form>
   );
 };
-
-export default CreateEventForm;

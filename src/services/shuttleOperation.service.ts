@@ -13,6 +13,8 @@ import {
   CreateEventRequestSchema,
   EventStatus,
   EventsViewEntitySchema,
+  UpdateEventRequest,
+  UpdateEventRequestSchema,
 } from '@/types/event.type';
 import {
   CreateShuttleRouteRequest,
@@ -487,6 +489,33 @@ export const usePostEvent = ({
       queryClient.invalidateQueries({ queryKey: ['event'] });
       onSuccess?.();
     },
+    onError,
+  });
+};
+
+export const putEvent = async (eventId: number, body: UpdateEventRequest) => {
+  await authInstance.put(
+    `/v2/shuttle-operation/admin/events/${eventId}`,
+    silentParse(UpdateEventRequestSchema, body),
+  );
+};
+
+export const usePutEvent = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess?: () => void;
+  onError?: (error: unknown) => void;
+} = {}) => {
+  return useMutation({
+    mutationFn: ({
+      eventId,
+      body,
+    }: {
+      eventId: number;
+      body: UpdateEventRequest;
+    }) => putEvent(eventId, body),
+    onSuccess,
     onError,
   });
 };
