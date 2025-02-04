@@ -24,12 +24,7 @@ interface Props {
 
 const EditEventPage = ({ params }: Props) => {
   const { eventId } = params;
-  const {
-    data: event,
-    isLoading,
-    isError,
-    error,
-  } = useGetEvent(Number(eventId));
+  const { data: event, isLoading, isError, error } = useGetEvent(eventId);
 
   return (
     <>

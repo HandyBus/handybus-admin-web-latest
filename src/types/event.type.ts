@@ -66,18 +66,17 @@ export const UpdateEventRequestSchema = z
     status: EventStatusEnum,
     name: z.string(),
     imageUrl: z.string().url(),
-    regionId: z.number().int(),
-    regionHubId: z.number().int(),
+    regionId: z.string(),
+    regionHubId: z.string(),
     dailyEvents: z
       .object({
         status: EventStatusEnum.optional(),
-        dailyEventId: z.number().int().optional(),
+        dailyEventId: z.string().optional(),
         date: z.string(),
       })
       .array(),
     type: EventTypeEnum,
-    artistIds: z.number().int().array(),
+    artistIds: z.string().array(),
   })
   .partial();
-
 export type UpdateEventRequest = z.infer<typeof UpdateEventRequestSchema>;

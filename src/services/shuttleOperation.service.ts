@@ -493,7 +493,7 @@ export const usePostEvent = ({
   });
 };
 
-export const putEvent = async (eventId: number, body: UpdateEventRequest) => {
+export const putEvent = async (eventId: string, body: UpdateEventRequest) => {
   await authInstance.put(
     `/v2/shuttle-operation/admin/events/${eventId}`,
     silentParse(UpdateEventRequestSchema, body),
@@ -512,7 +512,7 @@ export const usePutEvent = ({
       eventId,
       body,
     }: {
-      eventId: number;
+      eventId: string;
       body: UpdateEventRequest;
     }) => putEvent(eventId, body),
     onSuccess,
