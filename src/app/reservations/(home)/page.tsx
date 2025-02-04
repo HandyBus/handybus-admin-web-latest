@@ -47,8 +47,8 @@ const RouteReservations = () => {
 
   const { data: events } = useGetEvents();
   const { data: shuttleRoutes } = useGetShuttleRoutesOfDailyEvent(
-    selectedEvent?.eventId ?? 0,
-    selectedDailyEvent?.dailyEventId ?? 0,
+    selectedEvent?.eventId ?? '',
+    selectedDailyEvent?.dailyEventId ?? '',
   );
 
   return (

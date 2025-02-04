@@ -20,8 +20,8 @@ import Form from '@/components/form/Form';
 const defaultValues = {
   name: '',
   imageUrl: '',
-  regionId: 0,
-  regionHubId: 0,
+  regionId: '',
+  regionHubId: '',
   type: 'CONCERT',
   dailyEvents: [],
   artistIds: [],

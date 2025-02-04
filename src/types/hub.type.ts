@@ -3,18 +3,18 @@ import { z } from 'zod';
 // ----- GET -----
 
 export const RouteHubSchema = z.object({
-  shuttleRouteHubId: z.number().int(),
+  shuttleRouteHubId: z.string(),
   name: z.string(),
   sequence: z.number().int().positive(),
-  regionId: z.number().int(),
-  regionHubId: z.number().int(),
+  regionId: z.string(),
+  regionHubId: z.string(),
   arrivalTime: z.string(),
 });
 export type RouteHubType = z.infer<typeof RouteHubSchema>;
 
 export const RegionHubSchema = z.object({
-  regionHubId: z.number().int(),
-  regionId: z.number().int(),
+  regionHubId: z.string(),
+  regionId: z.string(),
   name: z.string(),
   address: z.string(),
   latitude: z.number(),

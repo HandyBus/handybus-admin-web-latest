@@ -8,8 +8,8 @@ import dayjs from 'dayjs';
 import { useGetRegionHub } from '@/services/location.service';
 
 interface Props {
-  regionId: number;
-  regionHubId: number;
+  regionId: string;
+  regionHubId: string;
 }
 
 // TODO use v2 api when available
@@ -42,7 +42,7 @@ export default RegionHubViewerModal;
 
 const RegionHubViewer = ({ regionHub }: { regionHub: RegionHub }) => {
   return (
-    <div className="bg-white p-8 rounded-lg">
+    <div className="rounded-lg bg-white p-8">
       <div>지역 ID: {regionHub.regionId}</div>
       <div>지역 거점지 ID: {regionHub.regionHubId}</div>
       <div>이름: {regionHub.name}</div>

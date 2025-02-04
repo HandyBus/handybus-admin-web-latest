@@ -18,7 +18,7 @@ export type EventType = z.infer<typeof EventTypeEnum>;
 
 export const EventDailyShuttlesInEventsViewEntitySchema = z
   .object({
-    dailyEventId: z.number().int(),
+    dailyEventId: z.string(),
     date: z.string(),
     status: EventStatusEnum,
   })
@@ -29,11 +29,11 @@ export type EventDailyShuttlesInEventsViewEntity = z.infer<
 
 export const EventsViewEntitySchema = z
   .object({
-    eventId: z.number().int(),
+    eventId: z.string(),
     eventName: z.string(),
     eventType: EventTypeEnum,
-    regionId: z.number().int(),
-    regionHubId: z.number().int(),
+    regionId: z.string(),
+    regionHubId: z.string(),
     eventStatus: EventStatusEnum,
     eventImageUrl: z.literal('').or(z.string()),
     eventLocationName: z.string(),
@@ -53,11 +53,10 @@ export type EventsViewEntity = z.infer<typeof EventsViewEntitySchema>;
 export const CreateEventRequestSchema = z.object({
   name: z.string(),
   imageUrl: z.string().url(),
-  regionId: z.number().int(),
-  regionHubId: z.number().int(),
+  regionId: z.string(),
+  regionHubId: z.string(),
   dailyEvents: z.object({ date: z.date() }).array(),
   type: EventTypeEnum,
-  artistIds: z.number().int().array(),
+  artistIds: z.string().array(),
 });
-
 export type CreateEventRequest = z.infer<typeof CreateEventRequestSchema>;

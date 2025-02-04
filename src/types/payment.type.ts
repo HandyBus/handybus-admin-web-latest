@@ -8,7 +8,7 @@ export type RefundStatus = z.infer<typeof RefundStatusEnum>;
 // ----- GET -----
 
 const RefundRequestsInPaymentsViewEntitySchema = z.object({
-  refundRequestId: z.number(),
+  refundRequestId: z.string(),
   paymentId: z.string(),
   principalAmount: z.number(),
   previousRefundableAmount: z.number(),
@@ -34,8 +34,8 @@ export const PaymentsViewEntitySchema = z.object({
   couponDiscountAmount: z.number(),
   earlybirdDiscountAmount: z.number(),
   refundableAmount: z.number(),
-  issuedCouponId: z.number().nullable(),
-  reservationId: z.number(),
+  issuedCouponId: z.string().nullable(),
+  reservationId: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
   refundRequests: RefundRequestsInPaymentsViewEntitySchema.array().nullable(),
@@ -55,7 +55,7 @@ export const TossPaymentsCancelsEntitySchema = z.array(
     receiptKey: z.string(),
     cancelStatus: z.string(),
     cancelRequestId: z.string(),
-    tossPaymentId: z.number(),
+    tossPaymentId: z.string(),
   }),
 );
 export type TossPaymentsCancelsEntity = z.infer<
@@ -79,7 +79,7 @@ export const TossPaymentsCashReceiptsEntitySchema = z.array(
     failureMessage: z.string().nullable(),
     customerIdentityNumber: z.string(),
     requestedAt: z.string(),
-    tossPaymentId: z.number(),
+    tossPaymentId: z.string(),
   }),
 );
 export type TossPaymentsCashReceiptsEntity = z.infer<

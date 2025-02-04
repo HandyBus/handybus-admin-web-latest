@@ -16,7 +16,7 @@ import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
 
 interface Props {
-  params: { eventId: number };
+  params: { eventId: string };
 }
 
 const Page = ({ params: { eventId } }: Props) => {
@@ -60,7 +60,7 @@ const Page = ({ params: { eventId } }: Props) => {
 export default Page;
 
 interface SubProps {
-  eventId: number;
+  eventId: string;
   dailyEvent: EventDailyShuttlesInEventsViewEntity;
 }
 

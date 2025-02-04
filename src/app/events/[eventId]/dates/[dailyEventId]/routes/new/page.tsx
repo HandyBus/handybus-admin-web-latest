@@ -26,17 +26,11 @@ interface Props {
 const Page = ({ params }: Props) => {
   const { eventId, dailyEventId } = params;
 
-  const {
-    data: event,
-    isPending,
-    isError,
-    error,
-  } = useGetEvent(Number(eventId));
+  const { data: event, isPending, isError, error } = useGetEvent(eventId);
 
   const defaultDate = useMemo(() => {
-    return event?.dailyEvents.find(
-      (de) => de.dailyEventId === Number(dailyEventId),
-    )?.date;
+    return event?.dailyEvents.find((de) => de.dailyEventId === dailyEventId)
+      ?.date;
   }, [event, dailyEventId]);
 
   const defaultValues: CreateShuttleRouteForm = useMemo(
@@ -166,8 +160,8 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     try {
       const shuttleRouteHubs = conform(data);
       postRoute({
-        eventId: Number(eventId),
-        dailyEventId: Number(dailyEventId),
+        eventId,
+        dailyEventId,
         body: shuttleRouteHubs,
       });
     } catch (error) {

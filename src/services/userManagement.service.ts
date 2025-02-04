@@ -34,7 +34,7 @@ export interface GetUsersOptions {
   phoneNumber?: string;
   gender?: Gender;
   ageRange?: AgeRange;
-  regionId?: number;
+  regionId?: string;
   authChannelType?: AuthChannelType;
   orderBy?: 'nickname'; // orderBy 쿼리 퍼포먼스가 좋지 않기에 기본값으로 사용하는 건 권장하지 않음
   additionalOrderOptions?: 'ASC' | 'DESC'; // orderBy 와 additionalOrderOptions은 항상 함께 전달해야 함
@@ -80,7 +80,7 @@ export const useGetUsersWithPagination = (
     placeholderData: keepPreviousData,
   });
 
-export const getUser = async (userId: number) => {
+export const getUser = async (userId: string) => {
   const res = await authInstance.get(
     `/v2/user-management/admin/users/${userId}`,
     {
@@ -92,14 +92,14 @@ export const getUser = async (userId: number) => {
   return res.user;
 };
 
-export const useGetUser = (userId: number) => {
+export const useGetUser = (userId: string) => {
   return useQuery({
     queryKey: ['user', userId],
     queryFn: () => getUser(userId),
   });
 };
 
-export const getUserStats = async (userId: number) => {
+export const getUserStats = async (userId: string) => {
   const res = await authInstance.get(
     `/v1/user-management/admin/users/${userId}/stats`,
     {
@@ -111,14 +111,14 @@ export const getUserStats = async (userId: number) => {
   return res.userStats;
 };
 
-export const useGetUserStats = (userId: number) => {
+export const useGetUserStats = (userId: string) => {
   return useQuery({
     queryKey: ['user', 'stats', userId],
     queryFn: () => getUserStats(userId),
   });
 };
 
-export const getUserCoupons = async (userId: number) => {
+export const getUserCoupons = async (userId: string) => {
   const res = await authInstance.get(
     `/v2/user-management/admin/users/${userId}/coupons`,
     {
@@ -130,7 +130,7 @@ export const getUserCoupons = async (userId: number) => {
   return res.issuedCoupons;
 };
 
-export const useGetUserCoupons = (userId: number) => {
+export const useGetUserCoupons = (userId: string) => {
   return useQuery({
     queryKey: ['user', userId, 'coupon'],
     queryFn: () => getUserCoupons(userId),
@@ -138,7 +138,7 @@ export const useGetUserCoupons = (userId: number) => {
 };
 
 export const getUserDemands = async (
-  userId: number,
+  userId: string,
   params?: { status?: ShuttleDemandStatus },
 ) => {
   const res = await authInstance.get(
@@ -152,14 +152,14 @@ export const getUserDemands = async (
   return res.shuttleDemands;
 };
 
-export const useGetUserDemands = (userId: number) => {
+export const useGetUserDemands = (userId: string) => {
   return useQuery({
     queryKey: ['user', userId, 'demand'],
     queryFn: () => getUserDemands(userId),
   });
 };
 
-export const getUserPayment = async (userId: number, paymentId: number) => {
+export const getUserPayment = async (userId: string, paymentId: string) => {
   const res = await authInstance.get(
     `/v2/user-management/admin/users/${userId}/payments/${paymentId}`,
     {
@@ -172,7 +172,7 @@ export const getUserPayment = async (userId: number, paymentId: number) => {
   return res;
 };
 
-export const useGetUserPayment = (userId: number, paymentId: number) => {
+export const useGetUserPayment = (userId: string, paymentId: string) => {
   return useQuery({
     queryKey: ['user', userId, 'payment', paymentId],
     queryFn: () => getUserPayment(userId, paymentId),
@@ -180,7 +180,7 @@ export const useGetUserPayment = (userId: number, paymentId: number) => {
 };
 
 export const getUserReservations = async (
-  userId: number,
+  userId: string,
   params?: {
     reservationStatus?: ReservationStatus;
     shuttleRouteStatus?: ShuttleRouteStatus;
@@ -197,7 +197,7 @@ export const getUserReservations = async (
   return res.reservations;
 };
 
-export const useGetUserReservations = (userId: number) => {
+export const useGetUserReservations = (userId: string) => {
   return useQuery({
     queryKey: ['user', userId, 'reservation'],
     queryFn: () => getUserReservations(userId),
@@ -205,8 +205,8 @@ export const useGetUserReservations = (userId: number) => {
 };
 
 export const getUserReservation = async (
-  userId: number,
-  reservationId: number,
+  userId: string,
+  reservationId: string,
 ) => {
   const res = await authInstance.get(
     `/v2/user-management/admin/users/${userId}/reservations/${reservationId}`,
@@ -222,8 +222,8 @@ export const getUserReservation = async (
 };
 
 export const useGetUserReservation = (
-  userId: number,
-  reservationId: number,
+  userId: string,
+  reservationId: string,
 ) => {
   return useQuery({
     queryKey: ['user', userId, 'reservation', reservationId],
@@ -231,7 +231,7 @@ export const useGetUserReservation = (
   });
 };
 
-export const getUserReviews = async (userId: number) => {
+export const getUserReviews = async (userId: string) => {
   const res = await authInstance.get(
     `/v2/user-management/admin/users/${userId}/reviews`,
     {
@@ -243,7 +243,7 @@ export const getUserReviews = async (userId: number) => {
   return res.reviews;
 };
 
-export const useGetUserReviews = (userId: number) => {
+export const useGetUserReviews = (userId: string) => {
   return useQuery({
     queryKey: ['user', userId, 'review'],
     queryFn: () => getUserReviews(userId),

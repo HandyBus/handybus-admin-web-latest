@@ -21,8 +21,8 @@ export type BusType = z.infer<typeof BusTypeEnum>;
 
 export const ShuttleBusesViewEntitySchema = z
   .object({
-    shuttleBusId: z.number().int(),
-    shuttleRouteId: z.number().int(),
+    shuttleBusId: z.string(),
+    shuttleRouteId: z.string(),
     busType: BusTypeEnum,
     busName: z.string(),
     busNumber: z.string(),
@@ -69,8 +69,8 @@ export type AdminUpdateShuttleBusRequest = z.infer<
 export const BulkAssignBusRequestSchema = z.object({
   reservationShuttleBusMap: z
     .object({
-      reservationId: z.number(),
-      shuttleBusId: z.number(),
+      reservationId: z.string(),
+      shuttleBusId: z.string(),
     })
     .array(),
 });

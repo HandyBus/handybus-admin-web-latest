@@ -16,16 +16,16 @@ import { useGetRegionHubs } from '@/services/location.service';
 import Link from 'next/link';
 
 interface Props {
-  regionId: number | undefined;
-  value: number | null;
-  setValue: (value: number | null) => void;
+  regionId: string | undefined;
+  value: string | null;
+  setValue: (value: string | null) => void;
 }
 
 const RegionHubInput = ({ regionId, value, setValue }: Props) => {
   const [query, setQuery] = useState('');
 
   const { data, isLoading, error } = useGetRegionHubs(
-    validRegionID(regionId) ? regionId : 0,
+    validRegionID(regionId) ? regionId : '',
   );
 
   const setSelectedHub = useCallback(
@@ -119,10 +119,10 @@ export const RegionHubInputSelfContained = ({
   regionHubId,
   setRegionHubId,
 }: {
-  regionId: number | null;
-  setRegionId: (value: number | null) => void;
-  regionHubId: number | null;
-  setRegionHubId: (value: number | null) => void;
+  regionId: string | null;
+  setRegionId: (value: string | null) => void;
+  regionHubId: string | null;
+  setRegionHubId: (value: string | null) => void;
 }) => {
   return (
     <div className="flex flex-col gap-4">
@@ -136,5 +136,5 @@ export const RegionHubInputSelfContained = ({
   );
 };
 
-const validRegionID = (regionId: number | undefined): regionId is number =>
-  typeof regionId === 'number' && !Number.isNaN(regionId);
+const validRegionID = (regionId: string | undefined): regionId is string =>
+  typeof regionId === 'string' && regionId !== '';

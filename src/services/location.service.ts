@@ -25,7 +25,7 @@ export const useGetRegions = () => {
   });
 };
 
-export const getRegionHubs = async (regionId: number) => {
+export const getRegionHubs = async (regionId: string) => {
   const res = await authInstance.get(
     `/v1/location/admin/regions/${regionId}/hubs`,
     { shape: { regionHubs: RegionHubSchema.array() } },
@@ -33,16 +33,16 @@ export const getRegionHubs = async (regionId: number) => {
   return res.regionHubs;
 };
 
-export const useGetRegionHubs = (regionId: number) => {
+export const useGetRegionHubs = (regionId: string) => {
   return useQuery({
     queryKey: ['regionHub', regionId],
     queryFn: () => getRegionHubs(regionId),
-    enabled: regionId !== 0,
+    enabled: !!regionId,
   });
 };
 
 // // TODO 추후 주석 해제. v2 버전임.
-// export const getRegionHubs = async (regionId: number) => {
+// export const getRegionHubs = async (regionId: string) => {
 //   const res = await authInstance.get(
 //     `/v1/location/admin/regions/${regionId}/hubs`,
 //     { shape: withPagination({ regionHubs: RegionHubSchema.array() }) },
@@ -50,7 +50,7 @@ export const useGetRegionHubs = (regionId: number) => {
 //   return res.regionHubs;
 // };
 
-export const getRegionHub = async (regionId: number, regionHubId: number) => {
+export const getRegionHub = async (regionId: string, regionHubId: string) => {
   const res = await authInstance.get(
     `/v1/location/admin/regions/${regionId}/hubs/${regionHubId}`,
     { shape: { regionHub: RegionHubSchema } },
@@ -58,7 +58,7 @@ export const getRegionHub = async (regionId: number, regionHubId: number) => {
   return res.regionHub;
 };
 
-export const useGetRegionHub = (regionId: number, regionHubId: number) => {
+export const useGetRegionHub = (regionId: string, regionHubId: string) => {
   return useQuery({
     queryKey: ['regionHub', regionId, regionHubId],
     queryFn: () => getRegionHub(regionId, regionHubId),
@@ -68,7 +68,7 @@ export const useGetRegionHub = (regionId: number, regionHubId: number) => {
 // ----- 명령 -----
 
 export const postRegionHub = async (
-  regionId: number,
+  regionId: string,
   body: CreateHubRequest,
 ) => {
   return await authInstance.post(
@@ -89,7 +89,7 @@ export const usePostRegionHub = ({
       regionId,
       body,
     }: {
-      regionId: number;
+      regionId: string;
       body: CreateHubRequest;
     }) => postRegionHub(regionId, body),
     onSuccess,
@@ -97,11 +97,11 @@ export const usePostRegionHub = ({
   });
 };
 
-type PutRegionHubBody = Partial<CreateHubRequest & { regionId: number }>;
+type PutRegionHubBody = Partial<CreateHubRequest & { regionId: string }>;
 
 export const putRegionHub = async (
-  regionId: number,
-  regionHubId: number,
+  regionId: string,
+  regionHubId: string,
   body: PutRegionHubBody,
 ) => {
   return await authInstance.put(
@@ -117,16 +117,16 @@ export const usePutRegionHub = () => {
       regionHubId,
       body,
     }: {
-      regionId: number;
-      regionHubId: number;
+      regionId: string;
+      regionHubId: string;
       body: PutRegionHubBody;
     }) => putRegionHub(regionId, regionHubId, body),
   });
 };
 
 export const deleteRegionHub = async (
-  regionId: number,
-  regionHubId: number,
+  regionId: string,
+  regionHubId: string,
 ) => {
   return await authInstance.delete(
     `/v1/location/admin/regions/${regionId}/hubs/${regionHubId}`,
@@ -139,15 +139,15 @@ export const useDeleteRegionHub = () => {
       regionId,
       regionHubId,
     }: {
-      regionId: number;
-      regionHubId: number;
+      regionId: string;
+      regionHubId: string;
     }) => deleteRegionHub(regionId, regionHubId),
   });
 };
 
 export const deleteRegionHubs = async (
-  regionId: number,
-  body: { regionHubIds: number[] },
+  regionId: string,
+  body: { regionHubIds: string[] },
 ) => {
   return await authInstance.delete(
     `/v1/location/admin/regions/${regionId}/hubs`,
