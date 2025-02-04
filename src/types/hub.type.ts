@@ -19,8 +19,6 @@ export const RegionHubSchema = z.object({
   address: z.string(),
   latitude: z.number(),
   longitude: z.number(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
 });
 export type RegionHub = z.infer<typeof RegionHubSchema>;
 
