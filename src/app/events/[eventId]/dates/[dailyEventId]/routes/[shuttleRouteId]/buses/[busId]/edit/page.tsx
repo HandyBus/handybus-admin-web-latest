@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 import Input from '@/components/input/Input';
@@ -11,7 +11,7 @@ import {
   useGetShuttleBus,
   usePutShuttleBus,
 } from '@/services/shuttleOperation.service';
-import { BusTypeEnum } from '@/types/shuttleBus.type';
+import { BusTypeEnum, ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
 import { conform, EditBusFormType } from './types/form.type';
@@ -39,21 +39,11 @@ const EditBusPage = ({ params }: Props) => {
     Number(params.busId),
   );
 
-  const defaultValues = useMemo(() => {
-    return {
-      type: bus?.busType ?? '',
-      name: bus?.busName ?? '',
-      number: bus?.busNumber ?? '',
-      phoneNumber: bus?.busDriverPhoneNumber ?? '',
-      openChatLink: bus?.openChatLink ?? '',
-    } as EditBusFormType;
-  }, [bus]);
-
   return (
     <>
       {isBusPending && <div>Loading...</div>}
       {isBusError && <div>Error: {busError.message}</div>}
-      {bus && <EditForm defaultValues={defaultValues} params={params} />}
+      {bus && <EditForm bus={bus} params={params} />}
     </>
   );
 };
@@ -61,19 +51,28 @@ const EditBusPage = ({ params }: Props) => {
 export default EditBusPage;
 
 interface EditFormProps {
-  defaultValues: EditBusFormType;
   params: {
     eventId: string;
     dailyEventId: string;
     shuttleRouteId: string;
     busId: string;
   };
+  bus: ShuttleBusesViewEntity;
 }
 
-const EditForm = ({ defaultValues, params }: EditFormProps) => {
+const EditForm = ({ bus, params }: EditFormProps) => {
   const router = useRouter();
+
+  const defaultValues = {
+    type: bus?.busType,
+    name: bus?.busName,
+    number: bus?.busNumber,
+    phoneNumber: bus?.busDriverPhoneNumber,
+    openChatLink: bus?.openChatLink ?? undefined, // 오픈채팅방 링크를 등록하지 않았을 수 있음.
+  } satisfies EditBusFormType;
+
   const { control, handleSubmit } = useForm<EditBusFormType>({
-    defaultValues: defaultValues,
+    defaultValues,
   });
 
   const { mutate: putBus } = usePutShuttleBus({
