@@ -1,3 +1,4 @@
+import { IssuedCouponStatus } from '@/types/coupon.type';
 import { EventStatus } from '@/types/event.type';
 import { RefundStatus } from '@/types/payment.type';
 import {
@@ -142,6 +143,20 @@ const Stringifier = Object.freeze({
         return '귀가행';
       case 'ROUND_TRIP':
         return '왕복';
+    }
+  },
+  issuedCouponStatus(v: IssuedCouponStatus) {
+    switch (v) {
+      case 'BEFORE_USE':
+        return '미사용';
+      case 'USED':
+        return '사용 완료';
+      case 'EXPIRED':
+        return '만료';
+      case 'RETRIEVED':
+        return '회수됨';
+      case 'DELETED':
+        return '삭제';
     }
   },
 });

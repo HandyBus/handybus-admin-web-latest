@@ -18,11 +18,11 @@ const EMPTY_USER_FILTER: GetUsersOptions = {
   regionId: undefined,
   authChannelType: undefined,
   orderBy: undefined,
-  additionalOrderOptions: 'ASC',
-  status: 'ACTIVE',
+  additionalOrderOptions: undefined,
+  status: undefined,
   lastLoginFrom: undefined,
   lastLoginTo: undefined,
-  onboardingComplete: true,
+  onboardingComplete: undefined,
   marketingConsent: undefined,
 };
 

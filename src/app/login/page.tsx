@@ -4,18 +4,22 @@ import Heading from '@/components/text/Heading';
 import { postLogin } from '@/services/auth.service';
 import { getToken, logout, setToken } from '@/utils/handleToken.util';
 import { useRouter } from 'next/navigation';
-import { SyntheticEvent, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+
+interface FormValues {
+  identifier: string;
+  password: string;
+}
 
 const LoginPage = () => {
   const router = useRouter();
-  const [identifier, setIdentifier] = useState('');
-  const [password, setPassword] = useState('');
 
-  const handleSubmit = async (e: SyntheticEvent) => {
-    e.preventDefault();
+  const { handleSubmit, register } = useForm<FormValues>();
+
+  const handleLogin = async (values: FormValues) => {
     try {
-      const res = await postLogin({ identifier, password });
+      const res = await postLogin(values);
       setToken(res);
       router.push('/');
       toast.success('로그인 되었습니다.');
@@ -39,21 +43,20 @@ const LoginPage = () => {
     <main>
       <Heading>로그인</Heading>
       <form
-        onSubmit={handleSubmit}
+        autoComplete="off"
+        onSubmit={handleSubmit(handleLogin)}
         className="mx-auto my-20 flex w-full max-w-500 flex-col items-center justify-center gap-12"
       >
         <input
           type="text"
           placeholder="아이디"
-          value={identifier}
-          onChange={(e) => setIdentifier(e.target.value)}
+          {...register('identifier')}
           className="w-full rounded-[4px] border border-grey-100 p-12"
         />
         <input
           type="password"
           placeholder="비밀번호"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          {...register('password')}
           className="w-full rounded-[4px] border border-grey-100 p-12"
         />
         <button className="h-40 w-full rounded-[4px] bg-blue-500 text-white">

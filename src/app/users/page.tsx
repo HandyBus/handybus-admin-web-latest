@@ -59,7 +59,11 @@ const Page = () => {
   const todayLoggedInUserCount = todayLoggedInUsers?.pages[0]?.totalCount;
 
   // 테이블에 보여지는 유저 데이터
-  const [option, dispatch] = useUserFilter();
+  const [option, dispatch] = useUserFilter({
+    additionalOrderOptions: 'ASC',
+    status: 'ACTIVE',
+    onboardingComplete: true,
+  });
   const {
     data: users,
     hasNextPage,
