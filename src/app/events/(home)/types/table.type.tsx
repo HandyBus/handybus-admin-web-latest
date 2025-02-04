@@ -116,10 +116,9 @@ export const columns = [
       );
     },
   }),
-  // TODO remove option chaining '?' after fixing the api
   columnHelper.accessor((row) => row.eventArtists?.map((p) => p.artistName), {
     id: 'artists',
-    header: '출연자',
+    header: '아티스트',
     cell: (info) => {
       const ps: string[] = info.getValue() || [];
       return (
@@ -131,15 +130,6 @@ export const columns = [
       );
     },
   }),
-  // columnHelper.display({
-  //   id: 'actions',
-  //   header: '액션',
-  //   cell: (props) => (
-  //     <BlueLink href={`/events/${props.row.original.eventId}`}>
-  //       자세히 보기
-  //     </BlueLink>
-  //   ),
-  // }),
 ];
 
 // Initial column visibility - columns are shown by default

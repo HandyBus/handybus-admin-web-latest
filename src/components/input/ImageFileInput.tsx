@@ -4,7 +4,7 @@ import { CheckIcon, ImagePlusIcon, Loader2Icon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { twJoin } from 'tailwind-merge';
 import Image from 'next/image';
-import { getPresignedUrl } from '@/services/common.service';
+import { Extension, getPresignedUrl } from '@/services/common.service';
 
 interface Props {
   type: 'concerts' | 'users/profiles' | 'reviews';
@@ -29,8 +29,8 @@ const ImageFileInput = ({ type, value, setValue }: Props) => {
   }, [file, setValue, type]);
 
   return (
-    <div className="size-full flex flex-row justify-between items-center bg-white border border-grey-300 p-8 rounded-lg">
-      <div className="w-[80px] h-[110px] overflow-hidden rounded-lg bg-grey-200">
+    <div className="flex size-full flex-row items-center justify-between rounded-lg border border-grey-300 bg-white p-8">
+      <div className="h-[110px] w-[80px] overflow-hidden rounded-lg bg-grey-200">
         {!isPending && (
           <Image
             src={value}
@@ -46,9 +46,9 @@ const ImageFileInput = ({ type, value, setValue }: Props) => {
         <label
           htmlFor="image_upload"
           className={twJoin(
-            `flex items-center text-white gap-2 p-4 cursor-pointer rounded-lg`,
+            `gap-2 flex cursor-pointer items-center rounded-lg p-4 text-white`,
             isPending ? 'bg-blue-400' : 'bg-grey-600',
-            'active:scale-90 transition-transform',
+            'transition-transform active:scale-90',
           )}
         >
           {isPending ? <ImagePlusIcon /> : <CheckIcon />}
@@ -85,7 +85,9 @@ const addImageFile = async (
   }
 
   const extension =
-    image.type === 'image/svg+xml' ? 'svg' : image.type.split('/').at(1) || '';
+    image.type === 'image/svg+xml'
+      ? 'svg'
+      : (image.type.split('/').at(1) as Extension);
 
   const presigned = await getPresignedUrl(key, extension);
   const presignedUrl = presigned.presignedUrl;

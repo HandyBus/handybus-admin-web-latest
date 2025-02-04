@@ -11,7 +11,6 @@ interface Props {
   regionHubId: string;
 }
 
-// TODO use v2 api when available
 const RegionHubViewerModal = ({ regionId, regionHubId }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const { data, isLoading, error } = useGetRegionHub(regionId, regionHubId);

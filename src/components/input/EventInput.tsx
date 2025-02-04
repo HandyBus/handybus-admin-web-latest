@@ -97,8 +97,7 @@ const EventInput = ({ value, setValue }: Props) => {
               <div className="flex flex-col">
                 <span>{event.eventName}</span>
                 <span>
-                  {// TODO remove option chaining '?' after fixing the api
-                  event.eventArtists?.map((p) => p.artistName).join(', ')}
+                  {event.eventArtists?.map((p) => p.artistName).join(', ')}
                 </span>
               </div>
             </ComboboxOption>

@@ -42,7 +42,6 @@ export interface GetRegionAllHubsOptions {
   limit?: number;
 }
 
-// TODO v2 getRegionAllHubs api 추가 필요
 export const useGetRegionAllHubs = (options?: GetRegionAllHubsOptions) => {
   return useInfiniteQuery({
     queryKey: ['regionAllHubs', options],
