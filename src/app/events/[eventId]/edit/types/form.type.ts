@@ -24,7 +24,6 @@ export const EditEventFormSchema = z.object({
 
 export type EditEventFormData = z.infer<typeof EditEventFormSchema>;
 
-//TODO: 왜 artistIds 가 null 인지 체크하도록 코드를 짜두셨을까?
 export const conform = (data: EditEventFormData): UpdateEventRequest => {
   const artistIds = data.artistIds.filter(
     (artist): artist is { artistId: number } => artist.artistId !== null,

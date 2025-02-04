@@ -16,6 +16,7 @@ import dayjs from 'dayjs';
 import { today, toDateOnly } from '@/utils/date.util';
 import { usePostEvent } from '@/services/shuttleOperation.service';
 import Form from '@/components/form/Form';
+import { EventTypeEnum } from '@/types/event.type';
 
 const defaultValues = {
   name: '',
@@ -30,11 +31,7 @@ const defaultValues = {
 const CreateEventForm = () => {
   const router = useRouter();
 
-  const {
-    control,
-    handleSubmit,
-    // formState: { errors },
-  } = useForm<CreateEventFormData>({
+  const { control, handleSubmit } = useForm<CreateEventFormData>({
     defaultValues,
   });
 
@@ -67,25 +64,21 @@ const CreateEventForm = () => {
       router.push('/events');
     },
     onError: (error) => {
-      if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
-        throw error;
-      }
       console.error('Error creating events:', error);
       alert(
         '행사 추가에 실패했습니다, ' +
           (error instanceof Error && error.message),
       );
-      throw error;
     },
   });
 
   const onSubmit = useCallback(
-    async (data: CreateEventFormData) => {
+    (data: CreateEventFormData) => {
       if (confirm('행사를 추가하시겠습니까?')) {
         postEvent(conform(data));
       }
     },
-    [router, postEvent],
+    [postEvent],
   );
 
   return (
@@ -153,7 +146,6 @@ const CreateEventForm = () => {
                       type="date"
                       className="w-full"
                       value={dayjs(value).format('YYYY-MM-DD')}
-                      // TODO check timezone issue
                       setValue={(str) => onChange(toDateOnly(new Date(str)))}
                     />
                     <button type="button" onClick={() => removeDaily(index)}>
@@ -178,7 +170,7 @@ const CreateEventForm = () => {
               onChange={(s) => onChange(s)}
               aria-label="Server size"
             >
-              {['CONCERT', 'FESTIVAL'].map((plan) => (
+              {EventTypeEnum.options.map((plan) => (
                 <Field key={plan} className="gap-2 flex items-center">
                   <Radio
                     value={plan}
