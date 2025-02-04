@@ -71,7 +71,7 @@ export const columns = [
   }),
   columnHelper.accessor('handyStatus', {
     id: 'handyStatus',
-    header: '핸디 지원 유무',
+    header: '핸디 지원 여부',
     cell: (info) => {
       switch (info.getValue()) {
         case 'ACCEPTED':

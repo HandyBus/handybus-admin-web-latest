@@ -60,5 +60,4 @@ export const ReservationViewEntitySchema = z
     hasReview: z.boolean(),
   })
   .strict();
-
 export type ReservationViewEntity = z.infer<typeof ReservationViewEntitySchema>;

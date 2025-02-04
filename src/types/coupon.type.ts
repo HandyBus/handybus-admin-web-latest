@@ -27,8 +27,8 @@ export const IssuedCouponsViewEntity = z.object({
   discountType: DiscountTypeEnum,
   discountRate: z.number().nullable(),
   discountAmount: z.number().nullable(),
-  maxDiscountAmount: z.number().nullable(),
-  maxApplicablePeople: z.number().nullable(),
+  maxDiscountAmount: z.number().nullable(), // 비율 쿠폰 경우에는 적용됨
+  maxApplicablePeople: z.number().nullable(), // 0일 경우에는 무제한
   validFrom: z.string(),
   validTo: z.string(),
   status: IssuedCouponStatusEnum,

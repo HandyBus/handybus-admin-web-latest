@@ -159,7 +159,7 @@ export const useGetUserDemands = (userId: number) => {
   });
 };
 
-export const getUserPayment = async (userId: number, paymentId: number) => {
+export const getUserPayment = async (userId: number, paymentId: string) => {
   const res = await authInstance.get(
     `/v2/user-management/admin/users/${userId}/payments/${paymentId}`,
     {
@@ -172,7 +172,7 @@ export const getUserPayment = async (userId: number, paymentId: number) => {
   return res;
 };
 
-export const useGetUserPayment = (userId: number, paymentId: number) => {
+export const useGetUserPayment = (userId: number, paymentId: string) => {
   return useQuery({
     queryKey: ['user', userId, 'payment', paymentId],
     queryFn: () => getUserPayment(userId, paymentId),
