@@ -117,7 +117,6 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
 
   return (
     <main>
-      <Heading>거점지 추가</Heading>
       <Form onSubmit={handleSubmit(onSubmit)} method="post">
         <Form.section>
           <Form.label required>거점지 이름</Form.label>
