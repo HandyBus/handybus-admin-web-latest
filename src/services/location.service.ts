@@ -5,7 +5,7 @@ import {
   CreateHubRequestSchema,
   RegionHubSchema,
 } from '@/types/hub.type';
-import { authInstance } from './config';
+import { authInstance, withPagination } from './config';
 import { silentParse } from '@/utils/parse.util';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import regions from '../data/regions.json';
@@ -25,9 +25,35 @@ export const useGetRegions = () => {
   });
 };
 
+export const getRegionAllHubs = async () => {
+  const res = await authInstance.get(`/v2/location/admin/regions/hubs`, {
+    shape: withPagination({ regionHubs: RegionHubSchema.array() }),
+  });
+  return res.regionHubs;
+};
+
+export interface GetRegionAllHubsOptions {
+  page?: number;
+  limit?: number;
+}
+
+// TODO v2 getRegionAllHubs api 추가 필요
+// export const useGetRegionAllHubs = (options?: GetRegionAllHubsOptions) => {
+//   return useInfiniteQuery({
+//     queryKey: ['regionAllHubs', options],
+//     queryFn: () => getRegionAllHubs(),
+//     initialPageParam: undefined,
+//     initialData: { pages: [], pageParams: [] },
+//     getNextPageParam: (lastPage) => {
+//       return lastPage.nextPage;
+//     },
+//     placeholderData: keepPreviousData,
+//   });
+// };
+
 export const getRegionHubs = async (regionId: number) => {
   const res = await authInstance.get(
-    `/v1/location/admin/regions/${regionId}/hubs`,
+    `/v2/location/admin/regions/${regionId}/hubs`,
     { shape: { regionHubs: RegionHubSchema.array() } },
   );
   return res.regionHubs;
@@ -41,18 +67,9 @@ export const useGetRegionHubs = (regionId: number) => {
   });
 };
 
-// // TODO 추후 주석 해제. v2 버전임.
-// export const getRegionHubs = async (regionId: number) => {
-//   const res = await authInstance.get(
-//     `/v1/location/admin/regions/${regionId}/hubs`,
-//     { shape: withPagination({ regionHubs: RegionHubSchema.array() }) },
-//   );
-//   return res.regionHubs;
-// };
-
 export const getRegionHub = async (regionId: number, regionHubId: number) => {
   const res = await authInstance.get(
-    `/v1/location/admin/regions/${regionId}/hubs/${regionHubId}`,
+    `/v2/location/admin/regions/${regionId}/hubs/${regionHubId}`,
     { shape: { regionHub: RegionHubSchema } },
   );
   return res.regionHub;
@@ -122,35 +139,4 @@ export const usePutRegionHub = () => {
       body: PutRegionHubBody;
     }) => putRegionHub(regionId, regionHubId, body),
   });
-};
-
-export const deleteRegionHub = async (
-  regionId: number,
-  regionHubId: number,
-) => {
-  return await authInstance.delete(
-    `/v1/location/admin/regions/${regionId}/hubs/${regionHubId}`,
-  );
-};
-
-export const useDeleteRegionHub = () => {
-  return useMutation({
-    mutationFn: ({
-      regionId,
-      regionHubId,
-    }: {
-      regionId: number;
-      regionHubId: number;
-    }) => deleteRegionHub(regionId, regionHubId),
-  });
-};
-
-export const deleteRegionHubs = async (
-  regionId: number,
-  body: { regionHubIds: number[] },
-) => {
-  return await authInstance.delete(
-    `/v1/location/admin/regions/${regionId}/hubs`,
-    body,
-  );
 };

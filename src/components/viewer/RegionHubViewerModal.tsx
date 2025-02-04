@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Dialog, DialogPanel } from '@headlessui/react';
 import BlueButton from '../link/BlueButton';
 import { RegionHub } from '@/types/hub.type';
-import dayjs from 'dayjs';
 import { useGetRegionHub } from '@/services/location.service';
 
 interface Props {
@@ -42,17 +41,11 @@ export default RegionHubViewerModal;
 
 const RegionHubViewer = ({ regionHub }: { regionHub: RegionHub }) => {
   return (
-    <div className="bg-white p-8 rounded-lg">
+    <div className="rounded-lg bg-white p-8">
       <div>지역 ID: {regionHub.regionId}</div>
       <div>지역 거점지 ID: {regionHub.regionHubId}</div>
       <div>이름: {regionHub.name}</div>
       <div>주소: {regionHub.address}</div>
-      <div>
-        생성: {dayjs(regionHub.createdAt).format('YYYY-MM-DD HH:mm:ss')}
-      </div>
-      <div>
-        수정: {dayjs(regionHub.updatedAt).format('YYYY-MM-DD HH:mm:ss')}
-      </div>
     </div>
   );
 };
