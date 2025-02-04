@@ -18,9 +18,7 @@ interface Props {
 }
 
 const Page = ({ params: { reservation_id } }: Props) => {
-  const { data, isPending, isError, error } = useGetReservation(
-    Number(reservation_id),
-  );
+  const { data, isPending, isError, error } = useGetReservation(reservation_id);
 
   if (isPending) return <p>로딩중...</p>;
   if (isError) return <p>에러 : {error.message}</p>;

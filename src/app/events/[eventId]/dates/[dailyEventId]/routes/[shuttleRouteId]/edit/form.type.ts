@@ -6,17 +6,17 @@ export const UpdateShuttleRouteRequestFormSchema = z.object({
   maxPassengerCount: z.number().int(),
   shuttleRouteHubsFromDestination: z.array(
     z.object({
-      shuttleRouteHubId: z.number().int().optional(),
-      regionHubId: z.number().int(),
-      regionId: z.number().int().optional(),
+      shuttleRouteHubId: z.string().optional(),
+      regionHubId: z.string(),
+      regionId: z.string().optional(),
       arrivalTime: z.string(),
     }),
   ),
   shuttleRouteHubsToDestination: z.array(
     z.object({
-      shuttleRouteHubId: z.number().int().optional(),
-      regionHubId: z.number().int(),
-      regionId: z.number().int().optional(),
+      shuttleRouteHubId: z.string().optional(),
+      regionHubId: z.string(),
+      regionId: z.string().optional(),
       arrivalTime: z.string(),
     }),
   ),

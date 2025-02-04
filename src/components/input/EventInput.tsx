@@ -11,8 +11,8 @@ import {
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 
 interface Props {
-  value: number | null;
-  setValue: (value: number | null) => void;
+  value: string | null;
+  setValue: (value: string | null) => void;
 }
 
 import { ChevronDown } from 'lucide-react';
@@ -57,12 +57,12 @@ const EventInput = ({ value, setValue }: Props) => {
       onChange={setSelectedShuttle}
       onClose={() => setQuery('')}
     >
-      <div className="relative group">
+      <div className="group relative">
         <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-grey-400 group-focus:text-blue-500">
           <ChevronDown />
         </ComboboxButton>
         <ComboboxInput
-          className="p-8 size-full border border-grey-200 rounded-lg focus:outline-blue-400"
+          className="size-full rounded-lg border border-grey-200 p-8 focus:outline-blue-400"
           aria-label="Assignee"
           placeholder={
             isLoading
@@ -80,13 +80,13 @@ const EventInput = ({ value, setValue }: Props) => {
 
         <ComboboxOptions
           anchor="bottom"
-          className="w-[var(--input-width)] shadow-md bg-white rounded-lg empty:invisible mt-4"
+          className="mt-4 w-[var(--input-width)] rounded-lg bg-white shadow-md empty:invisible"
         >
           {filtered.map((event) => (
             <ComboboxOption
               key={event.eventId}
               value={event}
-              className="data-[focus]:bg-blue-100 p-8 flex flex-row"
+              className="flex flex-row p-8 data-[focus]:bg-blue-100"
             >
               <Image
                 src={event.eventImageUrl}
@@ -97,8 +97,7 @@ const EventInput = ({ value, setValue }: Props) => {
               <div className="flex flex-col">
                 <span>{event.eventName}</span>
                 <span>
-                  {// TODO remove option chaining '?' after fixing the api
-                  event.eventArtists?.map((p) => p.artistName).join(', ')}
+                  {event.eventArtists?.map((p) => p.artistName).join(', ')}
                 </span>
               </div>
             </ComboboxOption>

@@ -11,9 +11,9 @@ import { useGetRegionHubs } from '@/services/location.service';
 import Heading from '@/components/text/Heading';
 
 const Page = () => {
-  const [regionId, setRegionId] = useState<number | null>(null);
+  const [regionId, setRegionId] = useState<string | null>(null);
 
-  const { data, isLoading, isError, error } = useGetRegionHubs(regionId ?? 0);
+  const { data, isLoading, isError, error } = useGetRegionHubs(regionId ?? '');
 
   const table = useTable({ data, columns });
 

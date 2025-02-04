@@ -24,19 +24,19 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     isPending: isShuttlePending,
     isError: isShuttleError,
     error: shuttleError,
-  } = useGetEvent(Number(eventId));
+  } = useGetEvent(eventId);
 
   const {
     data: routes,
     isPending: isRoutesPending,
     isError: isRoutesError,
     error: routesError,
-  } = useGetShuttleRoutesOfDailyEvent(Number(eventId), Number(dailyEventId));
+  } = useGetShuttleRoutesOfDailyEvent(eventId, dailyEventId);
 
   const table = useTable({ data: routes, columns });
 
   const thisDailyShuttle = shuttle
-    ? shuttle.dailyEvents.find((d) => d.dailyEventId === Number(dailyEventId))
+    ? shuttle.dailyEvents.find((d) => d.dailyEventId === dailyEventId)
     : null;
 
   useEffect(() => {

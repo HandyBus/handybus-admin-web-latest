@@ -19,9 +19,9 @@ interface Props {
 }
 
 const Page = ({ params, searchParams }: Props) => {
-  const eventId = Number(searchParams.eventId);
-  const dailyEventId = Number(searchParams.dailyEventId);
-  const shuttleRouteId = Number(params.route_id);
+  const eventId = searchParams.eventId;
+  const dailyEventId = searchParams.dailyEventId;
+  const shuttleRouteId = params.route_id;
 
   const { data: shuttleRoute } = useGetShuttleRoute(
     eventId,

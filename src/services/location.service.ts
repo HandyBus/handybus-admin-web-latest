@@ -7,7 +7,12 @@ import {
 } from '@/types/hub.type';
 import { authInstance, withPagination } from './config';
 import { silentParse } from '@/utils/parse.util';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+} from '@tanstack/react-query';
 import regions from '../data/regions.json';
 import { RegionSchema } from '@/types/region';
 
@@ -29,7 +34,7 @@ export const getRegionAllHubs = async () => {
   const res = await authInstance.get(`/v2/location/admin/regions/hubs`, {
     shape: withPagination({ regionHubs: RegionHubSchema.array() }),
   });
-  return res.regionHubs;
+  return res;
 };
 
 export interface GetRegionAllHubsOptions {
@@ -37,21 +42,20 @@ export interface GetRegionAllHubsOptions {
   limit?: number;
 }
 
-// TODO v2 getRegionAllHubs api 추가 필요
-// export const useGetRegionAllHubs = (options?: GetRegionAllHubsOptions) => {
-//   return useInfiniteQuery({
-//     queryKey: ['regionAllHubs', options],
-//     queryFn: () => getRegionAllHubs(),
-//     initialPageParam: undefined,
-//     initialData: { pages: [], pageParams: [] },
-//     getNextPageParam: (lastPage) => {
-//       return lastPage.nextPage;
-//     },
-//     placeholderData: keepPreviousData,
-//   });
-// };
+export const useGetRegionAllHubs = (options?: GetRegionAllHubsOptions) => {
+  return useInfiniteQuery({
+    queryKey: ['regionAllHubs', options],
+    queryFn: () => getRegionAllHubs(),
+    initialPageParam: undefined,
+    initialData: { pages: [], pageParams: [] },
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextPage;
+    },
+    placeholderData: keepPreviousData,
+  });
+};
 
-export const getRegionHubs = async (regionId: number) => {
+export const getRegionHubs = async (regionId: string) => {
   const res = await authInstance.get(
     `/v2/location/admin/regions/${regionId}/hubs`,
     { shape: { regionHubs: RegionHubSchema.array() } },
@@ -59,15 +63,15 @@ export const getRegionHubs = async (regionId: number) => {
   return res.regionHubs;
 };
 
-export const useGetRegionHubs = (regionId: number) => {
+export const useGetRegionHubs = (regionId: string) => {
   return useQuery({
     queryKey: ['regionHub', regionId],
     queryFn: () => getRegionHubs(regionId),
-    enabled: regionId !== 0,
+    enabled: !!regionId,
   });
 };
 
-export const getRegionHub = async (regionId: number, regionHubId: number) => {
+export const getRegionHub = async (regionId: string, regionHubId: string) => {
   const res = await authInstance.get(
     `/v2/location/admin/regions/${regionId}/hubs/${regionHubId}`,
     { shape: { regionHub: RegionHubSchema } },
@@ -75,7 +79,7 @@ export const getRegionHub = async (regionId: number, regionHubId: number) => {
   return res.regionHub;
 };
 
-export const useGetRegionHub = (regionId: number, regionHubId: number) => {
+export const useGetRegionHub = (regionId: string, regionHubId: string) => {
   return useQuery({
     queryKey: ['regionHub', regionId, regionHubId],
     queryFn: () => getRegionHub(regionId, regionHubId),
@@ -85,7 +89,7 @@ export const useGetRegionHub = (regionId: number, regionHubId: number) => {
 // ----- 명령 -----
 
 export const postRegionHub = async (
-  regionId: number,
+  regionId: string,
   body: CreateHubRequest,
 ) => {
   return await authInstance.post(
@@ -106,7 +110,7 @@ export const usePostRegionHub = ({
       regionId,
       body,
     }: {
-      regionId: number;
+      regionId: string;
       body: CreateHubRequest;
     }) => postRegionHub(regionId, body),
     onSuccess,
@@ -114,11 +118,11 @@ export const usePostRegionHub = ({
   });
 };
 
-type PutRegionHubBody = Partial<CreateHubRequest & { regionId: number }>;
+type PutRegionHubBody = Partial<CreateHubRequest & { regionId: string }>;
 
 export const putRegionHub = async (
-  regionId: number,
-  regionHubId: number,
+  regionId: string,
+  regionHubId: string,
   body: PutRegionHubBody,
 ) => {
   return await authInstance.put(
@@ -134,8 +138,8 @@ export const usePutRegionHub = () => {
       regionHubId,
       body,
     }: {
-      regionId: number;
-      regionHubId: number;
+      regionId: string;
+      regionHubId: string;
       body: PutRegionHubBody;
     }) => putRegionHub(regionId, regionHubId, body),
   });

@@ -21,8 +21,8 @@ import { EventTypeEnum } from '@/types/event.type';
 const defaultValues = {
   name: '',
   imageUrl: '',
-  regionId: 0,
-  regionHubId: 0,
+  regionId: '',
+  regionHubId: '',
   type: 'CONCERT',
   dailyEvents: [],
   artistIds: [],

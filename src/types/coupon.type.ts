@@ -18,8 +18,8 @@ export type DiscountType = z.infer<typeof DiscountTypeEnum>;
 // ----- GET -----
 
 export const IssuedCouponsViewEntity = z.object({
-  issuedCouponId: z.number(),
-  userId: z.number(),
+  issuedCouponId: z.string(),
+  userId: z.string(),
   userNickname: z.string(),
   userProfileImage: z.string(),
   code: z.string(),
@@ -36,7 +36,7 @@ export const IssuedCouponsViewEntity = z.object({
 export type IssuedCouponsViewEntity = z.infer<typeof IssuedCouponsViewEntity>;
 
 export const AdminCouponsResponseModelSchema = z.object({
-  couponId: z.number(),
+  couponId: z.string(),
   code: z.string(),
   name: z.string(),
   discountType: DiscountTypeEnum,

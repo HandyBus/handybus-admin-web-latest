@@ -43,8 +43,8 @@ export const conform = (
         (
           dest,
         ): dest is {
-          regionId: number;
-          regionHubId: number;
+          regionId: string;
+          regionHubId: string;
           arrivalTime: string;
         } => dest.regionHubId !== null,
       )
@@ -61,8 +61,8 @@ export const conform = (
         (
           dest,
         ): dest is {
-          regionId: number;
-          regionHubId: number;
+          regionId: string;
+          regionHubId: string;
           arrivalTime: string;
         } => dest.regionHubId !== null,
       )

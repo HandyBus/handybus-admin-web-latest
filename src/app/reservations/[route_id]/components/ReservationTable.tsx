@@ -12,9 +12,9 @@ import {
 import Heading from '@/components/text/Heading';
 
 interface Props {
-  eventId: number;
-  dailyEventId: number;
-  shuttleRouteId: number;
+  eventId: string;
+  dailyEventId: string;
+  shuttleRouteId: string;
 }
 
 const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {

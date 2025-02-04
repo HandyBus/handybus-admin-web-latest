@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const ArtistsViewEntitySchema = z
   .object({
-    artistId: z.number().int(),
+    artistId: z.string(),
     artistName: z.string(),
   })
   .strict();

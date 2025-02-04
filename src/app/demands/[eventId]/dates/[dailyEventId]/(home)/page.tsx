@@ -33,26 +33,26 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     city,
   });
 
-  const { data: event } = useGetEvent(Number(eventId));
+  const { data: event } = useGetEvent(eventId);
 
   const dailyEvent = event?.dailyEvents.find(
-    (d) => d.dailyEventId === Number(dailyEventId),
+    (d) => d.dailyEventId === dailyEventId,
   );
 
   const optionTo: GetDemandOptions = {
     groupBy: 'TO_DESTINATION_REGION_HUB',
     provinceFullName: partialRegion.province ?? undefined,
     cityFullName: partialRegion.city ?? undefined,
-    dailyEventId: Number(dailyEventId),
-    eventId: Number(eventId),
+    dailyEventId: dailyEventId,
+    eventId: eventId,
   };
 
   const optionFrom: GetDemandOptions = {
     groupBy: 'FROM_DESTINATION_REGION_HUB',
     provinceFullName: partialRegion.province ?? undefined,
     cityFullName: partialRegion.city ?? undefined,
-    dailyEventId: Number(dailyEventId),
-    eventId: Number(eventId),
+    dailyEventId: dailyEventId,
+    eventId: eventId,
   };
 
   const {
