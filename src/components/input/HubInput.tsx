@@ -24,8 +24,17 @@ interface Props {
 const RegionHubInput = ({ regionId, value, setValue }: Props) => {
   const [query, setQuery] = useState('');
 
-  const { data, isLoading, error } = useGetRegionHubs(
-    validRegionID(regionId) ? regionId : '',
+  const { data, isLoading, error } = useGetRegionHubs({
+    options: {
+      regionId: validRegionID(regionId) ? regionId : '',
+      page: undefined,
+    },
+    enabled: validRegionID(regionId),
+  });
+
+  const regionHubs = useMemo(
+    () => data?.pages.flatMap((page) => page.regionHubs),
+    [data],
   );
 
   const setSelectedHub = useCallback(
@@ -36,20 +45,20 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
   );
 
   const selectedHub = useMemo(
-    () => data?.find((hub) => hub.regionHubId === value) || null,
-    [data, value],
+    () => regionHubs?.find((hub) => hub.regionHubId === value) || null,
+    [regionHubs, value],
   );
 
   const filtered: RegionHub[] = useMemo(() => {
     const filterByID =
       regionId === undefined
-        ? data
-        : data?.filter((h) => h.regionId === regionId);
+        ? regionHubs
+        : regionHubs?.filter((h) => h.regionId === regionId);
 
     return query
       ? filterByFuzzy(filterByID ?? [], query, (p) => p.name)
       : (filterByID ?? []);
-  }, [data, query, regionId]);
+  }, [regionHubs, query, regionId]);
 
   if (error) return <div>Failed to load hubs</div>;
 
@@ -72,7 +81,7 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
               ? '유효한 지역을 선택해야합니다.'
               : isLoading
                 ? '로딩 중…'
-                : data?.length === 0
+                : regionHubs?.length === 0
                   ? '거점지가 없습니다'
                   : '거점지 선택'
           }
@@ -90,21 +99,23 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
             <ComboboxOption
               key={hub.regionHubId}
               value={hub}
-              className="p-8 data-[focus]:bg-blue-100"
+              className="regionHubs-[focus]:bg-blue-100 p-8"
             >
               {hub.name}
             </ComboboxOption>
           ))}
-          {data?.length === 0 && !isLoading && validRegionID(regionId) && (
-            <Link
-              href="/hubs/new"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block p-8 text-blue-500 hover:bg-blue-50"
-            >
-              + 새로운 거점 만들기
-            </Link>
-          )}
+          {regionHubs?.length === 0 &&
+            !isLoading &&
+            validRegionID(regionId) && (
+              <Link
+                href="/hubs/new"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block p-8 text-blue-500 hover:bg-blue-50"
+              >
+                + 새로운 거점 만들기
+              </Link>
+            )}
         </ComboboxOptions>
       </div>
     </Combobox>
