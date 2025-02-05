@@ -14,9 +14,11 @@ import useRegionHubFilter from './hooks/useRegionHubFilter';
 const Page = () => {
   const [option, dispatch] = useRegionHubFilter();
   const { data: regionHubs } = useGetRegionHubs({
-    ...option,
-    page: undefined,
-    limit: PAGINATION_LIMIT,
+    options: {
+      ...option,
+      page: undefined,
+      limit: PAGINATION_LIMIT,
+    },
   });
 
   const flattenedRegionHubs = useMemo(
@@ -29,8 +31,6 @@ const Page = () => {
     columns,
     manualFiltering: true,
   });
-
-  console.log(option);
 
   return (
     <main>

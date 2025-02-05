@@ -61,9 +61,13 @@ export const getRegionHubs = async (options?: GetRegionHubsOptions) => {
   return res;
 };
 
-export const useGetRegionHubs = (
-  options?: GetRegionHubsOptionsWithPagination,
-) => {
+export const useGetRegionHubs = ({
+  options,
+  enabled,
+}: {
+  options?: GetRegionHubsOptionsWithPagination;
+  enabled?: boolean;
+}) => {
   return useInfiniteQuery({
     queryKey: ['regionHub', options],
     queryFn: () => getRegionHubs(options),
@@ -73,22 +77,7 @@ export const useGetRegionHubs = (
       return lastPage.nextPage;
     },
     placeholderData: keepPreviousData,
-  });
-};
-
-export const getRegionHubsOfRegion = async (regionId: string) => {
-  const res = await authInstance.get(
-    `/v2/location/admin/regions/${regionId}/hubs`,
-    { shape: { regionHubs: RegionHubSchema.array() } },
-  );
-  return res.regionHubs;
-};
-
-export const useGetRegionHubsOfRegion = (regionId: string) => {
-  return useQuery({
-    queryKey: ['regionHub', 'region', regionId],
-    queryFn: () => getRegionHubsOfRegion(regionId),
-    enabled: !!regionId,
+    enabled,
   });
 };
 
