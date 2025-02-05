@@ -99,7 +99,7 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
             <ComboboxOption
               key={hub.regionHubId}
               value={hub}
-              className="regionHubs-[focus]:bg-blue-100 p-8"
+              className="p-8 data-[focus]:bg-blue-100"
             >
               {hub.name}
             </ComboboxOption>
