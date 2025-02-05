@@ -12,7 +12,7 @@ import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { RegionHub } from '@/types/hub.type';
 import { ChevronDown } from 'lucide-react';
 import RegionInput from './RegionInput';
-import { useGetRegionHubs } from '@/services/location.service';
+import { useGetRegionHubsOfRegion } from '@/services/location.service';
 import Link from 'next/link';
 
 interface Props {
@@ -24,7 +24,7 @@ interface Props {
 const RegionHubInput = ({ regionId, value, setValue }: Props) => {
   const [query, setQuery] = useState('');
 
-  const { data, isLoading, error } = useGetRegionHubs(
+  const { data, isLoading, error } = useGetRegionHubsOfRegion(
     validRegionID(regionId) ? regionId : '',
   );
 

@@ -15,6 +15,7 @@ import {
 } from '@tanstack/react-query';
 import regions from '../data/regions.json';
 import { RegionSchema } from '@/types/region';
+import { toSearchParamString } from '@/utils/searchParam.util';
 
 // ----- 조회 -----
 
@@ -30,22 +31,42 @@ export const useGetRegions = () => {
   });
 };
 
-export const getRegionAllHubs = async () => {
-  const res = await authInstance.get(`/v2/location/admin/regions/hubs`, {
-    shape: withPagination({ regionHubs: RegionHubSchema.array() }),
-  });
-  return res;
-};
+export interface GetRegionHubsOptions {
+  regionId?: string;
+  name?: string;
+  orderBy?: 'name' | 'address' | 'latitude' | 'longitude';
+  order?: 'ASC' | 'DESC';
+}
 
-export interface GetRegionAllHubsOptions {
-  page?: number;
+export interface GetRegionHubsOptionsWithPagination
+  extends GetRegionHubsOptions {
+  page: string | undefined;
   limit?: number;
 }
 
-export const useGetRegionAllHubs = (options?: GetRegionAllHubsOptions) => {
+export const getRegionHubs = async (options?: GetRegionHubsOptions) => {
+  let url = '';
+  if (options?.regionId) {
+    url = `/v2/location/admin/regions/${options.regionId}/hubs`;
+  } else {
+    url = `/v2/location/admin/regions/all/hubs`;
+  }
+
+  const res = await authInstance.get(
+    url + toSearchParamString({ ...options }, '?'),
+    {
+      shape: withPagination({ regionHubs: RegionHubSchema.array() }),
+    },
+  );
+  return res;
+};
+
+export const useGetRegionHubs = (
+  options?: GetRegionHubsOptionsWithPagination,
+) => {
   return useInfiniteQuery({
-    queryKey: ['regionAllHubs', options],
-    queryFn: () => getRegionAllHubs(),
+    queryKey: ['regionHub', options],
+    queryFn: () => getRegionHubs(options),
     initialPageParam: undefined,
     initialData: { pages: [], pageParams: [] },
     getNextPageParam: (lastPage) => {
@@ -55,7 +76,7 @@ export const useGetRegionAllHubs = (options?: GetRegionAllHubsOptions) => {
   });
 };
 
-export const getRegionHubs = async (regionId: string) => {
+export const getRegionHubsOfRegion = async (regionId: string) => {
   const res = await authInstance.get(
     `/v2/location/admin/regions/${regionId}/hubs`,
     { shape: { regionHubs: RegionHubSchema.array() } },
@@ -63,10 +84,10 @@ export const getRegionHubs = async (regionId: string) => {
   return res.regionHubs;
 };
 
-export const useGetRegionHubs = (regionId: string) => {
+export const useGetRegionHubsOfRegion = (regionId: string) => {
   return useQuery({
-    queryKey: ['regionHub', regionId],
-    queryFn: () => getRegionHubs(regionId),
+    queryKey: ['regionHub', 'region', regionId],
+    queryFn: () => getRegionHubsOfRegion(regionId),
     enabled: !!regionId,
   });
 };
