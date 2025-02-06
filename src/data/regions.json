@@ -1489,7 +1489,7 @@
       "updatedAt": "2024-11-08 00:00:00"
     },
     {
-      "regionId": 101,
+      "regionId": "101",
       "provinceFullName": "세종특별자치시",
       "provinceShortName": "세종",
       "cityFullName": "합강동",
