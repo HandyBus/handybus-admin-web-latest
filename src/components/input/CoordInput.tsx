@@ -70,7 +70,10 @@ const CoordInput = ({ coord, setCoord }: Props) => {
     try {
       if (window.kakao && mapRef.current) {
         const options = {
-          center: new window.kakao.maps.LatLng(37.574187, 126.976882),
+          center: new window.kakao.maps.LatLng(
+            coord.latitude || 37.574187,
+            coord.longitude || 126.976882,
+          ),
           level: 4,
         };
 
@@ -108,7 +111,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
       setError(true);
       alert('지도를 불러오는 중 오류가 발생했습니다. \n' + error);
     }
-  }, [setCoordWithAddress]);
+  }, [setCoordWithAddress, coord]);
 
   return (
     <article className="relative h-auto p-16 [&_div]:cursor-pointer">
