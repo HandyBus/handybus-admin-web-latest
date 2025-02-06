@@ -50,8 +50,8 @@ export const usePostCoupon = ({
 
 // body에 refundAmount를 제공할 경우 원본 refundRequest의 refundAmount를 덮어씁니다
 export const postCompleteRefundRequest = async (
-  paymentId: number,
-  refundRequestId: number,
+  paymentId: string,
+  refundRequestId: string,
   body?: {
     refundAmount?: number;
   },
@@ -69,8 +69,8 @@ export const usePostCompleteRefundRequest = () => {
       refundRequestId,
       body,
     }: {
-      paymentId: number;
-      refundRequestId: number;
+      paymentId: string;
+      refundRequestId: string;
       body?: { refundAmount?: number };
     }) => postCompleteRefundRequest(paymentId, refundRequestId, body),
   });

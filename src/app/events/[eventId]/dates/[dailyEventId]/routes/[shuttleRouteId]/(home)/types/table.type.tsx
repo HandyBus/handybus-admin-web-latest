@@ -7,9 +7,9 @@ import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
 import { ShuttleRouteHubsInShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 
 type ExtendedShuttleBusesViewEntity = ShuttleBusesViewEntity & {
-  eventId: number;
-  dailyEventId: number;
-  shuttleRouteId: number;
+  eventId: string;
+  dailyEventId: string;
+  shuttleRouteId: string;
 };
 
 const busColumnHelper = createColumnHelper<ExtendedShuttleBusesViewEntity>();

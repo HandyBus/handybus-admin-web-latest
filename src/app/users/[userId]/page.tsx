@@ -23,7 +23,7 @@ interface Props {
 }
 
 const Page = ({ params }: Props) => {
-  const userId = Number(params.userId);
+  const userId = params.userId;
 
   const { data: stats } = useGetUserStats(userId);
   const { data: user } = useGetUser(userId);

@@ -12,8 +12,8 @@ import { useGetArtists } from '@/services/shuttleOperation.service';
 import { ArtistsViewEntity } from '@/types/artist.type';
 
 interface Props {
-  value: number | null;
-  setValue: (value: number | null) => void;
+  value: string | null;
+  setValue: (value: string | null) => void;
 }
 
 const ArtistInput = ({ value, setValue }: Props) => {
@@ -50,7 +50,7 @@ const ArtistInput = ({ value, setValue }: Props) => {
       onClose={() => setQuery('')}
     >
       <ComboboxInput
-        className="p-8 border border-grey-200 rounded-lg focus:outline-blue-400"
+        className="rounded-lg border border-grey-200 p-8 focus:outline-blue-400"
         aria-label="Assignee"
         placeholder={isLoading ? '로딩 중…' : '아티스트 선택'}
         defaultValue={null}
@@ -62,13 +62,13 @@ const ArtistInput = ({ value, setValue }: Props) => {
 
       <ComboboxOptions
         anchor="bottom"
-        className="w-[var(--input-width)] shadow-md bg-white rounded-lg empty:invisible mt-4"
+        className="mt-4 w-[var(--input-width)] rounded-lg bg-white shadow-md empty:invisible"
       >
         {filtered.map((artist) => (
           <ComboboxOption
             key={artist.artistId}
             value={artist}
-            className="data-[focus]:bg-blue-100 p-8"
+            className="p-8 data-[focus]:bg-blue-100"
           >
             {artist.artistName}
           </ComboboxOption>

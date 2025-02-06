@@ -7,9 +7,15 @@ import {
 } from '@/types/hub.type';
 import { authInstance, withPagination } from './config';
 import { silentParse } from '@/utils/parse.util';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+} from '@tanstack/react-query';
 import regions from '../data/regions.json';
 import { RegionSchema } from '@/types/region';
+import { toSearchParamString } from '@/utils/searchParam.util';
 
 // ----- 조회 -----
 
@@ -25,49 +31,57 @@ export const useGetRegions = () => {
   });
 };
 
-export const getRegionAllHubs = async () => {
-  const res = await authInstance.get(`/v2/location/admin/regions/hubs`, {
-    shape: withPagination({ regionHubs: RegionHubSchema.array() }),
-  });
-  return res.regionHubs;
-};
+export interface GetRegionHubsOptions {
+  regionId?: string;
+  name?: string;
+  orderBy?: 'name' | 'address' | 'latitude' | 'longitude';
+  order?: 'ASC' | 'DESC';
+}
 
-export interface GetRegionAllHubsOptions {
-  page?: number;
+export interface GetRegionHubsOptionsWithPagination
+  extends GetRegionHubsOptions {
+  page: string | undefined;
   limit?: number;
 }
 
-// TODO v2 getRegionAllHubs api 추가 필요
-// export const useGetRegionAllHubs = (options?: GetRegionAllHubsOptions) => {
-//   return useInfiniteQuery({
-//     queryKey: ['regionAllHubs', options],
-//     queryFn: () => getRegionAllHubs(),
-//     initialPageParam: undefined,
-//     initialData: { pages: [], pageParams: [] },
-//     getNextPageParam: (lastPage) => {
-//       return lastPage.nextPage;
-//     },
-//     placeholderData: keepPreviousData,
-//   });
-// };
+export const getRegionHubs = async (options?: GetRegionHubsOptions) => {
+  let url = '';
+  if (options?.regionId) {
+    url = `/v2/location/admin/regions/${options.regionId}/hubs`;
+  } else {
+    url = `/v2/location/admin/regions/all/hubs`;
+  }
 
-export const getRegionHubs = async (regionId: number) => {
   const res = await authInstance.get(
-    `/v2/location/admin/regions/${regionId}/hubs`,
-    { shape: { regionHubs: RegionHubSchema.array() } },
+    url + toSearchParamString({ ...options }, '?'),
+    {
+      shape: withPagination({ regionHubs: RegionHubSchema.array() }),
+    },
   );
-  return res.regionHubs;
+  return res;
 };
 
-export const useGetRegionHubs = (regionId: number) => {
-  return useQuery({
-    queryKey: ['regionHub', regionId],
-    queryFn: () => getRegionHubs(regionId),
-    enabled: regionId !== 0,
+export const useGetRegionHubs = ({
+  options,
+  enabled,
+}: {
+  options?: GetRegionHubsOptionsWithPagination;
+  enabled?: boolean;
+}) => {
+  return useInfiniteQuery({
+    queryKey: ['regionHub', options],
+    queryFn: () => getRegionHubs(options),
+    initialPageParam: undefined,
+    initialData: { pages: [], pageParams: [] },
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextPage;
+    },
+    placeholderData: keepPreviousData,
+    enabled,
   });
 };
 
-export const getRegionHub = async (regionId: number, regionHubId: number) => {
+export const getRegionHub = async (regionId: string, regionHubId: string) => {
   const res = await authInstance.get(
     `/v2/location/admin/regions/${regionId}/hubs/${regionHubId}`,
     { shape: { regionHub: RegionHubSchema } },
@@ -75,7 +89,7 @@ export const getRegionHub = async (regionId: number, regionHubId: number) => {
   return res.regionHub;
 };
 
-export const useGetRegionHub = (regionId: number, regionHubId: number) => {
+export const useGetRegionHub = (regionId: string, regionHubId: string) => {
   return useQuery({
     queryKey: ['regionHub', regionId, regionHubId],
     queryFn: () => getRegionHub(regionId, regionHubId),
@@ -85,7 +99,7 @@ export const useGetRegionHub = (regionId: number, regionHubId: number) => {
 // ----- 명령 -----
 
 export const postRegionHub = async (
-  regionId: number,
+  regionId: string,
   body: CreateHubRequest,
 ) => {
   return await authInstance.post(
@@ -106,7 +120,7 @@ export const usePostRegionHub = ({
       regionId,
       body,
     }: {
-      regionId: number;
+      regionId: string;
       body: CreateHubRequest;
     }) => postRegionHub(regionId, body),
     onSuccess,
@@ -114,11 +128,11 @@ export const usePostRegionHub = ({
   });
 };
 
-type PutRegionHubBody = Partial<CreateHubRequest & { regionId: number }>;
+type PutRegionHubBody = Partial<CreateHubRequest & { regionId: string }>;
 
 export const putRegionHub = async (
-  regionId: number,
-  regionHubId: number,
+  regionId: string,
+  regionHubId: string,
   body: PutRegionHubBody,
 ) => {
   return await authInstance.put(
@@ -134,8 +148,8 @@ export const usePutRegionHub = () => {
       regionHubId,
       body,
     }: {
-      regionId: number;
-      regionHubId: number;
+      regionId: string;
+      regionHubId: string;
       body: PutRegionHubBody;
     }) => putRegionHub(regionId, regionHubId, body),
   });

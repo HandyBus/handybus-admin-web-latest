@@ -3,10 +3,11 @@
 import { z } from 'zod';
 import { authInstance } from './config';
 
-// TODO : v2 api가 준비되면 migrate
+export type Extension = 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'svg';
+
 export const getPresignedUrl = async (
   key: 'concerts' | 'users/profiles' | 'reviews',
-  extension: string, // TODO 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'svg',
+  extension: Extension,
 ) => {
   return await authInstance.get(
     `/v1/common/image/presigned-url?key=${key}&extension=${extension}`,

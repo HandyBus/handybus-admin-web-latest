@@ -19,8 +19,8 @@ import {
 } from '@/constants/regions';
 
 interface Props {
-  value: number | null;
-  setValue: (value: number | null) => void;
+  value: string | null;
+  setValue: (value: string | null) => void;
 }
 
 const RegionInput = ({ value, setValue }: Props) => {

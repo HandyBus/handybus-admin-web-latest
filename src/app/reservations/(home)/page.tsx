@@ -47,8 +47,8 @@ const RouteReservations = () => {
 
   const { data: events } = useGetEvents();
   const { data: shuttleRoutes } = useGetShuttleRoutesOfDailyEvent(
-    selectedEvent?.eventId ?? 0,
-    selectedDailyEvent?.dailyEventId ?? 0,
+    selectedEvent?.eventId ?? '',
+    selectedDailyEvent?.dailyEventId ?? '',
   );
 
   return (
@@ -179,7 +179,6 @@ const AllReservations = () => {
       <Heading.h2>모든 예약 조회</Heading.h2>
       <RowFilter option={option} dispatch={dispatch} />
       <ColumnFilter table={table} />
-      {/* TODO virtualization */}
       <BaseTable table={table} />
       {flatData.length === 0 && !isFetching && <p>데이터가 없습니다.</p>}
       {isError ? <p>에러 : {error.message}</p> : null}

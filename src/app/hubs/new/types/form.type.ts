@@ -2,7 +2,7 @@ import { CreateHubRequest } from '@/types/hub.type';
 import { z } from 'zod';
 
 export const CreateHubFormSchema = z.object({
-  regionId: z.number().int(),
+  regionId: z.string(),
   name: z.string(),
   coord: z.object({
     address: z.string(),

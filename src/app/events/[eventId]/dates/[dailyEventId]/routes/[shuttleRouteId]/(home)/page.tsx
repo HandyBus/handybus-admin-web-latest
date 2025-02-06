@@ -22,11 +22,7 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
     isPending: isRoutePending,
     isError: isRouteError,
     error: routeError,
-  } = useGetShuttleRoute(
-    Number(eventId),
-    Number(dailyEventId),
-    Number(shuttleRouteId),
-  );
+  } = useGetShuttleRoute(eventId, dailyEventId, shuttleRouteId);
 
   const fromHubTable = useTable({
     data: route?.fromDestinationShuttleRouteHubs.sort(
@@ -73,7 +69,7 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
                     {formatDateString(
                       route?.event?.dailyEvents.find(
                         (dailyEvent) =>
-                          dailyEvent.dailyEventId === Number(dailyEventId),
+                          dailyEvent.dailyEventId === dailyEventId,
                       )?.date,
                       'date',
                     )}

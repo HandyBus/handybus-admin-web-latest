@@ -33,10 +33,10 @@ const EditBusPage = ({ params }: Props) => {
     isError: isBusError,
     error: busError,
   } = useGetShuttleBus(
-    Number(params.eventId),
-    Number(params.dailyEventId),
-    Number(params.shuttleRouteId),
-    Number(params.busId),
+    params.eventId,
+    params.dailyEventId,
+    params.shuttleRouteId,
+    params.busId,
   );
 
   return (
@@ -92,10 +92,10 @@ const EditForm = ({ bus, params }: EditFormProps) => {
     (data: EditBusFormType) => {
       if (confirm('버스를 수정하시겠습니까?')) {
         putBus({
-          eventId: Number(params.eventId),
-          dailyEventId: Number(params.dailyEventId),
-          shuttleRouteId: Number(params.shuttleRouteId),
-          shuttleBusId: Number(params.busId),
+          eventId: params.eventId,
+          dailyEventId: params.dailyEventId,
+          shuttleRouteId: params.shuttleRouteId,
+          shuttleBusId: params.busId,
           body: conform(data),
         });
       }

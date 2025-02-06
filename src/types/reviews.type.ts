@@ -9,17 +9,17 @@ import { ActiveStatusEnum } from './common.type';
 
 export const ReviewsViewEntitySchema = z
   .object({
-    reviewId: z.number(),
-    reservationId: z.number(),
+    reviewId: z.string(),
+    reservationId: z.string(),
     rating: z.number(),
     content: z.string(),
     reviewStatus: ActiveStatusEnum,
     createdAt: z.string(),
     updatedAt: z.string(),
-    userId: z.number(),
+    userId: z.string(),
     userNickname: z.string(),
     userProfileImage: z.string(),
-    eventId: z.number(),
+    eventId: z.string(),
     eventName: z.string(),
     eventType: EventTypeEnum,
     eventLocationName: z.string(),

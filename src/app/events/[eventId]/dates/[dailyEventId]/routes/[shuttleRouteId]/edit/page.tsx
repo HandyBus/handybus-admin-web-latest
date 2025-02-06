@@ -29,11 +29,7 @@ const Page = ({ params }: Props) => {
     isPending: isRoutePending,
     isError: isRouteError,
     error: routeError,
-  } = useGetShuttleRoute(
-    Number(eventId),
-    Number(dailyEventId),
-    Number(shuttleRouteId),
-  );
+  } = useGetShuttleRoute(eventId, dailyEventId, shuttleRouteId);
 
   const defaultDate = useMemo(() => {
     return route?.event.dailyEvents.find(
@@ -158,9 +154,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     try {
       const shuttleRouteHubs = conform(data);
       putRoute({
-        eventId: Number(eventId),
-        dailyEventId: Number(dailyEventId),
-        shuttleRouteId: Number(shuttleRouteId),
+        eventId,
+        dailyEventId,
+        shuttleRouteId,
         body: shuttleRouteHubs,
       });
     } catch (error) {
@@ -232,7 +228,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
               type="button"
               onClick={() =>
                 prependToDestHub({
-                  regionHubId: 0,
+                  regionHubId: '',
                   arrivalTime: defaultDate ?? '',
                 })
               }
@@ -336,7 +332,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
               type="button"
               onClick={() =>
                 appendFromDestHub({
-                  regionHubId: 0,
+                  regionHubId: '',
                   arrivalTime: defaultDate ?? '',
                 })
               }

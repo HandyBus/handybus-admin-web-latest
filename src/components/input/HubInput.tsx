@@ -16,16 +16,25 @@ import { useGetRegionHubs } from '@/services/location.service';
 import Link from 'next/link';
 
 interface Props {
-  regionId: number | undefined;
-  value: number | null;
-  setValue: (value: number | null) => void;
+  regionId: string | undefined;
+  value: string | null;
+  setValue: (value: string | null) => void;
 }
 
 const RegionHubInput = ({ regionId, value, setValue }: Props) => {
   const [query, setQuery] = useState('');
 
-  const { data, isLoading, error } = useGetRegionHubs(
-    validRegionID(regionId) ? regionId : 0,
+  const { data, isLoading, error } = useGetRegionHubs({
+    options: {
+      regionId: validRegionID(regionId) ? regionId : '',
+      page: undefined,
+    },
+    enabled: validRegionID(regionId),
+  });
+
+  const regionHubs = useMemo(
+    () => data?.pages.flatMap((page) => page.regionHubs),
+    [data],
   );
 
   const setSelectedHub = useCallback(
@@ -36,20 +45,20 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
   );
 
   const selectedHub = useMemo(
-    () => data?.find((hub) => hub.regionHubId === value) || null,
-    [data, value],
+    () => regionHubs?.find((hub) => hub.regionHubId === value) || null,
+    [regionHubs, value],
   );
 
   const filtered: RegionHub[] = useMemo(() => {
     const filterByID =
       regionId === undefined
-        ? data
-        : data?.filter((h) => h.regionId === regionId);
+        ? regionHubs
+        : regionHubs?.filter((h) => h.regionId === regionId);
 
     return query
       ? filterByFuzzy(filterByID ?? [], query, (p) => p.name)
       : (filterByID ?? []);
-  }, [data, query, regionId]);
+  }, [regionHubs, query, regionId]);
 
   if (error) return <div>Failed to load hubs</div>;
 
@@ -72,7 +81,7 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
               ? '유효한 지역을 선택해야합니다.'
               : isLoading
                 ? '로딩 중…'
-                : data?.length === 0
+                : regionHubs?.length === 0
                   ? '거점지가 없습니다'
                   : '거점지 선택'
           }
@@ -95,16 +104,18 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
               {hub.name}
             </ComboboxOption>
           ))}
-          {data?.length === 0 && !isLoading && validRegionID(regionId) && (
-            <Link
-              href="/hubs/new"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block p-8 text-blue-500 hover:bg-blue-50"
-            >
-              + 새로운 거점 만들기
-            </Link>
-          )}
+          {regionHubs?.length === 0 &&
+            !isLoading &&
+            validRegionID(regionId) && (
+              <Link
+                href="/hubs/new"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block p-8 text-blue-500 hover:bg-blue-50"
+              >
+                + 새로운 거점 만들기
+              </Link>
+            )}
         </ComboboxOptions>
       </div>
     </Combobox>
@@ -119,10 +130,10 @@ export const RegionHubInputSelfContained = ({
   regionHubId,
   setRegionHubId,
 }: {
-  regionId: number | null;
-  setRegionId: (value: number | null) => void;
-  regionHubId: number | null;
-  setRegionHubId: (value: number | null) => void;
+  regionId: string | null;
+  setRegionId: (value: string | null) => void;
+  regionHubId: string | null;
+  setRegionHubId: (value: string | null) => void;
 }) => {
   return (
     <div className="flex flex-col gap-4">
@@ -136,5 +147,5 @@ export const RegionHubInputSelfContained = ({
   );
 };
 
-const validRegionID = (regionId: number | undefined): regionId is number =>
-  typeof regionId === 'number' && !Number.isNaN(regionId);
+const validRegionID = (regionId: string | undefined): regionId is string =>
+  typeof regionId === 'string' && regionId !== '';

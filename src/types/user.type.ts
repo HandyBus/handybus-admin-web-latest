@@ -36,14 +36,14 @@ export type ProgressType = z.infer<typeof ProgressTypeEnum>;
 
 export const UserStatsReadModel = z
   .object({
-    userId: z.number(),
+    userId: z.string(),
     nickname: z.string(),
     phoneNumber: z.string(),
     profileImage: z.string().url().or(z.string().length(0)),
     gender: GenderEnum,
     ageRange: AgeRangeEnum,
     authChannel: AuthChannelTypeEnum,
-    regionId: z.number(),
+    regionId: z.string(),
     socialInfo: z.object({
       uniqueId: z.string(),
       nickname: z.string(),
@@ -60,13 +60,13 @@ export type UserStatsReadModel = z.infer<typeof UserStatsReadModel>;
 
 export const UsersViewEntitySchema = z
   .object({
-    userId: z.number(),
+    userId: z.string(),
     nickname: z.string(),
     profileImage: z.string(),
     phoneNumber: z.string(),
     gender: GenderEnum,
     ageRange: AgeRangeEnum,
-    regionId: z.number().nullable(),
+    regionId: z.string().nullable(),
     authChannelType: AuthChannelTypeEnum,
     lastLoginAt: z.string().nullable(),
     favoriteArtists: ArtistsViewEntitySchema.array().nullable(),

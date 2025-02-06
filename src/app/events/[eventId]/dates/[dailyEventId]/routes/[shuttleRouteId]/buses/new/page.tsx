@@ -48,9 +48,9 @@ const NewBusPage = ({
     (data: CreateBusFormType) => {
       if (confirm('버스를 추가하시겠습니까?')) {
         postBus({
-          eventId: Number(eventId),
-          dailyEventId: Number(dailyEventId),
-          shuttleRouteId: Number(shuttleRouteId),
+          eventId: eventId,
+          dailyEventId: dailyEventId,
+          shuttleRouteId: shuttleRouteId,
           body: conform(data),
         });
       }

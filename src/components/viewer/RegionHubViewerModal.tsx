@@ -7,11 +7,10 @@ import { RegionHub } from '@/types/hub.type';
 import { useGetRegionHub } from '@/services/location.service';
 
 interface Props {
-  regionId: number;
-  regionHubId: number;
+  regionId: string;
+  regionHubId: string;
 }
 
-// TODO use v2 api when available
 const RegionHubViewerModal = ({ regionId, regionHubId }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const { data, isLoading, error } = useGetRegionHub(regionId, regionHubId);

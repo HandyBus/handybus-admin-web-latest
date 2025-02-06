@@ -16,12 +16,9 @@ interface Props {
 }
 
 const Page = ({ params: { eventId } }: Props) => {
-  const { data: event } = useGetEvent(Number(eventId));
+  const { data: event } = useGetEvent(eventId);
 
-  const columnsForThisShuttleId = useMemo(
-    () => columns(Number(eventId)),
-    [eventId],
-  );
+  const columnsForThisShuttleId = useMemo(() => columns(eventId), [eventId]);
 
   const table = useTable({
     data: event?.dailyEvents,

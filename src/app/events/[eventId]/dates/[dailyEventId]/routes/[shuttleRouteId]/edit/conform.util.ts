@@ -40,7 +40,7 @@ export const conform = (
   const tos: UpdateShuttleRouteRequest['shuttleRouteHubs'] =
     data.shuttleRouteHubsToDestination
       .filter(
-        (dest): dest is { regionHubId: number; arrivalTime: string } =>
+        (dest): dest is { regionHubId: string; arrivalTime: string } =>
           dest.regionHubId !== null,
       )
       .map((v, idx) => ({
@@ -53,7 +53,7 @@ export const conform = (
   const froms: UpdateShuttleRouteRequest['shuttleRouteHubs'] =
     data.shuttleRouteHubsFromDestination
       .filter(
-        (dest): dest is { regionHubId: number; arrivalTime: string } =>
+        (dest): dest is { regionHubId: string; arrivalTime: string } =>
           dest.regionHubId !== null,
       )
       .map((v, idx) => ({

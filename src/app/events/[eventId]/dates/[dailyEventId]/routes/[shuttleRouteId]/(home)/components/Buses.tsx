@@ -19,18 +19,14 @@ const Buses = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     isPending: isBusPending,
     isError: isBusError,
     error: busError,
-  } = useGetShuttleBuses(
-    Number(eventId),
-    Number(dailyEventId),
-    Number(shuttleRouteId),
-  );
+  } = useGetShuttleBuses(eventId, dailyEventId, shuttleRouteId);
 
   const busTable = useTable({
     data: (buses ?? []).map((bus) => ({
       ...bus,
-      eventId: Number(eventId),
-      dailyEventId: Number(dailyEventId),
-      shuttleRouteId: Number(shuttleRouteId),
+      eventId: eventId,
+      dailyEventId: dailyEventId,
+      shuttleRouteId: shuttleRouteId,
     })),
     columns: busColumns,
   });

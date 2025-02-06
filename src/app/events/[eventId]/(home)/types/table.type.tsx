@@ -7,7 +7,7 @@ import Stringifier from '@/utils/stringifier.util';
 const columnHelper =
   createColumnHelper<ArrayElement<EventDailyShuttlesInEventsViewEntity[]>>();
 
-export const columns = (eventId: number) => [
+export const columns = (eventId: string) => [
   columnHelper.accessor('dailyEventId', {
     header: () => 'ID',
     cell: (info) => info.getValue(),

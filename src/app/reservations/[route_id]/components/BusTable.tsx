@@ -28,9 +28,9 @@ type BusWithSeat = {
 };
 
 interface Props {
-  eventId: number;
-  dailyEventId: number;
-  shuttleRouteId: number;
+  eventId: string;
+  dailyEventId: string;
+  shuttleRouteId: string;
 }
 
 const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
@@ -207,7 +207,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
 
   // 버스 좌석 업데이트
   const updateBusWithSeats = (
-    busId: number,
+    busId: string,
     requiredSeat: number,
     seatType: TripType,
   ) => {
@@ -256,13 +256,13 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
 
   // 버스 변경
   const handleChangeBus = (
-    shuttleBusId: number,
+    shuttleBusId: string,
     buses: ShuttleBusesViewEntity[],
     reservation: ReservationViewEntity,
   ) => {
     const selectedBus = buses.find((bus) => bus.shuttleBusId === shuttleBusId);
     const reservationId = reservation.reservationId;
-    let prevBusId: number | null = null;
+    let prevBusId: string | null = null;
 
     const newEditingBusAndReservations = editingBusAndReservations.map(
       (busAndReservation) => {
@@ -457,7 +457,7 @@ interface PassengerItemProps {
   buses: ShuttleBusesViewEntity[];
   isEditMode: boolean;
   handleChangeBus: (
-    shuttleBusId: number,
+    shuttleBusId: string,
     buses: ShuttleBusesViewEntity[],
     reservation: ReservationViewEntity,
   ) => void;
@@ -500,7 +500,7 @@ const PassengerItem = ({
           className="text-14 font-400 text-grey-700"
           value={bus.shuttleBusId ?? ''}
           onChange={(e) => {
-            const shuttleBusId = Number(e.target.value);
+            const shuttleBusId = e.target.value;
             handleChangeBus(shuttleBusId, buses, reservation);
           }}
         >
