@@ -141,7 +141,13 @@ export const putRegionHub = async (
   );
 };
 
-export const usePutRegionHub = () => {
+export const usePutRegionHub = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess?: () => void;
+  onError?: (error: unknown) => void;
+} = {}) => {
   return useMutation({
     mutationFn: ({
       regionId,
@@ -152,5 +158,7 @@ export const usePutRegionHub = () => {
       regionHubId: string;
       body: PutRegionHubBody;
     }) => putRegionHub(regionId, regionHubId, body),
+    onSuccess,
+    onError,
   });
 };

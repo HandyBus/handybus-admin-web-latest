@@ -31,3 +31,16 @@ export const CreateHubRequestSchema = z.object({
   longitude: z.number(),
 });
 export type CreateHubRequest = z.infer<typeof CreateHubRequestSchema>;
+
+export const AdminUpdateRegionHubRequestSchema = z
+  .object({
+    name: z.string(),
+    address: z.string(),
+    latitude: z.number(),
+    longitude: z.number(),
+    regionId: z.string(),
+  })
+  .partial();
+export type AdminUpdateRegionHubRequest = z.infer<
+  typeof AdminUpdateRegionHubRequestSchema
+>;
