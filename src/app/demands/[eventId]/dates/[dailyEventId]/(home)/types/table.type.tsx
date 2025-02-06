@@ -14,8 +14,8 @@ export const columnsFrom = [
     header: '시/군/구',
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor('fromDestinationRegionHubName', {
-    id: 'fromDestinationRegionHubName',
+  columnHelper.accessor('regionHubName', {
+    id: 'regionHubName',
     header: '귀가행 지역 거점지 이름',
     cell: (info) => info.getValue(),
   }),
@@ -47,8 +47,8 @@ export const columnsTo = [
     header: '시/군/구',
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor('toDestinationRegionHubName', {
-    id: 'toDestinationRegionHubName',
+  columnHelper.accessor('regionHubName', {
+    id: 'regionHubName',
     header: '목적지행 지역 거점지 이름',
     cell: (info) => info.getValue(),
   }),
