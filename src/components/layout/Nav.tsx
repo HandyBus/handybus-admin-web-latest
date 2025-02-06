@@ -14,7 +14,6 @@ const Nav = async () => {
       <NavItem href="/demands">수요조사</NavItem>
       <NavItem href="/reservations">예약</NavItem>
       <NavItem href="/hubs">거점지</NavItem>
-      <NavItem href="/artists">아티스트</NavItem>
       <NavItem href="/coupons">쿠폰</NavItem>
       <Link
         href="/login"
