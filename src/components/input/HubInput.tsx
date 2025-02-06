@@ -104,18 +104,16 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
               {hub.name}
             </ComboboxOption>
           ))}
-          {regionHubs?.length === 0 &&
-            !isLoading &&
-            validRegionID(regionId) && (
-              <Link
-                href="/hubs/new"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block p-8 text-blue-500 hover:bg-blue-50"
-              >
-                + 새로운 거점 만들기
-              </Link>
-            )}
+          {!isLoading && validRegionID(regionId) && (
+            <Link
+              href="/hubs/new"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block p-8 text-blue-500 hover:bg-blue-100"
+            >
+              + 새로운 거점 만들기
+            </Link>
+          )}
         </ComboboxOptions>
       </div>
     </Combobox>
