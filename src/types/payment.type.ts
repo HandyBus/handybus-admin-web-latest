@@ -100,7 +100,7 @@ export const TossPaymentsEntitySchema = z.object({
   status: z.string(),
   requestedAt: z.string(),
   approvedAt: z.string().nullable(),
-  useEscrow: z.boolean(),
+  useEscrow: z.boolean().nullable(),
   lastTransactionKey: z.string().nullable(),
   suppliedAmount: z.number(),
   vat: z.number(),

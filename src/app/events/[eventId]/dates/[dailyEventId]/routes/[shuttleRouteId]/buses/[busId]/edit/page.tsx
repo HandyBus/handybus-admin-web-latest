@@ -14,7 +14,7 @@ import {
 import { BusTypeEnum, ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
-import { conform, EditBusFormType } from './types/form.type';
+import { conform, EditBusFormType } from './form.type';
 import Callout from '@/components/text/Callout';
 
 interface Props {

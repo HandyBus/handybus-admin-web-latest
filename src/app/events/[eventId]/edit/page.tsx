@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import { useForm, useFieldArray, useWatch } from 'react-hook-form';
-import { type EditEventFormData, conform } from './types/form.type';
+import { type EditEventFormData, conform } from './form.type';
 import { useRouter } from 'next/navigation';
 import ArtistInput from '@/components/input/ArtistInput';
 import { Controller } from 'react-hook-form';
