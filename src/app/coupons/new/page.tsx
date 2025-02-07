@@ -1,7 +1,9 @@
 'use client';
 
+import Form from '@/components/form/Form';
 import Input from '@/components/input/Input';
 import NumberInput from '@/components/input/NumberInput';
+import Heading from '@/components/text/Heading';
 import { usePostCoupon } from '@/services/billing.service';
 import { CreateCouponRequest } from '@/types/coupon.type';
 import { Label, Radio } from '@headlessui/react';
@@ -49,134 +51,166 @@ const Page = () => {
 
   return (
     <main>
-      <header className="flex items-center justify-between">
-        <h1 className="text-[32px] font-500">쿠폰 추가</h1>
-      </header>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="py-20 max-w-[500px] flex flex-col gap-8"
-      >
-        <label>
-          쿠폰 코드{' '}
-          <span className="text-red-500 text-12">
-            쿠폰 코드는 중복될 수 없습니다.
-          </span>
-        </label>
-        <Controller
-          control={control}
-          name="code"
-          render={({ field: { onChange, value } }) => (
-            <Input type="text" value={value} setValue={onChange} />
-          )}
-        />
-        <label>이름</label>
-        <Controller
-          control={control}
-          name="name"
-          render={({ field: { onChange, value } }) => (
-            <Input type="text" value={value} setValue={onChange} />
-          )}
-        />
-        <label>타입 선택</label>
-        <Controller
-          control={control}
-          name="discountType"
-          render={({ field: { onChange, value } }) => (
-            <RadioGroup
-              value={value}
-              className="flex flex-row gap-4"
-              onChange={(type) => onChange(type)}
-            >
-              {['RATE', 'AMOUNT'].map((type) => (
-                <Field key={type} className="flex items-center gap-2">
-                  <Radio
-                    value={type}
-                    className="group flex size-fit items-center p-4 justify-center rounded-lg bg-white
-                    data-[checked]:bg-blue-400
-                    data-[checked]:text-white
+      <Heading>쿠폰 추가</Heading>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form.section>
+          <Form.label required>
+            쿠폰 코드
+            <span className="text-12 text-red-500">
+              쿠폰 코드는 중복될 수 없습니다.
+            </span>
+          </Form.label>
+          <Controller
+            control={control}
+            name="code"
+            render={({ field: { onChange, value } }) => (
+              <Input type="text" value={value} setValue={onChange} />
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label required>이름</Form.label>
+          <Controller
+            control={control}
+            name="name"
+            render={({ field: { onChange, value } }) => (
+              <Input type="text" value={value} setValue={onChange} />
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label required>
+            타입 선택
+            <span className="text-12 text-red-500">
+              선택한 타입에 따라 아래 필드를 알맞게 채워주세요.
+            </span>
+          </Form.label>
+          <Controller
+            control={control}
+            name="discountType"
+            render={({ field: { onChange, value } }) => (
+              <RadioGroup
+                value={value}
+                className="flex flex-row gap-4"
+                onChange={(type) => onChange(type)}
+              >
+                {['RATE', 'AMOUNT'].map((type) => (
+                  <Field key={type} className="gap-2 flex items-center">
+                    <Radio
+                      value={type}
+                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4
                     transition-transform
                     hover:outline
-                    focus:outline
                     hover:outline-blue-200
+                    focus:outline
                     focus:outline-blue-200
                     active:scale-[0.9]
+                    data-[checked]:bg-blue-400
+                    data-[checked]:text-white
                     "
-                  >
-                    <CheckIcon
-                      className="invisible group-data-[checked]:visible"
-                      size={18}
-                    />
-                    <Label>{type === 'AMOUNT' ? '정량' : '비율'}</Label>
-                  </Radio>
-                </Field>
-              ))}
-            </RadioGroup>
-          )}
-        />
-        <label>비율 시 할인 비율</label>
-        <Controller
-          control={control}
-          name="discountRate"
-          render={({ field: { onChange, value } }) => (
-            <NumberInput value={value ?? 0} setValue={onChange} />
-          )}
-        />
-        <label>정량 시 할인 값</label>
-        <Controller
-          control={control}
-          name="discountAmount"
-          render={({ field: { onChange, value } }) => (
-            <NumberInput value={value ?? 0} setValue={onChange} />
-          )}
-        />
-        <label>비율 할인 시 최대 정량적 할인 값</label>
-        <Controller
-          control={control}
-          name="maxDiscountAmount"
-          render={({ field: { onChange, value } }) => (
-            <NumberInput value={value ?? 0} setValue={onChange} />
-          )}
-        />
-        <label>발행 개수</label>
-        <Controller
-          control={control}
-          name="maxCouponUsage"
-          render={({ field: { onChange, value } }) => (
-            <NumberInput value={value} setValue={onChange} />
-          )}
-        />
-        <label>최대 허용 가능 인원</label>
-        <Controller
-          control={control}
-          name="maxApplicablePeople"
-          render={({ field: { onChange, value } }) => (
-            <NumberInput value={value} setValue={onChange} />
-          )}
-        />
-        <label>유효 기간</label>
-        <div className="flex flex-row gap-4">
-          <Controller
-            control={control}
-            name="validFrom"
-            render={({ field: { onChange, value } }) => (
-              <Input type="date" value={value} setValue={onChange} />
+                    >
+                      <CheckIcon
+                        className="invisible group-data-[checked]:visible"
+                        size={18}
+                      />
+                      <Label>{type === 'AMOUNT' ? '정량' : '비율'}</Label>
+                    </Radio>
+                  </Field>
+                ))}
+              </RadioGroup>
             )}
           />
+        </Form.section>
+        <Form.section>
+          <Form.label>
+            <span>
+              <span className="text-blue-600">[비율]</span> 할인 비율
+            </span>
+            <span className="text-12 text-red-500">
+              할인 비율은 0 이상 100 이하의 값이어야 합니다.
+            </span>
+          </Form.label>
           <Controller
             control={control}
-            name="validTo"
+            name="discountRate"
             render={({ field: { onChange, value } }) => (
-              <Input type="date" value={value} setValue={onChange} />
+              <NumberInput value={value ?? 0} setValue={onChange} />
             )}
           />
-        </div>
-        <button
-          type="submit"
-          className="py-8 bg-primary-main rounded-lg text-white my-20 font-700"
-        >
-          생성하기
-        </button>
-      </form>
+        </Form.section>
+        <Form.section>
+          <Form.label>
+            <span className="text-blue-600">[비율]</span> 최대 정량적 할인 값
+            <span className="text-12 text-red-500">비율 선택 시 필수 입력</span>
+          </Form.label>
+          <Controller
+            control={control}
+            name="maxDiscountAmount"
+            render={({ field: { onChange, value } }) => (
+              <NumberInput value={value ?? 0} setValue={onChange} />
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label>
+            <span className="text-primary-700">[정량]</span> 할인 값
+            <span className="text-12 text-red-500">정량 선택 시 필수 입력</span>
+          </Form.label>
+          <Controller
+            control={control}
+            name="discountAmount"
+            render={({ field: { onChange, value } }) => (
+              <NumberInput value={value ?? 0} setValue={onChange} />
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label required>
+            발행 개수
+            <span className="text-12 text-red-500">0일 경우 무한대</span>
+          </Form.label>
+          <Controller
+            control={control}
+            name="maxCouponUsage"
+            render={({ field: { onChange, value } }) => (
+              <NumberInput value={value} setValue={onChange} />
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label required>
+            최대 허용 가능 인원
+            <span className="text-12 text-red-500">0일 경우 무한대</span>
+          </Form.label>
+          <Controller
+            control={control}
+            name="maxApplicablePeople"
+            render={({ field: { onChange, value } }) => (
+              <NumberInput value={value} setValue={onChange} />
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label required>유효 기간</Form.label>
+          <div className="flex flex-row gap-4">
+            <Controller
+              control={control}
+              name="validFrom"
+              render={({ field: { onChange, value } }) => (
+                <Input type="date" value={value} setValue={onChange} />
+              )}
+            />
+            <Controller
+              control={control}
+              name="validTo"
+              render={({ field: { onChange, value } }) => (
+                <Input type="date" value={value} setValue={onChange} />
+              )}
+            />
+          </div>
+        </Form.section>
+        <Form.submitButton>생성하기</Form.submitButton>
+      </Form>
     </main>
   );
 };

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ArtistsViewEntitySchema } from './artist.type';
+import { ActiveStatusEnum } from './common.type';
 
 // ----- ENUM -----
 
@@ -35,14 +36,14 @@ export type ProgressType = z.infer<typeof ProgressTypeEnum>;
 
 export const UserStatsReadModel = z
   .object({
-    userId: z.number(),
+    userId: z.string(),
     nickname: z.string(),
     phoneNumber: z.string(),
     profileImage: z.string().url().or(z.string().length(0)),
     gender: GenderEnum,
     ageRange: AgeRangeEnum,
     authChannel: AuthChannelTypeEnum,
-    regionId: z.number(),
+    regionId: z.string(),
     socialInfo: z.object({
       uniqueId: z.string(),
       nickname: z.string(),
@@ -57,17 +58,17 @@ export const UserStatsReadModel = z
   .strict();
 export type UserStatsReadModel = z.infer<typeof UserStatsReadModel>;
 
-export const UsersViewEntity = z
+export const UsersViewEntitySchema = z
   .object({
-    userId: z.number(),
+    userId: z.string(),
     nickname: z.string(),
     profileImage: z.string(),
     phoneNumber: z.string(),
     gender: GenderEnum,
     ageRange: AgeRangeEnum,
+    regionId: z.string().nullable(),
     authChannelType: AuthChannelTypeEnum,
     lastLoginAt: z.string().nullable(),
-    regionId: z.number(),
     favoriteArtists: ArtistsViewEntitySchema.array().nullable(),
     progresses: z
       .object({
@@ -75,6 +76,7 @@ export const UsersViewEntity = z
         isCompleted: z.boolean(),
       })
       .array(),
+    status: ActiveStatusEnum,
   })
   .strict();
-export type UsersViewEntity = z.infer<typeof UsersViewEntity>;
+export type UsersViewEntity = z.infer<typeof UsersViewEntitySchema>;

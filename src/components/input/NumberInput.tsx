@@ -1,36 +1,35 @@
 'use client';
-import {
-  forwardRef,
-  type Ref,
-  type DetailedHTMLProps,
-  type InputHTMLAttributes,
-} from 'react';
 
-interface Props
-  extends DetailedHTMLProps<
-    InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
-  > {
+import { twMerge } from 'tailwind-merge';
+
+interface Props {
   value: number;
   setValue: (value: number) => void;
   placeholder?: string;
+  className?: string;
 }
 
-const NumberInput = (
-  { value, setValue, ...props }: Props,
-  ref: Ref<HTMLInputElement>,
-) => {
+// NOTE: react hook form의 register을 직접 내려주지 않고 Controller으로 감싸서 사용해야 함
+const NumberInput = ({ value, setValue, placeholder, className }: Props) => {
+  const formatNumber = (num: number) => {
+    return new Intl.NumberFormat().format(num);
+  };
+
   return (
     <input
-      ref={ref}
-      type="number"
-      {...props}
-      value={value}
-      onChange={(e) => setValue(Number(e.target.value))}
-      onWheel={(e) => e.target instanceof HTMLElement && e.target.blur()}
-      className="w-full p-8 border border-grey-200 rounded-lg focus:outline-blue-400"
+      type="text"
+      value={formatNumber(value)}
+      onChange={(e) => {
+        const numericValue = Number(e.target.value.replace(/,/g, ''));
+        setValue(numericValue);
+      }}
+      placeholder={placeholder}
+      className={twMerge(
+        'w-full rounded-lg border border-grey-200 p-8 focus:outline-blue-400',
+        className,
+      )}
     />
   );
 };
 
-export default forwardRef(NumberInput);
+export default NumberInput;

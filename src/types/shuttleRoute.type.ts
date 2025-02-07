@@ -23,28 +23,28 @@ export type ShuttleRouteStatus = z.infer<typeof ShuttleRouteStatusEnum>;
 
 export const ShuttleRouteHubsInShuttleRoutesViewEntitySchema = z
   .object({
-    shuttleRouteHubId: z.number().int(),
-    regionHubId: z.number().int(),
+    shuttleRouteHubId: z.string(),
+    regionHubId: z.string(),
+    regionId: z.string(),
     name: z.string(),
     address: z.string(),
     latitude: z.number(),
     longitude: z.number(),
-    type: TripTypeEnum,
+    type: TripTypeEnum.extract(['TO_DESTINATION', 'FROM_DESTINATION']),
     sequence: z.number().int(),
     arrivalTime: z.string(),
     status: z.enum(['ACTIVE', 'INACTIVE']),
   })
   .strict();
-
 export type ShuttleRouteHubsInShuttleRoutesViewEntity = z.infer<
   typeof ShuttleRouteHubsInShuttleRoutesViewEntitySchema
 >;
 
 export const ShuttleRoutesViewEntitySchema = z
   .object({
-    shuttleRouteId: z.number().int(),
-    eventId: z.number().int(),
-    dailyEventId: z.number().int(),
+    shuttleRouteId: z.string(),
+    eventId: z.string(),
+    dailyEventId: z.string(),
     name: z.string(),
     reservationDeadline: z.string(),
     hasEarlybird: z.boolean(),
@@ -70,7 +70,6 @@ export const ShuttleRoutesViewEntitySchema = z
     updatedAt: z.string(),
   })
   .strict();
-
 export type ShuttleRoutesViewEntity = z.infer<
   typeof ShuttleRoutesViewEntitySchema
 >;
@@ -98,7 +97,7 @@ export const CreateShuttleRouteRequestSchema = z
     maxPassengerCount: z.number(),
     shuttleRouteHubs: z
       .object({
-        regionHubId: z.number().int(),
+        regionHubId: z.string(),
         type: TripTypeEnum,
         sequence: z.number().int().positive(),
         arrivalTime: z.string(),
@@ -106,7 +105,27 @@ export const CreateShuttleRouteRequestSchema = z
       .array(),
   })
   .strict();
-
 export type CreateShuttleRouteRequest = z.infer<
   typeof CreateShuttleRouteRequestSchema
+>;
+
+export const UpdateShuttleRouteHubPropsSchema = z.object({
+  shuttleRouteHubId: z.string().optional(),
+  regionHubId: z.string(),
+  type: TripTypeEnum.extract(['TO_DESTINATION', 'FROM_DESTINATION']),
+  sequence: z.number().int().positive(),
+  arrivalTime: z.string(),
+});
+export type UpdateShuttleRouteHubProps = z.infer<
+  typeof UpdateShuttleRouteHubPropsSchema
+>;
+
+export const UpdateShuttleRouteRequestSchema = z.object({
+  name: z.string(),
+  reservationDeadline: z.string(),
+  maxPassengerCount: z.number().int(),
+  shuttleRouteHubs: UpdateShuttleRouteHubPropsSchema.array(),
+});
+export type UpdateShuttleRouteRequest = z.infer<
+  typeof UpdateShuttleRouteRequestSchema
 >;

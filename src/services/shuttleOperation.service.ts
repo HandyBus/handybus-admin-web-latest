@@ -13,6 +13,8 @@ import {
   CreateEventRequestSchema,
   EventStatus,
   EventsViewEntitySchema,
+  UpdateEventRequest,
+  UpdateEventRequestSchema,
 } from '@/types/event.type';
 import {
   CreateShuttleRouteRequest,
@@ -22,13 +24,13 @@ import {
   TripType,
 } from '@/types/shuttleRoute.type';
 import {
-  AdminUpdateShuttleBusRequest,
-  AdminUpdateShuttleBusRequestSchema,
   BulkAssignBusRequest,
   BulkAssignBusRequestSchema,
   CreateShuttleBusRequest,
   CreateShuttleBusRequestSchema,
   ShuttleBusesViewEntitySchema,
+  AdminUpdateShuttleBusRequest,
+  AdminUpdateShuttleBusRequestSchema,
 } from '@/types/shuttleBus.type';
 import {
   CancelStatus,
@@ -61,7 +63,7 @@ export const useGetArtists = () => {
   });
 };
 
-export const getArtist = async (artistId: number) => {
+export const getArtist = async (artistId: string) => {
   const res = await authInstance.get(
     `/v2/shuttle-operation/admin/artists/${artistId}`,
     {
@@ -73,7 +75,7 @@ export const getArtist = async (artistId: number) => {
   return res.artist;
 };
 
-export const useGetArtist = (artistId: number) => {
+export const useGetArtist = (artistId: string) => {
   return useQuery({
     queryKey: ['artist', artistId],
     queryFn: () => getArtist(artistId),
@@ -92,8 +94,8 @@ export interface GetDemandOptions {
   provinceShortName?: string;
   cityFullName?: string;
   cityShortName?: string;
-  dailyEventId?: number;
-  eventId?: number;
+  dailyEventId?: string;
+  eventId?: string;
 }
 
 export const getDemandsStats = async (options?: GetDemandOptions) => {
@@ -119,14 +121,15 @@ export const getEvents = async (options?: { status?: EventStatus }) => {
   const res = await authInstance.get(
     `/v2/shuttle-operation/admin/events${toSearchParamString({ ...options }, '?')}`,
     {
-      shape: {
+      shape: withPagination({
         events: EventsViewEntitySchema.array(),
-      },
+      }),
     },
   );
   return res.events;
 };
 
+// TODO 추후에 pagination으로 변경
 export const useGetEvents = (options?: { status?: EventStatus }) => {
   return useQuery({
     queryKey: ['event', options],
@@ -134,7 +137,7 @@ export const useGetEvents = (options?: { status?: EventStatus }) => {
   });
 };
 
-export const getEvent = async (eventId: number) => {
+export const getEvent = async (eventId: string) => {
   const res = await authInstance.get(
     `/v2/shuttle-operation/admin/events/${eventId}`,
     {
@@ -146,7 +149,7 @@ export const getEvent = async (eventId: number) => {
   return res.event;
 };
 
-export const useGetEvent = (eventId: number) => {
+export const useGetEvent = (eventId: string) => {
   return useQuery({
     queryKey: ['event', eventId],
     queryFn: () => getEvent(eventId),
@@ -162,24 +165,25 @@ export interface GetShuttleRoutesOptions {
 }
 
 export const getShuttleRoutesOfDailyEvent = async (
-  eventId: number,
-  dailyEventId: number,
+  eventId: string,
+  dailyEventId: string,
   options?: GetShuttleRoutesOptions,
 ) => {
   const res = await authInstance.get(
     `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes${toSearchParamString({ ...options }, '?')}`,
     {
-      shape: {
+      shape: withPagination({
         shuttleRoutes: ShuttleRoutesViewEntitySchema.array(),
-      },
+      }),
     },
   );
   return res.shuttleRoutes;
 };
 
+// TODO 추후에 pagination으로 변경
 export const useGetShuttleRoutesOfDailyEvent = (
-  eventId: number,
-  dailyEventId: number,
+  eventId: string,
+  dailyEventId: string,
   options?: GetShuttleRoutesOptions,
 ) => {
   return useQuery({
@@ -194,14 +198,15 @@ export const getShuttleRoutes = async (options?: GetShuttleRoutesOptions) => {
   const response = await authInstance.get(
     `/v2/shuttle-operation/admin/events/all/dates/all/routes${toSearchParamString({ ...options }, '?')}`,
     {
-      shape: {
+      shape: withPagination({
         shuttleRoutes: ShuttleRoutesViewEntitySchema.array(),
-      },
+      }),
     },
   );
   return response.shuttleRoutes;
 };
 
+// TODO 추후에 pagination으로 변경
 export const useGetShuttleRoutes = (options?: GetShuttleRoutesOptions) => {
   return useQuery({
     queryKey: ['shuttleRoute', options],
@@ -210,9 +215,9 @@ export const useGetShuttleRoutes = (options?: GetShuttleRoutesOptions) => {
 };
 
 export const getShuttleRoute = async (
-  eventId: number,
-  dailyEventId: number,
-  shuttleRouteId: number,
+  eventId: string,
+  dailyEventId: string,
+  shuttleRouteId: string,
 ) => {
   const res = await authInstance.get(
     `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`,
@@ -226,9 +231,9 @@ export const getShuttleRoute = async (
 };
 
 export const useGetShuttleRoute = (
-  eventId: number,
-  dailyEventId: number,
-  shuttleRouteId: number,
+  eventId: string,
+  dailyEventId: string,
+  shuttleRouteId: string,
 ) => {
   return useQuery({
     queryKey: ['shuttleRoute', eventId, dailyEventId, shuttleRouteId],
@@ -237,9 +242,9 @@ export const useGetShuttleRoute = (
 };
 
 export const getShuttleBuses = async (
-  eventId: number,
-  dailyEventId: number,
-  shuttleRouteId: number,
+  eventId: string,
+  dailyEventId: string,
+  shuttleRouteId: string,
 ) => {
   const res = await authInstance.get(
     `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/buses`,
@@ -253,9 +258,9 @@ export const getShuttleBuses = async (
 };
 
 export const useGetShuttleBuses = (
-  eventId: number,
-  dailyEventId: number,
-  shuttleRouteId: number,
+  eventId: string,
+  dailyEventId: string,
+  shuttleRouteId: string,
 ) => {
   return useQuery({
     queryKey: ['shuttleBus', eventId, dailyEventId, shuttleRouteId],
@@ -264,12 +269,13 @@ export const useGetShuttleBuses = (
 };
 
 export const getShuttleBus = async (
-  eventId: number,
-  dailyEventId: number,
-  shuttleRouteId: number,
+  eventId: string,
+  dailyEventId: string,
+  shuttleRouteId: string,
+  shuttleBusId: string,
 ) => {
   const res = await authInstance.get(
-    `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/buses`,
+    `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/buses/${shuttleBusId}`,
     {
       shape: {
         shuttleBus: ShuttleBusesViewEntitySchema,
@@ -280,21 +286,29 @@ export const getShuttleBus = async (
 };
 
 export const useGetShuttleBus = (
-  eventId: number,
-  dailyEventId: number,
-  shuttleRouteId: number,
+  eventId: string,
+  dailyEventId: string,
+  shuttleRouteId: string,
+  shuttleBusId: string,
 ) => {
   return useQuery({
-    queryKey: ['shuttleBus', eventId, dailyEventId, shuttleRouteId],
-    queryFn: () => getShuttleBuses(eventId, dailyEventId, shuttleRouteId),
+    queryKey: [
+      'shuttleBus',
+      eventId,
+      dailyEventId,
+      shuttleRouteId,
+      shuttleBusId,
+    ],
+    queryFn: () =>
+      getShuttleBus(eventId, dailyEventId, shuttleRouteId, shuttleBusId),
   });
 };
 
 export interface GetReservationsOptions {
-  eventId: number | undefined;
-  dailyEventId: number | undefined;
-  shuttleRouteId: number | undefined;
-  shuttleBusId: number | undefined;
+  eventId: string | undefined;
+  dailyEventId: string | undefined;
+  shuttleRouteId: string | undefined;
+  shuttleBusId: string | undefined;
   userNickname: string | undefined;
   passengerName: string | undefined;
   handyStatus: HandyStatus | undefined;
@@ -303,11 +317,10 @@ export interface GetReservationsOptions {
 }
 
 interface GetReservationsOptionsWithPagination extends GetReservationsOptions {
-  page: number;
+  page: string | undefined;
   limit: number;
 }
 
-// limit이 없을 경우 전체 데이터 조회
 export const getReservations = async (
   option?: Partial<GetReservationsOptionsWithPagination>,
 ) => {
@@ -327,8 +340,9 @@ export const useGetReservationsWithPagination = (
 ) =>
   useInfiniteQuery({
     queryKey: ['reservation', option],
-    queryFn: ({ pageParam }) => getReservations({ ...option, page: pageParam }),
-    initialPageParam: 0,
+    queryFn: ({ pageParam }: { pageParam: string | undefined }) =>
+      getReservations({ ...option, page: pageParam }),
+    initialPageParam: undefined,
     initialData: { pages: [], pageParams: [] },
     getNextPageParam: (lastPage) => {
       return lastPage.nextPage;
@@ -336,7 +350,7 @@ export const useGetReservationsWithPagination = (
     placeholderData: keepPreviousData,
   });
 
-export const getReservation = async (reservationId: number) => {
+export const getReservation = async (reservationId: string) => {
   const res = await authInstance.get(
     `/v2/shuttle-operation/admin/reservations/${reservationId}`,
     {
@@ -350,7 +364,7 @@ export const getReservation = async (reservationId: number) => {
   return res;
 };
 
-export const useGetReservation = (reservationId: number) => {
+export const useGetReservation = (reservationId: string) => {
   return useQuery({
     queryKey: ['reservation', reservationId],
     queryFn: () => getReservation(reservationId),
@@ -377,7 +391,7 @@ export const usePostArtist = ({
   });
 };
 
-export const putArtist = async (artistId: number, body: { name: string }) => {
+export const putArtist = async (artistId: string, body: { name: string }) => {
   await authInstance.put(
     `/v1/shuttle-operation/admin/artists/${artistId}`,
     body,
@@ -386,12 +400,12 @@ export const putArtist = async (artistId: number, body: { name: string }) => {
 
 export const usePutArtist = () => {
   return useMutation({
-    mutationFn: ({ artistId, name }: { artistId: number; name: string }) =>
+    mutationFn: ({ artistId, name }: { artistId: string; name: string }) =>
       putArtist(artistId, { name }),
   });
 };
 
-export const deleteArtist = async (artistId: number) => {
+export const deleteArtist = async (artistId: string) => {
   await authInstance.delete(`/v1/shuttle-operation/admin/artists/${artistId}`);
 };
 
@@ -401,7 +415,7 @@ export const useDeleteArtist = () => {
   });
 };
 
-export const deleteArtists = async (artistIds: number[]) => {
+export const deleteArtists = async (artistIds: string[]) => {
   await authInstance.delete(`/v1/shuttle-operation/admin/artists`, {
     artistIds,
   });
@@ -414,14 +428,14 @@ export const useDeleteArtists = () => {
 };
 
 export interface PutReservationBody {
-  toDestinationShuttleRouteHubId?: number;
-  fromDestinationShuttleRouteHubId?: number;
+  toDestinationShuttleRouteHubId?: string;
+  fromDestinationShuttleRouteHubId?: string;
   handyStatus?: HandyStatus;
-  shuttleBusId?: number;
+  shuttleBusId?: string;
 }
 
 export const putReservation = async (
-  reservationId: number,
+  reservationId: string,
   body: PutReservationBody,
 ) => {
   await authInstance.put(
@@ -443,7 +457,7 @@ export const usePutReservation = ({
       reservationId,
       body,
     }: {
-      reservationId: number;
+      reservationId: string;
       body: PutReservationBody;
     }) => putReservation(reservationId, body),
     onSuccess: () => {
@@ -479,9 +493,36 @@ export const usePostEvent = ({
   });
 };
 
+export const putEvent = async (eventId: string, body: UpdateEventRequest) => {
+  await authInstance.put(
+    `/v2/shuttle-operation/admin/events/${eventId}`,
+    silentParse(UpdateEventRequestSchema, body),
+  );
+};
+
+export const usePutEvent = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess?: () => void;
+  onError?: (error: unknown) => void;
+} = {}) => {
+  return useMutation({
+    mutationFn: ({
+      eventId,
+      body,
+    }: {
+      eventId: string;
+      body: UpdateEventRequest;
+    }) => putEvent(eventId, body),
+    onSuccess,
+    onError,
+  });
+};
+
 export const postShuttleRoute = async (
-  eventId: number,
-  dailyEventId: number,
+  eventId: string,
+  dailyEventId: string,
   body: CreateShuttleRouteRequest,
 ) => {
   await authInstance.post(
@@ -503,8 +544,8 @@ export const usePostShuttleRoute = ({
       dailyEventId,
       body,
     }: {
-      eventId: number;
-      dailyEventId: number;
+      eventId: string;
+      dailyEventId: string;
       body: CreateShuttleRouteRequest;
     }) => postShuttleRoute(eventId, dailyEventId, body),
     onSuccess,
@@ -517,9 +558,9 @@ interface PutShuttleRouteBody {
   reservationDeadline?: string;
   maxPassengerCount?: number;
   shuttleRouteHubs?: {
-    shuttleRouteHubId?: number;
-    regionHubId?: number;
-    type?: TripType;
+    shuttleRouteHubId?: string;
+    regionHubId?: string;
+    type?: Omit<TripType, 'ROUND_TRIP'>;
     sequence?: number;
     arrivalTime?: string;
   }[];
@@ -527,9 +568,9 @@ interface PutShuttleRouteBody {
 
 // ID가 주어지지 않은 셔틀 허브는 새로 생성합니다. ID가 주어진 기존 값은 수정합니다. ID가 주어지지 않은 기존 값은 아무 변화없이 유지합니다.
 export const putShuttleRoute = async (
-  eventId: number,
-  dailyEventId: number,
-  shuttleRouteId: number,
+  eventId: string,
+  dailyEventId: string,
+  shuttleRouteId: string,
   body: PutShuttleRouteBody,
 ) => {
   await authInstance.put(
@@ -538,7 +579,13 @@ export const putShuttleRoute = async (
   );
 };
 
-export const usePutShuttleRoute = () => {
+export const usePutShuttleRoute = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess?: () => void;
+  onError?: (error: unknown) => void;
+} = {}) => {
   return useMutation({
     mutationFn: ({
       eventId,
@@ -546,18 +593,20 @@ export const usePutShuttleRoute = () => {
       shuttleRouteId,
       body,
     }: {
-      eventId: number;
-      dailyEventId: number;
-      shuttleRouteId: number;
+      eventId: string;
+      dailyEventId: string;
+      shuttleRouteId: string;
       body: PutShuttleRouteBody;
     }) => putShuttleRoute(eventId, dailyEventId, shuttleRouteId, body),
+    onSuccess,
+    onError,
   });
 };
 
 export const deleteShuttleRoute = async (
-  eventId: number,
-  dailyEventId: number,
-  shuttleRouteId: number,
+  eventId: string,
+  dailyEventId: string,
+  shuttleRouteId: string,
 ) => {
   await authInstance.delete(
     `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`,
@@ -571,18 +620,18 @@ export const useDeleteShuttleRoute = () => {
       dailyEventId,
       shuttleRouteId,
     }: {
-      eventId: number;
-      dailyEventId: number;
-      shuttleRouteId: number;
+      eventId: string;
+      dailyEventId: string;
+      shuttleRouteId: string;
     }) => deleteShuttleRoute(eventId, dailyEventId, shuttleRouteId),
   });
 };
 
 export const deleteShuttleRoutes = async (
-  eventId: number,
-  dailyEventId: number,
+  eventId: string,
+  dailyEventId: string,
   body: {
-    shuttleRouteIds: number[];
+    shuttleRouteIds: string[];
   },
 ) => {
   await authInstance.delete(
@@ -598,17 +647,17 @@ export const useDeleteShuttleRoutes = () => {
       dailyEventId,
       body,
     }: {
-      eventId: number;
-      dailyEventId: number;
-      body: { shuttleRouteIds: number[] };
+      eventId: string;
+      dailyEventId: string;
+      body: { shuttleRouteIds: string[] };
     }) => deleteShuttleRoutes(eventId, dailyEventId, body),
   });
 };
 
 export const postShuttleBus = async (
-  eventId: number,
-  dailyEventId: number,
-  shuttleRouteId: number,
+  eventId: string,
+  dailyEventId: string,
+  shuttleRouteId: string,
   body: CreateShuttleBusRequest,
 ) => {
   await authInstance.post(
@@ -631,9 +680,9 @@ export const usePostShuttleBus = ({
       shuttleRouteId,
       body,
     }: {
-      eventId: number;
-      dailyEventId: number;
-      shuttleRouteId: number;
+      eventId: string;
+      dailyEventId: string;
+      shuttleRouteId: string;
       body: CreateShuttleBusRequest;
     }) => postShuttleBus(eventId, dailyEventId, shuttleRouteId, body),
     onSuccess,
@@ -642,10 +691,10 @@ export const usePostShuttleBus = ({
 };
 
 export const putShuttleBus = async (
-  eventId: number,
-  dailyEventId: number,
-  shuttleRouteId: number,
-  shuttleBusId: number,
+  eventId: string,
+  dailyEventId: string,
+  shuttleRouteId: string,
+  shuttleBusId: string,
   body: AdminUpdateShuttleBusRequest,
 ) => {
   await authInstance.put(
@@ -654,7 +703,13 @@ export const putShuttleBus = async (
   );
 };
 
-export const usePutShuttleBus = () => {
+export const usePutShuttleBus = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess: () => void;
+  onError: (error: unknown) => void;
+}) => {
   return useMutation({
     mutationFn: ({
       eventId,
@@ -663,20 +718,22 @@ export const usePutShuttleBus = () => {
       shuttleBusId,
       body,
     }: {
-      eventId: number;
-      dailyEventId: number;
-      shuttleRouteId: number;
-      shuttleBusId: number;
+      eventId: string;
+      dailyEventId: string;
+      shuttleRouteId: string;
+      shuttleBusId: string;
       body: AdminUpdateShuttleBusRequest;
     }) =>
       putShuttleBus(eventId, dailyEventId, shuttleRouteId, shuttleBusId, body),
+    onSuccess,
+    onError,
   });
 };
 
 export const postBulkAssignBus = async (
-  eventId: number,
-  dailyEventId: number,
-  shuttleRouteId: number,
+  eventId: string,
+  dailyEventId: string,
+  shuttleRouteId: string,
   body: BulkAssignBusRequest,
 ) => {
   return await authInstance.post(
@@ -700,9 +757,9 @@ export const usePostBulkAssignBus = ({
       shuttleRouteId,
       body,
     }: {
-      eventId: number;
-      dailyEventId: number;
-      shuttleRouteId: number;
+      eventId: string;
+      dailyEventId: string;
+      shuttleRouteId: string;
       body: BulkAssignBusRequest;
     }) => postBulkAssignBus(eventId, dailyEventId, shuttleRouteId, body),
     onSuccess: (_, { eventId, dailyEventId, shuttleRouteId }) => {

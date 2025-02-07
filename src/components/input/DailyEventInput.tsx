@@ -15,9 +15,9 @@ import { useGetEvent } from '@/services/shuttleOperation.service';
 import { EventDailyShuttlesInEventsViewEntity } from '@/types/event.type';
 
 interface Props {
-  eventId: number;
-  value: number | null;
-  setValue: (value: number | null) => void;
+  eventId: string;
+  value: string | null;
+  setValue: (value: string | null) => void;
 }
 
 const EventDailyShuttlesInEventsViewEntityInput = ({
@@ -57,12 +57,12 @@ const EventDailyShuttlesInEventsViewEntityInput = ({
       onChange={setSelectedDailyShuttle}
       onClose={() => setQuery('')}
     >
-      <div className="relative group">
+      <div className="group relative">
         <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-grey-400 group-focus:text-blue-500">
           <ChevronDown />
         </ComboboxButton>
         <ComboboxInput
-          className="p-8 size-full border border-grey-200 rounded-lg focus:outline-blue-400"
+          className="size-full rounded-lg border border-grey-200 p-8 focus:outline-blue-400"
           aria-label="Assignee"
           placeholder={
             isLoading
@@ -80,13 +80,13 @@ const EventDailyShuttlesInEventsViewEntityInput = ({
 
         <ComboboxOptions
           anchor="bottom"
-          className="w-[var(--input-width)] shadow-md bg-white rounded-lg empty:invisible mt-4"
+          className="mt-4 w-[var(--input-width)] rounded-lg bg-white shadow-md empty:invisible"
         >
           {filtered.map((dailyEvent) => (
             <ComboboxOption
               key={dailyEvent.dailyEventId}
               value={dailyEvent}
-              className="data-[focus]:bg-blue-100 p-8 flex flex-row"
+              className="flex flex-row p-8 data-[focus]:bg-blue-100"
             >
               <div className="flex flex-col">
                 <span>{dayjs(dailyEvent.date).format('YYYY-MM-DD')}</span>

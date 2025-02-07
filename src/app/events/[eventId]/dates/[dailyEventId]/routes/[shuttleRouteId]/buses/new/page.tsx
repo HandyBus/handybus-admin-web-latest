@@ -3,13 +3,15 @@
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
-import { conform, type CreateBusFormType } from './types/form.type';
+import { conform, type CreateBusFormType } from './form.type';
 import Input from '@/components/input/Input';
 import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
 import { CheckIcon } from 'lucide-react';
 import Stringifier from '@/utils/stringifier.util';
 import { usePostShuttleBus } from '@/services/shuttleOperation.service';
 import { BusTypeEnum } from '@/types/shuttleBus.type';
+import Heading from '@/components/text/Heading';
+import Form from '@/components/form/Form';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -46,9 +48,9 @@ const NewBusPage = ({
     (data: CreateBusFormType) => {
       if (confirm('버스를 추가하시겠습니까?')) {
         postBus({
-          eventId: Number(eventId),
-          dailyEventId: Number(dailyEventId),
-          shuttleRouteId: Number(shuttleRouteId),
+          eventId: eventId,
+          dailyEventId: dailyEventId,
+          shuttleRouteId: shuttleRouteId,
           body: conform(data),
         });
       }
@@ -57,78 +59,83 @@ const NewBusPage = ({
   );
 
   return (
-    <main className="h-full w-full bg-white flex flex-col gap-16">
-      <h2 className="text-24 font-500">거점지 정보</h2>
-      <form
+    <main>
+      <Heading>버스 추가하기</Heading>
+      <Form
         className="flex flex-col gap-8"
         onSubmit={handleSubmit(onSubmit)}
         method="post"
       >
-        <label>버스 이름</label>
-        <Controller
-          control={control}
-          name="name"
-          render={({ field: { onChange, value } }) => (
-            <Input value={value} setValue={onChange} />
-          )}
-        />
-        <label>버스 번호</label>
-        <Controller
-          control={control}
-          name="number"
-          render={({ field: { onChange, value } }) => (
-            <Input value={value} placeholder="00가 0000" setValue={onChange} />
-          )}
-        />
-        <label>전화번호</label>
-        <Controller
-          control={control}
-          name="phoneNumber"
-          render={({ field: { onChange, value } }) => (
-            <Input
-              value={value}
-              placeholder="010-0000-0000"
-              setValue={onChange}
-            />
-          )}
-        />
-
-        <label>버스 유형</label>
-        <Controller
-          control={control}
-          name="type"
-          render={({ field: { onChange, value } }) => (
-            <RadioGroup
-              value={value}
-              className="flex flex-row gap-4 flex-wrap"
-              onChange={(s) => onChange(s)}
-              aria-label="Server size"
-            >
-              {BusTypeEnum.options.map((plan) => (
-                <Field key={plan} className="flex items-center gap-2">
-                  <Radio
-                    value={plan}
-                    className="group flex size-fit items-center p-4 justify-center rounded-lg bg-white data-[checked]:bg-blue-400 data-[checked]:text-white transition-transform hover:outline focus:outline hover:outline-blue-200 focus:outline-blue-200 active:scale-[0.9]"
-                  >
-                    <CheckIcon
-                      className="invisible group-data-[checked]:visible"
-                      size={18}
-                    />
-                    <Label>{Stringifier.busType(plan)}</Label>
-                  </Radio>
-                </Field>
-              ))}
-            </RadioGroup>
-          )}
-        />
-
-        <button
-          className="bg-blue-500 text-white active:scale-95 transition-all p-4 rounded-xl hover:opacity-75"
-          type="submit"
-        >
-          버스 추가하기
-        </button>
-      </form>
+        <Form.section>
+          <Form.label>버스 이름</Form.label>
+          <Controller
+            control={control}
+            name="name"
+            render={({ field: { onChange, value } }) => (
+              <Input value={value} setValue={onChange} />
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label>버스 번호</Form.label>
+          <Controller
+            control={control}
+            name="number"
+            render={({ field: { onChange, value } }) => (
+              <Input
+                value={value}
+                placeholder="00가 0000"
+                setValue={onChange}
+              />
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label>전화번호</Form.label>
+          <Controller
+            control={control}
+            name="phoneNumber"
+            render={({ field: { onChange, value } }) => (
+              <Input
+                value={value}
+                placeholder="010-0000-0000"
+                setValue={onChange}
+              />
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label>버스 유형</Form.label>
+          <Controller
+            control={control}
+            name="type"
+            render={({ field: { onChange, value } }) => (
+              <RadioGroup
+                value={value}
+                className="flex flex-row flex-wrap gap-4"
+                onChange={(s) => onChange(s)}
+                aria-label="Server size"
+              >
+                {BusTypeEnum.options.map((plan) => (
+                  <Field key={plan} className="gap-2 flex items-center">
+                    <Radio
+                      value={plan}
+                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4 transition-transform hover:outline hover:outline-blue-200 focus:outline focus:outline-blue-200 active:scale-[0.9] data-[checked]:bg-blue-400 data-[checked]:text-white"
+                    >
+                      <CheckIcon
+                        className="invisible group-data-[checked]:visible"
+                        size={18}
+                      />
+                      <Label>{Stringifier.busType(plan)}</Label>
+                    </Radio>
+                  </Field>
+                ))}
+              </RadioGroup>
+            )}
+          />
+        </Form.section>
+        <Form.submitButton>추가하기</Form.submitButton>
+      </Form>
     </main>
   );
 };

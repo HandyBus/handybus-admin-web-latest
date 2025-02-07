@@ -39,8 +39,9 @@ export const formatDate = (date: Date, type: 'date' | 'datetime' = 'date') => {
 export const formatDateString = (
   date: string | null | undefined,
   type: 'date' | 'datetime' = 'date',
+  defaultValue?: string,
 ) => {
-  if (!date) return '';
+  if (!date) return defaultValue || '';
   return formatDate(new Date(date), type);
 };
 

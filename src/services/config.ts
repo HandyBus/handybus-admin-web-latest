@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { getAccessToken } from './auth';
 import { CustomError } from './custom-error';
-import { logout } from '@/app/actions/logout.action';
 import replacer from './replacer';
 import { z } from 'zod';
 import { silentParse } from '@/utils/parse.util';
+import { getToken, logout } from '@/utils/handleToken.util';
+import { toast } from 'react-toastify';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -123,6 +123,7 @@ class Instance {
 
 export const instance = new Instance();
 
+// CSR 환경에서만 사용 가능
 class AuthInstance {
   async authFetchWithConfig<T extends z.ZodRawShape = EmptyShape>(
     url: string,
@@ -130,11 +131,19 @@ class AuthInstance {
     body?: unknown,
     options: RequestInitWithSchema<T> = {},
   ) {
-    const accessToken = await getAccessToken();
+    const isServer = typeof window === 'undefined';
+    if (isServer) {
+      throw new CustomError(
+        403,
+        '인증이 필요한 요청은 서버사이드에서 호출 불가합니다.',
+      );
+    }
+
+    const token = getToken();
     const authOptions: RequestInitWithSchema<T> = {
       ...options,
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${token}`,
         ...options.headers,
       },
     };
@@ -143,8 +152,12 @@ class AuthInstance {
       return await instance.fetchWithConfig<T>(url, method, body, authOptions);
     } catch (e) {
       const error = e as CustomError;
-      const isServer = typeof window === 'undefined';
-      if (error.statusCode === 401 && !isServer) {
+      if (error.statusCode === 429) {
+        console.error('요청이 너무 많습니다.');
+        toast.error('요청이 너무 많습니다. 잠시 후 다시 시도해주세요.');
+        throw new CustomError(429, '요청이 너무 많습니다.');
+      }
+      if (error.statusCode === 401) {
         console.error('로그인 시간 만료: ', error.message);
         logout();
       }
@@ -192,18 +205,19 @@ class AuthInstance {
 
 export const authInstance = new AuthInstance();
 
-//////////////// utility for shape option ////////////////
+// ----- utility for shape option -----
 
 type PaginatedResponse<Shape extends z.ZodRawShape> = Shape & {
   totalCount: z.ZodNumber;
-  nextPage: z.ZodNullable<z.ZodNumber>;
+  nextPage: z.ZodNullable<z.ZodString>;
 };
 
+// limit이 없을 경우 전체 데이터 조회
 export const withPagination = <Shape extends z.ZodRawShape>(
   shape: Shape,
 ): PaginatedResponse<Shape> =>
   ({
     ...shape,
     totalCount: z.number(),
-    nextPage: z.number().nullable(),
+    nextPage: z.string().nullable(),
   }) satisfies PaginatedResponse<Shape>;

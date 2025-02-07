@@ -19,8 +19,8 @@ import {
 } from '@/constants/regions';
 
 interface Props {
-  value: number | null;
-  setValue: (value: number | null) => void;
+  value: string | null;
+  setValue: (value: string | null) => void;
 }
 
 const RegionInput = ({ value, setValue }: Props) => {
@@ -66,7 +66,7 @@ const RegionInput = ({ value, setValue }: Props) => {
   }, [selectedBigRegion, selectedSmallRegion]);
 
   return (
-    <div className="flex flex-col justify-start items-start w-full">
+    <div className="flex w-full flex-col items-start justify-start">
       <Combobox
         immediate
         value={selectedBigRegion}
@@ -86,29 +86,30 @@ const RegionInput = ({ value, setValue }: Props) => {
           setQueryBig('');
         }}
       >
-        <div className="relative group size-full">
+        <div className="group relative size-full">
           <ComboboxInput
-            className="p-8 
-           border border-grey-200 rounded-t-lg size-full
+            className="size-full 
+           rounded-t-lg border border-grey-200 p-8
            focus:outline-blue-400"
             aria-label="Assignee"
             placeholder={'도/광역시 선택'}
             defaultValue={null}
             displayValue={(province) => (province === null ? '' : province)}
             onChange={(event) => setQueryBig(event.target.value)}
+            autoComplete="off"
           />
           <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-grey-400 group-focus:text-blue-500">
             <ChevronDown />
           </ComboboxButton>
           <ComboboxOptions
             anchor="bottom"
-            className="w-[var(--input-width)] shadow-md bg-white rounded-lg empty:invisible mt-4"
+            className="mt-4 w-[var(--input-width)] rounded-lg bg-white shadow-md empty:invisible"
           >
             {filteredBigRegions.map((province) => (
               <ComboboxOption
                 key={province}
                 value={province}
-                className="data-[focus]:bg-blue-100 p-8"
+                className="p-8 data-[focus]:bg-blue-100"
               >
                 {province}
               </ComboboxOption>
@@ -125,29 +126,30 @@ const RegionInput = ({ value, setValue }: Props) => {
         }}
         onClose={() => setQuerySmall('')}
       >
-        <div className="relative group size-full">
+        <div className="group relative size-full">
           <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-grey-400 group-focus:text-blue-500">
             <ChevronDown />
           </ComboboxButton>
           <ComboboxInput
-            className="p-8 focus:outline-blue-400
-            border border-grey-200 rounded-b-lg size-full
-            border-t-transparent"
+            className="size-full rounded-b-lg
+            border border-grey-200 border-t-transparent p-8
+            focus:outline-blue-400"
             aria-label="Assignee"
             placeholder={'시/군/구 선택'}
             defaultValue={null}
             displayValue={(smallRegion: string | null) => smallRegion ?? ''}
             onChange={(event) => setQuerySmall(event.target.value)}
+            autoComplete="off"
           />
           <ComboboxOptions
             anchor="bottom"
-            className="w-[var(--input-width)] shadow-md bg-white rounded-lg empty:invisible mt-4"
+            className="mt-4 w-[var(--input-width)] rounded-lg bg-white shadow-md empty:invisible"
           >
             {filteredSmallRegions.map((smallRegion) => (
               <ComboboxOption
                 key={smallRegion}
                 value={smallRegion}
-                className="data-[focus]:bg-blue-100 p-8"
+                className="p-8 data-[focus]:bg-blue-100"
               >
                 {smallRegion}
               </ComboboxOption>

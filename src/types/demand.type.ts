@@ -17,17 +17,17 @@ export type ShuttleDemandStatus = z.infer<typeof ShuttleDemandStatusEnum>;
 
 export const ShuttleDemandsViewEntitySchema = z
   .object({
-    shuttleDemandId: z.number(),
-    userId: z.number(),
+    shuttleDemandId: z.string(),
+    userId: z.string(),
     userNickname: z.string(),
     userProfileImage: z.string(),
     event: EventsViewEntitySchema,
-    eventId: z.number(),
-    dailyEventId: z.number(),
-    regionId: z.number(),
+    eventId: z.string(),
+    dailyEventId: z.string(),
+    regionId: z.string(),
     toDestinationRegionHub: z
       .object({
-        regionHubId: z.number(),
+        regionHubId: z.string(),
         name: z.string(),
         address: z.string(),
         latitude: z.number(),
@@ -37,7 +37,7 @@ export const ShuttleDemandsViewEntitySchema = z
     desiredToDestinationRegionHub: z.string().nullable(),
     fromDestinationRegionHub: z
       .object({
-        regionHubId: z.number(),
+        regionHubId: z.string(),
         name: z.string(),
         address: z.string(),
         latitude: z.number(),
@@ -59,16 +59,18 @@ export type ShuttleDemandsViewEntity = z.infer<
 
 export const ShuttleDemandStatisticsReadModelSchema = z
   .object({
-    eventId: z.number().int(),
+    eventId: z.string(),
     eventName: z.string().nullable(),
     eventImageUrl: z.string().nullable(),
-    dailyEventId: z.number().int().nullable(),
+    dailyEventId: z.string().nullable(),
     provinceFullName: z.string().nullable(),
     provinceShortName: z.string().nullable(),
     cityFullName: z.string().nullable(),
     cityShortName: z.string().nullable(),
-    toDestinationRegionHubName: z.string().nullable(),
-    fromDestinationRegionHubName: z.string().nullable(),
+    regionHubName: z.string().nullable(),
+    regionHubId: z.string().nullable(),
+    regionHubLatitude: z.number().nullable(),
+    regionHubLongitude: z.number().nullable(),
     totalCount: z.number().int(),
     roundTripCount: z.number().int(),
     toDestinationCount: z.number().int(),
