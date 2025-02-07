@@ -24,7 +24,7 @@ function Filter({ eventStatus, setEventStatus }: Props) {
     <Disclosure>
       <DisclosureButton
         className={twMerge(
-          'group flex w-fit items-center gap-2 justify-start gap-4 p-4 rounded-lg active:scale-90 hover:bg-grey-50 active:bg-grey-100 transition-all',
+          'gap-2 group flex w-fit items-center justify-start gap-4 rounded-lg p-4 transition-all hover:bg-grey-50 active:scale-90 active:bg-grey-100',
           eventStatus === undefined ? '' : 'text-green-500',
         )}
       >
@@ -34,7 +34,7 @@ function Filter({ eventStatus, setEventStatus }: Props) {
           : `필터`}
         <ChevronDownIcon className="w-5 group-data-[open]:rotate-180" />
       </DisclosureButton>
-      <DisclosurePanel className="flex flex-row gap-4 bg-grey-50 rounded-xl p-8">
+      <DisclosurePanel className="flex flex-row gap-4 rounded-xl bg-grey-50 p-8">
         {EventStatusEnum.options.map((status) => (
           <Toggle
             key={status}

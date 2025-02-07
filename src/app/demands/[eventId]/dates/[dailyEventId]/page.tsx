@@ -1,7 +1,7 @@
 'use client';
 
 import useTable from '@/hooks/useTable';
-import { columnsFrom, columnsTo } from './types/table.type';
+import { columnsFrom, columnsTo } from './table.type';
 import BaseTable from '@/components/table/BaseTable';
 import PartialRegionInput, {
   PartialRegion,

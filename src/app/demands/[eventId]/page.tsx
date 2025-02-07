@@ -1,7 +1,7 @@
 'use client';
 
 import useTable from '@/hooks/useTable';
-import { columnGroupByCity } from './types/table.type';
+import { columnGroupByCity } from './table.type';
 import BaseTable from '@/components/table/BaseTable';
 import { formatDateString } from '@/utils/date.util';
 import BlueLink from '@/components/link/BlueLink';

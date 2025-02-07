@@ -52,7 +52,7 @@ function ReservationFilter({ option, dispatch }: Props) {
     <Disclosure>
       <DisclosureButton
         className={twMerge(
-          'group flex w-fit items-center gap-2 justify-start gap-4 p-4 rounded-lg active:scale-90 hover:bg-grey-50 active:bg-grey-100 transition-all',
+          'gap-2 group flex w-fit items-center justify-start gap-4 rounded-lg p-4 transition-all hover:bg-grey-50 active:scale-90 active:bg-grey-100',
           filterCount === 0 ? '' : 'text-green-500',
           validity === false ? 'text-red-500' : '',
         )}
@@ -64,7 +64,7 @@ function ReservationFilter({ option, dispatch }: Props) {
       </DisclosureButton>
       {filterCount > 0 && (
         <button
-          className="group items-center gap-2 justify-start gap-4 p-4 rounded-lg active:scale-90 hover:bg-grey-50 active:bg-grey-100 transition-all flex flex-row w-fit"
+          className="gap-2 group flex w-fit flex-row items-center justify-start gap-4 rounded-lg p-4 transition-all hover:bg-grey-50 active:scale-90 active:bg-grey-100"
           onClick={() => {
             dispatch({ type: 'RESET' });
           }}
@@ -73,7 +73,7 @@ function ReservationFilter({ option, dispatch }: Props) {
           <span>필터 초기화</span>
         </button>
       )}
-      <DisclosurePanel className="flex flex-col gap-4 bg-grey-50 rounded-xl p-8">
+      <DisclosurePanel className="flex flex-col gap-4 rounded-xl bg-grey-50 p-8">
         <label>셔틀</label>
         <EventInput
           value={option.eventId ?? null}

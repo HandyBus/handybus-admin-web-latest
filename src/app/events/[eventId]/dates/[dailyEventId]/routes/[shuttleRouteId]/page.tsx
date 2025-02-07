@@ -1,7 +1,7 @@
 'use client';
 
 import BlueLink from '@/components/link/BlueLink';
-import { routeHubColumns } from './types/table.type';
+import { routeHubColumns } from './table.type';
 import useTable from '@/hooks/useTable';
 import BaseTable from '@/components/table/BaseTable';
 import Buses from './components/Buses';

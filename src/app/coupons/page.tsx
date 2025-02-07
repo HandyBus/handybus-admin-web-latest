@@ -1,6 +1,6 @@
 'use client';
 
-import { columns } from './types/table.type';
+import { columns } from './table.type';
 import Link from 'next/link';
 import { Loader2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';

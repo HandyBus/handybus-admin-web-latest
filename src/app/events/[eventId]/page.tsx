@@ -1,7 +1,7 @@
 'use client';
 
 import BlueLink from '@/components/link/BlueLink';
-import { columns } from './types/table.type';
+import { columns } from './table.type';
 import EventViewer from './components/Shuttle';
 import { Loader2Icon } from 'lucide-react';
 import { useMemo } from 'react';

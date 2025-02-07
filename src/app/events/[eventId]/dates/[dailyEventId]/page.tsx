@@ -4,7 +4,7 @@ import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';
 import BlueLink from '@/components/link/BlueLink';
 import { notFound } from 'next/navigation';
-import { columns } from './types/table.type';
+import { columns } from './table.type';
 import { useEffect } from 'react';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';

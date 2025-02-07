@@ -1,7 +1,7 @@
 'use client';
 
 import useTable from '@/hooks/useTable';
-import { columnsForGroupByEventId } from './types/table.type';
+import { columnsForGroupByEventId } from './table.type';
 import BaseTable from '@/components/table/BaseTable';
 import { useGetDemandsStats } from '@/services/shuttleOperation.service';
 import Heading from '@/components/text/Heading';

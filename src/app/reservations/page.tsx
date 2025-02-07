@@ -1,6 +1,6 @@
 'use client';
 
-import { columns } from './types/table.type';
+import { columns } from './table.type';
 import { useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';

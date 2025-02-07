@@ -1,6 +1,6 @@
 'use client';
 
-import { busColumns } from '../types/table.type';
+import { busColumns } from '../table.type';
 import BlueLink from '@/components/link/BlueLink';
 import BaseTable from '@/components/table/BaseTable';
 import Heading from '@/components/text/Heading';

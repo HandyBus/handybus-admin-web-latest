@@ -3,7 +3,7 @@
 import BlueLink from '@/components/link/BlueLink';
 import ColumnFilter from '@/components/table/ColumnFilter';
 import BaseTable from '@/components/table/BaseTable';
-import { columns, initialColumnVisibility } from './types/table.type';
+import { columns, initialColumnVisibility } from './table.type';
 import useTable from '@/hooks/useTable';
 import StatusFilter, { useEventStatusOptions } from './components/StatusFilter';
 import { useGetEvents } from '@/services/shuttleOperation.service';

@@ -1,7 +1,7 @@
 'use client';
 
 import BaseTable from '@/components/table/BaseTable';
-import { columns } from './types/table.type';
+import { columns } from './table.type';
 import useTable from '@/hooks/useTable';
 import { useGetArtists } from '@/services/shuttleOperation.service';
 import Heading from '@/components/text/Heading';
