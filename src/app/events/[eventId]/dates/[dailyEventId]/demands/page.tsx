@@ -3,12 +3,29 @@
 import Heading from '@/components/text/Heading';
 import { BIG_REGIONS_TO_COORDINATES } from '@/constants/regions';
 import useKakaoMap from '@/hooks/useKakaoMap';
-import { useCallback, useRef } from 'react';
+import { useGetDemandsStats } from '@/services/shuttleOperation.service';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-const Page = () => {
+interface Props {
+  params: {
+    eventId: string;
+    dailyEventId: string;
+  };
+}
+
+const Page = ({ params }: Props) => {
+  const { eventId, dailyEventId } = params;
+  const { data: demandsStats, isLoading } = useGetDemandsStats({
+    groupBy: 'PROVINCE',
+    eventId,
+    dailyEventId,
+  });
+
   const mapRef = useRef<HTMLDivElement>(null);
   const map = useRef<kakao.maps.Map | null>(null);
   const regionClusters = useRef<kakao.maps.CustomOverlay[]>([]);
+  const isInitialized = useRef(false);
+  const [isScriptReady, setIsScriptReady] = useState(false);
 
   // 지도 초기화
   const initializeMap = useCallback(() => {
@@ -39,23 +56,38 @@ const Page = () => {
     } catch (error) {
       alert('지도를 불러오는 중 오류가 발생했습니다. \n' + error);
     }
-  }, []);
+  }, [demandsStats]);
 
   const { KakaoScript } = useKakaoMap({
-    onReady: () => kakao.maps.load(initializeMap),
+    onReady: () => setIsScriptReady(true),
   });
+
+  useEffect(() => {
+    if (isInitialized.current || !isScriptReady || isLoading) {
+      return;
+    }
+    isInitialized.current = true;
+    kakao.maps.load(initializeMap);
+  }, [isScriptReady, isInitialized, isLoading, initializeMap]);
 
   // 지역 클러스터 초기화
   const initializeRegionCluster = useCallback(() => {
-    if (!map.current) {
+    if (!map.current || !demandsStats) {
       return;
     }
     Object.entries(BIG_REGIONS_TO_COORDINATES).forEach(
       ([region, coordinates]) => {
+        const demand = demandsStats.find(
+          (demand) => demand.provinceFullName === region,
+        );
+        if (!demand || demand.totalCount === 0) {
+          return;
+        }
+
         const content = document.createElement('div');
         content.className =
-          'w-80 h-80 bg-black/60 rounded-full flex justify-center items-center';
-        content.innerHTML = `<span style="color: white; font-size: 12px;">${region}</span>`;
+          'w-84 h-84 bg-black/60 rounded-full flex justify-center items-center flex-col';
+        content.innerHTML = `<span style="color: white; font-size: 10px;">${region}</span><span style="color: white;font-size: 14px; font-weight: 600;">${demand.totalCount}개</span>`;
 
         const position = new kakao.maps.LatLng(
           coordinates.latitude,
@@ -77,7 +109,7 @@ const Page = () => {
         regionClusters.current.push(customOverlay);
       },
     );
-  }, []);
+  }, [demandsStats]);
 
   // 지역 클러스터 보이기
   const showRegionClusters = useCallback(() => {
