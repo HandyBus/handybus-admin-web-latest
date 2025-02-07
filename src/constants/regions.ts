@@ -287,6 +287,80 @@ export const SMALL_REGIONS = {
   제주특별자치도: ['서귀포시', '제주시'],
 } as const;
 
+export const BIG_REGIONS_TO_COORDINATES: Record<
+  BigRegionsType,
+  { latitude: number; longitude: number }
+> = {
+  서울특별시: {
+    latitude: 37.5642135,
+    longitude: 127.0016985,
+  },
+  부산광역시: {
+    latitude: 35.1731,
+    longitude: 129.0714,
+  },
+  대구광역시: {
+    latitude: 35.8501,
+    longitude: 128.5206,
+  },
+  인천광역시: {
+    latitude: 37.4752,
+    longitude: 126.6313,
+  },
+  광주광역시: {
+    latitude: 35.1501,
+    longitude: 126.8559,
+  },
+  대전광역시: {
+    latitude: 36.3578,
+    longitude: 127.3867,
+  },
+  울산광역시: {
+    latitude: 35.5377,
+    longitude: 129.328,
+  },
+  세종특별자치시: {
+    latitude: 36.6012,
+    longitude: 127.2982,
+  },
+  경기도: {
+    latitude: 37.4143,
+    longitude: 127.4681,
+  },
+  충청북도: {
+    latitude: 36.8023,
+    longitude: 127.7238,
+  },
+  충청남도: {
+    latitude: 36.4742,
+    longitude: 126.782,
+  },
+  전라남도: {
+    latitude: 34.8538,
+    longitude: 126.8681,
+  },
+  경상북도: {
+    latitude: 36.3974,
+    longitude: 128.9877,
+  },
+  경상남도: {
+    latitude: 35.3763,
+    longitude: 128.1477,
+  },
+  강원특별자치도: {
+    latitude: 37.8272,
+    longitude: 128.3166,
+  },
+  전북특별자치도: {
+    latitude: 35.7492,
+    longitude: 127.1259,
+  },
+  제주특별자치도: {
+    latitude: 33.489,
+    longitude: 126.4983,
+  },
+} as const;
+
 export const REGION_TO_ID: {
   [bigRegion: string]: { [smallRegion: string]: string };
 } = {

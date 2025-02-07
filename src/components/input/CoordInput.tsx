@@ -115,6 +115,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
 
   const { KakaoScript } = useKakaoMap({
     onReady: () => window.kakao.maps.load(initializeMap),
+    libraries: ['services'],
   });
 
   return (
