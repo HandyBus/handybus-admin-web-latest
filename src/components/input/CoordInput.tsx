@@ -1,9 +1,9 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import Script from 'next/script';
 import { twJoin } from 'tailwind-merge';
 import { BanIcon, Loader2Icon } from 'lucide-react';
+import useKakaoMap from '@/hooks/useKakaoMap';
 
 interface Props {
   coord: Coord;
@@ -113,14 +113,13 @@ const CoordInput = ({ coord, setCoord }: Props) => {
     }
   }, [setCoordWithAddress, coord]);
 
+  const { KakaoScript } = useKakaoMap({
+    onReady: () => window.kakao.maps.load(initializeMap),
+  });
+
   return (
     <article className="relative h-auto p-16 [&_div]:cursor-pointer">
-      <Script
-        id="kakao-maps-sdk"
-        strategy="afterInteractive"
-        src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY}&autoload=false&libraries=services`}
-        onReady={() => window.kakao.maps.load(initializeMap)}
-      />
+      {KakaoScript}
       <div className="relative rounded-[12px] transition-opacity">
         <div
           ref={mapRef}
