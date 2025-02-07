@@ -119,7 +119,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
 
   return (
     <article className="relative h-auto p-16 [&_div]:cursor-pointer">
-      {KakaoScript}
+      <KakaoScript />
       <div className="relative rounded-[12px] transition-opacity">
         <div
           ref={mapRef}

@@ -1,11 +1,11 @@
 import Script from 'next/script';
 
 interface Props {
-  onReady: () => void;
+  onReady?: () => void;
 }
 
-const useKakaoMap = ({ onReady }: Props) => {
-  const KakaoScript = (
+const useKakaoMap = ({ onReady }: Props = {}) => {
+  const KakaoScript = () => (
     <Script
       id="kakao-maps-sdk"
       strategy="afterInteractive"
