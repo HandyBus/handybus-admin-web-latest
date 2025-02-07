@@ -10,6 +10,7 @@ import {
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { useGetArtists } from '@/services/shuttleOperation.service';
 import { ArtistsViewEntity } from '@/types/artist.type';
+import Link from 'next/link';
 
 interface Props {
   value: string | null;
@@ -73,6 +74,16 @@ const ArtistInput = ({ value, setValue }: Props) => {
             {artist.artistName}
           </ComboboxOption>
         ))}
+        {!isLoading && (
+          <Link
+            href="/artists/new"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block p-8 text-blue-500 hover:bg-blue-100"
+          >
+            + 새로운 아티스트 만들기
+          </Link>
+        )}
       </ComboboxOptions>
     </Combobox>
   );
