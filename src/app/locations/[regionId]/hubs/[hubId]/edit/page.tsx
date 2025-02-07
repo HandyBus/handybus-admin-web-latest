@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { conform, type EditHubFormType } from './types/form.type';
+import { conform, type EditHubFormType } from './form.type';
 import Input from '@/components/input/Input';
 import CoordInput from '@/components/input/CoordInput';
 import RegionInput from '@/components/input/RegionInput';

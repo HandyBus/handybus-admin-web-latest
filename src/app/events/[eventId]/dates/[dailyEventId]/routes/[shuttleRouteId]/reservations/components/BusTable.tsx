@@ -3,7 +3,7 @@
 import Stringifier from '@/utils/stringifier.util';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
-import EditHandyStatusDialog from '../[reservation_id]/components/EditHandyStatusDialog';
+import EditHandyStatusDialog from '../../../../../../../../../components/dialog/EditHandyStatusDialog';
 import BlueLink from '@/components/link/BlueLink';
 import {
   useGetReservationsWithPagination,
@@ -518,9 +518,7 @@ const PassengerItem = ({
           </p>
         )}
         <p>
-          <BlueLink
-            href={`/reservations/${reservation.shuttleRouteId}/${reservation.reservationId}`}
-          >
+          <BlueLink href={`/reservations/${reservation.reservationId}`}>
             상세보기
           </BlueLink>
         </p>

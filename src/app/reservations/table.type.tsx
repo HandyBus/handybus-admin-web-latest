@@ -105,9 +105,7 @@ export const columns = [
     header: '액션',
     cell: (props) => (
       <>
-        <BlueLink
-          href={`/reservations/${props.row.original.shuttleRouteId}/${props.row.original.reservationId}`}
-        >
+        <BlueLink href={`/reservations//${props.row.original.reservationId}`}>
           상세보기
         </BlueLink>
       </>

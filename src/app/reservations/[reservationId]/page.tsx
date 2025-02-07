@@ -1,6 +1,6 @@
 'use client';
 
-import EditHandyStatusDialog from './components/EditHandyStatusDialog';
+import EditHandyStatusDialog from '../../../components/dialog/EditHandyStatusDialog';
 import JSONViewer from '@/components/json/JSONViewer';
 import AccountInfo from './components/AccountInfo';
 import ReservationMetaInfo from './components/\bReservationMetaInfo';
@@ -13,12 +13,12 @@ import Heading from '@/components/text/Heading';
 
 interface Props {
   params: {
-    reservation_id: string;
+    reservationId: string;
   };
 }
 
-const Page = ({ params: { reservation_id } }: Props) => {
-  const { data, isPending, isError, error } = useGetReservation(reservation_id);
+const Page = ({ params: { reservationId } }: Props) => {
+  const { data, isPending, isError, error } = useGetReservation(reservationId);
 
   if (isPending) return <p>로딩중...</p>;
   if (isError) return <p>에러 : {error.message}</p>;

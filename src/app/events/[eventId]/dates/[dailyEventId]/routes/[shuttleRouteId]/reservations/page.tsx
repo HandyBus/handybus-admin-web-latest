@@ -10,18 +10,14 @@ import List from '@/components/text/List';
 
 interface Props {
   params: {
-    route_id: string;
-  };
-  searchParams: {
     eventId: string;
     dailyEventId: string;
+    shuttleRouteId: string;
   };
 }
 
-const Page = ({ params, searchParams }: Props) => {
-  const eventId = searchParams.eventId;
-  const dailyEventId = searchParams.dailyEventId;
-  const shuttleRouteId = params.route_id;
+const Page = ({ params }: Props) => {
+  const { eventId, dailyEventId, shuttleRouteId } = params;
 
   const { data: shuttleRoute } = useGetShuttleRoute(
     eventId,

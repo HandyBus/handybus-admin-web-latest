@@ -118,7 +118,7 @@ const RouteReservations = () => {
                 shuttleRoutes?.map((shuttleRoute) => (
                   <Link
                     key={shuttleRoute.shuttleRouteId}
-                    href={`/reservations/${shuttleRoute.shuttleRouteId}?eventId=${selectedEvent?.eventId}&dailyEventId=${selectedDailyEvent?.dailyEventId}`}
+                    href={`/events/${selectedEvent?.eventId}/dates/${selectedDailyEvent?.dailyEventId}/routes/${shuttleRoute.shuttleRouteId}/reservations`}
                     className="block w-full border-b border-grey-100 px-12 py-12 text-left hover:bg-grey-50"
                   >
                     {shuttleRoute.name}
