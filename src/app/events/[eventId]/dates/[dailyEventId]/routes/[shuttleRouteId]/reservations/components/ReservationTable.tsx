@@ -2,7 +2,6 @@
 
 import useTable from '@/hooks/useTable';
 import { useMemo } from 'react';
-import { reservationColumns } from '../types/table.type';
 import { toast } from 'react-toastify';
 import BaseTable from '@/components/table/BaseTable';
 import {
@@ -10,6 +9,7 @@ import {
   usePutReservation,
 } from '@/services/shuttleOperation.service';
 import Heading from '@/components/text/Heading';
+import { reservationColumns } from '../table.type';
 
 interface Props {
   eventId: string;
