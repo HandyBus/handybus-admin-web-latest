@@ -108,10 +108,27 @@ const Page = ({ params }: Props) => {
           return;
         }
 
+        const wrapper = document.createElement('div');
+        wrapper.className = 'relative group';
+
         const content = document.createElement('div');
         content.className =
           'w-84 h-84 bg-black/60 rounded-full flex justify-center items-center flex-col';
         content.innerHTML = `<div style="height: 4px"></div><p style="color: white; font-size: 12px;">${region}</p><p style="color: white;font-size: 14px; font-weight: 600;">${demand.totalCount}개</p>`;
+
+        const tooltip = document.createElement('div');
+        tooltip.className =
+          'hidden group-hover:block absolute left-full ml-4 top-1/2 -translate-y-1/2 bg-black/80 text-white p-8 rounded-md min-w-200 z-50 max-h-400 overflow-y-auto';
+        tooltip.innerHTML = `
+          <h6 class="text-14 font-500">${region}</h6>
+          <p class="text-14 text-grey-200">총 수요: ${demand.totalCount}개</p>
+          <p class="text-14 text-grey-200">왕복 수요: ${demand.roundTripCount}개</p>
+          <p class="text-14 text-grey-200">가는 편 수요: ${demand.toDestinationCount}개</p>
+          <p class="text-14 text-grey-200">오는 편 수요: ${demand.fromDestinationCount}개</p>
+        `;
+
+        wrapper.appendChild(content);
+        wrapper.appendChild(tooltip);
 
         const position = new kakao.maps.LatLng(
           coordinates.latitude,
@@ -125,9 +142,16 @@ const Page = ({ params }: Props) => {
 
         const customOverlay = new kakao.maps.CustomOverlay({
           position: position,
-          content: content,
+          content: wrapper,
           clickable: true,
         });
+        wrapper.addEventListener('mouseenter', () => {
+          customOverlay.setZIndex(100);
+        });
+        wrapper.addEventListener('mouseleave', () => {
+          customOverlay.setZIndex(1);
+        });
+
         customOverlay.setMap(map.current);
 
         regionClusters.current.push(customOverlay);
@@ -158,6 +182,7 @@ const Page = ({ params }: Props) => {
         <h6 class="text-14 font-500">${name}</h6>
         <p class="text-14 text-grey-200 pb-4">총 수요: ${count}개</p>
         ${cluster.nodes
+          .sort((a, b) => b.data.count - a.data.count)
           .map((node) => {
             return `<p class="text-12 text-grey-50 pb-[2px]">${node.data.regionHubName}: ${node.data.count}개</p>`;
           })
@@ -218,7 +243,7 @@ const Page = ({ params }: Props) => {
       <main className="flex grow flex-col">
         <Heading>수요조사 대시보드</Heading>
         <div className="flex grow gap-12">
-          <div className="flex grow flex-col" ref={mapRef} />
+          <div className="relative flex grow flex-col" ref={mapRef} />
           <section className="flex w-340 flex-col gap-4 bg-white p-12 shadow-[0px_0px_10px_0px_rgba(0,0,0,0.18)]">
             <Heading.h5 className="flex items-baseline gap-8 bg-notion-grey">
               추천 노선
