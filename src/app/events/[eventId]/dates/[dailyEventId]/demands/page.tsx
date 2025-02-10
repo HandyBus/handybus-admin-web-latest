@@ -1,12 +1,14 @@
 'use client';
 
 import Heading from '@/components/text/Heading';
+import ToolTip from '@/components/tool-tip/ToolTip';
 import { BIG_REGIONS_TO_COORDINATES } from '@/constants/regions';
 import useKakaoMap from '@/hooks/useKakaoMap';
 import {
   useGetDemandBasedRouteTree,
   useGetDemandsStats,
 } from '@/services/shuttleOperation.service';
+import { RegionHubClusterNode } from '@/types/demand.type';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const ZOOM_LEVEL_LIMIT = 9;
@@ -36,11 +38,15 @@ const Page = ({ params }: Props) => {
   const map = useRef<kakao.maps.Map | null>(null);
   const regionClusters = useRef<kakao.maps.CustomOverlay[]>([]);
   const hubMarkers = useRef<kakao.maps.CustomOverlay[]>([]);
+  const clustersInRegion = useRef<Record<string, RegionHubClusterNode[]>>({});
+
   const isInitialized = useRef(false);
   const [isScriptReady, setIsScriptReady] = useState(false);
 
+  const [viewingRegion, setViewingRegion] = useState<string | null>(null);
+
   // 지도 초기화
-  const initializeMap = useCallback(() => {
+  const initializeMap = useCallback(async () => {
     try {
       if (window.kakao && mapRef.current) {
         const options = {
@@ -54,8 +60,11 @@ const Page = ({ params }: Props) => {
         initializeRegionCluster();
         initializeHubMarker();
 
+        const newClustersInRegion = await getClustersInRegion();
+        clustersInRegion.current = newClustersInRegion;
+
         kakao.maps.event.addListener(newMap, 'zoom_changed', () => {
-          const level = map.current?.getLevel();
+          const level = newMap.getLevel();
           if (!level) {
             return;
           }
@@ -65,6 +74,28 @@ const Page = ({ params }: Props) => {
             handleZoomInLevel();
           }
         });
+
+        kakao.maps.event.addListener(newMap, 'idle', () => {
+          const level = newMap.getLevel();
+          if (level >= ZOOM_LEVEL_LIMIT) {
+            setViewingRegion(null);
+            return;
+          }
+          const center = newMap.getCenter();
+          if (!center) {
+            return;
+          }
+          const geocoder = new kakao.maps.services.Geocoder();
+          geocoder.coord2RegionCode(
+            center.getLng(),
+            center.getLat(),
+            (result, status) => {
+              if (status === kakao.maps.services.Status.OK) {
+                setViewingRegion(result[0].region_1depth_name);
+              }
+            },
+          );
+        });
       }
     } catch (error) {
       alert('지도를 불러오는 중 오류가 발생했습니다. \n' + error);
@@ -73,6 +104,7 @@ const Page = ({ params }: Props) => {
 
   const { KakaoScript } = useKakaoMap({
     onReady: () => setIsScriptReady(true),
+    libraries: ['services'],
   });
 
   useEffect(() => {
@@ -237,13 +269,118 @@ const Page = ({ params }: Props) => {
     });
   }, [regionClusters]);
 
+  const getClustersInRegion = useCallback(async () => {
+    const geocoder = new kakao.maps.services.Geocoder();
+    const clustersWithRegion: {
+      region: string;
+      cluster: RegionHubClusterNode;
+    }[] = [];
+
+    const promises = routeTree?.clusters.map((cluster) => {
+      return new Promise<void>((resolve) => {
+        geocoder.coord2RegionCode(
+          cluster.longitude,
+          cluster.latitude,
+          (result, status) => {
+            if (status === kakao.maps.services.Status.OK) {
+              clustersWithRegion.push({
+                region: result[0].region_1depth_name,
+                cluster: cluster,
+              });
+            }
+            resolve();
+          },
+        );
+      });
+    });
+
+    if (!promises) {
+      return {};
+    }
+
+    await Promise.all(promises);
+    const clustersInRegion = clustersWithRegion.reduce<
+      Record<string, RegionHubClusterNode[]>
+    >((acc, { region, cluster }) => {
+      if (!acc[region]) {
+        acc[region] = [];
+      }
+      acc[region].push(cluster);
+      return acc;
+    }, {});
+
+    return clustersInRegion;
+  }, [routeTree]);
+
+  const panToXY = useCallback(
+    (x: number, y: number) => {
+      if (!map.current) {
+        return;
+      }
+      map.current.panTo(new kakao.maps.LatLng(x, y));
+    },
+    [map],
+  );
+
   return (
     <>
       <KakaoScript />
       <main className="flex grow flex-col">
         <Heading>수요조사 대시보드</Heading>
         <div className="flex grow gap-12">
-          <div className="relative flex grow flex-col" ref={mapRef} />
+          <div className="relative flex grow flex-col" ref={mapRef}>
+            {viewingRegion && (
+              <section className="absolute bottom-0 left-0 top-0 z-50 w-240 bg-black/55 p-12 text-white">
+                <h5 className="text-18 font-600">{viewingRegion}</h5>
+                <article className="flex flex-col p-4 text-12 text-grey-100">
+                  {(() => {
+                    const demand = demandsStats?.find(
+                      (demand) => demand.provinceFullName === viewingRegion,
+                    );
+                    if (!demand) {
+                      return null;
+                    }
+                    return (
+                      <>
+                        <p>총 수요: {demand.totalCount}개</p>
+                        <p>왕복 수요: {demand.roundTripCount}개</p>
+                        <p>가는 편 수요: {demand.toDestinationCount}개</p>
+                        <p>오는 편 수요: {demand.fromDestinationCount}개</p>
+                      </>
+                    );
+                  })()}
+                </article>
+                <article className="flex flex-col gap-4 text-grey-50">
+                  <h6 className="flex items-center gap-4 pt-8 text-14 font-600">
+                    {viewingRegion} 내 군집들
+                    <ToolTip iconClassName="text-grey-300 hover:text-grey-100">
+                      기타 수요조사는 지도 및 군집에 표시되지 않습니다.
+                    </ToolTip>
+                  </h6>
+                  <ul className="flex flex-col gap-[1px]">
+                    {clustersInRegion.current?.[viewingRegion]?.map(
+                      (cluster) => {
+                        return (
+                          <button
+                            key={cluster.clusterId}
+                            className="flex items-center justify-between p-4 text-14 hover:bg-grey-100/50"
+                            onClick={() => {
+                              panToXY(cluster.latitude, cluster.longitude);
+                            }}
+                          >
+                            <span>{cluster.nodes[0].data.regionHubName}</span>
+                            <span className="text-12 text-grey-200">
+                              {cluster.totalCount}개
+                            </span>
+                          </button>
+                        );
+                      },
+                    )}
+                  </ul>
+                </article>
+              </section>
+            )}
+          </div>
           <section className="flex w-340 flex-col gap-4 bg-white p-12 shadow-[0px_0px_10px_0px_rgba(0,0,0,0.18)]">
             <Heading.h5 className="flex items-baseline gap-8 bg-notion-grey">
               추천 노선
