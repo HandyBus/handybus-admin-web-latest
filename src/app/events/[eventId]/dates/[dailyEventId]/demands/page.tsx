@@ -8,9 +8,18 @@ import {
   useGetDemandBasedRouteTree,
   useGetDemandsStats,
 } from '@/services/shuttleOperation.service';
-import { RegionHubClusterNode } from '@/types/demand.type';
+import {
+  DemandBasedRouteResponse,
+  RegionHubClusterNode,
+} from '@/types/demand.type';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
+import {
+  createHubMarker,
+  createRegionMarker,
+  panToBounds,
+  panToXY,
+} from './map.util';
 
 const ZOOM_LEVEL_LIMIT = 9;
 
@@ -35,16 +44,20 @@ const Page = ({ params }: Props) => {
       dailyEventId,
     });
 
+  const isInitialized = useRef(false);
+  const [isScriptReady, setIsScriptReady] = useState(false);
+
   const mapRef = useRef<HTMLDivElement>(null);
   const map = useRef<kakao.maps.Map | null>(null);
   const regionClusters = useRef<kakao.maps.CustomOverlay[]>([]);
   const hubMarkers = useRef<kakao.maps.CustomOverlay[]>([]);
   const clustersInRegion = useRef<Record<string, RegionHubClusterNode[]>>({});
-
-  const isInitialized = useRef(false);
-  const [isScriptReady, setIsScriptReady] = useState(false);
+  const routeLine = useRef<kakao.maps.Polyline | null>(null);
 
   const [viewingRegion, setViewingRegion] = useState<string | null>(null);
+  const [selectedRouteIndex, setSelectedRouteIndex] = useState<number | null>(
+    null,
+  );
 
   // 지도 초기화
   const initializeMap = useCallback(async () => {
@@ -64,6 +77,7 @@ const Page = ({ params }: Props) => {
         const newClustersInRegion = await getClustersInRegion();
         clustersInRegion.current = newClustersInRegion;
 
+        // 줌에 따른 마커 종류 표시 핸들링
         kakao.maps.event.addListener(newMap, 'zoom_changed', () => {
           const level = newMap.getLevel();
           if (!level) {
@@ -76,6 +90,7 @@ const Page = ({ params }: Props) => {
           }
         });
 
+        // 현재 지도에 표시되는 지역 조회
         kakao.maps.event.addListener(newMap, 'idle', () => {
           const level = newMap.getLevel();
           if (level >= ZOOM_LEVEL_LIMIT) {
@@ -141,52 +156,29 @@ const Page = ({ params }: Props) => {
           return;
         }
 
-        const wrapper = document.createElement('div');
-        wrapper.className = 'relative group';
-
-        const content = document.createElement('div');
-        content.className =
-          'w-84 h-84 bg-black/60 rounded-full flex justify-center items-center flex-col';
-        content.innerHTML = `<div style="height: 4px"></div><p style="color: white; font-size: 12px;">${region}</p><p style="color: white;font-size: 14px; font-weight: 600;">${demand.totalCount}개</p>`;
-
-        const tooltip = document.createElement('div');
-        tooltip.className =
-          'hidden group-hover:block absolute left-full ml-4 top-1/2 -translate-y-1/2 bg-black/80 text-white p-8 rounded-md min-w-200 z-50 max-h-400 overflow-y-auto';
-        tooltip.innerHTML = `
-          <h6 class="text-14 font-500">${region}</h6>
-          <p class="text-14 text-grey-200">총 수요: ${demand.totalCount}개</p>
-          <p class="text-14 text-grey-200">왕복 수요: ${demand.roundTripCount}개</p>
-          <p class="text-14 text-grey-200">가는 편 수요: ${demand.toDestinationCount}개</p>
-          <p class="text-14 text-grey-200">오는 편 수요: ${demand.fromDestinationCount}개</p>
-        `;
-
-        wrapper.appendChild(content);
-        wrapper.appendChild(tooltip);
-
         const position = new kakao.maps.LatLng(
           coordinates.latitude,
           coordinates.longitude,
         );
+        const regionMarker = createRegionMarker(region, demand);
+        const customOverlay = new kakao.maps.CustomOverlay({
+          position: position,
+          content: regionMarker,
+          clickable: true,
+        });
 
-        content.addEventListener('click', () => {
+        regionMarker.addEventListener('click', () => {
           // @ts-expect-error 카카오 지도 타입 패키지 미업데이트로 인한 오류
           map.current?.jump(position, ZOOM_LEVEL_LIMIT - 1, { animate: true });
         });
-
-        const customOverlay = new kakao.maps.CustomOverlay({
-          position: position,
-          content: wrapper,
-          clickable: true,
-        });
-        wrapper.addEventListener('mouseenter', () => {
+        regionMarker.addEventListener('mouseenter', () => {
           customOverlay.setZIndex(100);
         });
-        wrapper.addEventListener('mouseleave', () => {
+        regionMarker.addEventListener('mouseleave', () => {
           customOverlay.setZIndex(1);
         });
 
         customOverlay.setMap(map.current);
-
         regionClusters.current.push(customOverlay);
       },
     );
@@ -198,32 +190,7 @@ const Page = ({ params }: Props) => {
       return;
     }
     routeTree.clusters.forEach((cluster) => {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'relative group';
-
-      const content = document.createElement('div');
-      const name = cluster.nodes[0].data.regionHubName + ' 부근';
-      const count = cluster.totalCount;
-      content.className =
-        'w-80 h-80 bg-blue-700/70 rounded-full flex justify-center items-center flex-col relative';
-      content.innerHTML = `<div style="height: 4px"></div><p style="color: white; font-size: 12px; width: 64px; height: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${name}</p><p style="color: white;font-size: 14px; font-weight: 600;">${count}개</p>`;
-
-      const tooltip = document.createElement('div');
-      tooltip.className =
-        'hidden group-hover:block absolute left-full ml-4 top-1/2 -translate-y-1/2 bg-black/80 text-white p-8 rounded-md min-w-200 z-50 max-h-400 overflow-y-auto';
-      tooltip.innerHTML = `
-        <h6 class="text-14 font-500">${name}</h6>
-        <p class="text-14 text-grey-200 pb-4">총 수요: ${count}개</p>
-        ${cluster.nodes
-          .sort((a, b) => b.data.count - a.data.count)
-          .map((node) => {
-            return `<p class="text-12 text-grey-50 pb-[2px]">${node.data.regionHubName}: ${node.data.count}개</p>`;
-          })
-          .join('')}
-      `;
-
-      wrapper.appendChild(content);
-      wrapper.appendChild(tooltip);
+      const hubMarker = createHubMarker(cluster);
 
       const position = new kakao.maps.LatLng(
         cluster.latitude,
@@ -232,20 +199,20 @@ const Page = ({ params }: Props) => {
 
       const customOverlay = new kakao.maps.CustomOverlay({
         position: position,
-        content: wrapper,
+        content: hubMarker,
         clickable: true,
         zIndex: 1,
       });
-      wrapper.addEventListener('mouseenter', () => {
+
+      hubMarker.addEventListener('mouseenter', () => {
         customOverlay.setZIndex(100);
       });
-      wrapper.addEventListener('mouseleave', () => {
+      hubMarker.addEventListener('mouseleave', () => {
         customOverlay.setZIndex(1);
       });
 
       customOverlay.setMap(map.current);
       customOverlay.setVisible(false);
-
       hubMarkers.current.push(customOverlay);
     });
   }, [routeTree]);
@@ -319,37 +286,6 @@ const Page = ({ params }: Props) => {
     return clustersInRegion;
   }, [routeTree]);
 
-  // 특정 좌표로 패닝
-  const panToXY = useCallback(
-    (x: number, y: number) => {
-      if (!map.current) {
-        return;
-      }
-      map.current.panTo(new kakao.maps.LatLng(x, y));
-    },
-    [map],
-  );
-
-  // 좌표 배열을 받아 해당 좌표들을 포함하는 영역으로 패닝
-  const panToBounds = useCallback(
-    (coords: kakao.maps.LatLng[]) => {
-      if (!map.current) {
-        return;
-      }
-      const bounds = new kakao.maps.LatLngBounds();
-      coords.forEach((coord) => {
-        bounds.extend(coord);
-      });
-      map.current.panTo(bounds);
-    },
-    [map],
-  );
-
-  const [selectedRouteIndex, setSelectedRouteIndex] = useState<number | null>(
-    null,
-  );
-  const routeLine = useRef<kakao.maps.Polyline | null>(null);
-
   // 노선을 지도에 표시
   const displayRoute = useCallback(
     (coords: kakao.maps.LatLng[], index: number) => {
@@ -366,6 +302,10 @@ const Page = ({ params }: Props) => {
         setSelectedRouteIndex(null);
       }
 
+      if (coords.length < 2) {
+        return;
+      }
+
       const polyline = new kakao.maps.Polyline({
         path: coords,
         strokeWeight: 5,
@@ -380,6 +320,26 @@ const Page = ({ params }: Props) => {
     },
     [map, selectedRouteIndex],
   );
+
+  // 군집 클릭 핸들러
+  const handleHubClick = (cluster: RegionHubClusterNode) => {
+    panToXY(cluster.latitude, cluster.longitude, map.current);
+  };
+
+  // 노선 클릭 핸들러
+  const handleRouteClick = (route: DemandBasedRouteResponse, index: number) => {
+    const clusters = routeTree?.clusters.filter((cluster) =>
+      route.nodes.includes(cluster.clusterId),
+    );
+    if (!clusters) {
+      return;
+    }
+    const coords = clusters.map(
+      (cluster) => new kakao.maps.LatLng(cluster.latitude, cluster.longitude),
+    );
+    panToBounds(coords, map.current);
+    displayRoute(coords, index);
+  };
 
   return (
     <>
@@ -423,9 +383,7 @@ const Page = ({ params }: Props) => {
                           <button
                             key={cluster.clusterId}
                             className="flex items-center justify-between p-4 text-14 hover:bg-grey-100/50"
-                            onClick={() => {
-                              panToXY(cluster.latitude, cluster.longitude);
-                            }}
+                            onClick={() => handleHubClick(cluster)}
                           >
                             <span>{cluster.nodes[0].data.regionHubName}</span>
                             <span className="text-12 text-grey-200">
@@ -455,23 +413,7 @@ const Page = ({ params }: Props) => {
                     'flex items-center gap-8 overflow-x-auto px-4 py-8 hover:bg-notion-grey/70',
                     selectedRouteIndex === index && 'bg-notion-grey/70',
                   )}
-                  onClick={() => {
-                    const clusters = routeTree?.clusters.filter((cluster) =>
-                      route.nodes.includes(cluster.clusterId),
-                    );
-                    if (!clusters) {
-                      return;
-                    }
-                    const coords = clusters.map(
-                      (cluster) =>
-                        new kakao.maps.LatLng(
-                          cluster.latitude,
-                          cluster.longitude,
-                        ),
-                    );
-                    panToBounds(coords);
-                    displayRoute(coords, index);
-                  }}
+                  onClick={() => handleRouteClick(route, index)}
                 >
                   {route.nodes.map((node, index) => {
                     const cluster = routeTree?.clusters.find(
