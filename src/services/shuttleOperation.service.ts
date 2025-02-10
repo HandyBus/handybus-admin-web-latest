@@ -49,6 +49,7 @@ import {
   ShuttleDemandStatisticsReadModelSchema,
 } from '@/types/demand.type';
 import {
+  DEFAULT_CLUSTER_MIN_COUNT,
   DEFAULT_EPSILON,
   DEFAULT_MAX_DISTANCE,
   DEFAULT_MAX_NODES,
@@ -134,6 +135,7 @@ export interface GetRouteTreeWithDemandsOptions {
   cityShortName?: string;
   dailyEventId?: string;
   eventId?: string;
+  clusterMinCount: number;
   minCount: number;
   maxNodes: number;
   maxDistance: number;
@@ -141,6 +143,7 @@ export interface GetRouteTreeWithDemandsOptions {
 }
 
 export const getDemandBasedRouteTree = async ({
+  clusterMinCount = DEFAULT_CLUSTER_MIN_COUNT,
   minCount = DEFAULT_MIN_COUNT,
   maxNodes = DEFAULT_MAX_NODES,
   maxDistance = DEFAULT_MAX_DISTANCE,
@@ -149,7 +152,7 @@ export const getDemandBasedRouteTree = async ({
 }: GetRouteTreeWithDemandsOptions) => {
   const res = await authInstance.get(
     `/v2/shuttle-operation/admin/demands/all/tree${toSearchParamString(
-      { ...props, minCount, maxNodes, maxDistance, epsilon },
+      { ...props, clusterMinCount, minCount, maxNodes, maxDistance, epsilon },
       '?',
     )}`,
     {
@@ -169,6 +172,7 @@ export const useGetDemandBasedRouteTree = (
     queryKey: ['demand', 'route-tree', options],
     queryFn: () =>
       getDemandBasedRouteTree({
+        clusterMinCount: DEFAULT_CLUSTER_MIN_COUNT,
         minCount: DEFAULT_MIN_COUNT,
         maxNodes: DEFAULT_MAX_NODES,
         maxDistance: DEFAULT_MAX_DISTANCE,
