@@ -1,7 +1,6 @@
 'use client';
 
 import BlueLink from '@/components/link/BlueLink';
-import ColumnFilter from '@/components/table/ColumnFilter';
 import { columns } from './table.type';
 import { useGetEventDashboard } from '@/services/shuttleOperation.service';
 import Heading from '@/components/text/Heading';
@@ -30,7 +29,6 @@ const Page = () => {
           추가하기
         </BlueLink>
       </Heading>
-      <ColumnFilter table={table} />
       <section className="flex flex-col">
         {isLoading ? (
           <div>Loading...</div>
