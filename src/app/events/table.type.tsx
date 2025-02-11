@@ -29,7 +29,7 @@ export const columns = [
     id: 'eventName',
     header: '행사 정보',
     cell: (info) => {
-      const { eventName, eventLocationName, eventType, eventArtists } =
+      const { eventName, eventLocationName, eventType, eventArtists, eventId } =
         info.row.original;
       const artists = eventArtists
         ?.map((artist) => artist.artistName)
@@ -40,6 +40,9 @@ export const columns = [
           <p className="font-400 text-grey-700">{artists}</p>
           <p className="font-400 text-grey-700">{eventType}</p>
           <p className="font-500 text-grey-800">{eventLocationName}</p>
+          <BlueLink href={`/events/${eventId}/edit`} className="text-12">
+            수정하기
+          </BlueLink>
         </div>
       );
     },
@@ -55,7 +58,7 @@ export const columns = [
             {dates.map((date) => (
               <p
                 key={date}
-                className="flex h-56 grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 last:border-b-0"
+                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 last:border-b-0"
               >
                 {formatDateString(date, 'date')}
               </p>
@@ -74,12 +77,18 @@ export const columns = [
         const statistics = info.row.original.dailyEvents.map(
           (dailyEvent) => dailyEvent.statistics,
         );
+        const style = {
+          OPEN: 'text-green-600',
+          CLOSED: 'text-grey-700',
+          ENDED: 'text-grey-600',
+          INACTIVE: 'text-grey-600',
+        };
         return (
           <div className="flex h-full flex-col justify-between">
             {eventStatuses.map((eventStatus, index) => (
               <p
                 key={index}
-                className="group relative flex h-56 grow items-center justify-center whitespace-nowrap  break-keep border-b border-grey-200 px-8 last:border-b-0"
+                className={`group relative flex h-[58px] grow items-center justify-center whitespace-nowrap  break-keep border-b border-grey-200 px-8 last:border-b-0 ${style[eventStatus]}`}
               >
                 {Stringifier.eventStatus(eventStatus)}
                 <div className="absolute left-100 hidden h-120 w-172 rounded-[4px] bg-black/65 p-12 text-white group-hover:block">
@@ -107,9 +116,11 @@ export const columns = [
             {dailyEventIds.map((dailyEventId) => (
               <p
                 key={dailyEventId}
-                className="flex h-56 grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 last:border-b-0"
+                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 last:border-b-0"
               >
-                <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>
+                <BlueLink
+                  href={`/events/${eventId}/dates/${dailyEventId}/demands`}
+                >
                   수요조사 보기
                 </BlueLink>
               </p>
@@ -130,7 +141,7 @@ export const columns = [
             {expectedRouteCounts.map((expectedRouteCount, index) => (
               <p
                 key={index}
-                className="flex h-56 grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 last:border-b-0"
+                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 font-500 last:border-b-0"
               >
                 {expectedRouteCount}
               </p>
@@ -140,27 +151,34 @@ export const columns = [
       },
     },
   ),
-  columnHelper.accessor(
-    (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.openedRouteCount),
-    {
-      header: '개설된 노선 수',
-      cell: (info) => {
-        const openedRouteCounts = info.getValue();
-        return (
-          <div className="flex h-full flex-col justify-between">
-            {openedRouteCounts.map((openedRouteCount, index) => (
-              <p
-                key={index}
-                className="flex h-56 grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 last:border-b-0"
-              >
-                {openedRouteCount}
-              </p>
-            ))}
-          </div>
-        );
-      },
+  columnHelper.accessor((row) => row.dailyEvents, {
+    header: '개설된 노선 수',
+    cell: (info) => {
+      const dailyEvents = info.getValue();
+      const openedRouteCounts = dailyEvents.map(
+        (dailyEvent) => dailyEvent.openedRouteCount,
+      );
+      const expectedRouteCounts = dailyEvents.map(
+        (dailyEvent) => dailyEvent.expectedRouteCount,
+      );
+      return (
+        <div className="flex h-full flex-col justify-between">
+          {openedRouteCounts.map((openedRouteCount, index) => (
+            <p
+              key={index}
+              className={`flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 font-600 last:border-b-0 ${
+                openedRouteCount < expectedRouteCounts[index]
+                  ? 'text-red-500'
+                  : 'text-green-600'
+              }`}
+            >
+              {openedRouteCount}
+            </p>
+          ))}
+        </div>
+      );
     },
-  ),
+  }),
   columnHelper.accessor(
     (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.dailyEventId),
     {
@@ -177,7 +195,7 @@ export const columns = [
             {dailyEventIds.map((dailyEventId, index) => (
               <p
                 key={dailyEventId}
-                className="flex h-56 grow items-center justify-center border-b border-grey-200 px-8 last:border-b-0"
+                className="flex h-[58px] grow items-center justify-center border-b border-grey-200 px-8 last:border-b-0"
               >
                 {openedRouteCount[index] > 0 ? (
                   <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>

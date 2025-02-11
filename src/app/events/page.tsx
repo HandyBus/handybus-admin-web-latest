@@ -19,8 +19,6 @@ const Page = () => {
     columns,
   });
 
-  console.log(eventDashboard);
-
   return (
     <main>
       <Heading className="flex items-baseline gap-20">
