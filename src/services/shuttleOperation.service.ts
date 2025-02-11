@@ -43,7 +43,18 @@ import {
   TossPaymentsEntitySchema,
 } from '@/types/payment.type';
 import { silentParse } from '@/utils/parse.util';
-import { ShuttleDemandStatisticsReadModelSchema } from '@/types/demand.type';
+import {
+  DemandBasedRouteResponseSchema,
+  RegionHubClusterNodeSchema,
+  ShuttleDemandStatisticsReadModelSchema,
+} from '@/types/demand.type';
+import {
+  DEFAULT_CLUSTER_MIN_COUNT,
+  DEFAULT_EPSILON,
+  DEFAULT_MAX_DISTANCE,
+  DEFAULT_MAX_NODES,
+  DEFAULT_MIN_COUNT,
+} from '@/constants/common';
 
 // ----- 조회 -----
 
@@ -117,22 +128,57 @@ export const useGetDemandsStats = (options?: GetDemandOptions) => {
   });
 };
 
-export const getEventDashboard = async (options?: GetDemandOptions) => {
+export interface GetRouteTreeWithDemandsOptions {
+  provinceFullName?: string;
+  provinceShortName?: string;
+  cityFullName?: string;
+  cityShortName?: string;
+  dailyEventId?: string;
+  eventId?: string;
+  clusterMinCount: number;
+  minCount: number;
+  maxNodes: number;
+  maxDistance: number;
+  epsilon: number;
+}
+
+export const getDemandBasedRouteTree = async ({
+  clusterMinCount = DEFAULT_CLUSTER_MIN_COUNT,
+  minCount = DEFAULT_MIN_COUNT,
+  maxNodes = DEFAULT_MAX_NODES,
+  maxDistance = DEFAULT_MAX_DISTANCE,
+  epsilon = DEFAULT_EPSILON,
+  ...props
+}: GetRouteTreeWithDemandsOptions) => {
   const res = await authInstance.get(
-    `/v2/shuttle-operation/admin/demands/all/stats${toSearchParamString({ ...options }, '?')}`,
+    `/v2/shuttle-operation/admin/demands/all/tree${toSearchParamString(
+      { ...props, clusterMinCount, minCount, maxNodes, maxDistance, epsilon },
+      '?',
+    )}`,
     {
       shape: {
-        statistics: ShuttleDemandStatisticsReadModelSchema.array(),
+        routes: DemandBasedRouteResponseSchema.array(),
+        clusters: RegionHubClusterNodeSchema.array(),
       },
     },
   );
-  return res.statistics;
+  return res;
 };
 
-export const useGetEventDashboard = (options?: GetDemandOptions) => {
+export const useGetDemandBasedRouteTree = (
+  options?: Partial<GetRouteTreeWithDemandsOptions>,
+) => {
   return useQuery({
-    queryKey: ['demand', 'stats', options],
-    queryFn: () => getDemandsStats(options),
+    queryKey: ['demand', 'route-tree', options],
+    queryFn: () =>
+      getDemandBasedRouteTree({
+        clusterMinCount: DEFAULT_CLUSTER_MIN_COUNT,
+        minCount: DEFAULT_MIN_COUNT,
+        maxNodes: DEFAULT_MAX_NODES,
+        maxDistance: DEFAULT_MAX_DISTANCE,
+        epsilon: DEFAULT_EPSILON,
+        ...options,
+      }),
   });
 };
 

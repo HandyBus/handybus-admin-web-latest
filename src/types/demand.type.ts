@@ -80,3 +80,38 @@ export const ShuttleDemandStatisticsReadModelSchema = z
 export type ShuttleDemandStatisticsReadModel = z.infer<
   typeof ShuttleDemandStatisticsReadModelSchema
 >;
+
+export const DemandBasedRouteResponseSchema = z.object({
+  nodes: z.number().array(),
+  edges: z
+    .object({
+      source: z.number(),
+      target: z.number(),
+      distance: z.number(),
+    })
+    .array(),
+  totalDistance: z.number(), // km
+  totalCount: z.number(),
+});
+export type DemandBasedRouteResponse = z.infer<
+  typeof DemandBasedRouteResponseSchema
+>;
+
+export const RegionHubClusterNodeSchema = z.object({
+  clusterId: z.number(),
+  latitude: z.number(),
+  longitude: z.number(),
+  totalCount: z.number(),
+  nodes: z
+    .object({
+      id: z.string(),
+      x: z.number(),
+      y: z.number(),
+      data: z.object({
+        regionHubName: z.string(),
+        count: z.number(),
+      }),
+    })
+    .array(),
+});
+export type RegionHubClusterNode = z.infer<typeof RegionHubClusterNodeSchema>;
