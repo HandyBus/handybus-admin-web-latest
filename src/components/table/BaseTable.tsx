@@ -6,6 +6,7 @@ import { twMerge } from 'tailwind-merge';
 interface Props<TData> {
   table: Table<TData>;
   cellClassName?: string;
+  rowClassName?: string;
 }
 
 /**
@@ -14,7 +15,11 @@ interface Props<TData> {
  * @param table
  * @returns ReactNode
  */
-const BaseTable = <TData,>({ table, cellClassName }: Props<TData>) => {
+const BaseTable = <TData,>({
+  table,
+  cellClassName,
+  rowClassName,
+}: Props<TData>) => {
   return (
     <table className="border-separate border-spacing-y-4 text-left text-16 text-grey-900 rtl:text-right">
       <thead className="bg-grey-50 text-14 uppercase text-grey-700">
@@ -24,7 +29,7 @@ const BaseTable = <TData,>({ table, cellClassName }: Props<TData>) => {
               <th
                 key={header.id}
                 colSpan={header.colSpan}
-                className="border-y border-r border-grey-100 p-8 transition-colors first:rounded-l-lg first:border-l last:rounded-r-lg hover:bg-grey-100"
+                className="border-y border-r border-grey-100 p-8 transition-colors first:rounded-l-lg first:border-l last:rounded-r-lg"
               >
                 {header.isPlaceholder
                   ? null
@@ -41,7 +46,10 @@ const BaseTable = <TData,>({ table, cellClassName }: Props<TData>) => {
         {table.getRowModel().rows.map((row) => (
           <tr
             key={row.id}
-            className="border-spacing-y-40 rounded-lg border border-b border-grey-50 bg-white transition-colors hover:bg-grey-100"
+            className={twMerge(
+              'border-spacing-y-40 rounded-lg border border-b border-grey-50 bg-white transition-colors',
+              rowClassName,
+            )}
           >
             {row.getVisibleCells().map((cell) => (
               <td

@@ -3,29 +3,24 @@
 import BlueLink from '@/components/link/BlueLink';
 import ColumnFilter from '@/components/table/ColumnFilter';
 import { columns } from './table.type';
-import { useGetEvents } from '@/services/shuttleOperation.service';
+import { useGetEventDashboard } from '@/services/shuttleOperation.service';
 import Heading from '@/components/text/Heading';
-import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import BaseTable from '@/components/table/BaseTable';
-import { useEventStatusOptions } from './components/StatusFilter';
-
+import useTable from '@/hooks/useTable';
 const Page = () => {
-  const [eventStatus] = useEventStatusOptions();
-
   const {
-    data: events,
+    data: eventDashboard,
     isLoading,
     isError,
     error,
-  } = useGetEvents({
-    status: eventStatus,
+  } = useGetEventDashboard();
+
+  const table = useTable({
+    data: eventDashboard,
+    columns,
   });
 
-  const table = useReactTable({
-    data: events ?? [],
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
+  console.log(eventDashboard);
 
   return (
     <main>
@@ -41,8 +36,8 @@ const Page = () => {
           <div>Loading...</div>
         ) : isError ? (
           <div>Error: {error.message}</div>
-        ) : events ? (
-          <BaseTable table={table} cellClassName="h-120 p-0" />
+        ) : eventDashboard ? (
+          <BaseTable table={table} cellClassName="min-h-120 p-0" />
         ) : (
           <div>No data</div>
         )}

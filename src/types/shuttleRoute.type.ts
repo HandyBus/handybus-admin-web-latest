@@ -65,7 +65,7 @@ export const ShuttleRoutesViewEntitySchema = z
       ShuttleRouteHubsInShuttleRoutesViewEntitySchema.array(),
     fromDestinationShuttleRouteHubs:
       ShuttleRouteHubsInShuttleRoutesViewEntitySchema.array(),
-    event: EventsViewEntitySchema,
+    event: z.lazy(() => EventsViewEntitySchema),
     createdAt: z.string(),
     updatedAt: z.string(),
   })
