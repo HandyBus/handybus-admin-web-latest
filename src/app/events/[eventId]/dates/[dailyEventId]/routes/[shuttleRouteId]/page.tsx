@@ -62,7 +62,6 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
                     {route.event.eventName}
                   </BlueLink>
                 </List.item>
-                <List.item title="노선 ID">{route.shuttleRouteId}</List.item>
                 <List.item title="노선 이름">{route.name}</List.item>
                 <List.item title="날짜">
                   <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>

@@ -15,10 +15,6 @@ type ExtendedShuttleBusesViewEntity = ShuttleBusesViewEntity & {
 const busColumnHelper = createColumnHelper<ExtendedShuttleBusesViewEntity>();
 
 export const busColumns = [
-  busColumnHelper.accessor('shuttleBusId', {
-    header: () => 'ID',
-    cell: (info) => info.getValue(),
-  }),
   busColumnHelper.accessor('busType', {
     header: () => 'type',
     cell: (info) => info.getValue(),
@@ -66,10 +62,6 @@ const routeHubColumnHelper =
   createColumnHelper<ShuttleRouteHubsInShuttleRoutesViewEntity>();
 
 export const routeHubColumns = [
-  routeHubColumnHelper.accessor('shuttleRouteHubId', {
-    header: () => 'ID',
-    cell: (info) => info.getValue(),
-  }),
   routeHubColumnHelper.accessor('name', {
     header: () => 'name',
     cell: (info) => info.getValue(),

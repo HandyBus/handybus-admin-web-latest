@@ -7,7 +7,7 @@ const columnHelper = createColumnHelper<ReservationViewEntity>();
 
 export const columns = [
   columnHelper.accessor('reservationId', {
-    header: () => '탑승객 ID',
+    header: () => '예약 ID',
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('reservationStatus', {
