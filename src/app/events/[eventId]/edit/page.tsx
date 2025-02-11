@@ -168,7 +168,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
             type="button"
             onClick={() =>
               appendDaily({
-                date: today(),
+                date: today().toISOString(),
               })
             }
             className="w-fit text-blue-500"
