@@ -2,143 +2,184 @@
 
 import { createColumnHelper } from '@tanstack/react-table';
 import Image from 'next/image';
-import BlueLink from '@/components/link/BlueLink';
-import RegionHubViewerModal from '@/components/viewer/RegionHubViewerModal';
 import { formatDateString } from '@/utils/date.util';
-import Stringifier from '@/utils/stringifier.util';
 import { EventsViewEntity } from '@/types/event.type';
 import { DEFAULT_EVENT_IMAGE } from '@/constants/common';
+import Stringifier from '@/utils/stringifier.util';
+import BlueLink from '@/components/link/BlueLink';
 
 const columnHelper = createColumnHelper<EventsViewEntity>();
 
 export const columns = [
-  columnHelper.accessor('eventId', {
-    id: 'eventId',
-    header: '행사 ID',
-    cell: (info) => info.getValue(),
-  }),
   columnHelper.display({
     id: 'image',
     header: '포스터',
     cell: (props) => (
-      <Image
-        src={props.row.original.eventImageUrl || DEFAULT_EVENT_IMAGE}
-        alt="Event"
-        width={40}
-        height={55}
-        className="overflow-hidden"
-      />
+      <div className="w-55 relative m-4 h-full">
+        <Image
+          src={props.row.original.eventImageUrl || DEFAULT_EVENT_IMAGE}
+          alt="Event"
+          fill
+          className="object-contain"
+        />
+      </div>
     ),
-    size: 40,
-    minSize: 40, //enforced during column resizing
-    maxSize: 40, //enforced during column resizing
   }),
   columnHelper.accessor('eventName', {
     id: 'eventName',
-    header: '행사 이름',
-    cell: (info) => (
-      <BlueLink href={`/events/${info.row.original.eventId}`}>
-        {info.getValue()}
-      </BlueLink>
-    ),
-  }),
-  columnHelper.accessor('eventType', {
-    id: 'eventType',
-    header: '행사 종류',
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor('eventStatus', {
-    id: 'eventStatus',
-    header: '행사 상태',
-    cell: (info) => Stringifier.eventStatus(info.getValue()),
-  }),
-  columnHelper.group({
-    id: 'region',
-    header: '목적지',
-    columns: [
-      columnHelper.accessor('regionId', {
-        id: 'regionId',
-        header: '지역 ID',
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor('regionHubId', {
-        id: 'regionHubId',
-        header: '거점지 ID',
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.display({
-        id: 'regionHub',
-        header: '거점지 종합 정보',
-        cell: (info) => (
-          <RegionHubViewerModal
-            regionId={info.row.original.regionId}
-            regionHubId={info.row.original.regionHubId}
-          />
-        ),
-      }),
-    ],
-  }),
-  // Accessor Column
-  columnHelper.group({
-    id: 'eventLocation',
-    header: '행사 장소',
-    columns: [
-      columnHelper.accessor('eventLocationName', {
-        id: 'eventLocationName',
-        header: '행사 장소 이름',
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor('eventLocationAddress', {
-        id: 'eventLocationAddress',
-        header: '행사 장소 주소',
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor('eventLocationLatitude', {
-        header: '행사 장소 위도',
-        cell: (info) => info.getValue(),
-      }),
-      columnHelper.accessor('eventLocationLongitude', {
-        header: '행사 장소 경도',
-        cell: (info) => info.getValue(),
-      }),
-    ],
-  }),
-  columnHelper.accessor((row) => row.dailyEvents.map((de) => de.date), {
-    header: '날짜',
-    cell: ({ getValue }) => {
-      const dates: string[] = getValue();
-      return (
-        <div>
-          {dates.map((date, index) => (
-            <div key={index}>{formatDateString(date, 'date')}</div>
-          ))}
-        </div>
-      );
-    },
-  }),
-  columnHelper.accessor((row) => row.eventArtists?.map((p) => p.artistName), {
-    id: 'artists',
-    header: '아티스트',
+    header: '행사 정보',
     cell: (info) => {
-      const ps: string[] = info.getValue() || [];
+      const { eventName, eventLocationName, eventType, eventArtists } =
+        info.row.original;
+      const artists = eventArtists
+        ?.map((artist) => artist.artistName)
+        .join(', ');
       return (
-        <div>
-          {ps.map((p) => (
-            <div key={p}>{p}</div>
-          ))}
+        <div className="flex flex-col p-8 text-16">
+          <p className="font-700">{eventName}</p>
+          <p className="font-500">{artists}</p>
+          <p className="font-500">{eventType}</p>
+          <p className="font-400">{eventLocationName}</p>
         </div>
       );
     },
   }),
+  columnHelper.accessor(
+    (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.date),
+    {
+      header: '날짜',
+      cell: ({ getValue }) => {
+        const dates: string[] = getValue();
+        return (
+          <div className="flex h-full flex-col justify-between">
+            {dates.map((date) => (
+              <p
+                key={date}
+                className="flex grow items-center justify-center border-b border-grey-200 last:border-b-0"
+              >
+                {formatDateString(date, 'date')}
+              </p>
+            ))}
+          </div>
+        );
+      },
+    },
+  ),
+  columnHelper.accessor(
+    (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.status),
+    {
+      header: '수요조사 상태',
+      cell: ({ getValue }) => {
+        const eventStatuses = getValue();
+        return (
+          <div className="flex h-full flex-col justify-between">
+            {eventStatuses.map((eventStatus, index) => (
+              <p
+                key={index}
+                className="flex grow items-center justify-center border-b border-grey-200 last:border-b-0"
+              >
+                {Stringifier.eventStatus(eventStatus)}
+              </p>
+            ))}
+          </div>
+        );
+      },
+    },
+  ),
+  columnHelper.accessor(
+    (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.dailyEventId),
+    {
+      header: '수요조사 상세',
+      cell: async (info) => {
+        const dailyEventIds = info.getValue();
+        const eventId = info.row.original.eventId;
+        return (
+          <div className="flex h-full flex-col justify-between">
+            {dailyEventIds.map((dailyEventId) => (
+              <p
+                key={dailyEventId}
+                className="flex grow items-center justify-center border-b border-grey-200 last:border-b-0"
+              >
+                <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>
+                  수요조사 보기
+                </BlueLink>
+              </p>
+            ))}
+          </div>
+        );
+      },
+    },
+  ),
+  columnHelper.accessor(
+    (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.dailyEventId),
+    {
+      header: '추천 노선 수',
+      cell: (info) => {
+        const dailyEventIds = info.getValue();
+        const eventId = info.row.original.eventId;
+        return (
+          <div className="flex h-full flex-col justify-between">
+            {dailyEventIds.map((dailyEventId) => (
+              <p
+                key={dailyEventId}
+                className="flex grow items-center justify-center border-b border-grey-200 last:border-b-0"
+              >
+                <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>
+                  수요조사 보기
+                </BlueLink>
+              </p>
+            ))}
+          </div>
+        );
+      },
+    },
+  ),
+  columnHelper.accessor(
+    (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.dailyEventId),
+    {
+      header: '개설된 노선 수',
+      cell: (info) => {
+        const dailyEventIds = info.getValue();
+        const eventId = info.row.original.eventId;
+        return (
+          <div className="flex h-full flex-col justify-between">
+            {dailyEventIds.map((dailyEventId) => (
+              <p
+                key={dailyEventId}
+                className="flex grow items-center justify-center border-b border-grey-200 last:border-b-0"
+              >
+                <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>
+                  수요조사 보기
+                </BlueLink>
+              </p>
+            ))}
+          </div>
+        );
+      },
+    },
+  ),
+  columnHelper.accessor(
+    (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.dailyEventId),
+    {
+      header: '노선 상세',
+      cell: (info) => {
+        const dailyEventIds = info.getValue();
+        const eventId = info.row.original.eventId;
+        return (
+          <div className="flex h-full flex-col justify-between">
+            {dailyEventIds.map((dailyEventId) => (
+              <p
+                key={dailyEventId}
+                className="flex grow items-center justify-center border-b border-grey-200 last:border-b-0"
+              >
+                <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>
+                  노선 보기
+                </BlueLink>
+              </p>
+            ))}
+          </div>
+        );
+      },
+    },
+  ),
 ];
-
-// Initial column visibility - columns are shown by default
-export const initialColumnVisibility = {
-  eventId: false,
-  eventLocationAddress: false,
-  eventLocationLatitude: false,
-  eventLocationLongitude: false,
-  eventCoord: false,
-  regionId: false,
-  regionHubId: false,
-};

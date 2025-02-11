@@ -117,6 +117,25 @@ export const useGetDemandsStats = (options?: GetDemandOptions) => {
   });
 };
 
+export const getEventDashboard = async (options?: GetDemandOptions) => {
+  const res = await authInstance.get(
+    `/v2/shuttle-operation/admin/demands/all/stats${toSearchParamString({ ...options }, '?')}`,
+    {
+      shape: {
+        statistics: ShuttleDemandStatisticsReadModelSchema.array(),
+      },
+    },
+  );
+  return res.statistics;
+};
+
+export const useGetEventDashboard = (options?: GetDemandOptions) => {
+  return useQuery({
+    queryKey: ['demand', 'stats', options],
+    queryFn: () => getDemandsStats(options),
+  });
+};
+
 export const getEvents = async (options?: { status?: EventStatus }) => {
   const res = await authInstance.get(
     `/v2/shuttle-operation/admin/events${toSearchParamString({ ...options }, '?')}`,

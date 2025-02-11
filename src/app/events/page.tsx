@@ -2,15 +2,15 @@
 
 import BlueLink from '@/components/link/BlueLink';
 import ColumnFilter from '@/components/table/ColumnFilter';
-import BaseTable from '@/components/table/BaseTable';
-import { columns, initialColumnVisibility } from './table.type';
-import useTable from '@/hooks/useTable';
-import StatusFilter, { useEventStatusOptions } from './components/StatusFilter';
+import { columns } from './table.type';
 import { useGetEvents } from '@/services/shuttleOperation.service';
 import Heading from '@/components/text/Heading';
+import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import BaseTable from '@/components/table/BaseTable';
+import { useEventStatusOptions } from './components/StatusFilter';
 
 const Page = () => {
-  const [eventStatus, setEventStatus] = useEventStatusOptions();
+  const [eventStatus] = useEventStatusOptions();
 
   const {
     data: events,
@@ -21,12 +21,10 @@ const Page = () => {
     status: eventStatus,
   });
 
-  const table = useTable({
-    data: events,
+  const table = useReactTable({
+    data: events ?? [],
     columns,
-    initialState: {
-      columnVisibility: initialColumnVisibility,
-    },
+    getCoreRowModel: getCoreRowModel(),
   });
 
   return (
@@ -37,7 +35,6 @@ const Page = () => {
           추가하기
         </BlueLink>
       </Heading>
-      <StatusFilter eventStatus={eventStatus} setEventStatus={setEventStatus} />
       <ColumnFilter table={table} />
       <section className="flex flex-col">
         {isLoading ? (
@@ -45,7 +42,7 @@ const Page = () => {
         ) : isError ? (
           <div>Error: {error.message}</div>
         ) : events ? (
-          <BaseTable table={table} />
+          <BaseTable table={table} cellClassName="h-120 p-0" />
         ) : (
           <div>No data</div>
         )}
