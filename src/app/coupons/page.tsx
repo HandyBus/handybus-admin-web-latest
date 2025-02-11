@@ -12,6 +12,7 @@ import BaseTable from '@/components/table/BaseTable';
 import { useGetCoupons } from '@/services/billing.service';
 import { AdminCouponsResponseModel } from '@/types/coupon.type';
 import Heading from '@/components/text/Heading';
+import dayjs from 'dayjs';
 
 const FILTER_LIST = ['전체', '진행중', '대기', '만료'] as const;
 type FilterType = (typeof FILTER_LIST)[number];
@@ -31,15 +32,15 @@ const Page = ({ searchParams }: Props) => {
     filter: { value: string; status: FilterType },
   ) => {
     const { value, status } = filter;
-    const now = new Date();
+    const now = dayjs().tz().toDate();
     const isFilteredByStatus =
       status === '전체' || !status
         ? true
         : status === '진행중'
-          ? coupon.isActive && now > new Date(coupon.validFrom)
+          ? coupon.isActive && now > dayjs(coupon.validFrom).tz().toDate()
           : status === '대기'
-            ? !coupon.isActive && now < new Date(coupon.validFrom)
-            : !coupon.isActive && now > new Date(coupon.validFrom);
+            ? !coupon.isActive && now < dayjs(coupon.validFrom).tz().toDate()
+            : !coupon.isActive && now > dayjs(coupon.validFrom).tz().toDate();
     if (!value) {
       return isFilteredByStatus;
     }

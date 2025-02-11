@@ -13,7 +13,7 @@ import ImageFileInput from '@/components/input/ImageFileInput';
 import RegionHubInput from '@/components/input/HubInput';
 import Input from '@/components/input/Input';
 import dayjs from 'dayjs';
-import { today, toDateOnly } from '@/utils/date.util';
+import { today } from '@/utils/date.util';
 import { usePostEvent } from '@/services/shuttleOperation.service';
 import Form from '@/components/form/Form';
 import { EventTypeEnum } from '@/types/event.type';
@@ -75,6 +75,8 @@ const CreateEventForm = () => {
   const onSubmit = useCallback(
     (data: CreateEventFormData) => {
       if (confirm('행사를 추가하시겠습니까?')) {
+        console.log(data);
+        return;
         postEvent(conform(data));
       }
     },
@@ -145,8 +147,8 @@ const CreateEventForm = () => {
                     <Input
                       type="date"
                       className="w-full"
-                      value={dayjs(value).format('YYYY-MM-DD')}
-                      setValue={(str) => onChange(toDateOnly(new Date(str)))}
+                      value={dayjs(value).tz().format('YYYY-MM-DD')}
+                      setValue={(str) => onChange(dayjs(str).tz().toDate())}
                     />
                     <button type="button" onClick={() => removeDaily(index)}>
                       <XIcon />
