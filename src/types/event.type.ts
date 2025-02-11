@@ -51,7 +51,7 @@ export type EventsViewEntity = z.infer<typeof EventsViewEntitySchema>;
 
 export const EventDashboardReadModelSchema = EventsViewEntitySchema.extend({
   dailyEvents: EventDailyShuttlesInEventsViewEntitySchema.extend({
-    statistics: ShuttleDemandStatisticsReadModelSchema,
+    statistics: z.lazy(() => ShuttleDemandStatisticsReadModelSchema),
     expectedRouteCount: z.number(),
     openedRouteCount: z.number(),
   }).array(),
