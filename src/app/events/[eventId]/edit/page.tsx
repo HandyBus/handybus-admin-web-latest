@@ -100,7 +100,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
   const { mutate: putEvent } = usePutEvent({
     onSuccess: () => {
       alert('행사가 수정되었습니다.');
-      router.push(`/events/${event.eventId}`);
+      router.push(`/events`);
     },
     onError: (error) => {
       console.error('Error editing events:', error);
@@ -114,6 +114,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
   const onSubmit = useCallback(
     (data: EditEventFormData) => {
       if (confirm('행사를 수정하시겠습니까?')) {
+        console.log(data.dailyEvents);
         putEvent({ eventId: event.eventId, body: conform(data) });
       }
     },
@@ -205,11 +206,11 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                       <Input
                         type="date"
                         className="w-full"
-                        value={dayjs(value.date).format('YYYY-MM-DD')}
+                        value={dayjs(value.date).tz().format('YYYY-MM-DD')}
                         setValue={(str) =>
                           onChange({
                             ...value,
-                            date: dayjs(str).format('YYYY-MM-DD'),
+                            date: dayjs(str).tz().toDate(),
                           })
                         }
                       />
