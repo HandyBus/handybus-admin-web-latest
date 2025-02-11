@@ -3,6 +3,7 @@
 import { AdminCouponsResponseModel } from '@/types/coupon.type';
 import { formatDateString } from '@/utils/date.util';
 import { createColumnHelper } from '@tanstack/react-table';
+import dayjs from 'dayjs';
 
 const columnHelper = createColumnHelper<AdminCouponsResponseModel>();
 
@@ -47,10 +48,10 @@ export const columns = [
       header: () => '상태',
       cell: (info) => {
         const { isActive, validFrom } = info.getValue();
-        const now = new Date();
+        const now = dayjs().tz().toDate();
         return isActive ? (
           <span className="text-primary-600">진행중</span>
-        ) : now < new Date(validFrom) ? (
+        ) : now < dayjs(validFrom).tz().toDate() ? (
           <span className="text-grey-700">대기</span>
         ) : (
           <span className="text-red-600">만료</span>

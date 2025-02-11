@@ -13,7 +13,7 @@ import Loading from '@/components/loading/Loading';
 import useUserFilter from './hooks/useUserFilter';
 import UserFilter from './components/UserFilter';
 import ToolTip from '@/components/tool-tip/ToolTip';
-import dayjs from 'dayjs';
+import { today } from '@/utils/date.util';
 
 const Page = () => {
   // 유저 수를 가져오기 위한 쿼리
@@ -54,7 +54,7 @@ const Page = () => {
     limit: 1,
     status: 'ACTIVE',
     onboardingComplete: true,
-    lastLoginFrom: dayjs().startOf('day').toISOString(),
+    lastLoginFrom: today().toISOString(),
   });
   const todayLoggedInUserCount = todayLoggedInUsers?.pages[0]?.totalCount;
 

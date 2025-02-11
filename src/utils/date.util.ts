@@ -1,9 +1,17 @@
 import dayjs from 'dayjs';
 
+export const dayjsTz = (date: string) => {
+  return dayjs(date).tz().toDate();
+};
+
 export const today = () => {
-  const now = new Date();
-  now.setUTCHours(0, 0, 0, 0);
-  return now;
+  const today = dayjs().tz().toDate();
+  today.setHours(0, 0, 0, 0);
+  return today;
+};
+
+export const now = () => {
+  return dayjs().tz().toDate();
 };
 
 export const diffInDays = (date1: Date, date2: Date) => {
@@ -12,8 +20,7 @@ export const diffInDays = (date1: Date, date2: Date) => {
 };
 
 export const toDateOnly = (date: Date) => {
-  const ret = new Date(date);
-  ret.setUTCHours(0, 0, 0, 0);
+  const ret = dayjs(date).tz().toDate();
   return ret;
 };
 
@@ -42,10 +49,5 @@ export const formatDateString = (
   defaultValue?: string,
 ) => {
   if (!date) return defaultValue || '';
-  return formatDate(new Date(date), type);
-};
-
-export const parseDateString = (date: string | undefined) => {
-  if (!date) return new Date();
-  return new Date(date);
+  return formatDate(dayjsTz(date), type);
 };

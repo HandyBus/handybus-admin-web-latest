@@ -16,6 +16,7 @@ import { conform } from './conform.util';
 import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
 import FormContainer from '@/components/form/Form';
+import { dayjsTz } from '@/utils/date.util';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -276,7 +277,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       }
                       render={({ field: { onChange, value } }) => (
                         <DateTimeInput
-                          value={new Date(value)}
+                          value={dayjsTz(value)}
                           setValue={onChange}
                         />
                       )}
@@ -379,7 +380,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       }
                       render={({ field: { onChange, value } }) => (
                         <DateTimeInput
-                          value={new Date(value)}
+                          value={dayjsTz(value)}
                           setValue={onChange}
                         />
                       )}
