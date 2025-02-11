@@ -167,7 +167,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
             type="button"
             onClick={() =>
               appendDaily({
-                date: dayjs().format('YYYY-MM-DD'),
+                date: dayjs().tz().toDate().toISOString(),
               })
             }
             className="w-fit text-blue-500"
