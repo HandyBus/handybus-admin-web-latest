@@ -75,8 +75,6 @@ const CreateEventForm = () => {
   const onSubmit = useCallback(
     (data: CreateEventFormData) => {
       if (confirm('행사를 추가하시겠습니까?')) {
-        console.log(data);
-        return;
         postEvent(conform(data));
       }
     },
