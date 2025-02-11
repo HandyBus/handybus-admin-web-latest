@@ -17,6 +17,7 @@ import { useGetEvent, usePutEvent } from '@/services/shuttleOperation.service';
 import Form from '@/components/form/Form';
 import { EventsViewEntity, EventTypeEnum } from '@/types/event.type';
 import Heading from '@/components/text/Heading';
+import { today } from '@/utils/date.util';
 
 interface Props {
   params: { eventId: string };
@@ -167,7 +168,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
             type="button"
             onClick={() =>
               appendDaily({
-                date: dayjs().tz().toDate().toISOString(),
+                date: today(),
               })
             }
             className="w-fit text-blue-500"
