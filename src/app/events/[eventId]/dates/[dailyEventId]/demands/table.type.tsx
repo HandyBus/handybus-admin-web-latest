@@ -7,11 +7,6 @@ import { DEFAULT_EVENT_IMAGE } from '@/constants/common';
 const columnHelper = createColumnHelper<ShuttleDemandStatisticsReadModel>();
 
 export const columnsForGroupByEventId = [
-  // columnHelper.accessor('eventId', {
-  //   id: 'eventId',
-  //   header: '행사 ID',
-  //   cell: (info) => info.getValue(),
-  // }),
   columnHelper.display({
     id: 'image',
     header: '포스터',
@@ -33,11 +28,6 @@ export const columnsForGroupByEventId = [
       </BlueLink>
     ),
   }),
-  // columnHelper.accessor('dailyEventId', {
-  //   id: 'dailyEventId',
-  //   header: '행사 날짜 ID',
-  //   cell: (info) => info.getValue(),
-  // }),
   // columnHelper.accessor('provinceFullName', {
   //   id: 'provinceFullName',
   //   header: '시/도',

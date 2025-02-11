@@ -9,11 +9,10 @@ const Nav = async () => {
         <LogoIcon width={40} height={40} viewBox="0 0 145 144" />
       </Link>
       <NavItem href="/">홈</NavItem>
-      <NavItem href="/users">유저</NavItem>
-      <NavItem href="/events">행사</NavItem>
-      <NavItem href="/demands">수요조사</NavItem>
-      <NavItem href="/reservations">예약</NavItem>
-      <NavItem href="/hubs">거점지</NavItem>
+      <NavItem href="/users">유저 관리</NavItem>
+      <NavItem href="/events">행사 관리</NavItem>
+      <NavItem href="/reservations">예약 관리</NavItem>
+      <NavItem href="/locations">장소</NavItem>
       <NavItem href="/coupons">쿠폰</NavItem>
       <Link
         href="/login"

@@ -11,6 +11,7 @@ import { toSearchParamString } from '@/utils/searchParam.util';
 import {
   CreateEventRequest,
   CreateEventRequestSchema,
+  EventDashboardReadModelSchema,
   EventStatus,
   EventsViewEntitySchema,
   UpdateEventRequest,
@@ -128,18 +129,21 @@ export const useGetDemandsStats = (options?: GetDemandOptions) => {
   });
 };
 
-export interface GetRouteTreeWithDemandsOptions {
+interface RouteTreeOptions {
+  clusterMinCount: number;
+  minCount: number;
+  maxNodes: number;
+  maxDistance: number;
+  epsilon: number;
+}
+
+export interface GetRouteTreeWithDemandsOptions extends RouteTreeOptions {
   provinceFullName?: string;
   provinceShortName?: string;
   cityFullName?: string;
   cityShortName?: string;
   dailyEventId?: string;
   eventId?: string;
-  clusterMinCount: number;
-  minCount: number;
-  maxNodes: number;
-  maxDistance: number;
-  epsilon: number;
 }
 
 export const getDemandBasedRouteTree = async ({
@@ -179,6 +183,34 @@ export const useGetDemandBasedRouteTree = (
         epsilon: DEFAULT_EPSILON,
         ...options,
       }),
+  });
+};
+
+export const getEventDashboard = async ({
+  clusterMinCount = DEFAULT_CLUSTER_MIN_COUNT,
+  minCount = DEFAULT_MIN_COUNT,
+  maxNodes = DEFAULT_MAX_NODES,
+  maxDistance = DEFAULT_MAX_DISTANCE,
+  epsilon = DEFAULT_EPSILON,
+}: Partial<RouteTreeOptions> = {}) => {
+  const res = await authInstance.get(
+    `/v2/shuttle-operation/admin/events/all/dashboard${toSearchParamString(
+      { clusterMinCount, minCount, maxNodes, maxDistance, epsilon },
+      '?',
+    )}`,
+    {
+      shape: {
+        events: EventDashboardReadModelSchema.array(),
+      },
+    },
+  );
+  return res.events;
+};
+
+export const useGetEventDashboard = (options?: Partial<RouteTreeOptions>) => {
+  return useQuery({
+    queryKey: ['event', 'dashboard', options],
+    queryFn: () => getEventDashboard(options),
   });
 };
 

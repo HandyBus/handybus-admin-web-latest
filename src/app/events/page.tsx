@@ -1,32 +1,22 @@
 'use client';
 
 import BlueLink from '@/components/link/BlueLink';
-import ColumnFilter from '@/components/table/ColumnFilter';
-import BaseTable from '@/components/table/BaseTable';
-import { columns, initialColumnVisibility } from './table.type';
-import useTable from '@/hooks/useTable';
-import StatusFilter, { useEventStatusOptions } from './components/StatusFilter';
-import { useGetEvents } from '@/services/shuttleOperation.service';
+import { columns } from './table.type';
+import { useGetEventDashboard } from '@/services/shuttleOperation.service';
 import Heading from '@/components/text/Heading';
-
+import BaseTable from '@/components/table/BaseTable';
+import useTable from '@/hooks/useTable';
 const Page = () => {
-  const [eventStatus, setEventStatus] = useEventStatusOptions();
-
   const {
-    data: events,
+    data: eventDashboard,
     isLoading,
     isError,
     error,
-  } = useGetEvents({
-    status: eventStatus,
-  });
+  } = useGetEventDashboard();
 
   const table = useTable({
-    data: events,
+    data: eventDashboard,
     columns,
-    initialState: {
-      columnVisibility: initialColumnVisibility,
-    },
   });
 
   return (
@@ -37,15 +27,13 @@ const Page = () => {
           추가하기
         </BlueLink>
       </Heading>
-      <StatusFilter eventStatus={eventStatus} setEventStatus={setEventStatus} />
-      <ColumnFilter table={table} />
       <section className="flex flex-col">
         {isLoading ? (
           <div>Loading...</div>
         ) : isError ? (
           <div>Error: {error.message}</div>
-        ) : events ? (
-          <BaseTable table={table} />
+        ) : eventDashboard ? (
+          <BaseTable table={table} cellClassName="min-h-120 p-0" />
         ) : (
           <div>No data</div>
         )}

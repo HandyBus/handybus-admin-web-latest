@@ -89,7 +89,7 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
   const { mutate: putHub } = usePutRegionHub({
     onSuccess: () => {
       alert('거점지가 수정되었습니다.');
-      router.push('/hubs');
+      router.push('/locations');
     },
     onError: (error) => {
       alert(`거점지 수정에 실패했습니다.`);

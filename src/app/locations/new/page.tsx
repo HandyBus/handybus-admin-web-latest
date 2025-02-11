@@ -46,7 +46,7 @@ const NewHubPage = () => {
   const { mutate: addHub } = usePostRegionHub({
     onSuccess: () => {
       alert('거점지가 추가되었습니다.');
-      router.push('/hubs');
+      router.push('/locations');
     },
     onError: (error) => {
       alert(`거점지 추가에 실패했습니다.`);

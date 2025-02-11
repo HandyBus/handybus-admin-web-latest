@@ -106,7 +106,7 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
           ))}
           {!isLoading && validRegionID(regionId) && (
             <Link
-              href="/hubs/new"
+              href="/locations/new"
               target="_blank"
               rel="noopener noreferrer"
               className="block p-8 text-blue-500 hover:bg-blue-100"
