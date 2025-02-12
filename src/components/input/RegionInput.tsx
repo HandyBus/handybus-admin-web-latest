@@ -43,7 +43,9 @@ const RegionInput = ({ value, setValue }: Props) => {
     if (!selectedBigRegion) {
       return [];
     }
-    const smallRegions = SMALL_REGIONS[selectedBigRegion];
+    const smallRegions = Array.from(
+      SMALL_REGIONS[selectedBigRegion],
+    ).toSorted();
     return querySmall
       ? filterByFuzzy(smallRegions, querySmall, (x) => x)
       : smallRegions;
