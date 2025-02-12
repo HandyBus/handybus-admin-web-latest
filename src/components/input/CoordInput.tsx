@@ -39,6 +39,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
   );
 
   const setMarker = useCallback((latLng: kakao.maps.LatLng) => {
+    console.log('setMarker', latLng);
     if (markerRef.current === null) setError(true);
     else markerRef.current.setPosition(latLng);
   }, []);
@@ -67,6 +68,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
   };
 
   const initializeMap = useCallback(() => {
+    console.log('initializeMap');
     try {
       if (window.kakao && mapRef.current) {
         const options = {
@@ -111,16 +113,15 @@ const CoordInput = ({ coord, setCoord }: Props) => {
       setError(true);
       alert('지도를 불러오는 중 오류가 발생했습니다. \n' + error);
     }
-  }, [setCoordWithAddress, coord]);
+  }, []);
 
-  const { KakaoScript } = useKakaoMap({
+  useKakaoMap({
     onReady: () => window.kakao.maps.load(initializeMap),
     libraries: ['services'],
   });
 
   return (
     <article className="relative h-auto p-16 [&_div]:cursor-pointer">
-      <KakaoScript />
       <div className="relative rounded-[12px] transition-opacity">
         <div
           ref={mapRef}

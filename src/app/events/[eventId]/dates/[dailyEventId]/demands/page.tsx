@@ -118,7 +118,7 @@ const Page = ({ params }: Props) => {
     }
   }, [demandsStats, routeTree]);
 
-  const { KakaoScript } = useKakaoMap({
+  useKakaoMap({
     onReady: () => setIsScriptReady(true),
     libraries: ['services'],
   });
@@ -342,104 +342,99 @@ const Page = ({ params }: Props) => {
   };
 
   return (
-    <>
-      <KakaoScript />
-      <main className="flex grow flex-col">
-        <Heading>수요조사 대시보드</Heading>
-        <div className="flex grow gap-12">
-          <div className="relative flex grow flex-col" ref={mapRef}>
-            {viewingRegion && (
-              <section className="absolute bottom-0 left-0 top-0 z-50 w-240 bg-black/55 p-12 text-white">
-                <h5 className="text-18 font-600">{viewingRegion}</h5>
-                <article className="flex flex-col p-4 text-12 text-grey-100">
-                  {(() => {
-                    const demand = demandsStats?.find(
-                      (demand) => demand.provinceFullName === viewingRegion,
-                    );
-                    if (!demand) {
-                      return null;
-                    }
+    <main className="flex grow flex-col">
+      <Heading>수요조사 대시보드</Heading>
+      <div className="flex grow gap-12">
+        <div className="relative flex grow flex-col" ref={mapRef}>
+          {viewingRegion && (
+            <section className="absolute bottom-0 left-0 top-0 z-50 w-240 bg-black/55 p-12 text-white">
+              <h5 className="text-18 font-600">{viewingRegion}</h5>
+              <article className="flex flex-col p-4 text-12 text-grey-100">
+                {(() => {
+                  const demand = demandsStats?.find(
+                    (demand) => demand.provinceFullName === viewingRegion,
+                  );
+                  if (!demand) {
+                    return null;
+                  }
+                  return (
+                    <>
+                      <p>총 수요: {demand.totalCount}개</p>
+                      <p>왕복 수요: {demand.roundTripCount}개</p>
+                      <p>가는 편 수요: {demand.toDestinationCount}개</p>
+                      <p>오는 편 수요: {demand.fromDestinationCount}개</p>
+                    </>
+                  );
+                })()}
+              </article>
+              <article className="flex flex-col gap-4 text-grey-50">
+                <h6 className="flex items-center gap-4 pt-8 text-14 font-600">
+                  {viewingRegion} 내 군집들
+                  <ToolTip iconClassName="text-grey-300 hover:text-grey-100">
+                    기타 수요조사는 지도 및 군집에 표시되지 않습니다.
+                  </ToolTip>
+                </h6>
+                <ul className="flex flex-col gap-[1px]">
+                  {clustersInRegion.current?.[viewingRegion]?.map((cluster) => {
                     return (
-                      <>
-                        <p>총 수요: {demand.totalCount}개</p>
-                        <p>왕복 수요: {demand.roundTripCount}개</p>
-                        <p>가는 편 수요: {demand.toDestinationCount}개</p>
-                        <p>오는 편 수요: {demand.fromDestinationCount}개</p>
-                      </>
-                    );
-                  })()}
-                </article>
-                <article className="flex flex-col gap-4 text-grey-50">
-                  <h6 className="flex items-center gap-4 pt-8 text-14 font-600">
-                    {viewingRegion} 내 군집들
-                    <ToolTip iconClassName="text-grey-300 hover:text-grey-100">
-                      기타 수요조사는 지도 및 군집에 표시되지 않습니다.
-                    </ToolTip>
-                  </h6>
-                  <ul className="flex flex-col gap-[1px]">
-                    {clustersInRegion.current?.[viewingRegion]?.map(
-                      (cluster) => {
-                        return (
-                          <button
-                            key={cluster.clusterId}
-                            className="flex items-center justify-between p-4 text-14 hover:bg-grey-100/50"
-                            onClick={() => handleHubClick(cluster)}
-                          >
-                            <span>{cluster.nodes[0].data.regionHubName}</span>
-                            <span className="text-12 text-grey-200">
-                              {cluster.totalCount}개
-                            </span>
-                          </button>
-                        );
-                      },
-                    )}
-                  </ul>
-                </article>
-              </section>
-            )}
-          </div>
-          <section className="flex w-320 flex-col gap-4 bg-white p-12 shadow-[0px_0px_10px_0px_rgba(0,0,0,0.18)]">
-            <Heading.h5 className="flex items-baseline gap-8 bg-notion-grey">
-              추천 노선
-              <p className="text-10 text-grey-500">
-                정류장 간의 순서는 최적의 순서가 보장되지 않습니다.
-              </p>
-            </Heading.h5>
-            <ul className="flex grow flex-col gap-12 overflow-y-auto">
-              {routeTree?.routes.map((route, index) => (
-                <button
-                  key={index}
-                  className={twMerge(
-                    'flex items-center gap-8 overflow-x-auto px-4 py-8 hover:bg-notion-grey/70',
-                    selectedRouteIndex === index && 'bg-notion-grey/70',
-                  )}
-                  onClick={() => handleRouteClick(route, index)}
-                >
-                  {route.nodes.map((node, index) => {
-                    const cluster = routeTree?.clusters.find(
-                      (cluster) => cluster.clusterId === node,
-                    );
-                    if (!cluster) {
-                      return null;
-                    }
-                    return (
-                      <>
-                        <span className="h-full whitespace-nowrap break-keep">
-                          {cluster.nodes[0].data.regionHubName}
+                      <button
+                        key={cluster.clusterId}
+                        className="flex items-center justify-between p-4 text-14 hover:bg-grey-100/50"
+                        onClick={() => handleHubClick(cluster)}
+                      >
+                        <span>{cluster.nodes[0].data.regionHubName}</span>
+                        <span className="text-12 text-grey-200">
+                          {cluster.totalCount}개
                         </span>
-                        {index !== route.nodes.length - 1 && (
-                          <span className="text-grey-500">-</span>
-                        )}
-                      </>
+                      </button>
                     );
                   })}
-                </button>
-              ))}
-            </ul>
-          </section>
+                </ul>
+              </article>
+            </section>
+          )}
         </div>
-      </main>
-    </>
+        <section className="flex w-320 flex-col gap-4 bg-white p-12 shadow-[0px_0px_10px_0px_rgba(0,0,0,0.18)]">
+          <Heading.h5 className="flex items-baseline gap-8 bg-notion-grey">
+            추천 노선
+            <p className="text-10 text-grey-500">
+              정류장 간의 순서는 최적의 순서가 보장되지 않습니다.
+            </p>
+          </Heading.h5>
+          <ul className="flex grow flex-col gap-12 overflow-y-auto">
+            {routeTree?.routes.map((route, index) => (
+              <button
+                key={index}
+                className={twMerge(
+                  'flex items-center gap-8 overflow-x-auto px-4 py-8 hover:bg-notion-grey/70',
+                  selectedRouteIndex === index && 'bg-notion-grey/70',
+                )}
+                onClick={() => handleRouteClick(route, index)}
+              >
+                {route.nodes.map((node, index) => {
+                  const cluster = routeTree?.clusters.find(
+                    (cluster) => cluster.clusterId === node,
+                  );
+                  if (!cluster) {
+                    return null;
+                  }
+                  return (
+                    <>
+                      <span className="h-full whitespace-nowrap break-keep">
+                        {cluster.nodes[0].data.regionHubName}
+                      </span>
+                      {index !== route.nodes.length - 1 && (
+                        <span className="text-grey-500">-</span>
+                      )}
+                    </>
+                  );
+                })}
+              </button>
+            ))}
+          </ul>
+        </section>
+      </div>
+    </main>
   );
 };
 
