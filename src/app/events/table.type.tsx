@@ -155,24 +155,24 @@ export const columns = [
     header: '개설된 노선 수',
     cell: (info) => {
       const dailyEvents = info.getValue();
-      const openedRouteCounts = dailyEvents.map(
-        (dailyEvent) => dailyEvent.openedRouteCount,
+      const shuttleRouteCounts = dailyEvents.map(
+        (dailyEvent) => dailyEvent.shuttleRouteCount,
       );
       const expectedRouteCounts = dailyEvents.map(
         (dailyEvent) => dailyEvent.expectedRouteCount,
       );
       return (
         <div className="flex h-full flex-col justify-between">
-          {openedRouteCounts.map((openedRouteCount, index) => (
+          {shuttleRouteCounts.map((shuttleRouteCount, index) => (
             <p
               key={index}
               className={`flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 font-600 last:border-b-0 ${
-                openedRouteCount < expectedRouteCounts[index]
+                shuttleRouteCount < expectedRouteCounts[index]
                   ? 'text-red-500'
                   : 'text-green-600'
               }`}
             >
-              {openedRouteCount}
+              {shuttleRouteCount}
             </p>
           ))}
         </div>
@@ -186,8 +186,8 @@ export const columns = [
       cell: (info) => {
         const dailyEventIds = info.getValue();
         const eventId = info.row.original.eventId;
-        const openedRouteCount = info.row.original.dailyEvents.map(
-          (dailyEvent) => dailyEvent.openedRouteCount,
+        const shuttleRouteCount = info.row.original.dailyEvents.map(
+          (dailyEvent) => dailyEvent.shuttleRouteCount,
         );
 
         return (
@@ -197,7 +197,7 @@ export const columns = [
                 key={dailyEventId}
                 className="flex h-[58px] grow items-center justify-center border-b border-grey-200 px-8 last:border-b-0"
               >
-                {openedRouteCount[index] > 0 ? (
+                {shuttleRouteCount[index] > 0 ? (
                   <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>
                     노선 보기
                   </BlueLink>
