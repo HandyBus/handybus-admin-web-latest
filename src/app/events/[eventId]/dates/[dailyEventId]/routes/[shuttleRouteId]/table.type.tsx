@@ -28,7 +28,7 @@ export const busColumns = [
     cell: (info) => info.getValue(),
   }),
   busColumnHelper.display({
-    id: 'actions',
+    id: 'openChatLink',
     header: () => '오픈채팅방 링크',
     cell: (info) =>
       info.row.original.openChatLink ? (
@@ -44,7 +44,7 @@ export const busColumns = [
       ),
   }),
   busColumnHelper.display({
-    id: 'actions',
+    id: 'edit-bus',
     header: () => 'actions',
     cell: (info) => (
       <div>

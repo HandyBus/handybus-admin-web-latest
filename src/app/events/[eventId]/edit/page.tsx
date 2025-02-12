@@ -114,7 +114,6 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
   const onSubmit = useCallback(
     (data: EditEventFormData) => {
       if (confirm('행사를 수정하시겠습니까?')) {
-        console.log(data.dailyEvents);
         putEvent({ eventId: event.eventId, body: conform(data) });
       }
     },
