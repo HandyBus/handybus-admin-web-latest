@@ -8,7 +8,7 @@ const BlueLink = ({ className, children, ...props }: Props) => {
   return (
     <Link
       {...props}
-      className={`text-blue-500 after:content-['↗'] hover:underline ${className || ''}`}
+      className={`whitespace-nowrap break-keep text-blue-500 underline underline-offset-[3px] ${className || ''}`}
     >
       {children}
     </Link>

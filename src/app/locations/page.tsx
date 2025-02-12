@@ -36,7 +36,7 @@ const Page = () => {
     <main>
       <Heading className="flex items-baseline gap-20">
         거점지 대시보드
-        <BlueLink href="/hubs/new" className="text-14">
+        <BlueLink href="/locations/new" className="text-14">
           추가하기
         </BlueLink>
       </Heading>

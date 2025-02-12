@@ -6,6 +6,7 @@ import BaseTable from '@/components/table/BaseTable';
 import Heading from '@/components/text/Heading';
 import useTable from '@/hooks/useTable';
 import { useGetShuttleBuses } from '@/services/shuttleOperation.service';
+import { useMemo } from 'react';
 
 interface Props {
   eventId: string;
@@ -15,19 +16,26 @@ interface Props {
 
 const Buses = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
   const {
-    data: buses,
+    data,
     isPending: isBusPending,
     isError: isBusError,
     error: busError,
   } = useGetShuttleBuses(eventId, dailyEventId, shuttleRouteId);
 
-  const busTable = useTable({
-    data: (buses ?? []).map((bus) => ({
+  const buses = useMemo(() => {
+    if (!data) {
+      return [];
+    }
+    return data.map((bus) => ({
       ...bus,
       eventId: eventId,
       dailyEventId: dailyEventId,
       shuttleRouteId: shuttleRouteId,
-    })),
+    }));
+  }, [data, eventId, dailyEventId, shuttleRouteId]);
+
+  const busTable = useTable({
+    data: buses,
     columns: busColumns,
   });
 

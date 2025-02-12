@@ -15,10 +15,6 @@ type ExtendedShuttleBusesViewEntity = ShuttleBusesViewEntity & {
 const busColumnHelper = createColumnHelper<ExtendedShuttleBusesViewEntity>();
 
 export const busColumns = [
-  busColumnHelper.accessor('shuttleBusId', {
-    header: () => 'ID',
-    cell: (info) => info.getValue(),
-  }),
   busColumnHelper.accessor('busType', {
     header: () => 'type',
     cell: (info) => info.getValue(),
@@ -32,7 +28,7 @@ export const busColumns = [
     cell: (info) => info.getValue(),
   }),
   busColumnHelper.display({
-    id: 'actions',
+    id: 'openChatLink',
     header: () => '오픈채팅방 링크',
     cell: (info) =>
       info.row.original.openChatLink ? (
@@ -48,7 +44,7 @@ export const busColumns = [
       ),
   }),
   busColumnHelper.display({
-    id: 'actions',
+    id: 'edit-bus',
     header: () => 'actions',
     cell: (info) => (
       <div>
@@ -66,10 +62,6 @@ const routeHubColumnHelper =
   createColumnHelper<ShuttleRouteHubsInShuttleRoutesViewEntity>();
 
 export const routeHubColumns = [
-  routeHubColumnHelper.accessor('shuttleRouteHubId', {
-    header: () => 'ID',
-    cell: (info) => info.getValue(),
-  }),
   routeHubColumnHelper.accessor('name', {
     header: () => 'name',
     cell: (info) => info.getValue(),

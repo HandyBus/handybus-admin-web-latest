@@ -6,10 +6,6 @@ import { ShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 const columnHelper = createColumnHelper<ShuttleRoutesViewEntity>();
 
 export const columns = [
-  columnHelper.accessor('shuttleRouteId', {
-    header: () => '노선 ID',
-    cell: (info) => info.getValue(),
-  }),
   columnHelper.accessor('name', {
     header: () => '노선 이름',
     cell: (info) => info.getValue(),

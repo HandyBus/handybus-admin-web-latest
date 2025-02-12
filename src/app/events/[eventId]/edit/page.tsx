@@ -17,6 +17,7 @@ import { useGetEvent, usePutEvent } from '@/services/shuttleOperation.service';
 import Form from '@/components/form/Form';
 import { EventsViewEntity, EventTypeEnum } from '@/types/event.type';
 import Heading from '@/components/text/Heading';
+import { today } from '@/utils/date.util';
 
 interface Props {
   params: { eventId: string };
@@ -99,7 +100,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
   const { mutate: putEvent } = usePutEvent({
     onSuccess: () => {
       alert('행사가 수정되었습니다.');
-      router.push(`/events/${event.eventId}`);
+      router.push(`/events`);
     },
     onError: (error) => {
       console.error('Error editing events:', error);
@@ -167,7 +168,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
             type="button"
             onClick={() =>
               appendDaily({
-                date: dayjs().format('YYYY-MM-DD'),
+                date: today().toISOString(),
               })
             }
             className="w-fit text-blue-500"
@@ -204,11 +205,11 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                       <Input
                         type="date"
                         className="w-full"
-                        value={dayjs(value.date).format('YYYY-MM-DD')}
+                        value={dayjs(value.date).tz().format('YYYY-MM-DD')}
                         setValue={(str) =>
                           onChange({
                             ...value,
-                            date: dayjs(str).format('YYYY-MM-DD'),
+                            date: dayjs(str).tz().toDate(),
                           })
                         }
                       />

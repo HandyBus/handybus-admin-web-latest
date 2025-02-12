@@ -11,10 +11,6 @@ import EditHandyStatusDialog from '@/components/dialog/EditHandyStatusDialog';
 const busColumnHelper = createColumnHelper<ShuttleBusesViewEntity>();
 
 export const busColumns = [
-  busColumnHelper.accessor('shuttleBusId', {
-    header: () => 'ID',
-    cell: (info) => info.getValue(),
-  }),
   busColumnHelper.accessor('busName', {
     header: () => '버스 이름',
     cell: (info) => info.getValue(),

@@ -72,11 +72,11 @@ const Stringifier = Object.freeze({
       case 'INACTIVE':
         return '비활성';
       case 'OPEN':
-        return '수요조사 모집 중';
+        return '진행 중';
       case 'CLOSED':
-        return '수요조사 모집 종료';
-      case 'ENDED':
         return '종료';
+      case 'ENDED':
+        return '행사 종료';
     }
   },
   dailyEventStatus(v: EventStatus) {
