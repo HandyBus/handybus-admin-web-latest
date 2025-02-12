@@ -38,7 +38,7 @@ export const columns = [
     cell: (info) => (
       <div className="gap-10 flex">
         <BlueLink
-          href={`/locations/${info.row.original.regionId}/${info.row.original.regionHubId}/edit`}
+          href={`/locations/${info.row.original.regionId}/hubs/${info.row.original.regionHubId}/edit`}
         >
           수정하기
         </BlueLink>
