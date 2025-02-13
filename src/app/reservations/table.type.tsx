@@ -11,10 +11,6 @@ import EditHandyStatusDialog from '@/components/dialog/EditHandyStatusDialog';
 const columnHelper = createColumnHelper<ReservationViewEntity>();
 
 export const columns = [
-  columnHelper.accessor('reservationId', {
-    header: () => 'ID',
-    cell: (info) => info.getValue(),
-  }),
   columnHelper.display({
     id: 'user',
     header: () => '고객 정보',

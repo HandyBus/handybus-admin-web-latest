@@ -11,8 +11,8 @@ interface Props {
   fetchNextPage: (
     options?: FetchNextPageOptions,
   ) => Promise<InfiniteQueryObserverResult<unknown, unknown>>;
-  isLoading?: boolean;
-  hasNextPage?: boolean;
+  isLoading: boolean;
+  hasNextPage: boolean;
   className?: string;
 }
 

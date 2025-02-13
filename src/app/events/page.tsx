@@ -2,21 +2,43 @@
 
 import BlueLink from '@/components/link/BlueLink';
 import { columns } from './table.type';
-import { useGetEventDashboard } from '@/services/shuttleOperation.service';
+import { useGetEventsStatsWithPagination } from '@/services/shuttleOperation.service';
 import Heading from '@/components/text/Heading';
 import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';
+import { useMemo } from 'react';
+import EventFilter from './components/EventFilter';
+import useEventFilter from './hooks/useEventFilter';
+import useInfiniteScroll from '@/hooks/useInfiniteScroll';
+
+const EVENT_PAGINATION_LIMIT = 7;
+
 const Page = () => {
+  const [option, dispatch] = useEventFilter();
   const {
-    data: eventDashboard,
-    isLoading,
-    isError,
-    error,
-  } = useGetEventDashboard();
+    data: eventsStats,
+    fetchNextPage,
+    isFetching,
+    hasNextPage,
+  } = useGetEventsStatsWithPagination({
+    ...option,
+    limit: EVENT_PAGINATION_LIMIT,
+  });
+
+  const flattenedEventsStats = useMemo(
+    () => eventsStats?.pages.flatMap((page) => page.events),
+    [eventsStats],
+  );
 
   const table = useTable({
-    data: eventDashboard,
+    data: flattenedEventsStats,
     columns,
+  });
+
+  const { InfiniteScrollTrigger } = useInfiniteScroll({
+    fetchNextPage,
+    isLoading: isFetching,
+    hasNextPage,
   });
 
   return (
@@ -27,16 +49,10 @@ const Page = () => {
           추가하기
         </BlueLink>
       </Heading>
+      <EventFilter option={option} dispatch={dispatch} />
       <section className="flex flex-col">
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : isError ? (
-          <div>Error: {error.message}</div>
-        ) : eventDashboard ? (
-          <BaseTable table={table} cellClassName="min-h-120 p-0" />
-        ) : (
-          <div>No data</div>
-        )}
+        <BaseTable table={table} cellClassName="min-h-120 p-0" />
+        <InfiniteScrollTrigger />
       </section>
     </main>
   );
