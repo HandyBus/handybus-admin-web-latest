@@ -5,7 +5,7 @@ import {
   CreateHubRequestSchema,
   RegionHubSchema,
 } from '@/types/hub.type';
-import { authInstance, withPagination } from './config';
+import { authInstance } from './config';
 import { silentParse } from '@/utils/parse.util';
 import {
   keepPreviousData,
@@ -16,6 +16,7 @@ import {
 import regions from '../data/regions.json';
 import { RegionSchema } from '@/types/region';
 import { toSearchParamString } from '@/utils/searchParam.util';
+import { withPagination } from '@/types/common.type';
 
 // ----- 조회 -----
 

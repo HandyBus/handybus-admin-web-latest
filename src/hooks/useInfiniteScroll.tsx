@@ -7,17 +7,21 @@ import type {
   InfiniteQueryObserverResult,
 } from '@tanstack/react-query';
 
-/**
- * trigger fetchNextPage when the ref is intersecting.
- *
- * @param fetchNextPage comes from result of useInfiniteQuery
- * @returns ref which is HTMLDivElement
- */
-const useInfiniteScroll = <TData, TError>(
+interface Props {
   fetchNextPage: (
     options?: FetchNextPageOptions,
-  ) => Promise<InfiniteQueryObserverResult<TData, TError>>,
-) => {
+  ) => Promise<InfiniteQueryObserverResult<unknown, unknown>>;
+  isLoading: boolean;
+  hasNextPage: boolean;
+  className?: string;
+}
+
+const useInfiniteScroll = ({
+  fetchNextPage,
+  isLoading,
+  hasNextPage,
+  className,
+}: Props) => {
   const ref = useRef<HTMLDivElement>(null);
 
   const useObserver = ({
@@ -55,7 +59,16 @@ const useInfiniteScroll = <TData, TError>(
     onIntersect,
   });
 
-  return ref;
+  const InfiniteScrollTrigger = () => {
+    return (
+      <div
+        ref={ref}
+        className={`${isLoading || !hasNextPage ? 'hidden' : ''} ${className}`}
+      />
+    );
+  };
+
+  return { InfiniteScrollTrigger };
 };
 
 export default useInfiniteScroll;

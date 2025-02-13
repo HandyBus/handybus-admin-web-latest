@@ -3,7 +3,6 @@
 import Heading from '@/components/text/Heading';
 import ToolTip from '@/components/tool-tip/ToolTip';
 import { BIG_REGIONS_TO_COORDINATES } from '@/constants/regions';
-import useKakaoMap from '@/hooks/useKakaoMap';
 import {
   useGetDemandBasedRouteTree,
   useGetDemandsStats,
@@ -20,6 +19,13 @@ import {
   panToBounds,
   panToXY,
 } from './map.util';
+import {
+  DEFAULT_CLUSTER_MIN_COUNT,
+  DEFAULT_MAX_DISTANCE,
+  DEFAULT_MAX_NODES,
+  DEFAULT_MIN_COUNT,
+} from '@/constants/common';
+import KakaoMapScript from '@/components/script/KakaoMapScript';
 
 const ZOOM_LEVEL_LIMIT = 9;
 
@@ -117,11 +123,6 @@ const Page = ({ params }: Props) => {
       alert('지도를 불러오는 중 오류가 발생했습니다. \n' + error);
     }
   }, [demandsStats, routeTree]);
-
-  useKakaoMap({
-    onReady: () => setIsScriptReady(true),
-    libraries: ['services'],
-  });
 
   useEffect(() => {
     if (
@@ -342,99 +343,125 @@ const Page = ({ params }: Props) => {
   };
 
   return (
-    <main className="flex grow flex-col">
-      <Heading>수요조사 대시보드</Heading>
-      <div className="flex grow gap-12">
-        <div className="relative flex grow flex-col" ref={mapRef}>
-          {viewingRegion && (
-            <section className="absolute bottom-0 left-0 top-0 z-50 w-240 bg-black/55 p-12 text-white">
-              <h5 className="text-18 font-600">{viewingRegion}</h5>
-              <article className="flex flex-col p-4 text-12 text-grey-100">
-                {(() => {
-                  const demand = demandsStats?.find(
-                    (demand) => demand.provinceFullName === viewingRegion,
-                  );
-                  if (!demand) {
-                    return null;
-                  }
-                  return (
-                    <>
-                      <p>총 수요: {demand.totalCount}개</p>
-                      <p>왕복 수요: {demand.roundTripCount}개</p>
-                      <p>가는 편 수요: {demand.toDestinationCount}개</p>
-                      <p>오는 편 수요: {demand.fromDestinationCount}개</p>
-                    </>
-                  );
-                })()}
-              </article>
-              <article className="flex flex-col gap-4 text-grey-50">
-                <h6 className="flex items-center gap-4 pt-8 text-14 font-600">
-                  {viewingRegion} 내 군집들
-                  <ToolTip iconClassName="text-grey-300 hover:text-grey-100">
-                    기타 수요조사는 지도 및 군집에 표시되지 않습니다.
-                  </ToolTip>
-                </h6>
-                <ul className="flex flex-col gap-[1px]">
-                  {clustersInRegion.current?.[viewingRegion]?.map((cluster) => {
+    <>
+      <KakaoMapScript
+        onReady={() => setIsScriptReady(true)}
+        libraries={['services']}
+      />
+      <main className="flex grow flex-col">
+        <Heading>수요조사 대시보드</Heading>
+        <div className="flex grow gap-12">
+          <div className="relative flex grow flex-col" ref={mapRef}>
+            {viewingRegion && (
+              <section className="absolute bottom-0 left-0 top-0 z-50 w-240 bg-black/55 p-12 text-white">
+                <h5 className="text-18 font-600">{viewingRegion}</h5>
+                <article className="flex flex-col p-4 text-12 text-grey-100">
+                  {(() => {
+                    const demand = demandsStats?.find(
+                      (demand) => demand.provinceFullName === viewingRegion,
+                    );
+                    if (!demand) {
+                      return null;
+                    }
                     return (
-                      <button
-                        key={cluster.clusterId}
-                        className="flex items-center justify-between p-4 text-14 hover:bg-grey-100/50"
-                        onClick={() => handleHubClick(cluster)}
-                      >
-                        <span>{cluster.nodes[0].data.regionHubName}</span>
-                        <span className="text-12 text-grey-200">
-                          {cluster.totalCount}개
+                      <>
+                        <p>총 수요: {demand.totalCount}개</p>
+                        <p>왕복 수요: {demand.roundTripCount}개</p>
+                        <p>가는 편 수요: {demand.toDestinationCount}개</p>
+                        <p>오는 편 수요: {demand.fromDestinationCount}개</p>
+                      </>
+                    );
+                  })()}
+                </article>
+                <article className="flex flex-col gap-4 text-grey-50">
+                  <h6 className="flex items-center gap-4 pt-8 text-14 font-600">
+                    {viewingRegion} 내 군집들
+                    <ToolTip iconClassName="text-grey-300 hover:text-grey-100">
+                      기타 수요조사는 지도 및 군집에 표시되지 않습니다.
+                    </ToolTip>
+                  </h6>
+                  <ul className="flex flex-col gap-[1px]">
+                    {clustersInRegion.current?.[viewingRegion]?.map(
+                      (cluster) => {
+                        return (
+                          <button
+                            key={cluster.clusterId}
+                            className="flex items-center justify-between p-4 text-14 hover:bg-grey-100/50"
+                            onClick={() => handleHubClick(cluster)}
+                          >
+                            <span>{cluster.nodes[0].data.regionHubName}</span>
+                            <span className="text-12 text-grey-200">
+                              {cluster.totalCount}개
+                            </span>
+                          </button>
+                        );
+                      },
+                    )}
+                  </ul>
+                </article>
+              </section>
+            )}
+          </div>
+          <section className="flex w-320 flex-col gap-4 bg-white p-12 shadow-[0px_0px_10px_0px_rgba(0,0,0,0.18)]">
+            <Heading.h5 className="flex items-center gap-8 bg-notion-grey">
+              추천 노선
+              <ToolTip textClassName="top-20 bottom-auto right-0 z-[100]">
+                <div className="flex flex-col gap-4">
+                  <p>
+                    노선 최대 길이: <b>{DEFAULT_MAX_DISTANCE}km</b>
+                  </p>
+                  <p>
+                    노선 최대 경유 가능 정류장 수: <b>{DEFAULT_MAX_NODES}개</b>
+                  </p>
+                  <p>
+                    군집 반지름: <b>1km</b>
+                  </p>
+                  <p>
+                    노선이 개설되는데 필요한 최소 인원 수:{' '}
+                    <b>{DEFAULT_MIN_COUNT}명</b>
+                  </p>
+                  <p>
+                    각 경유 정류장에 필요한 최소 인원 수:{' '}
+                    <b>{DEFAULT_CLUSTER_MIN_COUNT}명</b>
+                  </p>
+                </div>
+              </ToolTip>
+            </Heading.h5>
+            <ul className="flex grow flex-col gap-12 overflow-y-auto">
+              {routeTree?.routes.map((route, index) => (
+                <button
+                  key={index}
+                  className={twMerge(
+                    'flex items-center gap-8 overflow-x-auto px-4 py-8 hover:bg-notion-grey/70',
+                    selectedRouteIndex === index && 'bg-notion-grey/70',
+                  )}
+                  onClick={() => handleRouteClick(route, index)}
+                >
+                  {route.nodes.map((node, index) => {
+                    const cluster = routeTree?.clusters.find(
+                      (cluster) => cluster.clusterId === node,
+                    );
+                    if (!cluster) {
+                      return null;
+                    }
+                    return (
+                      <>
+                        <span className="h-full whitespace-nowrap break-keep">
+                          {cluster.nodes[0].data.regionHubName}
                         </span>
-                      </button>
+                        {index !== route.nodes.length - 1 && (
+                          <span className="text-grey-500">-</span>
+                        )}
+                      </>
                     );
                   })}
-                </ul>
-              </article>
-            </section>
-          )}
+                </button>
+              ))}
+            </ul>
+          </section>
         </div>
-        <section className="flex w-320 flex-col gap-4 bg-white p-12 shadow-[0px_0px_10px_0px_rgba(0,0,0,0.18)]">
-          <Heading.h5 className="flex items-baseline gap-8 bg-notion-grey">
-            추천 노선
-            <p className="text-10 text-grey-500">
-              정류장 간의 순서는 최적의 순서가 보장되지 않습니다.
-            </p>
-          </Heading.h5>
-          <ul className="flex grow flex-col gap-12 overflow-y-auto">
-            {routeTree?.routes.map((route, index) => (
-              <button
-                key={index}
-                className={twMerge(
-                  'flex items-center gap-8 overflow-x-auto px-4 py-8 hover:bg-notion-grey/70',
-                  selectedRouteIndex === index && 'bg-notion-grey/70',
-                )}
-                onClick={() => handleRouteClick(route, index)}
-              >
-                {route.nodes.map((node, index) => {
-                  const cluster = routeTree?.clusters.find(
-                    (cluster) => cluster.clusterId === node,
-                  );
-                  if (!cluster) {
-                    return null;
-                  }
-                  return (
-                    <>
-                      <span className="h-full whitespace-nowrap break-keep">
-                        {cluster.nodes[0].data.regionHubName}
-                      </span>
-                      {index !== route.nodes.length - 1 && (
-                        <span className="text-grey-500">-</span>
-                      )}
-                    </>
-                  );
-                })}
-              </button>
-            ))}
-          </ul>
-        </section>
-      </div>
-    </main>
+      </main>
+    </>
   );
 };
 

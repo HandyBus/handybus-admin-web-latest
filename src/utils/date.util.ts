@@ -24,21 +24,21 @@ export const toDateOnly = (date: Date) => {
   return ret;
 };
 
-const isDateOnly = (date: Date) => {
-  return (
-    date.getHours() === 0 &&
-    date.getMinutes() === 0 &&
-    date.getSeconds() === 0 &&
-    date.getMilliseconds() === 0
-  );
-};
+// const isDateOnly = (date: Date) => {
+//   return (
+//     date.getHours() === 0 &&
+//     date.getMinutes() === 0 &&
+//     date.getSeconds() === 0 &&
+//     date.getMilliseconds() === 0
+//   );
+// };
 
 export const formatDate = (date: Date, type: 'date' | 'datetime' = 'date') => {
   if (type === 'datetime') {
     return dayjs(date).format('YYYY. MM. DD. HH:mm:ss');
   } else {
-    if (!isDateOnly(date))
-      console.warn('printing non-date only Date to YYYY. MM. DD');
+    // if (!isDateOnly(date))
+    //   console.warn('printing non-date only Date to YYYY. MM. DD');
     return dayjs(date).format('YYYY. MM. DD');
   }
 };
@@ -48,6 +48,8 @@ export const formatDateString = (
   type: 'date' | 'datetime' = 'date',
   defaultValue?: string,
 ) => {
-  if (!date) return defaultValue || '';
+  if (!date) {
+    return defaultValue || '';
+  }
   return formatDate(dayjsTz(date), type);
 };

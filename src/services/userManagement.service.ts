@@ -3,7 +3,8 @@ import {
   useInfiniteQuery,
   useQuery,
 } from '@tanstack/react-query';
-import { authInstance, withPagination } from './config';
+import { authInstance } from './config';
+import { withPagination } from '@/types/common.type';
 import {
   AgeRange,
   AuthChannelType,

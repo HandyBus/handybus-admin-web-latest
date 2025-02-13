@@ -6,7 +6,6 @@ import {
   DisclosurePanel,
 } from '@headlessui/react';
 import { ChevronDownIcon, FilterIcon, FilterXIcon } from 'lucide-react';
-import Input from '@/components/input/Input';
 import { Dispatch, useMemo } from 'react';
 import { twMerge } from 'tailwind-merge';
 import EventInput from '@/components/input/EventInput';
@@ -27,6 +26,7 @@ import {
   HandyStatusEnum,
   ReservationStatusEnum,
 } from '@/types/reservation.type';
+import DebouncedInput from '@/components/input/DebouncedInput';
 
 interface Props {
   option: GetReservationsOptions;
@@ -130,7 +130,7 @@ function ReservationFilter({ option, dispatch }: Props) {
           </>
         )}
         <label>유저 닉네임 (fuzzy)</label>
-        <Input
+        <DebouncedInput
           value={option.userNickname ?? ''}
           setValue={(n) =>
             dispatch({
@@ -140,7 +140,7 @@ function ReservationFilter({ option, dispatch }: Props) {
           }
         />
         <label>탑승자 이름 (fuzzy)</label>
-        <Input
+        <DebouncedInput
           value={option.passengerName ?? ''}
           setValue={(n) =>
             dispatch({

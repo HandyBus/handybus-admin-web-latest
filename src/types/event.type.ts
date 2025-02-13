@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { ArtistsViewEntitySchema } from './artist.type';
-import { ShuttleDemandStatisticsReadModelSchema } from './demand.type';
 
 // ----- ENUM -----
 
@@ -49,15 +48,25 @@ export const EventsViewEntitySchema = z
   .strict();
 export type EventsViewEntity = z.infer<typeof EventsViewEntitySchema>;
 
-export const EventDashboardReadModelSchema = EventsViewEntitySchema.extend({
-  dailyEvents: EventDailyShuttlesInEventsViewEntitySchema.extend({
-    statistics: z.lazy(() => ShuttleDemandStatisticsReadModelSchema),
+export const DailyEventWithStatisticsViewEntitySchema =
+  EventDailyShuttlesInEventsViewEntitySchema.extend({
     expectedRouteCount: z.number(),
     shuttleRouteCount: z.number(),
-  }).array(),
-});
-export type EventDashboardReadModel = z.infer<
-  typeof EventDashboardReadModelSchema
+    totalDemandCount: z.number(),
+    roundTripDemandCount: z.number(),
+    toDestinationDemandCount: z.number(),
+    fromDestinationDemandCount: z.number(),
+  });
+export type DailyEventWithStatisticsViewEntity = z.infer<
+  typeof DailyEventWithStatisticsViewEntitySchema
+>;
+
+export const EventWithStatisticsViewEntitySchema =
+  EventsViewEntitySchema.extend({
+    dailyEvents: DailyEventWithStatisticsViewEntitySchema.array(),
+  });
+export type EventWithStatisticsViewEntity = z.infer<
+  typeof EventWithStatisticsViewEntitySchema
 >;
 
 // ----- POST & PUT -----

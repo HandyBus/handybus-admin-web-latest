@@ -2,7 +2,7 @@ import Link from 'next/link';
 import NavItem from './NavItem';
 import LogoIcon from 'public/icons/logo.svg';
 
-const Nav = async () => {
+const Nav = () => {
   return (
     <nav className="sticky top-0 flex h-64 shrink-0 items-center gap-28 border-b border-grey-200 bg-grey-800 px-28">
       <Link href="/">

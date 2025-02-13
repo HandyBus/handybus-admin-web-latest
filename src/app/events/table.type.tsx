@@ -3,12 +3,12 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import Image from 'next/image';
 import { formatDateString } from '@/utils/date.util';
-import { EventDashboardReadModel } from '@/types/event.type';
+import { EventWithStatisticsViewEntity } from '@/types/event.type';
 import { DEFAULT_EVENT_IMAGE } from '@/constants/common';
 import Stringifier from '@/utils/stringifier.util';
 import BlueLink from '@/components/link/BlueLink';
 
-const columnHelper = createColumnHelper<EventDashboardReadModel>();
+const columnHelper = createColumnHelper<EventWithStatisticsViewEntity>();
 
 export const columns = [
   columnHelper.display({
@@ -26,7 +26,6 @@ export const columns = [
     ),
   }),
   columnHelper.accessor('eventName', {
-    id: 'eventName',
     header: '행사 정보',
     cell: (info) => {
       const { eventName, eventLocationName, eventType, eventArtists, eventId } =
@@ -55,9 +54,9 @@ export const columns = [
         const dates: string[] = getValue();
         return (
           <div className="flex h-full flex-col justify-between">
-            {dates.map((date) => (
+            {dates.map((date, index) => (
               <p
-                key={date}
+                key={index}
                 className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 last:border-b-0"
               >
                 {formatDateString(date, 'date')}
@@ -71,12 +70,17 @@ export const columns = [
   columnHelper.accessor(
     (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.status),
     {
-      header: '수요조사 상태',
+      header: '상태',
       cell: (info) => {
         const eventStatuses = info.getValue();
-        const statistics = info.row.original.dailyEvents.map(
-          (dailyEvent) => dailyEvent.statistics,
-        );
+        const statistics = info.row.original.dailyEvents.map((dailyEvent) => {
+          return {
+            totalCount: dailyEvent.totalDemandCount,
+            roundTripCount: dailyEvent.roundTripDemandCount,
+            toDestinationCount: dailyEvent.toDestinationDemandCount,
+            fromDestinationCount: dailyEvent.fromDestinationDemandCount,
+          };
+        });
         const style = {
           OPEN: 'text-green-600',
           CLOSED: 'text-grey-700',
@@ -86,18 +90,18 @@ export const columns = [
         return (
           <div className="flex h-full flex-col justify-between">
             {eventStatuses.map((eventStatus, index) => (
-              <p
+              <div
                 key={index}
                 className={`group relative flex h-[58px] grow items-center justify-center whitespace-nowrap  break-keep border-b border-grey-200 px-8 last:border-b-0 ${style[eventStatus]}`}
               >
                 {Stringifier.eventStatus(eventStatus)}
-                <div className="absolute left-100 hidden h-120 w-172 rounded-[4px] bg-black/65 p-12 text-white group-hover:block">
+                <div className="absolute right-112 hidden h-120 w-172 rounded-[4px] bg-black/65 p-12 text-white group-hover:block">
                   <p>총 수요조사 수: {statistics[index].totalCount}</p>
                   <p>왕복: {statistics[index].roundTripCount}</p>
                   <p>가는 편: {statistics[index].toDestinationCount}</p>
                   <p>오는 편: {statistics[index].fromDestinationCount}</p>
                 </div>
-              </p>
+              </div>
             ))}
           </div>
         );
@@ -108,7 +112,7 @@ export const columns = [
     (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.dailyEventId),
     {
       header: '수요조사 상세',
-      cell: async (info) => {
+      cell: (info) => {
         const dailyEventIds = info.getValue();
         const eventId = info.row.original.eventId;
         return (
