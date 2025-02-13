@@ -10,14 +10,19 @@ import {
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { useGetArtists } from '@/services/shuttleOperation.service';
 import { ArtistsViewEntity } from '@/types/artist.type';
-import Link from 'next/link';
+
+interface ModalState {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
 
 interface Props {
   value: string | null;
   setValue: (value: string | null) => void;
+  modalState: ModalState;
 }
 
-const ArtistInput = ({ value, setValue }: Props) => {
+const ArtistInput = ({ value, setValue, modalState }: Props) => {
   const [query, setQuery] = useState('');
   const { data, isError, isLoading } = useGetArtists();
 
@@ -75,14 +80,13 @@ const ArtistInput = ({ value, setValue }: Props) => {
           </ComboboxOption>
         ))}
         {!isLoading && (
-          <Link
-            href="/artists/new"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={() => modalState.setIsOpen(true)}
             className="block p-8 text-blue-500 hover:bg-blue-100"
           >
             + 새로운 아티스트 만들기
-          </Link>
+          </button>
         )}
       </ComboboxOptions>
     </Combobox>
