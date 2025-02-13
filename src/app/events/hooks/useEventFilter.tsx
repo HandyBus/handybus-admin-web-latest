@@ -88,7 +88,10 @@ const reducer = (
 
       return {
         ...prevState,
-        status: newStatus?.join(',') as Combinations<EventStatus> | undefined,
+        status:
+          newStatus && newStatus.length > 0
+            ? (newStatus.join(',') as Combinations<EventStatus>)
+            : undefined,
       };
     case 'RESET':
       return {
