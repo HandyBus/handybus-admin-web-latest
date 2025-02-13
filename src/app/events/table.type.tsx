@@ -70,7 +70,7 @@ export const columns = [
   columnHelper.accessor(
     (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.status),
     {
-      header: '수요조사 상태',
+      header: '상태',
       cell: (info) => {
         const eventStatuses = info.getValue();
         const statistics = info.row.original.dailyEvents.map((dailyEvent) => {
@@ -95,7 +95,7 @@ export const columns = [
                 className={`group relative flex h-[58px] grow items-center justify-center whitespace-nowrap  break-keep border-b border-grey-200 px-8 last:border-b-0 ${style[eventStatus]}`}
               >
                 {Stringifier.eventStatus(eventStatus)}
-                <div className="absolute left-100 hidden h-120 w-172 rounded-[4px] bg-black/65 p-12 text-white group-hover:block">
+                <div className="absolute right-112 hidden h-120 w-172 rounded-[4px] bg-black/65 p-12 text-white group-hover:block">
                   <p>총 수요조사 수: {statistics[index].totalCount}</p>
                   <p>왕복: {statistics[index].roundTripCount}</p>
                   <p>가는 편: {statistics[index].toDestinationCount}</p>

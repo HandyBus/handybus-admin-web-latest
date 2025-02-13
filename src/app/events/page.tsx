@@ -7,9 +7,12 @@ import Heading from '@/components/text/Heading';
 import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';
 import { useMemo } from 'react';
+import EventFilter from './components/EventFilter';
+import useEventFilter from './hooks/useEventFilter';
 
 const Page = () => {
-  const { data: eventsStats } = useGetEventsStats();
+  const [option, dispatch] = useEventFilter();
+  const { data: eventsStats } = useGetEventsStats(option);
 
   const flattenedEventsStats = useMemo(
     () => eventsStats?.pages.flatMap((page) => page.events),
@@ -29,6 +32,7 @@ const Page = () => {
           추가하기
         </BlueLink>
       </Heading>
+      <EventFilter option={option} dispatch={dispatch} />
       <section className="flex flex-col">
         <BaseTable table={table} cellClassName="min-h-120 p-0" />
       </section>

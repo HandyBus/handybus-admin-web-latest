@@ -1,5 +1,6 @@
 import { ArtistsViewEntitySchema } from '@/types/artist.type';
-import { authInstance, withPagination } from './config';
+import { authInstance } from './config';
+import { Combinations, withPagination } from '@/types/common.type';
 import {
   keepPreviousData,
   useInfiniteQuery,
@@ -193,7 +194,7 @@ export interface GetEventsStatsOptions extends RouteTreeOptions {
   eventLocationName?: string;
   eventLocationAddress?: string;
   eventType?: EventType;
-  status?: EventStatus;
+  status?: Combinations<EventStatus>;
   orderBy?: 'eventName';
   additionalOrderOptions?: 'ASC' | 'DESC';
   page: string | undefined;
