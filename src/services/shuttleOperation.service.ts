@@ -11,9 +11,10 @@ import { toSearchParamString } from '@/utils/searchParam.util';
 import {
   CreateEventRequest,
   CreateEventRequestSchema,
-  EventDashboardReadModelSchema,
   EventStatus,
   EventsViewEntitySchema,
+  EventType,
+  EventWithStatisticsViewEntitySchema,
   UpdateEventRequest,
   UpdateEventRequestSchema,
 } from '@/types/event.type';
@@ -56,6 +57,7 @@ import {
   DEFAULT_MAX_NODES,
   DEFAULT_MIN_COUNT,
 } from '@/constants/common';
+import { PAGINATION_LIMIT } from '@/constants/config';
 
 // ----- 조회 -----
 
@@ -186,33 +188,63 @@ export const useGetDemandBasedRouteTree = (
   });
 };
 
-export const getEventDashboard = async ({
+export interface GetEventsStatsOptions extends RouteTreeOptions {
+  eventName?: string;
+  eventLocationName?: string;
+  eventLocationAddress?: string;
+  eventType?: EventType;
+  status?: EventStatus;
+  orderBy?: 'eventName';
+  additionalOrderOptions?: 'ASC' | 'DESC';
+  page: string | undefined;
+  limit: number;
+}
+
+export const getEventsStats = async ({
   clusterMinCount = DEFAULT_CLUSTER_MIN_COUNT,
   minCount = DEFAULT_MIN_COUNT,
   maxNodes = DEFAULT_MAX_NODES,
   maxDistance = DEFAULT_MAX_DISTANCE,
   epsilon = DEFAULT_EPSILON,
-}: Partial<RouteTreeOptions> = {}) => {
+  ...props
+}: Partial<GetEventsStatsOptions>) => {
   const res = await authInstance.get(
-    `/v2/shuttle-operation/admin/events/all/dashboard${toSearchParamString(
-      { clusterMinCount, minCount, maxNodes, maxDistance, epsilon },
+    `/v2/shuttle-operation/admin/events/all/stats${toSearchParamString(
+      {
+        ...props,
+        clusterMinCount,
+        minCount,
+        maxNodes,
+        maxDistance,
+        epsilon,
+      },
       '?',
     )}`,
     {
-      shape: {
-        events: EventDashboardReadModelSchema.array(),
-      },
+      shape: withPagination({
+        events: EventWithStatisticsViewEntitySchema.array(),
+      }),
     },
   );
-  return res.events;
+  return res;
 };
 
-export const useGetEventDashboard = (options?: Partial<RouteTreeOptions>) => {
-  return useQuery({
-    queryKey: ['event', 'dashboard', options],
-    queryFn: () => getEventDashboard(options),
+export const useGetEventsStats = (options?: Partial<GetEventsStatsOptions>) =>
+  useInfiniteQuery({
+    queryKey: ['event', 'stats', options],
+    queryFn: ({ pageParam }: { pageParam: string | undefined }) =>
+      getEventsStats({
+        ...options,
+        page: pageParam,
+        limit: PAGINATION_LIMIT,
+      }),
+    initialPageParam: undefined,
+    initialData: { pages: [], pageParams: [] },
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextPage;
+    },
+    placeholderData: keepPreviousData,
   });
-};
 
 export const getEvents = async (options?: { status?: EventStatus }) => {
   const res = await authInstance.get(

@@ -1,5 +1,3 @@
-'use client';
-
 import { type Table, flexRender } from '@tanstack/react-table';
 import { twMerge } from 'tailwind-merge';
 
@@ -22,7 +20,7 @@ const BaseTable = <TData,>({
 }: Props<TData>) => {
   return (
     <table className="border-separate border-spacing-y-4 text-left text-16 text-grey-900 rtl:text-right">
-      <thead className="bg-grey-50 text-14 uppercase text-grey-700">
+      <thead className="whitespace-nowrap break-keep bg-grey-50 text-14 uppercase text-grey-700">
         {table.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id} className="rounded-lg bg-white">
             {headerGroup.headers.map((header) => (
