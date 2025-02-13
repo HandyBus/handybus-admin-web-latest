@@ -12,10 +12,6 @@ import Image from 'next/image';
 const columnHelper = createColumnHelper<UsersViewEntity>();
 
 export const columns = [
-  columnHelper.accessor('userId', {
-    header: () => 'ID',
-    cell: (info) => info.getValue(),
-  }),
   columnHelper.display({
     id: 'image',
     header: '프로필 이미지',
