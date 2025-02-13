@@ -34,7 +34,11 @@ const AllReservations = () => {
       limit: PAGINATION_LIMIT,
     });
 
-  const ref = useInfiniteScroll(fetchNextPage);
+  const { InfiniteScrollTrigger } = useInfiniteScroll({
+    fetchNextPage,
+    isLoading: isFetching,
+    hasNextPage,
+  });
 
   const flatData = useMemo(
     () => data.pages.flatMap((page) => page.reservations),
@@ -56,7 +60,7 @@ const AllReservations = () => {
       {flatData.length === 0 && !isFetching && <p>데이터가 없습니다.</p>}
       {isError ? <p>에러 : {error.message}</p> : null}
       {isFetching ? <LoaderCircleIcon className="animate-spin" /> : null}
-      {hasNextPage && <div ref={ref} />}
+      <InfiniteScrollTrigger />
     </section>
   );
 };
