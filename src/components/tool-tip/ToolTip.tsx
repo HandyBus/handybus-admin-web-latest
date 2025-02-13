@@ -17,7 +17,7 @@ const ToolTip = ({ children, iconClassName, textClassName }: Props) => {
       />
       <div
         className={twMerge(
-          'absolute bottom-20 hidden w-280 rounded-[4px] bg-white p-[6px] text-12 text-grey-800 opacity-95 shadow-md group-hover:block',
+          'absolute bottom-20 hidden max-w-300 whitespace-nowrap break-keep rounded-[4px] bg-white p-[6px] text-12 text-grey-800 opacity-95 shadow-md group-hover:block',
           textClassName,
         )}
       >
