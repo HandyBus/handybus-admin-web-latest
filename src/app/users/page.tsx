@@ -86,7 +86,10 @@ const Page = () => {
     () => users?.pages.flatMap((page) => page.users) || [],
     [users],
   );
-  const currentUserCount = users?.pages?.[0]?.totalCount;
+  const currentUserCount = useMemo(
+    () => users?.pages?.[0]?.totalCount,
+    [users],
+  );
 
   const table = useTable({
     columns,
@@ -126,16 +129,10 @@ const Page = () => {
         </span>
       </Callout>
       <UserFilter option={option} dispatch={dispatch} />
-      {isFetching ? (
-        <Loading />
-      ) : (
-        <>
-          <p className="text-14 text-grey-800">
-            {currentUserCount}건의 검색 결과가 있습니다.
-          </p>
-          <BaseTable table={table} />
-        </>
-      )}
+      <p className="text-14 text-grey-800">
+        {currentUserCount}건의 검색 결과가 있습니다.
+      </p>
+      <BaseTable table={table} />
       {isFetchingNextPage && <Loading />}
       <InfiniteScrollTrigger />
     </main>
