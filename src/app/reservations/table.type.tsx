@@ -6,6 +6,7 @@ import Stringifier from '@/utils/stringifier.util';
 import { formatDateString } from '@/utils/date.util';
 import { ReservationViewEntity } from '@/types/reservation.type';
 import { dayjsTz } from '@/utils/date.util';
+import EditHandyStatusDialog from '@/components/dialog/EditHandyStatusDialog';
 
 const columnHelper = createColumnHelper<ReservationViewEntity>();
 
@@ -90,15 +91,8 @@ export const columns = [
     id: 'handyActions',
     header: '핸디 승인',
     cell: (props) =>
-      props.row.original.handyStatus === 'SUPPORTED' && (
-        <>
-          <BlueLink href={`/reservations/${props.row.original.reservationId}`}>
-            승인하기
-          </BlueLink>
-          <BlueLink href={`/reservations/${props.row.original.reservationId}`}>
-            거절하기
-          </BlueLink>
-        </>
+      props.row.original.handyStatus !== 'NOT_SUPPORTED' && (
+        <EditHandyStatusDialog response={props.row.original} />
       ),
   }),
   columnHelper.display({
