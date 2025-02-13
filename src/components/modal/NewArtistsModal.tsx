@@ -63,7 +63,7 @@ const NewArtistsModalContent = ({
   const { mutate: postArtist } = usePostArtist({
     onSuccess: () => {
       toast.success(linkToast);
-      queryClient.invalidateQueries({ queryKey: ['artists'] });
+      queryClient.invalidateQueries({ queryKey: ['artist'] });
       setIsOpen(false);
     },
     onError: (error) => {
