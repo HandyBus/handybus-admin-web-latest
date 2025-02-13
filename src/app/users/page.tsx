@@ -76,7 +76,11 @@ const Page = () => {
     limit: PAGINATION_LIMIT,
   });
 
-  const ref = useInfiniteScroll(fetchNextPage);
+  const { InfiniteScrollTrigger } = useInfiniteScroll({
+    fetchNextPage,
+    isLoading: isFetching,
+    hasNextPage,
+  });
 
   const flattenedUsers = useMemo(
     () => users?.pages.flatMap((page) => page.users) || [],
@@ -133,7 +137,7 @@ const Page = () => {
         </>
       )}
       {isFetchingNextPage && <Loading />}
-      {hasNextPage && <div ref={ref} />}
+      <InfiniteScrollTrigger />
     </main>
   );
 };
