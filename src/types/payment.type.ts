@@ -28,6 +28,7 @@ export type RefundRequestsInPaymentsViewEntity = z.infer<
 
 export const PaymentsViewEntitySchema = z.object({
   paymentId: z.string(),
+  userId: z.string(),
   principalAmount: z.number(),
   paymentAmount: z.number(),
   discountAmount: z.number(),
@@ -36,6 +37,7 @@ export const PaymentsViewEntitySchema = z.object({
   refundableAmount: z.number(),
   issuedCouponId: z.string().nullable(),
   reservationId: z.string(),
+  isConfirmed: z.boolean(),
   createdAt: z.string(),
   updatedAt: z.string(),
   refundRequests: RefundRequestsInPaymentsViewEntitySchema.array().nullable(),
