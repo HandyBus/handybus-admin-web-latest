@@ -2,17 +2,28 @@
 
 import BlueLink from '@/components/link/BlueLink';
 import { columns } from './table.type';
-import { useGetEventsStats } from '@/services/shuttleOperation.service';
+import { useGetEventsStatsWithPagination } from '@/services/shuttleOperation.service';
 import Heading from '@/components/text/Heading';
 import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';
 import { useMemo } from 'react';
 import EventFilter from './components/EventFilter';
 import useEventFilter from './hooks/useEventFilter';
+import useInfiniteScroll from '@/hooks/useInfiniteScroll';
+
+const EVENT_PAGINATION_LIMIT = 7;
 
 const Page = () => {
   const [option, dispatch] = useEventFilter();
-  const { data: eventsStats } = useGetEventsStats(option);
+  const {
+    data: eventsStats,
+    fetchNextPage,
+    isFetching,
+    hasNextPage,
+  } = useGetEventsStatsWithPagination({
+    ...option,
+    limit: EVENT_PAGINATION_LIMIT,
+  });
 
   const flattenedEventsStats = useMemo(
     () => eventsStats?.pages.flatMap((page) => page.events),
@@ -22,6 +33,12 @@ const Page = () => {
   const table = useTable({
     data: flattenedEventsStats,
     columns,
+  });
+
+  const { InfiniteScrollTrigger } = useInfiniteScroll({
+    fetchNextPage,
+    isLoading: isFetching,
+    hasNextPage,
   });
 
   return (
@@ -35,6 +52,7 @@ const Page = () => {
       <EventFilter option={option} dispatch={dispatch} />
       <section className="flex flex-col">
         <BaseTable table={table} cellClassName="min-h-120 p-0" />
+        <InfiniteScrollTrigger />
       </section>
     </main>
   );

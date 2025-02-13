@@ -58,7 +58,6 @@ import {
   DEFAULT_MAX_NODES,
   DEFAULT_MIN_COUNT,
 } from '@/constants/common';
-import { PAGINATION_LIMIT } from '@/constants/config';
 
 // ----- 조회 -----
 
@@ -212,12 +211,12 @@ export const getEventsStats = async ({
   const res = await authInstance.get(
     `/v2/shuttle-operation/admin/events/all/stats${toSearchParamString(
       {
-        ...props,
         clusterMinCount,
         minCount,
         maxNodes,
         maxDistance,
         epsilon,
+        ...props,
       },
       '?',
     )}`,
@@ -230,15 +229,13 @@ export const getEventsStats = async ({
   return res;
 };
 
-export const useGetEventsStats = (options?: Partial<GetEventsStatsOptions>) =>
+export const useGetEventsStatsWithPagination = (
+  options?: Partial<GetEventsStatsOptions>,
+) =>
   useInfiniteQuery({
     queryKey: ['event', 'stats', options],
     queryFn: ({ pageParam }: { pageParam: string | undefined }) =>
-      getEventsStats({
-        ...options,
-        page: pageParam,
-        limit: PAGINATION_LIMIT,
-      }),
+      getEventsStats({ ...options, page: pageParam }),
     initialPageParam: undefined,
     initialData: { pages: [], pageParams: [] },
     getNextPageParam: (lastPage) => {
