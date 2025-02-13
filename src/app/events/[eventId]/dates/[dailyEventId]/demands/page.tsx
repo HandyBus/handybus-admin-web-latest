@@ -20,6 +20,12 @@ import {
   panToBounds,
   panToXY,
 } from './map.util';
+import {
+  DEFAULT_CLUSTER_MIN_COUNT,
+  DEFAULT_MAX_DISTANCE,
+  DEFAULT_MAX_NODES,
+  DEFAULT_MIN_COUNT,
+} from '@/constants/common';
 
 const ZOOM_LEVEL_LIMIT = 9;
 
@@ -395,11 +401,29 @@ const Page = ({ params }: Props) => {
           )}
         </div>
         <section className="flex w-320 flex-col gap-4 bg-white p-12 shadow-[0px_0px_10px_0px_rgba(0,0,0,0.18)]">
-          <Heading.h5 className="flex items-baseline gap-8 bg-notion-grey">
+          <Heading.h5 className="flex items-center gap-8 bg-notion-grey">
             추천 노선
-            <p className="text-10 text-grey-500">
-              정류장 간의 순서는 최적의 순서가 보장되지 않습니다.
-            </p>
+            <ToolTip textClassName="top-20 bottom-auto right-0 z-[100]">
+              <div className="flex flex-col gap-4">
+                <p>
+                  노선 최대 길이: <b>{DEFAULT_MAX_DISTANCE}km</b>
+                </p>
+                <p>
+                  노선 최대 경유 가능 정류장 수: <b>{DEFAULT_MAX_NODES}개</b>
+                </p>
+                <p>
+                  군집 반지름: <b>1km</b>
+                </p>
+                <p>
+                  노선이 개설되는데 필요한 최소 인원 수:{' '}
+                  <b>{DEFAULT_MIN_COUNT}명</b>
+                </p>
+                <p>
+                  각 경유 정류장에 필요한 최소 인원 수:{' '}
+                  <b>{DEFAULT_CLUSTER_MIN_COUNT}명</b>
+                </p>
+              </div>
+            </ToolTip>
           </Heading.h5>
           <ul className="flex grow flex-col gap-12 overflow-y-auto">
             {routeTree?.routes.map((route, index) => (
