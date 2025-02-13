@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { twJoin } from 'tailwind-merge';
 import { BanIcon, Loader2Icon } from 'lucide-react';
-import useKakaoMap from '@/hooks/useKakaoMap';
+import KakaoMapScript from '../script/KakaoMapScript';
 
 interface Props {
   coord: Coord;
@@ -115,57 +115,58 @@ const CoordInput = ({ coord, setCoord }: Props) => {
     }
   }, []);
 
-  useKakaoMap({
-    onReady: () => window.kakao.maps.load(initializeMap),
-    libraries: ['services'],
-  });
-
   return (
-    <article className="relative h-auto p-16 [&_div]:cursor-pointer">
-      <div className="relative rounded-[12px] transition-opacity">
-        <div
-          ref={mapRef}
-          className={twJoin(
-            'z-0 size-512 w-full rounded-t-[12px] transition-opacity',
-            (error || loading) && 'opacity-50',
-          )}
-        />
-        <div className="absolute left-20 top-20 z-10 h-40 w-240 overflow-hidden rounded-[8px] border border-grey-200">
-          <input
-            id="search-input"
-            type="text"
-            placeholder="키워드로 검색"
-            className="h-full w-full p-12 outline-none"
+    <>
+      <KakaoMapScript
+        onReady={() => window.kakao.maps.load(initializeMap)}
+        libraries={['services']}
+      />
+      <article className="relative h-auto p-16 [&_div]:cursor-pointer">
+        <div className="relative rounded-[12px] transition-opacity">
+          <div
+            ref={mapRef}
+            className={twJoin(
+              'z-0 size-512 w-full rounded-t-[12px] transition-opacity',
+              (error || loading) && 'opacity-50',
+            )}
           />
-        </div>
-        <div
-          className={
-            loading
-              ? 'absolute left-0 top-0 z-10 flex size-full touch-none items-center justify-center bg-none'
-              : 'hidden'
-          }
-        >
-          <Loader2Icon className="animate-spin" />
-        </div>
+          <div className="absolute left-20 top-20 z-10 h-40 w-240 overflow-hidden rounded-[8px] border border-grey-200">
+            <input
+              id="search-input"
+              type="text"
+              placeholder="키워드로 검색"
+              className="h-full w-full p-12 outline-none"
+            />
+          </div>
+          <div
+            className={
+              loading
+                ? 'absolute left-0 top-0 z-10 flex size-full touch-none items-center justify-center bg-none'
+                : 'hidden'
+            }
+          >
+            <Loader2Icon className="animate-spin" />
+          </div>
 
-        <div
-          className={
-            error
-              ? 'absolute left-0 top-0 z-10 flex size-full touch-none items-center justify-center bg-white bg-opacity-75 text-red-500'
-              : 'hidden'
-          }
-        >
-          <BanIcon />
-          오류가 발생하여 데이터 정합성을 위해 작동을 중지합니다. 새로고침
-          해주세요.
+          <div
+            className={
+              error
+                ? 'absolute left-0 top-0 z-10 flex size-full touch-none items-center justify-center bg-white bg-opacity-75 text-red-500'
+                : 'hidden'
+            }
+          >
+            <BanIcon />
+            오류가 발생하여 데이터 정합성을 위해 작동을 중지합니다. 새로고침
+            해주세요.
+          </div>
         </div>
-      </div>
-      <div>
-        좌표: {coord.latitude}, {coord.longitude}
-        <br />
-        주소: {coord.address}
-      </div>
-    </article>
+        <div>
+          좌표: {coord.latitude}, {coord.longitude}
+          <br />
+          주소: {coord.address}
+        </div>
+      </article>
+    </>
   );
 };
 
