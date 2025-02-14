@@ -45,11 +45,11 @@ const NewHubPage = () => {
 
   const { mutate: addHub } = usePostRegionHub({
     onSuccess: () => {
-      alert('거점지가 추가되었습니다.');
+      alert('장소가 추가되었습니다.');
       router.push('/locations');
     },
     onError: (error) => {
-      alert(`거점지 추가에 실패했습니다.`);
+      alert(`장소 추가에 실패했습니다.`);
       console.error(error);
     },
   });
@@ -59,8 +59,8 @@ const NewHubPage = () => {
       const target = regions?.find((r) => r.regionId === data.regionId);
       const confirmMessage =
         recommended?.regionId === data.regionId || false
-          ? `거점지를 추가하시겠습니까?`
-          : `선택한 주소 "${data.coord.address}"가 지역 "${target ? `${target.provinceFullName} ${target.cityFullName}` : '<오류: 알수 없는 위치>'}에 등록됩니다. 거점지를 추가하시겠습니까?`;
+          ? `장소를 추가하시겠습니까?`
+          : `선택한 주소 "${data.coord.address}"가 지역 "${target ? `${target.provinceFullName} ${target.cityFullName}` : '<오류: 알수 없는 위치>'}에 등록됩니다. 장소를 추가하시겠습니까?`;
       if (confirm(confirmMessage)) {
         addHub({ regionId: data.regionId, body: conform(data) });
       }
@@ -70,10 +70,10 @@ const NewHubPage = () => {
 
   return (
     <main>
-      <Heading>거점지 추가</Heading>
+      <Heading>장소 추가</Heading>
       <Form onSubmit={handleSubmit(onSubmit)} method="post">
         <Form.section>
-          <Form.label required>거점지 이름</Form.label>
+          <Form.label required>장소 이름</Form.label>
           <Controller
             control={control}
             name={`name`}
