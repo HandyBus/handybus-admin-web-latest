@@ -12,7 +12,7 @@ interface RouteConfig {
 const ROUTES: RouteConfig[] = [
   // 유저 관리
   { path: '/users', name: '유저 대시보드' },
-  { path: '/users/:id', name: '유저 상세 페이지', parent: '/users/:id' },
+  { path: '/users/:id', name: '유저 상세 페이지', parent: '/users' },
   // 행사 관리
   { path: '/events', name: '행사 대시보드' },
   { path: '/events/new', name: '행사 추가하기', parent: '/events' },
