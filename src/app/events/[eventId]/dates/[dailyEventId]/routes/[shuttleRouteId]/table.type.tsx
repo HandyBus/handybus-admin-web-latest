@@ -5,19 +5,22 @@ import BlueLink from '@/components/link/BlueLink';
 import { formatDateString } from '@/utils/date.util';
 import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
 import { ShuttleRouteHubsInShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
+import Stringifier from '@/utils/stringifier.util';
 
 type ExtendedShuttleBusesViewEntity = ShuttleBusesViewEntity & {
   eventId: string;
   dailyEventId: string;
   shuttleRouteId: string;
+  handyPhoneNumber?: string;
+  handyNickname?: string;
 };
 
 const busColumnHelper = createColumnHelper<ExtendedShuttleBusesViewEntity>();
 
 export const busColumns = [
   busColumnHelper.accessor('busType', {
-    header: () => 'type',
-    cell: (info) => info.getValue(),
+    header: () => '버스 종류',
+    cell: (info) => Stringifier.busType(info.getValue()),
   }),
   busColumnHelper.accessor('busName', {
     header: () => '호차',
@@ -26,6 +29,14 @@ export const busColumns = [
   busColumnHelper.accessor('busDriverPhoneNumber', {
     header: () => '기사님 전화번호',
     cell: (info) => info.getValue(),
+  }),
+  busColumnHelper.accessor('handyNickname', {
+    header: () => '핸디 닉네임',
+    cell: (info) => info.getValue() ?? '-',
+  }),
+  busColumnHelper.accessor('handyPhoneNumber', {
+    header: () => '핸디 전화번호',
+    cell: (info) => info.getValue() ?? '-',
   }),
   busColumnHelper.display({
     id: 'openChatLink',
@@ -40,12 +51,12 @@ export const busColumns = [
           오픈채팅 링크 열기
         </BlueLink>
       ) : (
-        <div>오픈채팅방 링크 없음</div>
+        <div>-</div>
       ),
   }),
   busColumnHelper.display({
     id: 'edit-bus',
-    header: () => 'actions',
+    header: () => '수정하기',
     cell: (info) => (
       <div>
         <BlueLink
