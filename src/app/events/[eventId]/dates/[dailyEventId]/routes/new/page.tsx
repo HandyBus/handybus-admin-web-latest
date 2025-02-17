@@ -170,7 +170,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
         error instanceof Error &&
         error.message === 'arrivalTime is not validated'
       )
-        alert('거점지들의 시간순서가 올바르지 않습니다. 확인해주세요.');
+        alert('정류장들의 시간순서가 올바르지 않습니다. 확인해주세요.');
     }
   };
 
@@ -382,7 +382,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
             <br />
             경유지는 시간순서대로 입력해주세요.
             <br />
-            경유지는 거점지들 중 선택 가능합니다.
+            경유지는 장소들 중 선택 가능합니다.
           </Callout>
           <section className="pb-12">
             <Heading.h5 backgroundColor="yellow">
@@ -411,7 +411,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                     <h5 className="my-auto text-16 font-500">{index + 1}</h5>
                     <div className="w-[1px] rounded-full bg-grey-100" />
                     <div className="flex flex-col">
-                      <label className="text-16 font-500">거점지</label>
+                      <label className="text-16 font-500">정류장</label>
                       <Controller
                         control={control}
                         name={`shuttleRouteHubsToDestination.${index}` as const}
@@ -521,7 +521,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                     <h5 className="my-auto text-16 font-500">{index + 1}</h5>
                     <div className="w-[1px] rounded-full bg-grey-100" />
                     <div className="flex flex-col">
-                      <label className="text-16 font-500">거점지</label>
+                      <label className="text-16 font-500">정류장</label>
                       <Controller
                         control={control}
                         name={

@@ -39,7 +39,7 @@ const EditHubPage = ({
 
   return (
     <>
-      <Heading>거점지 수정</Heading>
+      <Heading>장소 수정하기</Heading>
       {(isRegionsPending || isHubPending) && <div>Loading...</div>}
       {(isRegionsError || isHubError) && (
         <div>Error: {regionsError?.message || hubError?.message}</div>
@@ -88,11 +88,11 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
 
   const { mutate: putHub } = usePutRegionHub({
     onSuccess: () => {
-      alert('거점지가 수정되었습니다.');
+      alert('장소가 수정되었습니다.');
       router.push('/locations');
     },
     onError: (error) => {
-      alert(`거점지 수정에 실패했습니다.`);
+      alert(`장소 수정에 실패했습니다.`);
       console.error(error);
     },
   });
@@ -102,8 +102,8 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
       const target = regions?.find((r) => r.regionId === data.regionId);
       const confirmMessage =
         recommended?.regionId === data.regionId || false
-          ? `거점지를 수정하시겠습니까?`
-          : `선택한 주소 "${data.coord.address}"가 지역 "${target ? `${target.provinceFullName} ${target.cityFullName}` : '<오류: 알수 없는 위치>'}에 등록됩니다. 거점지를 수정하시겠습니까?`;
+          ? `장소를 수정하시겠습니까?`
+          : `선택한 주소 "${data.coord.address}"가 지역 "${target ? `${target.provinceFullName} ${target.cityFullName}` : '<오류: 알수 없는 위치>'}에 등록됩니다. 장소를 수정하시겠습니까?`;
       if (confirm(confirmMessage)) {
         putHub({
           regionId: data.regionId,
@@ -119,7 +119,7 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
     <main>
       <Form onSubmit={handleSubmit(onSubmit)} method="post">
         <Form.section>
-          <Form.label required>거점지 이름</Form.label>
+          <Form.label required>장소 이름</Form.label>
           <Controller
             control={control}
             name={`name`}

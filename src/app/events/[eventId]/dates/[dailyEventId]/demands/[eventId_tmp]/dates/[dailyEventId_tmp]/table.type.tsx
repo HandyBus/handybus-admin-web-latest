@@ -16,7 +16,7 @@ export const columnsFrom = [
   }),
   columnHelper.accessor('regionHubName', {
     id: 'regionHubName',
-    header: '귀가행 지역 거점지 이름',
+    header: '귀가행 정류장 이름',
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('totalCount', {
@@ -49,7 +49,7 @@ export const columnsTo = [
   }),
   columnHelper.accessor('regionHubName', {
     id: 'regionHubName',
-    header: '목적지행 지역 거점지 이름',
+    header: '목적지행 정류장 이름',
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('totalCount', {

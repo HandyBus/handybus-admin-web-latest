@@ -5,7 +5,10 @@ import BlueLink from '@/components/link/BlueLink';
 import BaseTable from '@/components/table/BaseTable';
 import Heading from '@/components/text/Heading';
 import useTable from '@/hooks/useTable';
-import { useGetShuttleBuses } from '@/services/shuttleOperation.service';
+import {
+  useGetReservationsWithPagination,
+  useGetShuttleBuses,
+} from '@/services/shuttleOperation.service';
 import { useMemo } from 'react';
 
 interface Props {
@@ -15,29 +18,63 @@ interface Props {
 }
 
 const Buses = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
-  const {
-    data,
-    isPending: isBusPending,
-    isError: isBusError,
-    error: busError,
-  } = useGetShuttleBuses(eventId, dailyEventId, shuttleRouteId);
+  const { data: reservations, isLoading: isReservationLoading } =
+    useGetReservationsWithPagination({
+      eventId,
+      dailyEventId,
+      shuttleRouteId,
+      reservationStatus: 'COMPLETE_PAYMENT',
+    });
 
-  const buses = useMemo(() => {
-    if (!data) {
+  const { data: buses, isLoading: isBusLoading } = useGetShuttleBuses(
+    eventId,
+    dailyEventId,
+    shuttleRouteId,
+  );
+
+  const reservationsOfHandy = useMemo(() => {
+    if (!reservations) {
+      return null;
+    }
+    const allReservations = reservations.pages?.[0]?.reservations ?? [];
+    return allReservations
+      .filter(
+        (reservation) =>
+          reservation.handyStatus === 'ACCEPTED' &&
+          reservation.shuttleBusId !== null,
+      )
+      .map((reservation) => ({
+        shuttleBusId: reservation.shuttleBusId,
+        handyPhoneNumber: reservation.userPhoneNumber,
+        handyNickname: reservation.userNickname,
+      }));
+  }, [reservations]);
+
+  const parsedBuses = useMemo(() => {
+    if (!buses || !reservationsOfHandy) {
       return [];
     }
-    return data.map((bus) => ({
-      ...bus,
-      eventId: eventId,
-      dailyEventId: dailyEventId,
-      shuttleRouteId: shuttleRouteId,
-    }));
-  }, [data, eventId, dailyEventId, shuttleRouteId]);
+    return buses.map((bus) => {
+      const reservationOfHandy = reservationsOfHandy.find(
+        (reservation) => reservation.shuttleBusId === bus.shuttleBusId,
+      );
+      return {
+        ...bus,
+        eventId: eventId,
+        dailyEventId: dailyEventId,
+        shuttleRouteId: shuttleRouteId,
+        handyPhoneNumber: reservationOfHandy?.handyPhoneNumber,
+        handyNickname: reservationOfHandy?.handyNickname,
+      };
+    });
+  }, [buses, eventId, dailyEventId, shuttleRouteId, reservationsOfHandy]);
 
   const busTable = useTable({
-    data: buses,
+    data: parsedBuses,
     columns: busColumns,
   });
+
+  const isLoading = isBusLoading || isReservationLoading;
 
   return (
     <>
@@ -47,8 +84,7 @@ const Buses = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
           추가하기
         </BlueLink>
       </Heading.h2>
-      {isBusPending && <div>Loading...</div>}
-      {isBusError && <div>Error: {busError.message}</div>}
+      {isLoading && <div>Loading...</div>}
       {buses && <BaseTable table={busTable} />}
     </>
   );

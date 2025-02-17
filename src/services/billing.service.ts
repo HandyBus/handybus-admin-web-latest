@@ -8,6 +8,12 @@ import {
 import { authInstance } from './config';
 import { silentParse } from '@/utils/parse.util';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  DashboardOptions,
+  TotalSalesCountsReadModelSchema,
+} from '@/types/dashboard.type';
+import dayjs from 'dayjs';
+import { toSearchParamString } from '@/utils/searchParam.util';
 
 // ----- 조회 -----
 
@@ -23,6 +29,36 @@ export const useGetCoupons = () => {
     queryKey: ['coupon'],
     queryFn: getCoupons,
     initialData: [],
+  });
+};
+
+export const getTotalSalesCounts = async ({
+  baseDate = dayjs().tz().toISOString(),
+  totalRangeDate = 6,
+  intervalDays = 1,
+}: Partial<DashboardOptions> = {}) => {
+  const res = await authInstance.get(
+    `/v2/billing/admin/payments/all/total-sales${toSearchParamString(
+      {
+        baseDate,
+        totalRangeDate,
+        intervalDays,
+      },
+      '?',
+    )}`,
+    {
+      shape: {
+        totalSales: TotalSalesCountsReadModelSchema.array(),
+      },
+    },
+  );
+  return res.totalSales;
+};
+
+export const useGetTotalSalesCounts = (options?: Partial<DashboardOptions>) => {
+  return useQuery({
+    queryKey: ['sales', 'count', options],
+    queryFn: () => getTotalSalesCounts(options),
   });
 };
 

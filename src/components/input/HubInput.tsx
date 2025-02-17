@@ -82,8 +82,8 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
               : isLoading
                 ? '로딩 중…'
                 : regionHubs?.length === 0
-                  ? '거점지가 없습니다'
-                  : '거점지 선택'
+                  ? '장소가 없습니다'
+                  : '장소 선택'
           }
           defaultValue={null}
           displayValue={(hub: null | RegionHub) => hub?.name ?? ''}

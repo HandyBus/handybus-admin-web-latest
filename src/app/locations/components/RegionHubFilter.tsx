@@ -47,7 +47,7 @@ const RegionHubFilter = ({ option, dispatch }: Props) => {
             />
           </article>
           <article>
-            <Label>거점지 이름</Label>
+            <Label>장소 이름</Label>
             <DebouncedInput
               value={option.name ?? ''}
               setValue={(value) =>
