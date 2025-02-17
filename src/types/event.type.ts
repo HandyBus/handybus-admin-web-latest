@@ -42,6 +42,8 @@ export const EventsViewEntitySchema = z
     eventLocationLongitude: z.number(),
     eventArtists: ArtistsViewEntitySchema.array().nullable(),
     dailyEvents: EventDailyShuttlesInEventsViewEntitySchema.array(),
+    startDate: z.string(),
+    endDate: z.string(),
     createdAt: z.string(),
     updatedAt: z.string(),
   })
