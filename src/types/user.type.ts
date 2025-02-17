@@ -80,12 +80,3 @@ export const UsersViewEntitySchema = z
   })
   .strict();
 export type UsersViewEntity = z.infer<typeof UsersViewEntitySchema>;
-
-export const TotalUserCountsReadModelSchema = z.object({
-  date: z.string(),
-  intervalUserCount: z.number(),
-  cumulativeUserCount: z.number(),
-});
-export type TotalUserCountsReadModel = z.infer<
-  typeof TotalUserCountsReadModelSchema
->;

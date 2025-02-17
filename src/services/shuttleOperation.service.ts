@@ -58,6 +58,13 @@ import {
   DEFAULT_MAX_NODES,
   DEFAULT_MIN_COUNT,
 } from '@/constants/common';
+import dayjs from 'dayjs';
+import {
+  DashboardOptions,
+  TotalDemandCountsReadModelSchema,
+  TotalReservationPassengerCountsReadModelSchema,
+  TotalReviewCountsReadModelSchema,
+} from '@/types/dashboard.type';
 
 // ----- 조회 -----
 
@@ -495,6 +502,110 @@ export const useGetReservation = (reservationId: string) => {
   return useQuery({
     queryKey: ['reservation', reservationId],
     queryFn: () => getReservation(reservationId),
+  });
+};
+
+export const getTotalDemandCounts = async ({
+  baseDate = dayjs().tz().toISOString(),
+  totalRangeDate = 6,
+  intervalDays = 1,
+}: Partial<DashboardOptions> = {}) => {
+  const res = await authInstance.get(
+    `/v2/shuttle-operation/admin/demands/all/total-counts${toSearchParamString(
+      {
+        baseDate,
+        totalRangeDate,
+        intervalDays,
+      },
+      '?',
+    )}`,
+    {
+      shape: {
+        totalDemandCounts: TotalDemandCountsReadModelSchema.array(),
+      },
+    },
+  );
+  return res.totalDemandCounts;
+};
+
+export const useGetTotalDemandCounts = (
+  options?: Partial<DashboardOptions>,
+) => {
+  return useQuery({
+    queryKey: ['demand', 'count', options],
+    queryFn: () => getTotalDemandCounts(options),
+  });
+};
+
+interface GetTotalReservationCountsOptions extends DashboardOptions {
+  shuttleRouteId: string; // 복수 가능
+  reservationStatus: ReservationStatus;
+}
+
+export const getTotalReservationCounts = async ({
+  baseDate = dayjs().tz().toISOString(),
+  totalRangeDate = 6,
+  intervalDays = 1,
+  ...options
+}: Partial<GetTotalReservationCountsOptions> = {}) => {
+  const res = await authInstance.get(
+    `/v2/shuttle-operation/admin/reservations/all/total-counts${toSearchParamString(
+      {
+        baseDate,
+        totalRangeDate,
+        intervalDays,
+        ...options,
+      },
+      '?',
+    )}`,
+    {
+      shape: {
+        totalReservationPassengerCounts:
+          TotalReservationPassengerCountsReadModelSchema.array(),
+      },
+    },
+  );
+  return res.totalReservationPassengerCounts;
+};
+
+export const useGetTotalReservationCounts = (
+  options?: Partial<GetTotalReservationCountsOptions>,
+) => {
+  return useQuery({
+    queryKey: ['reservation', 'count', options],
+    queryFn: () => getTotalReservationCounts(options),
+  });
+};
+
+export const getTotalReviewCounts = async ({
+  baseDate = dayjs().tz().toISOString(),
+  totalRangeDate = 6,
+  intervalDays = 1,
+}: Partial<DashboardOptions> = {}) => {
+  const res = await authInstance.get(
+    `/v2/shuttle-operation/admin/reviews/all/total-counts${toSearchParamString(
+      {
+        baseDate,
+        totalRangeDate,
+        intervalDays,
+      },
+      '?',
+    )}`,
+    {
+      shape: {
+        totalReviewCounts: TotalReviewCountsReadModelSchema.array(),
+      },
+    },
+  );
+  return res.totalReviewCounts;
+};
+
+export const useGetTotalReviewCounts = (
+  options?: Partial<DashboardOptions>,
+) => {
+  return useQuery({
+    queryKey: ['review', 'count', options],
+    queryFn: () => getTotalReviewCounts(options),
   });
 };
 

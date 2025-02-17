@@ -9,7 +9,6 @@ import {
   AgeRange,
   AuthChannelType,
   Gender,
-  TotalUserCountsReadModelSchema,
   UserStatsReadModel,
   UsersViewEntitySchema,
 } from '@/types/user.type';
@@ -31,6 +30,10 @@ import {
 import { ReviewsViewEntitySchema } from '@/types/reviews.type';
 import { ActiveStatus } from '@/types/common.type';
 import dayjs from 'dayjs';
+import {
+  DashboardOptions,
+  TotalUserCountsReadModelSchema,
+} from '@/types/dashboard.type';
 
 export interface GetUsersOptions {
   nickname?: string;
@@ -253,17 +256,11 @@ export const useGetUserReviews = (userId: string) => {
   });
 };
 
-export interface GetUserCountsOptions {
-  baseDate: string;
-  totalRangeDate: number;
-  intervalDays: number;
-}
-
-export const getUserCounts = async ({
+export const getTotalUserCounts = async ({
   baseDate = dayjs().tz().toISOString(),
   totalRangeDate = 6,
   intervalDays = 1,
-}: Partial<GetUserCountsOptions> = {}) => {
+}: Partial<DashboardOptions> = {}) => {
   const res = await authInstance.get(
     `/v2/user-management/admin/users/all/total-counts${toSearchParamString(
       {
@@ -282,9 +279,9 @@ export const getUserCounts = async ({
   return res.totalUserCounts;
 };
 
-export const useGetUserCounts = (options?: Partial<GetUserCountsOptions>) => {
+export const useGetTotalUserCounts = (options?: Partial<DashboardOptions>) => {
   return useQuery({
-    queryKey: ['user', 'counts', options],
-    queryFn: () => getUserCounts(options),
+    queryKey: ['user', 'count', options],
+    queryFn: () => getTotalUserCounts(options),
   });
 };
