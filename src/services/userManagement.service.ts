@@ -29,6 +29,11 @@ import {
 } from '@/types/reservation.type';
 import { ReviewsViewEntitySchema } from '@/types/reviews.type';
 import { ActiveStatus } from '@/types/common.type';
+import dayjs from 'dayjs';
+import {
+  DashboardOptions,
+  TotalUserCountsReadModelSchema,
+} from '@/types/dashboard.type';
 
 export interface GetUsersOptions {
   nickname?: string;
@@ -248,5 +253,35 @@ export const useGetUserReviews = (userId: string) => {
   return useQuery({
     queryKey: ['user', userId, 'review'],
     queryFn: () => getUserReviews(userId),
+  });
+};
+
+export const getTotalUserCounts = async ({
+  baseDate = dayjs().tz().toISOString(),
+  totalRangeDate = 6,
+  intervalDays = 1,
+}: Partial<DashboardOptions> = {}) => {
+  const res = await authInstance.get(
+    `/v2/user-management/admin/users/all/total-counts${toSearchParamString(
+      {
+        baseDate,
+        totalRangeDate,
+        intervalDays,
+      },
+      '?',
+    )}`,
+    {
+      shape: {
+        totalUserCounts: TotalUserCountsReadModelSchema.array(),
+      },
+    },
+  );
+  return res.totalUserCounts;
+};
+
+export const useGetTotalUserCounts = (options?: Partial<DashboardOptions>) => {
+  return useQuery({
+    queryKey: ['user', 'count', options],
+    queryFn: () => getTotalUserCounts(options),
   });
 };
