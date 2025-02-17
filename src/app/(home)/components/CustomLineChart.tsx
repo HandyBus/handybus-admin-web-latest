@@ -22,6 +22,8 @@ const LABEL_MAP: { [key: string]: string } = {
   cumulativeGrossSales: '누적 판매액',
   dailyDiscountedSales: '일일 할인 적용 판매액',
   cumulativeDiscountedSales: '누적 할인 적용 판매액',
+  intervalReviewCount: '일일 리뷰',
+  cumulativeReviewCount: '누적 리뷰',
 };
 
 interface Props<T> {
@@ -43,7 +45,7 @@ const CustomLineChart = <T,>({ data, dataKey }: Props<T>) => {
         fontSize={10}
         tickLine={false}
         axisLine={false}
-        interval={0}
+        // interval={0}
       />
       <YAxis
         fontSize={10}

@@ -4,9 +4,20 @@ import Heading from '@/components/text/Heading';
 import { dayjsTz } from '@/utils/date.util';
 import CustomLineChart from './CustomLineChart';
 import { useGetTotalDemandCounts } from '@/services/shuttleOperation.service';
+import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
+import { TotalDemandCountsReadModel } from '@/types/dashboard.type';
 
-const DemandCountChart = () => {
-  const { data: totalDemandCounts } = useGetTotalDemandCounts();
+interface Props {
+  options: CountFilterOptions;
+}
+
+const DemandCountChart = ({ options }: Props) => {
+  const { countType, range } = options;
+  const { intervalDays, totalRangeDate } = getInterval(range);
+  const { data: totalDemandCounts } = useGetTotalDemandCounts({
+    totalRangeDate,
+    intervalDays,
+  });
 
   const parsedTotalDemandCounts = totalDemandCounts?.map((item) => ({
     ...item,
@@ -16,15 +27,15 @@ const DemandCountChart = () => {
     }),
   }));
 
+  const dataKey: (keyof TotalDemandCountsReadModel)[] =
+    countType === '일일' ? ['intervalDemandCount'] : ['cumulativeDemandCount'];
+
   return (
     <article className="max-w-[412px] rounded-[4px] border border-grey-200 bg-white p-4">
       <Heading.h4 className="text-14 font-600 text-grey-900">
         수요조사
       </Heading.h4>
-      <CustomLineChart
-        data={parsedTotalDemandCounts ?? []}
-        dataKey={['cumulativeDemandCount']}
-      />
+      <CustomLineChart data={parsedTotalDemandCounts ?? []} dataKey={dataKey} />
     </article>
   );
 };
