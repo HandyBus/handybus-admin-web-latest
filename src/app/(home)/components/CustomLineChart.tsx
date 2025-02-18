@@ -12,8 +12,8 @@ import {
 const STROKE_COLORS = ['#6366f1', '#f59e0b', '#14b8a6'];
 
 const LABEL_MAP: { [key: string]: string } = {
-  intervalUserCount: '일일 유저',
-  cumulativeUserCount: '누적 유저',
+  intervalUserCount: '일일 가입자',
+  cumulativeUserCount: '누적 가입자',
   intervalDemandCount: '일일 수요조사',
   cumulativeDemandCount: '누적 수요조사',
   intervalReservationPassengerCount: '일일 예약 탑승객',
@@ -40,13 +40,7 @@ const CustomLineChart = <T,>({ data, dataKey }: Props<T>) => {
       margin={{ left: -10, right: 20 }}
     >
       <CartesianGrid stroke="#e5e7eb" vertical={false} />
-      <XAxis
-        dataKey="date"
-        fontSize={10}
-        tickLine={false}
-        axisLine={false}
-        // interval={0}
-      />
+      <XAxis dataKey="date" fontSize={10} tickLine={false} axisLine={false} />
       <YAxis
         fontSize={10}
         tickLine={false}
