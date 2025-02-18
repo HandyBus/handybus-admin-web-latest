@@ -257,7 +257,7 @@ export const useGetUserReviews = (userId: string) => {
 };
 
 export const getTotalUserCounts = async ({
-  baseDate = dayjs().tz().toISOString(),
+  baseDate = dayjs().tz().endOf('day').toISOString(),
   totalRangeDate = 6,
   intervalDays = 1,
 }: Partial<DashboardOptions> = {}) => {
