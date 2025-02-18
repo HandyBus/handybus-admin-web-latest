@@ -10,10 +10,16 @@ import { columns } from './table.type';
 import { PAGINATION_LIMIT } from '@/constants/config';
 import RegionHubFilter from './components/RegionHubFilter';
 import useRegionHubFilter from './hooks/useRegionHubFilter';
+import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 
 const Page = () => {
   const [option, dispatch] = useRegionHubFilter();
-  const { data: regionHubs } = useGetRegionHubs({
+  const {
+    data: regionHubs,
+    fetchNextPage,
+    isFetching,
+    hasNextPage,
+  } = useGetRegionHubs({
     options: {
       ...option,
       page: undefined,
@@ -32,6 +38,12 @@ const Page = () => {
     manualFiltering: true,
   });
 
+  const { InfiniteScrollTrigger } = useInfiniteScroll({
+    fetchNextPage,
+    isLoading: isFetching,
+    hasNextPage,
+  });
+
   return (
     <main>
       <Heading className="flex items-baseline gap-20">
@@ -43,6 +55,7 @@ const Page = () => {
       <section className="flex flex-col">
         <RegionHubFilter option={option} dispatch={dispatch} />
         <BaseTable table={table} />
+        <InfiniteScrollTrigger />
       </section>
     </main>
   );
