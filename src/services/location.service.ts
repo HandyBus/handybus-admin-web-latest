@@ -45,7 +45,9 @@ export interface GetRegionHubsOptionsWithPagination
   limit?: number;
 }
 
-export const getRegionHubs = async (options?: GetRegionHubsOptions) => {
+export const getRegionHubs = async (
+  options?: GetRegionHubsOptionsWithPagination,
+) => {
   let url = '';
   if (options?.regionId) {
     url = `/v2/location/admin/regions/${options.regionId}/hubs`;
@@ -71,7 +73,8 @@ export const useGetRegionHubs = ({
 }) => {
   return useInfiniteQuery({
     queryKey: ['regionHub', options],
-    queryFn: () => getRegionHubs(options),
+    queryFn: ({ pageParam }: { pageParam: string | undefined }) =>
+      getRegionHubs({ ...options, page: pageParam }),
     initialPageParam: undefined,
     initialData: { pages: [], pageParams: [] },
     getNextPageParam: (lastPage) => {

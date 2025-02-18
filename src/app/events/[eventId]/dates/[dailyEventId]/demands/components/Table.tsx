@@ -73,11 +73,26 @@ const Table = ({ eventId, dailyEventId }: Props) => {
     });
 
     const sortedDemand = newDemand.sort((a, b) => {
+      const isACustom = !Boolean(a?.regionHubId);
+      const isBCustom = !Boolean(b?.regionHubId);
+
+      if (isACustom && isBCustom) {
+        return a?.regionHubName?.localeCompare(b?.regionHubName ?? '') ?? 0;
+      }
+      if (isACustom) {
+        return 1;
+      }
+      if (isBCustom) {
+        return -1;
+      }
+
       const aCount =
         a.fromDestinationCount + a.toDestinationCount + a.roundTripCount;
       const bCount =
         b.fromDestinationCount + b.toDestinationCount + b.roundTripCount;
-      return bCount - aCount;
+      return bCount - aCount === 0
+        ? (a?.regionHubName?.localeCompare(b?.regionHubName ?? '') ?? 0)
+        : bCount - aCount;
     });
 
     return sortedDemand;
