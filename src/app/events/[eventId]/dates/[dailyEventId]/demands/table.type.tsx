@@ -10,9 +10,10 @@ export const columns = [
       const isCustom = Boolean(!info.row.original?.regionHubId);
       const name = info.getValue();
       return (
-        <span className={`${isCustom && 'text-green-500'}`}>
-          {name} {isCustom && '(기타)'}
-        </span>
+        <p className={`flex gap-12 ${isCustom && 'text-green-500'}`}>
+          {isCustom && <span className="opacity-70">기타</span>}
+          {name}
+        </p>
       );
     },
   }),
