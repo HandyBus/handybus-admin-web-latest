@@ -506,7 +506,7 @@ export const useGetReservation = (reservationId: string) => {
 };
 
 export const getTotalDemandCounts = async ({
-  baseDate = dayjs().tz().toISOString(),
+  baseDate = dayjs().tz().endOf('day').toISOString(),
   totalRangeDate = 6,
   intervalDays = 1,
 }: Partial<DashboardOptions> = {}) => {
@@ -543,7 +543,7 @@ interface GetTotalReservationCountsOptions extends DashboardOptions {
 }
 
 export const getTotalReservationCounts = async ({
-  baseDate = dayjs().tz().toISOString(),
+  baseDate = dayjs().tz().endOf('day').toISOString(),
   totalRangeDate = 6,
   intervalDays = 1,
   ...options
@@ -578,7 +578,7 @@ export const useGetTotalReservationCounts = (
 };
 
 export const getTotalReviewCounts = async ({
-  baseDate = dayjs().tz().toISOString(),
+  baseDate = dayjs().tz().endOf('day').toISOString(),
   totalRangeDate = 6,
   intervalDays = 1,
 }: Partial<DashboardOptions> = {}) => {
