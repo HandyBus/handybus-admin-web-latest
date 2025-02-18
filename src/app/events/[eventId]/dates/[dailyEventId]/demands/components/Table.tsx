@@ -52,22 +52,35 @@ const Table = ({ eventId, dailyEventId }: Props) => {
     if (!demandTo || !demandFrom) {
       return [];
     }
-    const newDemand = demandTo
-      .map((item) => ({
+    const newDemandTo = demandTo.map((item) => ({
+      ...item,
+      fromDestinationCount:
+        demandFrom.find((demand) => demand.regionHubName === item.regionHubName)
+          ?.fromDestinationCount ?? 0,
+    }));
+
+    const newDemand = demandFrom.map((item) => {
+      const isAdded = newDemandTo.find(
+        (demand) => demand.regionHubName === item.regionHubName,
+      );
+      if (isAdded) {
+        return item;
+      }
+      return {
         ...item,
-        fromDestinationCount:
-          demandFrom.find(
-            (demand) => demand.regionHubName === item.regionHubName,
-          )?.fromDestinationCount ?? 0,
-      }))
-      .toSorted((a, b) => {
-        const aCount =
-          a.fromDestinationCount + a.toDestinationCount + a.roundTripCount;
-        const bCount =
-          b.fromDestinationCount + b.toDestinationCount + b.roundTripCount;
-        return bCount - aCount;
-      });
-    return newDemand;
+        toDestinationCount: 0,
+      };
+    });
+
+    const sortedDemand = newDemand.sort((a, b) => {
+      const aCount =
+        a.fromDestinationCount + a.toDestinationCount + a.roundTripCount;
+      const bCount =
+        b.fromDestinationCount + b.toDestinationCount + b.roundTripCount;
+      return bCount - aCount;
+    });
+
+    return sortedDemand;
   }, [demandTo, demandFrom]);
 
   const table = useTable({
