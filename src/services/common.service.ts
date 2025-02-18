@@ -10,7 +10,7 @@ export const getPresignedUrl = async (
   extension: Extension,
 ) => {
   return await authInstance.get(
-    `/v1/common/image/presigned-url?key=${key}&extension=${extension}`,
+    `/v1/core/admin/image/presigned-url?key=${key}&extension=${extension}`,
     {
       shape: {
         presignedUrl: z.string().url(),
