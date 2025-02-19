@@ -9,11 +9,12 @@ const Nav = () => {
         <LogoIcon width={40} height={40} viewBox="0 0 145 144" />
       </Link>
       <NavItem href="/">홈</NavItem>
-      <NavItem href="/users">유저 관리</NavItem>
-      <NavItem href="/events">행사 관리</NavItem>
-      <NavItem href="/reservations">예약 관리</NavItem>
+      <NavItem href="/users">유저</NavItem>
+      <NavItem href="/events">행사</NavItem>
+      <NavItem href="/reservations">예약</NavItem>
       <NavItem href="/locations">장소</NavItem>
       <NavItem href="/coupons">쿠폰</NavItem>
+      <NavItem href="/banners">배너</NavItem>
       <Link
         href="/login"
         className="ml-auto block text-14 font-500 text-grey-200 underline underline-offset-2"

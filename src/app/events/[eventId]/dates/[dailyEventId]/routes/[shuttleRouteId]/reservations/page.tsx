@@ -36,7 +36,7 @@ const Page = ({ params }: Props) => {
 
   return (
     <main>
-      <Heading>노선별 예약 관리</Heading>
+      <Heading>노선별 예약</Heading>
       <Callout>
         <List>
           <List.item title="행사명">{eventName}</List.item>
