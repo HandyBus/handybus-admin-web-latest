@@ -52,7 +52,7 @@ const DashboardCard = ({ title, href }: DashboardCardProps) => {
   return (
     <Link
       href={href}
-      className="group relative h-188 w-188 rounded-[8px] border-[1.5px] border-grey-200 transition-all hover:bg-grey-100"
+      className="group relative flex h-188 w-188 items-center justify-center rounded-[8px] border border-grey-200 bg-white transition-all hover:bg-grey-50"
     >
       <span className="font-600">{title}</span>
       <ArrowRight
