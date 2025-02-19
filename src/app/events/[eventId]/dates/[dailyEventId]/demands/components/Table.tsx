@@ -77,7 +77,21 @@ const Table = ({ eventId, dailyEventId }: Props) => {
       const isBCustom = !Boolean(b?.regionHubId);
 
       if (isACustom && isBCustom) {
-        return a?.regionHubName?.localeCompare(b?.regionHubName ?? '') ?? 0;
+        const provinceCompare = (a.provinceShortName ?? '').localeCompare(
+          b.provinceShortName ?? '',
+        );
+        if (provinceCompare !== 0) {
+          return provinceCompare;
+        }
+
+        const cityCompare = (a.cityShortName ?? '').localeCompare(
+          b.cityShortName ?? '',
+        );
+        if (cityCompare !== 0) {
+          return cityCompare;
+        }
+
+        return (a.regionHubName ?? '').localeCompare(b.regionHubName ?? '');
       }
       if (isACustom) {
         return 1;
@@ -86,17 +100,13 @@ const Table = ({ eventId, dailyEventId }: Props) => {
         return -1;
       }
 
-      const aCount =
-        a.fromDestinationCount + a.toDestinationCount + a.roundTripCount;
-      const bCount =
-        b.fromDestinationCount + b.toDestinationCount + b.roundTripCount;
-      return bCount - aCount === 0
-        ? (a?.regionHubName?.localeCompare(b?.regionHubName ?? '') ?? 0)
-        : bCount - aCount;
+      return (a?.regionHubName ?? '').localeCompare(b?.regionHubName ?? '');
     });
 
     return sortedDemand;
   }, [demandTo, demandFrom]);
+
+  console.log(joinedDemand);
 
   const table = useTable({
     data: joinedDemand,
