@@ -115,7 +115,7 @@ const BannerEditForm = ({
                     )}
                   />
                 </div>
-                <div className="flex w-full flex-col gap-8">
+                <div className="flex w-full flex-col justify-center gap-8">
                   <Form.label>배너 설명</Form.label>
                   <Controller
                     control={control}
