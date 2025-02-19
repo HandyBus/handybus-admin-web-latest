@@ -9,6 +9,8 @@ import SalesCountChart from './components/SalesCountChart';
 import ReviewCountChart from './components/ReviewCountChart';
 import useCountFilter from './hooks/useCountFilter';
 import CountFilter from './components/CountFilter';
+import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 const Page = () => {
   const [countFilter, dispatchCountFilter] = useCountFilter();
@@ -16,13 +18,17 @@ const Page = () => {
   return (
     <main className="grow">
       <Heading>통계 대시보드</Heading>
-      <section className="mx-auto w-full max-w-[1300px] p-12">
-        <Heading.h3 className="bg-white font-600">성과 통계</Heading.h3>
+      <section className="flex gap-20 pb-12">
+        <DashboardCard title="유저 통계" href="/statistics/users" />
+        <DashboardCard title="수요조사 통계" href="/statistics/demands" />
+      </section>
+      <section>
+        <Heading.h2>성과 통계</Heading.h2>
         <CountFilter
           countFilter={countFilter}
           dispatchCountFilter={dispatchCountFilter}
         />
-        <div className="flex w-full flex-wrap justify-between gap-8">
+        <div className="mx-auto flex w-full max-w-[1300px] flex-wrap justify-between gap-8">
           <UserCountChart options={countFilter} />
           <DemandCountChart options={countFilter} />
           <ReservationPassengerCountChart options={countFilter} />
@@ -36,3 +42,24 @@ const Page = () => {
 };
 
 export default Page;
+
+interface DashboardCardProps {
+  title: string;
+  href: string;
+}
+
+const DashboardCard = ({ title, href }: DashboardCardProps) => {
+  return (
+    <Link
+      href={href}
+      className="group relative h-188 w-188 rounded-[8px] border-[1.5px] border-grey-200 transition-all hover:bg-grey-100"
+    >
+      <span className="font-600">{title}</span>
+      <ArrowRight
+        className="absolute bottom-4 right-4 text-grey-400"
+        width={20}
+        height={20}
+      />
+    </Link>
+  );
+};
