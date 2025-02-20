@@ -1,3 +1,5 @@
+'use client';
+
 import Callout from '@/components/text/Callout';
 import Heading from '@/components/text/Heading';
 import { AdminHandleBannerRequestBanners } from '@/types/banner.type';
@@ -6,28 +8,36 @@ import Form from '@/components/form/Form';
 import Input from '@/components/input/Input';
 import { ArrowDownIcon, TrashIcon } from 'lucide-react';
 import { ArrowUpIcon } from 'lucide-react';
-import BannerImageFileInput from './BannerImageFileInput';
+import BannerImageFileInput from '../components/BannerImageFileInput';
+import { usePutBanner } from '@/services/core.service';
+import { useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 const EDIT_GUIDE = `배너 추가/삭제/수정 및 순서를 변경할 수 있습니다.`;
 
-interface BannerEditFormProps {
+interface Props {
   banners: AdminHandleBannerRequestBanners[];
-  setIsUpdating: (isUpdating: boolean) => void;
-  isPending: boolean;
-  updateBanner: (banners: AdminHandleBannerRequestBanners[]) => void;
 }
 
-const BannerEditForm = ({
-  banners,
-  setIsUpdating,
-  isPending,
-  updateBanner,
-}: BannerEditFormProps) => {
+const BannerEditForm = ({ banners }: Props) => {
+  const queryClient = useQueryClient();
+  const { push } = useRouter();
+
+  const { mutate: putBanner } = usePutBanner({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['banners'] });
+      alert('배너 수정이 완료되었습니다.');
+    },
+    onError: (error) => {
+      console.error(error);
+      alert('배너 수정에 실패했습니다.');
+    },
+  });
+
   const {
     control,
     getValues,
     setValue,
-    reset,
     formState: { errors },
     handleSubmit,
   } = useForm<{
@@ -58,18 +68,13 @@ const BannerEditForm = ({
     setValue(`banners.${newIndex}.sequence`, currentSequence);
   };
 
-  const handleOnCancel = () => {
-    setIsUpdating(false);
-    reset();
-  };
-
   const handleOnUpdate = async () => {
     const bannersToUpdate = getValues('banners').map((banner, index) => ({
       ...banner,
       sequence: index + 1,
     }));
-    updateBanner(bannersToUpdate);
-    setIsUpdating(false);
+    putBanner(bannersToUpdate);
+    push('/banners');
   };
 
   return (
@@ -80,17 +85,17 @@ const BannerEditForm = ({
         <div className="flex justify-end gap-4">
           <button
             type="button"
-            className="w-[100px] rounded-3xl bg-grey-100 p-12"
-            onClick={handleOnCancel}
+            className="w-[150px] self-center rounded-full bg-primary-700 p-12 text-white"
+            onClick={() => {
+              appendBanner({
+                title: '',
+                imageUrl: '',
+                linkUrl: '',
+                sequence: bannerFields.length + 1,
+              });
+            }}
           >
-            취소
-          </button>
-          <button
-            type="submit"
-            className="w-[100px] rounded-3xl bg-primary-700 p-12 text-white"
-            disabled={isPending}
-          >
-            {isPending ? '처리중...' : '확인'}
+            배너 항목 추가
           </button>
         </div>
         {bannerFields.map(
@@ -194,20 +199,7 @@ const BannerEditForm = ({
             </Form.section>
           ),
         )}
-        <button
-          type="button"
-          className="w-[150px] self-center rounded-full bg-primary-700 p-12 text-white"
-          onClick={() => {
-            appendBanner({
-              title: '',
-              imageUrl: '',
-              linkUrl: '',
-              sequence: bannerFields.length + 1,
-            });
-          }}
-        >
-          배너 추가
-        </button>
+        <Form.submitButton>수정하기</Form.submitButton>
       </Form>
     </main>
   );

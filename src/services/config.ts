@@ -55,7 +55,7 @@ class Instance {
     const res = await fetch(new URL(url, this.baseUrl).toString(), config);
 
     // response가 없는 경우
-    if (res.statusText === 'No Content') {
+    if (res.headers.get('content-length') === '0') {
       if (res.status >= 400) {
         throw new CustomError(res.status, 'No Content');
       }

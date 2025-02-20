@@ -40,17 +40,14 @@ export const useGetBanners = () => {
   });
 };
 
-export const updateBanner = async (
-  banners: AdminHandleBannerRequestBanners[],
-) => {
+export const putBanner = async (banners: AdminHandleBannerRequestBanners[]) => {
   await authInstance.put('/v1/core/admin/banners', {
     banners: banners,
   });
+  return true;
 };
 
-// authInstacne는 빈 응답을 JSON으로 파싱하려고 할 때 에러가 발생합니다.
-// 해당 API의 response가 빈 배열로 옵니다. 때문에 이를 예외처리하였습니다.
-export const useUpdateBanner = ({
+export const usePutBanner = ({
   onSuccess,
   onError,
 }: {
@@ -58,21 +55,7 @@ export const useUpdateBanner = ({
   onError?: (error: unknown) => void;
 }) => {
   return useMutation({
-    mutationFn: async (banners: AdminHandleBannerRequestBanners[]) => {
-      try {
-        await authInstance.put('/v1/core/admin/banners', {
-          banners: banners,
-        });
-        return true;
-      } catch (error) {
-        if (
-          error instanceof Error &&
-          error.message.includes('Unexpected end of JSON input')
-        )
-          return true;
-        throw error;
-      }
-    },
+    mutationFn: putBanner,
     onSuccess,
     onError,
   });
