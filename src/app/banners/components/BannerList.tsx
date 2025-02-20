@@ -4,6 +4,7 @@ import Input from '@/components/input/Input';
 import Image from 'next/image';
 import Form from '@/components/form/Form';
 import Heading from '@/components/text/Heading';
+import BlueButton from '@/components/link/BlueButton';
 const VIEW_GUIDE =
   '배너 목록을 조회합니다. 편집하기 버튼을 눌러서 배너를 편집할 수 있습니다.';
 
@@ -60,7 +61,17 @@ const BannerList = ({
                   className="w-full"
                   placeholder="배너 설명을 입력해주세요."
                 />
-                <Form.label>관련 링크</Form.label>
+                <Form.label>
+                  관련 링크{'  '}
+                  <BlueButton
+                    onClick={() => {
+                      window.open(item.linkUrl, '_blank', 'noreferrer');
+                    }}
+                    className="text-[14px] font-400"
+                  >
+                    바로가기
+                  </BlueButton>
+                </Form.label>
                 <Input
                   value={item.linkUrl}
                   disabled={true}
