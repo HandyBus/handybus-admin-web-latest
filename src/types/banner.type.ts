@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AdminHandleBannerRequestBanners = z.object({
+export const AdminHandleBannerRequestBannersSchema = z.object({
   id: z.string().optional(),
   title: z.string(),
   imageUrl: z.string(),
@@ -12,5 +12,5 @@ export const AdminHandleBannerRequestBanners = z.object({
 });
 
 export type AdminHandleBannerRequestBanners = z.infer<
-  typeof AdminHandleBannerRequestBanners
+  typeof AdminHandleBannerRequestBannersSchema
 >;

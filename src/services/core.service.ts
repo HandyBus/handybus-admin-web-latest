@@ -2,7 +2,10 @@
 
 import { z } from 'zod';
 import { authInstance } from './config';
-import { AdminHandleBannerRequestBanners } from '@/types/banner.type';
+import {
+  AdminHandleBannerRequestBanners,
+  AdminHandleBannerRequestBannersSchema,
+} from '@/types/banner.type';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 export type Extension = 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'svg';
@@ -25,7 +28,7 @@ export const getPresignedUrl = async (
 export const getBanners = async () => {
   return await authInstance.get('/v1/core/admin/banners', {
     shape: {
-      banners: z.array(AdminHandleBannerRequestBanners),
+      banners: z.array(AdminHandleBannerRequestBannersSchema),
     },
   });
 };
