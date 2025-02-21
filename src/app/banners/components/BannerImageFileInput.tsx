@@ -10,9 +10,10 @@ interface Props {
   type: 'concerts' | 'users/profiles' | 'reviews';
   value: string | undefined;
   setValue: (value: string | undefined) => void;
+  id: string;
 }
 
-const ImageFileInput = ({ type, value, setValue }: Props) => {
+const BannerImageFileInput = ({ type, value, setValue, id }: Props) => {
   const [file, setFile] = useState<File | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -29,14 +30,14 @@ const ImageFileInput = ({ type, value, setValue }: Props) => {
   }, [file, setValue, type]);
 
   return (
-    <div className="flex size-full flex-row items-center justify-between rounded-lg border border-grey-300 bg-white p-8">
-      <div className="h-[110px] w-[80px] overflow-hidden rounded-lg bg-grey-200">
-        {!isPending && (
+    <div className="flex size-full flex-col items-center justify-between gap-16 rounded-lg border border-grey-300 bg-white p-8">
+      <div className="h-[160px] w-[375px] overflow-hidden rounded-lg bg-grey-200">
+        {!isPending && value && (
           <Image
             src={value}
             alt="새로 등록할 포스터 이미지"
-            width={80}
-            height={110}
+            width={375}
+            height={160}
           />
         )}
       </div>
@@ -44,7 +45,7 @@ const ImageFileInput = ({ type, value, setValue }: Props) => {
 
       {!isLoading && (
         <label
-          htmlFor="image_upload"
+          htmlFor={`image_upload_${id}`}
           className={twJoin(
             `gap-2 flex cursor-pointer items-center rounded-lg p-4 text-white`,
             isPending ? 'bg-blue-400' : 'bg-grey-600',
@@ -56,7 +57,7 @@ const ImageFileInput = ({ type, value, setValue }: Props) => {
           <input
             ref={inputRef}
             disabled={file !== null}
-            id="image_upload"
+            id={`image_upload_${id}`}
             type="file"
             accept="image/*"
             className="hidden"
@@ -73,7 +74,7 @@ const ImageFileInput = ({ type, value, setValue }: Props) => {
   );
 };
 
-export default ImageFileInput;
+export default BannerImageFileInput;
 
 const addImageFile = async (
   key: 'concerts' | 'users/profiles' | 'reviews',
