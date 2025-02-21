@@ -20,8 +20,8 @@ export type AgeRange = z.infer<typeof AgeRangeEnum>;
 export const GenderEnum = z.enum(['NONE', 'MALE', 'FEMALE']);
 export type Gender = z.infer<typeof GenderEnum>;
 
-export const AuthChannelTypeEnum = z.enum(['NONE', 'kakao', 'naver']);
-export type AuthChannelType = z.infer<typeof AuthChannelTypeEnum>;
+// export const AuthChannelTypeEnum = z.enum(['NONE', 'kakao', 'naver']);
+// export type AuthChannelType = z.infer<typeof AuthChannelTypeEnum>;
 
 const ProgressTypeEnum = z.enum([
   'MARKETING_CONSENT',
@@ -37,13 +37,13 @@ export type ProgressType = z.infer<typeof ProgressTypeEnum>;
 export const UserStatsReadModel = z
   .object({
     userId: z.string(),
-    nickname: z.string(),
-    phoneNumber: z.string(),
-    profileImage: z.string().url().or(z.string().length(0)),
+    nickname: z.string().nullable(),
+    phoneNumber: z.string().nullable(),
+    profileImage: z.string().nullable(),
     gender: GenderEnum,
     ageRange: AgeRangeEnum,
-    authChannel: AuthChannelTypeEnum,
-    regionId: z.string(),
+    // authChannel: AuthChannelTypeEnum,
+    regionId: z.string().nullable(),
     socialInfo: z.object({
       uniqueId: z.string(),
       nickname: z.string(),
@@ -61,13 +61,13 @@ export type UserStatsReadModel = z.infer<typeof UserStatsReadModel>;
 export const UsersViewEntitySchema = z
   .object({
     userId: z.string(),
-    nickname: z.string(),
-    profileImage: z.string(),
-    phoneNumber: z.string(),
+    nickname: z.string().nullable(),
+    profileImage: z.string().nullable(),
+    phoneNumber: z.string().nullable(),
     gender: GenderEnum,
     ageRange: AgeRangeEnum,
     regionId: z.string().nullable(),
-    authChannelType: AuthChannelTypeEnum,
+    // authChannelType: AuthChannelTypeEnum,
     lastLoginAt: z.string().nullable(),
     favoriteArtists: ArtistsViewEntitySchema.array().nullable(),
     progresses: z
