@@ -5,14 +5,16 @@ import { columns } from './table.type';
 import { ShuttleDemandsViewEntity } from '@/types/demand.type';
 import Heading from '@/components/text/Heading';
 import BaseTable from '@/components/table/BaseTable';
+import { useMemo } from 'react';
 
 interface Props {
   demands: ShuttleDemandsViewEntity[];
 }
 
 const DemandsTable = ({ demands }: Props) => {
+  const memoizedDemands = useMemo(() => demands, [demands]);
   const table = useTable({
-    data: demands,
+    data: memoizedDemands,
     columns,
   });
 

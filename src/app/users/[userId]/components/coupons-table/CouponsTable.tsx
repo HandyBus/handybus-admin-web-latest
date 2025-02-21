@@ -5,14 +5,16 @@ import { columns } from './table.type';
 import Heading from '@/components/text/Heading';
 import BaseTable from '@/components/table/BaseTable';
 import { IssuedCouponsViewEntity } from '@/types/coupon.type';
+import { useMemo } from 'react';
 
 interface Props {
   coupons: IssuedCouponsViewEntity[];
 }
 
 const CouponsTable = ({ coupons }: Props) => {
+  const memoizedCoupons = useMemo(() => coupons, [coupons]);
   const table = useTable({
-    data: coupons,
+    data: memoizedCoupons,
     columns,
   });
 
