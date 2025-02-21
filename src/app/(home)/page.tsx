@@ -26,7 +26,7 @@ const Page = () => {
     <main className="grow">
       <Heading>통계 대시보드</Heading>
       <section className="flex gap-20 pb-12">
-        <article className="group relative flex h-188 w-188 flex-col justify-center gap-4 rounded-[8px] border border-grey-200 bg-white pl-28 transition-all hover:bg-grey-50">
+        <article className="relative flex h-188 w-188 flex-col justify-center gap-4 rounded-[8px] border border-grey-200 bg-white pl-28">
           <Link
             href={GA_LINK}
             target="_blank"
@@ -90,7 +90,7 @@ const DashboardCard = ({ title, href }: DashboardCardProps) => {
   return (
     <Link
       href={href}
-      className="group relative flex h-188 w-188 items-center justify-center rounded-[8px] border border-grey-200 bg-white transition-all hover:bg-grey-50"
+      className="relative flex h-188 w-188 items-center justify-center rounded-[8px] border border-grey-200 bg-white transition-all hover:bg-grey-50"
     >
       <span className="font-600">{title}</span>
       <ArrowRight

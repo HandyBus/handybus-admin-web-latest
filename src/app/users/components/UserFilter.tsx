@@ -5,11 +5,7 @@ import {
 } from '@headlessui/react';
 import { ChevronDownIcon, FilterIcon } from 'lucide-react';
 import Toggle from '@/components/button/Toggle';
-import {
-  AgeRangeEnum,
-  AuthChannelTypeEnum,
-  GenderEnum,
-} from '@/types/user.type';
+import { AgeRangeEnum, GenderEnum } from '@/types/user.type';
 import Stringifier from '@/utils/stringifier.util';
 import { GetUsersOptions } from '@/services/userManagement.service';
 import { UserFilterAction } from '../hooks/useUserFilter';
@@ -99,7 +95,7 @@ const UserFilter = ({ option, dispatch }: Props) => {
                 ))}
             </div>
           </article>
-          <article>
+          {/* <article>
             <Label>소셜 로그인 방법</Label>
             <div className="flex flex-row gap-4">
               {AuthChannelTypeEnum.options
@@ -121,7 +117,7 @@ const UserFilter = ({ option, dispatch }: Props) => {
                   />
                 ))}
             </div>
-          </article>
+          </article> */}
           <article>
             <Label>탈퇴 여부</Label>
             <div className="flex flex-row gap-4">

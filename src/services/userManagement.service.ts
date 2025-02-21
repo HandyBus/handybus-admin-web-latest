@@ -7,7 +7,6 @@ import { authInstance } from './config';
 import { withPagination } from '@/types/common.type';
 import {
   AgeRange,
-  AuthChannelType,
   Gender,
   UserStatsReadModel,
   UsersViewEntitySchema,
@@ -41,7 +40,7 @@ export interface GetUsersOptions {
   gender?: Gender;
   ageRange?: AgeRange;
   regionId?: string;
-  authChannelType?: AuthChannelType;
+  // authChannelType?: AuthChannelType;
   orderBy?: 'nickname'; // orderBy 쿼리 퍼포먼스가 좋지 않기에 기본값으로 사용하는 건 권장하지 않음
   additionalOrderOptions?: 'ASC' | 'DESC'; // orderBy 와 additionalOrderOptions은 항상 함께 전달해야 함
   status?: ActiveStatus;

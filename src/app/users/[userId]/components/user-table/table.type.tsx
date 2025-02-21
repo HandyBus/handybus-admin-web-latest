@@ -56,10 +56,10 @@ export const columns = [
       return region ? `${region.bigRegion} ${region.smallRegion}` : '-';
     },
   }),
-  columnHelper.accessor('authChannelType', {
-    header: () => '소셜 로그인',
-    cell: (info) => Stringifier.authChannelType(info.getValue()),
-  }),
+  // columnHelper.accessor('authChannelType', {
+  //   header: () => '소셜 로그인',
+  //   cell: (info) => Stringifier.authChannelType(info.getValue()),
+  // }),
   columnHelper.accessor('lastLoginAt', {
     header: () => '마지막 접속 시간',
     cell: (info) => formatDateString(info.getValue(), 'datetime', '-'),
