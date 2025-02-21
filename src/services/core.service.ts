@@ -41,10 +41,9 @@ export const useGetBanners = () => {
 };
 
 export const putBanner = async (banners: AdminHandleBannerRequestBanners[]) => {
-  await authInstance.put('/v1/core/admin/banners', {
+  return await authInstance.put('/v1/core/admin/banners', {
     banners: banners,
   });
-  return true;
 };
 
 export const usePutBanner = ({
