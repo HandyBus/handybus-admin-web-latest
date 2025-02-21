@@ -17,7 +17,7 @@ const TopLevelLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
   return (
     <div className="flex h-dvh w-dvw flex-col">
       <Nav />
-      <div className="flex grow flex-col overflow-scroll bg-white p-32">
+      <div className="flex grow flex-col overflow-scroll bg-[#F8F9FA] p-32">
         <Breadcrumbs />
         {children}
       </div>
