@@ -59,7 +59,7 @@ export type ShuttleDemandsViewEntity = z.infer<
 
 export const ShuttleDemandStatisticsReadModelSchema = z
   .object({
-    eventId: z.string(),
+    eventId: z.string().nullable(),
     eventName: z.string().nullable(),
     eventImageUrl: z.string().nullable(),
     dailyEventId: z.string().nullable(),

@@ -2598,6 +2598,22 @@
         "101",
         "277"
       ]
+    },
+    {
+      "regionId": "278",
+      "provinceFullName": "경기도",
+      "provinceShortName": "경기",
+      "cityFullName": "오산시",
+      "cityShortName": "오산",
+      "relatedRegionIds": ["278"]
+    },
+    {
+      "regionId": "279",
+      "provinceFullName": "경기도",
+      "provinceShortName": "경기",
+      "cityFullName": "파주시",
+      "cityShortName": "파주",
+      "relatedRegionIds": ["279"]
     }
   ]
 }
