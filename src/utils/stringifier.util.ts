@@ -8,7 +8,7 @@ import {
 } from '@/types/reservation.type';
 import { BusType } from '@/types/shuttleBus.type';
 import { ShuttleRouteStatus, TripType } from '@/types/shuttleRoute.type';
-import { AuthChannelType, Gender } from '@/types/user.type';
+import { Gender } from '@/types/user.type';
 
 const Stringifier = Object.freeze({
   gender(v: Gender) {
@@ -21,16 +21,16 @@ const Stringifier = Object.freeze({
         return '-';
     }
   },
-  authChannelType(v: AuthChannelType) {
-    switch (v) {
-      case 'kakao':
-        return '카카오';
-      case 'naver':
-        return '네이버';
-      default:
-        return '-';
-    }
-  },
+  // authChannelType(v: AuthChannelType) {
+  //   switch (v) {
+  //     case 'kakao':
+  //       return '카카오';
+  //     case 'naver':
+  //       return '네이버';
+  //     default:
+  //       return '-';
+  //   }
+  // },
   handyStatus(v: HandyStatus) {
     switch (v) {
       case 'NOT_SUPPORTED':

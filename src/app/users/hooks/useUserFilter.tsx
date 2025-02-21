@@ -16,7 +16,7 @@ const EMPTY_USER_FILTER: GetUsersOptions = {
   gender: undefined,
   ageRange: undefined,
   regionId: undefined,
-  authChannelType: undefined,
+  // authChannelType: undefined,
   orderBy: undefined,
   additionalOrderOptions: undefined,
   status: undefined,
@@ -47,10 +47,10 @@ export type UserFilterAction =
       type: 'SET_REGION_ID';
       regionId: GetUsersOptions['regionId'];
     }
-  | {
-      type: 'SET_AUTH_CHANNEL_TYPE';
-      authChannelType: GetUsersOptions['authChannelType'];
-    }
+  // | {
+  //     type: 'SET_AUTH_CHANNEL_TYPE';
+  //     authChannelType: GetUsersOptions['authChannelType'];
+  //   }
   | {
       type: 'SET_ORDER_BY';
       orderBy: GetUsersOptions['orderBy'];
@@ -113,11 +113,11 @@ const reducer = (
         ...prevState,
         regionId: action.regionId,
       };
-    case 'SET_AUTH_CHANNEL_TYPE':
-      return {
-        ...prevState,
-        authChannelType: action.authChannelType,
-      };
+    // case 'SET_AUTH_CHANNEL_TYPE':
+    //   return {
+    //     ...prevState,
+    //     authChannelType: action.authChannelType,
+    //   };
     case 'SET_ORDER_BY':
       const prevAdditionalOrderOptions = prevState.additionalOrderOptions;
       return {

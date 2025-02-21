@@ -5,14 +5,16 @@ import useTable from '@/hooks/useTable';
 import { columns } from './table.type';
 import { UsersViewEntity } from '@/types/user.type';
 import Heading from '@/components/text/Heading';
+import { useMemo } from 'react';
 
 interface Props {
   user: UsersViewEntity;
 }
 
 const UserTable = ({ user }: Props) => {
+  const memoizedUser = useMemo(() => [user], [user]);
   const table = useTable({
-    data: [user],
+    data: memoizedUser,
     columns,
   });
 

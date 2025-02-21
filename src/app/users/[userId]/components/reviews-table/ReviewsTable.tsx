@@ -5,14 +5,16 @@ import { columns } from './table.type';
 import Heading from '@/components/text/Heading';
 import BaseTable from '@/components/table/BaseTable';
 import { ReviewsViewEntity } from '@/types/reviews.type';
+import { useMemo } from 'react';
 
 interface Props {
   reviews: ReviewsViewEntity[];
 }
 
 const ReviewsTable = ({ reviews }: Props) => {
+  const memoizedReviews = useMemo(() => reviews, [reviews]);
   const table = useTable({
-    data: reviews,
+    data: memoizedReviews,
     columns,
   });
 
