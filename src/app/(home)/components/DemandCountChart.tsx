@@ -31,7 +31,7 @@ const DemandCountChart = ({ options }: Props) => {
     countType === '일일' ? ['intervalDemandCount'] : ['cumulativeDemandCount'];
 
   return (
-    <article className="max-w-[412px] rounded-[4px] border border-grey-200 bg-white p-4">
+    <article className="flex h-300 flex-col rounded-[4px] border border-grey-200 bg-white p-4">
       <Heading.h4 className="text-14 font-600 text-grey-900">
         수요조사
       </Heading.h4>

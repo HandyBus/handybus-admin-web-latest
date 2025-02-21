@@ -66,7 +66,7 @@ const Page = () => {
           countFilter={countFilter}
           dispatchCountFilter={dispatchCountFilter}
         />
-        <div className="mx-auto flex w-full max-w-[1300px] flex-wrap justify-between gap-8">
+        <div className="grid w-full grid-cols-3 gap-8 max-md:grid-cols-2 max-sm:grid-cols-1">
           <UserCountChart options={countFilter} />
           <DemandCountChart options={countFilter} />
           <ReservationPassengerCountChart options={countFilter} />
