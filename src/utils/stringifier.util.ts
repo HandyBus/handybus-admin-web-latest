@@ -21,16 +21,6 @@ const Stringifier = Object.freeze({
         return '-';
     }
   },
-  // authChannelType(v: AuthChannelType) {
-  //   switch (v) {
-  //     case 'kakao':
-  //       return '카카오';
-  //     case 'naver':
-  //       return '네이버';
-  //     default:
-  //       return '-';
-  //   }
-  // },
   handyStatus(v: HandyStatus) {
     switch (v) {
       case 'NOT_SUPPORTED':
