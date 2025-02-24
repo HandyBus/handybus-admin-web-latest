@@ -16,7 +16,6 @@ const EMPTY_USER_FILTER: GetUsersOptions = {
   gender: undefined,
   ageRange: undefined,
   regionId: undefined,
-  // authChannelType: undefined,
   orderBy: undefined,
   additionalOrderOptions: undefined,
   status: undefined,
@@ -24,6 +23,8 @@ const EMPTY_USER_FILTER: GetUsersOptions = {
   lastLoginTo: undefined,
   onboardingComplete: undefined,
   marketingConsent: undefined,
+  isConnectedKakao: undefined,
+  isConnectedNaver: undefined,
 };
 
 export type UserFilterAction =
@@ -47,10 +48,6 @@ export type UserFilterAction =
       type: 'SET_REGION_ID';
       regionId: GetUsersOptions['regionId'];
     }
-  // | {
-  //     type: 'SET_AUTH_CHANNEL_TYPE';
-  //     authChannelType: GetUsersOptions['authChannelType'];
-  //   }
   | {
       type: 'SET_ORDER_BY';
       orderBy: GetUsersOptions['orderBy'];
@@ -78,6 +75,14 @@ export type UserFilterAction =
   | {
       type: 'SET_MARKETING_CONSENT';
       marketingConsent: GetUsersOptions['marketingConsent'];
+    }
+  | {
+      type: 'SET_IS_CONNECTED_KAKAO';
+      isConnectedKakao: GetUsersOptions['isConnectedKakao'];
+    }
+  | {
+      type: 'SET_IS_CONNECTED_NAVER';
+      isConnectedNaver: GetUsersOptions['isConnectedNaver'];
     }
   | {
       type: 'RESET';
@@ -113,11 +118,6 @@ const reducer = (
         ...prevState,
         regionId: action.regionId,
       };
-    // case 'SET_AUTH_CHANNEL_TYPE':
-    //   return {
-    //     ...prevState,
-    //     authChannelType: action.authChannelType,
-    //   };
     case 'SET_ORDER_BY':
       const prevAdditionalOrderOptions = prevState.additionalOrderOptions;
       return {
@@ -156,6 +156,16 @@ const reducer = (
       return {
         ...prevState,
         marketingConsent: action.marketingConsent,
+      };
+    case 'SET_IS_CONNECTED_KAKAO':
+      return {
+        ...prevState,
+        isConnectedKakao: action.isConnectedKakao,
+      };
+    case 'SET_IS_CONNECTED_NAVER':
+      return {
+        ...prevState,
+        isConnectedNaver: action.isConnectedNaver,
       };
     case 'RESET':
       return {
