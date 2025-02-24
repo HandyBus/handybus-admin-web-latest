@@ -34,17 +34,6 @@ export type ProgressType = z.infer<typeof ProgressTypeEnum>;
 export const UserStatsReadModel = z
   .object({
     userId: z.string(),
-    nickname: z.string().nullable(),
-    phoneNumber: z.string().nullable(),
-    profileImage: z.string().nullable(),
-    gender: GenderEnum,
-    ageRange: AgeRangeEnum,
-    regionId: z.string().nullable(),
-    socialInfo: z.object({
-      uniqueId: z.string(),
-      nickname: z.string(),
-    }),
-    favoriteArtists: ArtistsViewEntitySchema.array(),
     currentReservationCount: z.number(),
     pastReservationCount: z.number(),
     activeCouponCount: z.number(),
