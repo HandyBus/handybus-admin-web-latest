@@ -56,10 +56,22 @@ export const columns = [
       return region ? `${region.bigRegion} ${region.smallRegion}` : '-';
     },
   }),
-  // columnHelper.accessor('authChannelType', {
-  //   header: () => '소셜 로그인',
-  //   cell: (info) => Stringifier.authChannelType(info.getValue()),
-  // }),
+  columnHelper.display({
+    id: 'authChannel',
+    header: () => '소셜 로그인',
+    cell: (info) => {
+      const { isConnectedKakao, isConnectedNaver } = info.row.original;
+      const value =
+        isConnectedKakao && isConnectedNaver
+          ? '카카오, 네이버'
+          : isConnectedKakao
+            ? '카카오'
+            : isConnectedNaver
+              ? '네이버'
+              : '-';
+      return value;
+    },
+  }),
   columnHelper.accessor('lastLoginAt', {
     header: () => '마지막 접속 시간',
     cell: (info) => formatDateString(info.getValue(), 'datetime', '-'),

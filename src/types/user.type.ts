@@ -20,9 +20,6 @@ export type AgeRange = z.infer<typeof AgeRangeEnum>;
 export const GenderEnum = z.enum(['NONE', 'MALE', 'FEMALE']);
 export type Gender = z.infer<typeof GenderEnum>;
 
-// export const AuthChannelTypeEnum = z.enum(['NONE', 'kakao', 'naver']);
-// export type AuthChannelType = z.infer<typeof AuthChannelTypeEnum>;
-
 const ProgressTypeEnum = z.enum([
   'MARKETING_CONSENT',
   'SERVICE_TERMS_AGREEMENT',
@@ -37,18 +34,6 @@ export type ProgressType = z.infer<typeof ProgressTypeEnum>;
 export const UserStatsReadModel = z
   .object({
     userId: z.string(),
-    nickname: z.string().nullable(),
-    phoneNumber: z.string().nullable(),
-    profileImage: z.string().nullable(),
-    gender: GenderEnum,
-    ageRange: AgeRangeEnum,
-    // authChannel: AuthChannelTypeEnum,
-    regionId: z.string().nullable(),
-    socialInfo: z.object({
-      uniqueId: z.string(),
-      nickname: z.string(),
-    }),
-    favoriteArtists: ArtistsViewEntitySchema.array(),
     currentReservationCount: z.number(),
     pastReservationCount: z.number(),
     activeCouponCount: z.number(),
@@ -67,7 +52,6 @@ export const UsersViewEntitySchema = z
     gender: GenderEnum,
     ageRange: AgeRangeEnum,
     regionId: z.string().nullable(),
-    // authChannelType: AuthChannelTypeEnum,
     lastLoginAt: z.string().nullable(),
     favoriteArtists: ArtistsViewEntitySchema.array().nullable(),
     progresses: z
@@ -77,6 +61,8 @@ export const UsersViewEntitySchema = z
       })
       .array(),
     status: ActiveStatusEnum,
+    isConnectedKakao: z.boolean(),
+    isConnectedNaver: z.boolean(),
   })
   .strict();
 export type UsersViewEntity = z.infer<typeof UsersViewEntitySchema>;

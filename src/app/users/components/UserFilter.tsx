@@ -95,29 +95,33 @@ const UserFilter = ({ option, dispatch }: Props) => {
                 ))}
             </div>
           </article>
-          {/* <article>
-            <Label>소셜 로그인 방법</Label>
+          <article>
+            <Label>소셜 로그인 연동 여부</Label>
             <div className="flex flex-row gap-4">
-              {AuthChannelTypeEnum.options
-                .filter((authChannelType) => authChannelType !== 'NONE')
-                .map((authChannelType) => (
-                  <Toggle
-                    key={authChannelType}
-                    label={Stringifier.authChannelType(authChannelType)}
-                    value={authChannelType === option.authChannelType}
-                    setValue={() =>
-                      dispatch({
-                        type: 'SET_AUTH_CHANNEL_TYPE',
-                        authChannelType:
-                          authChannelType === option.authChannelType
-                            ? undefined
-                            : authChannelType,
-                      })
-                    }
-                  />
-                ))}
+              <Toggle
+                label={'카카오'}
+                value={option.isConnectedKakao === true}
+                setValue={() =>
+                  dispatch({
+                    type: 'SET_IS_CONNECTED_KAKAO',
+                    isConnectedKakao:
+                      option.isConnectedKakao === true ? undefined : true,
+                  })
+                }
+              />
+              <Toggle
+                label={'네이버'}
+                value={option.isConnectedNaver === true}
+                setValue={() =>
+                  dispatch({
+                    type: 'SET_IS_CONNECTED_NAVER',
+                    isConnectedNaver:
+                      option.isConnectedNaver === true ? undefined : true,
+                  })
+                }
+              />
             </div>
-          </article> */}
+          </article>
           <article>
             <Label>탈퇴 여부</Label>
             <div className="flex flex-row gap-4">
