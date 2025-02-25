@@ -111,13 +111,16 @@ export const columns = [
   columnHelper.accessor(
     (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.dailyEventId),
     {
-      header: '수요조사 상세',
+      header: '수요조사',
       cell: (info) => {
         const dailyEventIds = info.getValue();
         const eventId = info.row.original.eventId;
+        const totalCounts = info.row.original.dailyEvents.map((dailyEvent) => {
+          return dailyEvent.totalDemandCount;
+        });
         return (
           <div className="flex h-full flex-col justify-between">
-            {dailyEventIds.map((dailyEventId) => (
+            {dailyEventIds.map((dailyEventId, index) => (
               <p
                 key={dailyEventId}
                 className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 last:border-b-0"
@@ -125,7 +128,7 @@ export const columns = [
                 <BlueLink
                   href={`/events/${eventId}/dates/${dailyEventId}/demands`}
                 >
-                  수요조사 보기
+                  상세 ({totalCounts[index]})
                 </BlueLink>
               </p>
             ))}
