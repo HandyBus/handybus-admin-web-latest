@@ -2,7 +2,7 @@
 
 import Heading from '@/components/text/Heading';
 import { dayjsTz } from '@/utils/date.util';
-import CustomLineChart from './CustomLineChart';
+import CustomLineChart from '../../../components/chart/CustomLineChart';
 import { useGetTotalDemandCounts } from '@/services/shuttleOperation.service';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
 import { TotalDemandCountsReadModel } from '@/types/dashboard.type';
@@ -35,7 +35,14 @@ const DemandCountChart = ({ options }: Props) => {
       <Heading.h4 className="text-14 font-600 text-grey-900">
         수요조사
       </Heading.h4>
-      <CustomLineChart data={parsedTotalDemandCounts ?? []} dataKey={dataKey} />
+      <CustomLineChart
+        data={parsedTotalDemandCounts ?? []}
+        dataKey={dataKey}
+        label={{
+          intervalDemandCount: '일일 수요조사',
+          cumulativeDemandCount: '누적 수요조사',
+        }}
+      />
     </article>
   );
 };

@@ -2,7 +2,7 @@
 
 import Heading from '@/components/text/Heading';
 import { dayjsTz } from '@/utils/date.util';
-import CustomLineChart from './CustomLineChart';
+import CustomLineChart from '../../../components/chart/CustomLineChart';
 import { useGetTotalReviewCounts } from '@/services/shuttleOperation.service';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
 import { TotalReviewCountsReadModel } from '@/types/dashboard.type';
@@ -33,7 +33,14 @@ const ReviewCountChart = ({ options }: Props) => {
   return (
     <article className="flex h-300 flex-col rounded-[4px] border border-grey-200 bg-white p-4">
       <Heading.h4 className="text-14 font-600 text-grey-900">리뷰</Heading.h4>
-      <CustomLineChart data={parsedTotalReviewCounts ?? []} dataKey={dataKey} />
+      <CustomLineChart
+        data={parsedTotalReviewCounts ?? []}
+        dataKey={dataKey}
+        label={{
+          intervalReviewCount: '일일 리뷰',
+          cumulativeReviewCount: '누적 리뷰',
+        }}
+      />
     </article>
   );
 };

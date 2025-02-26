@@ -11,28 +11,15 @@ import {
 } from 'recharts';
 
 const STROKE_COLORS = ['#6366f1', '#f59e0b', '#14b8a6'];
-
-const LABEL_MAP: { [key: string]: string } = {
-  intervalUserCount: '일일 가입자',
-  cumulativeUserCount: '누적 가입자',
-  intervalDemandCount: '일일 수요조사',
-  cumulativeDemandCount: '누적 수요조사',
-  intervalReservationPassengerCount: '일일 예약 탑승객',
-  cumulativeReservationPassengerCount: '누적 예약 탑승객',
-  dailyGrossSales: '일일 판매액',
-  cumulativeGrossSales: '누적 판매액',
-  dailyDiscountedSales: '일일 할인 적용 판매액',
-  cumulativeDiscountedSales: '누적 할인 적용 판매액',
-  intervalReviewCount: '일일 리뷰',
-  cumulativeReviewCount: '누적 리뷰',
-};
+const ANIMATION_DURATION = 700;
 
 interface Props<T> {
   data: T[];
   dataKey: (keyof T)[];
+  label?: { [key: string]: string };
 }
 
-const CustomLineChart = <T,>({ data, dataKey }: Props<T>) => {
+const CustomLineChart = <T,>({ data, dataKey, label }: Props<T>) => {
   return (
     <div className="grow">
       <ResponsiveContainer width="100%" height="100%">
@@ -82,6 +69,7 @@ const CustomLineChart = <T,>({ data, dataKey }: Props<T>) => {
                 r: 6,
                 fill: STROKE_COLORS[index % STROKE_COLORS.length],
               }}
+              animationDuration={ANIMATION_DURATION}
             />
           ))}
           <Tooltip
@@ -93,7 +81,7 @@ const CustomLineChart = <T,>({ data, dataKey }: Props<T>) => {
             }}
             formatter={(value: number, name: string) => {
               const formattedValue = value.toLocaleString('ko-KR');
-              return [formattedValue, LABEL_MAP[name] || name];
+              return [formattedValue, label?.[name] || name];
             }}
           />
         </LineChart>

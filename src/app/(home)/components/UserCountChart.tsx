@@ -3,7 +3,7 @@
 import Heading from '@/components/text/Heading';
 import { useGetTotalUserCounts } from '@/services/userManagement.service';
 import { dayjsTz } from '@/utils/date.util';
-import CustomLineChart from './CustomLineChart';
+import CustomLineChart from '../../../components/chart/CustomLineChart';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
 import { TotalUserCountsReadModel } from '@/types/dashboard.type';
 
@@ -35,7 +35,14 @@ const UserCountChart = ({ options }: Props) => {
       <Heading.h4 className="text-14 font-600 text-grey-900">
         가입한 유저
       </Heading.h4>
-      <CustomLineChart data={parsedTotalUserCounts ?? []} dataKey={dataKey} />
+      <CustomLineChart
+        data={parsedTotalUserCounts ?? []}
+        dataKey={dataKey}
+        label={{
+          intervalUserCount: '일일 가입자',
+          cumulativeUserCount: '누적 가입자',
+        }}
+      />
     </article>
   );
 };

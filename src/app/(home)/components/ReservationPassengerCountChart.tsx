@@ -2,7 +2,7 @@
 
 import Heading from '@/components/text/Heading';
 import { dayjsTz } from '@/utils/date.util';
-import CustomLineChart from './CustomLineChart';
+import CustomLineChart from '../../../components/chart/CustomLineChart';
 import { useGetTotalReservationCounts } from '@/services/shuttleOperation.service';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
 import { TotalReservationPassengerCountsReadModel } from '@/types/dashboard.type';
@@ -43,6 +43,10 @@ const ReservationPassengerCountChart = ({ options }: Props) => {
       <CustomLineChart
         data={parsedReservationPassengerCounts ?? []}
         dataKey={dataKey}
+        label={{
+          intervalReservationPassengerCount: '일일 예약 탑승객',
+          cumulativeReservationPassengerCount: '누적 예약 탑승객',
+        }}
       />
     </article>
   );
