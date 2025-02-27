@@ -15,12 +15,24 @@ const RADIAN = Math.PI / 180;
 const ANIMATION_DURATION = 700;
 
 interface Props<T> {
-  data: T[];
+  data: T[] | undefined;
   dataKey: keyof T;
   renderTooltip?: (data: T) => ReactNode;
+  colors?: string[];
+  isLoading?: boolean;
 }
 
-const CustomPieChart = <T,>({ data, dataKey, renderTooltip }: Props<T>) => {
+const CustomPieChart = <T,>({
+  data,
+  dataKey,
+  renderTooltip,
+  colors,
+  isLoading,
+}: Props<T>) => {
+  if (!data || isLoading) {
+    return null;
+  }
+  console.log(data);
   return (
     <ResponsiveContainer width="80%" height="80%" className="mx-auto">
       <PieChart>
@@ -66,7 +78,12 @@ const CustomPieChart = <T,>({ data, dataKey, renderTooltip }: Props<T>) => {
           }}
         >
           {data.map((_, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            <Cell
+              key={`cell-${index}`}
+              fill={
+                colors?.[index % colors.length] ?? COLORS[index % COLORS.length]
+              }
+            />
           ))}
         </Pie>
         {renderTooltip && (
