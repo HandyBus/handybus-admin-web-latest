@@ -57,7 +57,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
     dailyEvents: event?.dailyEvents?.map((dailyEvent) => ({
       status: dailyEvent.status,
       dailyEventId: dailyEvent.dailyEventId,
-      date: dailyEvent.date,
+      date: dayjs(dailyEvent.date).format('YYYY-MM-DD'),
     })),
     artistIds:
       event?.eventArtists?.map((artist) => ({
@@ -68,7 +68,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
   const previousDailyEvents = event?.dailyEvents?.map((dailyEvent) => ({
     status: dailyEvent.status,
     dailyEventId: dailyEvent.dailyEventId,
-    date: dailyEvent.date,
+    date: dayjs(dailyEvent.date).format('YYYY-MM-DD'),
   }));
 
   const { control, handleSubmit } = useForm<EditEventFormData>({
@@ -172,7 +172,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
               type="button"
               onClick={() =>
                 appendDaily({
-                  date: today().toISOString(),
+                  date: today().format('YYYY-MM-DD'),
                 })
               }
               className="w-fit text-blue-500"
@@ -189,7 +189,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                 >
                   <Input
                     type="date"
-                    value={dayjs(dailyEvent.date).format('YYYY-MM-DD')}
+                    value={dailyEvent.date}
                     className="w-full"
                     disabled={true}
                   />
@@ -209,11 +209,11 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                         <Input
                           type="date"
                           className="w-full"
-                          value={dayjs(value.date).tz().format('YYYY-MM-DD')}
+                          value={value.date}
                           setValue={(str) =>
                             onChange({
                               ...value,
-                              date: dayjs(str).tz().toDate(),
+                              date: str,
                             })
                           }
                         />

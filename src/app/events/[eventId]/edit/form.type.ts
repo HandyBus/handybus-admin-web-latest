@@ -4,6 +4,7 @@ import {
   EventTypeEnum,
   UpdateEventRequest,
 } from '@/types/event.type';
+import { convertToUTC } from '@/utils/date.util';
 
 export const EditEventFormSchema = z.object({
   status: EventStatusEnum,
@@ -28,8 +29,14 @@ export const conform = (data: EditEventFormData): UpdateEventRequest => {
   const artistIds = data.artistIds.filter(
     (artist): artist is { artistId: string } => artist.artistId !== null,
   );
+  const dailyEvents = data.dailyEvents.map((daily) => ({
+    ...daily,
+    date: convertToUTC(daily.date),
+  }));
+  console.log('in conform dailyEvents', dailyEvents);
   return {
     ...data,
     artistIds: artistIds.map((artist) => artist.artistId),
+    dailyEvents,
   } satisfies UpdateEventRequest;
 };

@@ -12,7 +12,6 @@ import { Button, Field, Label, RadioGroup, Radio } from '@headlessui/react';
 import ImageFileInput from '@/components/input/ImageFileInput';
 import RegionHubInput from '@/components/input/HubInput';
 import Input from '@/components/input/Input';
-import dayjs from 'dayjs';
 import { today } from '@/utils/date.util';
 import { usePostEvent } from '@/services/shuttleOperation.service';
 import Form from '@/components/form/Form';
@@ -131,7 +130,9 @@ const CreateEventForm = () => {
             날짜
             <button
               type="button"
-              onClick={() => appendDaily({ date: today() })}
+              onClick={() =>
+                appendDaily({ date: today().format('YYYY-MM-DD') })
+              }
               className="w-fit text-blue-500"
             >
               <PlusIcon />
@@ -149,8 +150,8 @@ const CreateEventForm = () => {
                       <Input
                         type="date"
                         className="w-full"
-                        value={dayjs(value).tz().format('YYYY-MM-DD')}
-                        setValue={(str) => onChange(dayjs(str).tz().toDate())}
+                        value={value}
+                        setValue={(str) => onChange(str)}
                       />
                       <button type="button" onClick={() => removeDaily(index)}>
                         <XIcon />

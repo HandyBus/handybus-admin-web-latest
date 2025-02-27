@@ -5,18 +5,7 @@ export const dayjsTz = (date: string) => {
 };
 
 export const today = () => {
-  const today = dayjs().tz().toDate();
-  today.setHours(0, 0, 0, 0);
-  return today;
-};
-
-export const now = () => {
-  return dayjs().tz().toDate();
-};
-
-export const diffInDays = (date1: Date, date2: Date) => {
-  const diff = date1.getTime() - date2.getTime();
-  return diff / (1000 * 60 * 60 * 24);
+  return dayjs().tz().startOf('day');
 };
 
 export const toDateOnly = (date: Date) => {
@@ -52,4 +41,10 @@ export const formatDateString = (
     return defaultValue || '';
   }
   return formatDate(dayjsTz(date), type);
+};
+
+export const convertToUTC = (dateString: string) => {
+  const localDate = dayjs.tz(dateString, 'Asia/Seoul');
+  const utcDate = localDate.utc();
+  return utcDate.format('YYYY-MM-DD HH:mm:ss');
 };
