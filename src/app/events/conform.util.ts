@@ -1,7 +1,7 @@
 import { CreateEventFormData } from '@/app/events/new/form.type';
 import { EditEventFormData } from '@/app/events/[eventId]/edit/form.type';
 import { CreateEventRequest, UpdateEventRequest } from '@/types/event.type';
-import { convertToUTC } from '@/utils/date.util';
+import dayjs from 'dayjs';
 
 type EventFormData = CreateEventFormData | EditEventFormData;
 type EventRequest = CreateEventRequest | UpdateEventRequest;
@@ -18,7 +18,7 @@ export const conformEventData = <
 
   const dailyEvents = data.dailyEvents.map((daily) => ({
     ...daily,
-    date: convertToUTC(daily.date),
+    date: dayjs.tz(daily.date, 'Asia/Seoul').toISOString(),
   }));
 
   const result = {
