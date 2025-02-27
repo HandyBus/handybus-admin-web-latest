@@ -1,7 +1,7 @@
 'use client';
 
+import ChartBox from '@/components/chart/ChartSection';
 import CustomPieChart from '@/components/chart/CustomPieChart';
-import Heading from '@/components/text/Heading';
 import { AgeRange, Gender } from '@/types/user.type';
 
 interface Props {
@@ -19,8 +19,7 @@ interface Props {
 
 const GenderChart = ({ data, isLoading }: Props) => {
   return (
-    <article className="flex h-300 flex-col rounded-[4px] border border-grey-200 bg-white p-4">
-      <Heading.h4 className="text-14 font-600 text-grey-900">성별</Heading.h4>
+    <ChartBox title="성별">
       <CustomPieChart
         data={data}
         dataKey="value"
@@ -37,7 +36,7 @@ const GenderChart = ({ data, isLoading }: Props) => {
           </div>
         )}
       />
-    </article>
+    </ChartBox>
   );
 };
 

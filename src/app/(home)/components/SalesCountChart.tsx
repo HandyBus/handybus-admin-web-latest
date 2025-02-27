@@ -1,6 +1,6 @@
 'use client';
 
-import Heading from '@/components/text/Heading';
+import ChartBox from '@/components/chart/ChartSection';
 import { dayjsTz } from '@/utils/date.util';
 import CustomLineChart from '../../../components/chart/CustomLineChart';
 import { useGetTotalSalesCounts } from '@/services/billing.service';
@@ -33,8 +33,7 @@ const SalesCountChart = ({ options }: Props) => {
       : ['cumulativeGrossSales', 'cumulativeDiscountedSales'];
 
   return (
-    <article className="flex h-300 flex-col rounded-[4px] border border-grey-200 bg-white p-4">
-      <Heading.h4 className="text-14 font-600 text-grey-900">매출</Heading.h4>
+    <ChartBox title="매출">
       <CustomLineChart
         data={parsedTotalSalesCounts ?? []}
         dataKey={dataKey}
@@ -45,7 +44,7 @@ const SalesCountChart = ({ options }: Props) => {
           cumulativeDiscountedSales: '누적 할인 적용 판매액',
         }}
       />
-    </article>
+    </ChartBox>
   );
 };
 

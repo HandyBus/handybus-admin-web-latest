@@ -1,7 +1,7 @@
 'use client';
 
+import ChartBox from '@/components/chart/ChartSection';
 import CustomPieChart from '@/components/chart/CustomPieChart';
-import Heading from '@/components/text/Heading';
 
 interface Props {
   data: { name: string; value: number }[];
@@ -10,10 +10,7 @@ interface Props {
 
 const MarketingConsentChart = ({ data, isLoading }: Props) => {
   return (
-    <article className="flex h-300 flex-col rounded-[4px] border border-grey-200 bg-white p-4">
-      <Heading.h4 className="text-14 font-600 text-grey-900">
-        마케팅 동의 여부
-      </Heading.h4>
+    <ChartBox title="마케팅 동의 여부">
       <CustomPieChart
         data={data}
         dataKey="value"
@@ -28,7 +25,7 @@ const MarketingConsentChart = ({ data, isLoading }: Props) => {
           </div>
         )}
       />
-    </article>
+    </ChartBox>
   );
 };
 

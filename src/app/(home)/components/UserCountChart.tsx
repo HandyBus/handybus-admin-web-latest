@@ -1,6 +1,6 @@
 'use client';
 
-import Heading from '@/components/text/Heading';
+import ChartBox from '@/components/chart/ChartSection';
 import { useGetTotalUserCounts } from '@/services/userManagement.service';
 import { dayjsTz } from '@/utils/date.util';
 import CustomLineChart from '../../../components/chart/CustomLineChart';
@@ -31,10 +31,7 @@ const UserCountChart = ({ options }: Props) => {
     countType === '일일' ? ['intervalUserCount'] : ['cumulativeUserCount'];
 
   return (
-    <article className="flex h-300 flex-col rounded-[4px] border border-grey-200 bg-white p-4">
-      <Heading.h4 className="text-14 font-600 text-grey-900">
-        가입한 유저
-      </Heading.h4>
+    <ChartBox title="가입한 유저">
       <CustomLineChart
         data={parsedTotalUserCounts ?? []}
         dataKey={dataKey}
@@ -43,7 +40,7 @@ const UserCountChart = ({ options }: Props) => {
           cumulativeUserCount: '누적 가입자',
         }}
       />
-    </article>
+    </ChartBox>
   );
 };
 

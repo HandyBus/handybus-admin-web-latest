@@ -1,7 +1,7 @@
 'use client';
 
+import ChartBox from '@/components/chart/ChartSection';
 import CustomPieChart from '@/components/chart/CustomPieChart';
-import Heading from '@/components/text/Heading';
 
 interface Props {
   data: { name: string; value: number }[];
@@ -10,10 +10,7 @@ interface Props {
 
 const SocialLoginChart = ({ data, isLoading }: Props) => {
   return (
-    <article className="flex h-300 flex-col rounded-[4px] border border-grey-200 bg-white p-4">
-      <Heading.h4 className="text-14 font-600 text-grey-900">
-        소셜 로그인
-      </Heading.h4>
+    <ChartBox title="소셜 로그인 방식">
       <CustomPieChart
         data={data}
         dataKey="value"
@@ -28,7 +25,7 @@ const SocialLoginChart = ({ data, isLoading }: Props) => {
           </div>
         )}
       />
-    </article>
+    </ChartBox>
   );
 };
 
