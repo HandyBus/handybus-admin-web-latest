@@ -4,6 +4,7 @@ export interface DashboardOptions {
   baseDate: string; // 기준일자
   totalRangeDate: number; // 기준일자로부터 몇일 전까지 조회 할 지 (예: 6이면 기준 일 포함 총 7일)
   intervalDays: number; // 집계 간격 (일 단위)
+  useDistinctUserId?: boolean; // 집계 시 유저의 중복된 예약 제외 여부 (미전달시 false)
 }
 
 export const TotalUserCountsReadModelSchema = z.object({
