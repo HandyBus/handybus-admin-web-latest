@@ -89,24 +89,20 @@ export const columns = [
     header: () => '탈퇴 여부',
     cell: (info) => (info.getValue() === 'ACTIVE' ? '-' : '탈퇴'),
   }),
-  columnHelper.display({
-    id: 'onboarding',
-    header: '온보딩 완료 여부',
-    cell: (props) =>
-      props.row.original.progresses?.find(
-        (progress) => progress.progressType === 'ONBOARDING_COMPLETE',
-      )?.isCompleted
-        ? '완료'
-        : '미완료',
+  columnHelper.accessor('onboardingComplete', {
+    header: () => '온보딩 완료 여부',
+    cell: (info) => (info.getValue() ? '완료' : '미완료'),
   }),
-  columnHelper.display({
-    id: 'marketingConsent',
-    header: '마케팅 동의 여부',
-    cell: (props) =>
-      props.row.original.progresses?.find(
-        (progress) => progress.progressType === 'MARKETING_CONSENT',
-      )?.isCompleted
-        ? '동의'
-        : '미동의',
+  columnHelper.accessor('serviceTermsAgreement', {
+    header: () => '서비스 이용약관',
+    cell: (info) => (info.getValue() ? '동의' : '미동의'),
+  }),
+  columnHelper.accessor('personalInfoConsent', {
+    header: () => '개인정보 수집 및 이용 동의',
+    cell: (info) => (info.getValue() ? '동의' : '미동의'),
+  }),
+  columnHelper.accessor('marketingConsent', {
+    header: () => '마케팅 동의 여부',
+    cell: (info) => (info.getValue() ? '동의' : '미동의'),
   }),
 ];
