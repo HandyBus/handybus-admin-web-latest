@@ -2,7 +2,7 @@
 
 import Heading from '@/components/text/Heading';
 import { useGetTotalUserCounts } from '@/services/userManagement.service';
-import { dayjsTz } from '@/utils/date.util';
+import dayjs from 'dayjs';
 import CustomLineChart from './CustomLineChart';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
 import { TotalUserCountsReadModel } from '@/types/dashboard.type';
@@ -21,10 +21,7 @@ const UserCountChart = ({ options }: Props) => {
 
   const parsedTotalUserCounts = totalUserCounts?.map((item) => ({
     ...item,
-    date: dayjsTz(item.date).toLocaleDateString('ko-KR', {
-      month: '2-digit',
-      day: '2-digit',
-    }),
+    date: dayjs(item.date).tz('Asia/Seoul').format('MM.DD.'),
   }));
 
   const dataKey: (keyof TotalUserCountsReadModel)[] =

@@ -1,11 +1,11 @@
 'use client';
 
 import Heading from '@/components/text/Heading';
-import { dayjsTz } from '@/utils/date.util';
 import CustomLineChart from './CustomLineChart';
 import { useGetTotalReservationCounts } from '@/services/shuttleOperation.service';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
 import { TotalReservationPassengerCountsReadModel } from '@/types/dashboard.type';
+import dayjs from 'dayjs';
 
 interface Props {
   options: CountFilterOptions;
@@ -23,10 +23,7 @@ const ReservationPassengerCountChart = ({ options }: Props) => {
   const parsedReservationPassengerCounts = reservationPassengerCounts?.map(
     (item) => ({
       ...item,
-      date: dayjsTz(item.date).toLocaleDateString('ko-KR', {
-        month: '2-digit',
-        day: '2-digit',
-      }),
+      date: dayjs(item.date).tz('Asia/Seoul').format('MM.DD.'),
     }),
   );
 

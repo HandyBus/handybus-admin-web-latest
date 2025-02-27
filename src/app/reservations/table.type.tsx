@@ -5,8 +5,8 @@ import BlueLink from '@/components/link/BlueLink';
 import Stringifier from '@/utils/stringifier.util';
 import { formatDateString } from '@/utils/date.util';
 import { ReservationViewEntity } from '@/types/reservation.type';
-import { dayjsTz } from '@/utils/date.util';
 import EditHandyStatusDialog from '@/components/dialog/EditHandyStatusDialog';
+import dayjs from 'dayjs';
 
 const columnHelper = createColumnHelper<ReservationViewEntity>();
 
@@ -57,7 +57,7 @@ export const columns = [
           </span>
           <br />
           <span className="text-14 font-400 text-grey-600">
-            {date && dayjsTz(date).toLocaleDateString()}
+            {date && dayjs(date).tz('Asia/Seoul').format('YYYY.MM.DD')}
           </span>
           <br />
           <span className="text-14 font-500 text-grey-700">

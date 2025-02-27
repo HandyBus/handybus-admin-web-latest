@@ -48,10 +48,10 @@ export const columns = [
       header: () => '상태',
       cell: (info) => {
         const { isActive, validFrom } = info.getValue();
-        const now = dayjs().tz().toDate();
+        const now = dayjs();
         return isActive ? (
           <span className="text-primary-600">진행중</span>
-        ) : now < dayjs(validFrom).tz().toDate() ? (
+        ) : now < dayjs(validFrom) ? (
           <span className="text-grey-700">대기</span>
         ) : (
           <span className="text-red-600">만료</span>

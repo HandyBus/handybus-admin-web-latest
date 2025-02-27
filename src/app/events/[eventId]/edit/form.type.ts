@@ -4,7 +4,6 @@ import {
   EventTypeEnum,
   UpdateEventRequest,
 } from '@/types/event.type';
-import { conformEventData } from '../../conform.util';
 
 export const EditEventFormSchema = z.object({
   status: EventStatusEnum,
@@ -26,5 +25,11 @@ export const EditEventFormSchema = z.object({
 export type EditEventFormData = z.infer<typeof EditEventFormSchema>;
 
 export const conform = (data: EditEventFormData): UpdateEventRequest => {
-  return conformEventData<EditEventFormData, UpdateEventRequest>(data);
+  const artistIds = data.artistIds.filter(
+    (artist): artist is { artistId: string } => artist.artistId !== null,
+  );
+  return {
+    ...data,
+    artistIds: artistIds.map((artist) => artist.artistId),
+  } satisfies UpdateEventRequest;
 };

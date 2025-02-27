@@ -1,6 +1,5 @@
 import { CreateEventRequest } from '@/types/event.type';
 import { z } from 'zod';
-import { conformEventData } from '../conform.util';
 
 export const CreateEventFormSchema = z.object({
   name: z.string(),
@@ -16,5 +15,11 @@ export const CreateEventFormSchema = z.object({
 export type CreateEventFormData = z.infer<typeof CreateEventFormSchema>;
 
 export const conform = (data: CreateEventFormData): CreateEventRequest => {
-  return conformEventData<CreateEventFormData, CreateEventRequest>(data);
+  const artistIds = data.artistIds.filter(
+    (artist): artist is { artistId: string } => artist.artistId !== null,
+  );
+  return {
+    ...data,
+    artistIds: artistIds.map((artist) => artist.artistId),
+  } satisfies CreateEventRequest;
 };

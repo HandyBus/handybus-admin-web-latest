@@ -12,11 +12,11 @@ import { Button, Field, Label, RadioGroup, Radio } from '@headlessui/react';
 import ImageFileInput from '@/components/input/ImageFileInput';
 import RegionHubInput from '@/components/input/HubInput';
 import Input from '@/components/input/Input';
-import { today } from '@/utils/date.util';
 import { usePostEvent } from '@/services/shuttleOperation.service';
 import Form from '@/components/form/Form';
 import { EventTypeEnum } from '@/types/event.type';
 import NewArtistsModal from '@/components/modal/NewArtistsModal';
+import dayjs from 'dayjs';
 
 const defaultValues = {
   name: '',
@@ -131,7 +131,9 @@ const CreateEventForm = () => {
             <button
               type="button"
               onClick={() =>
-                appendDaily({ date: today().format('YYYY-MM-DD') })
+                appendDaily({
+                  date: dayjs().startOf('day').toISOString(),
+                })
               }
               className="w-fit text-blue-500"
             >
@@ -150,8 +152,16 @@ const CreateEventForm = () => {
                       <Input
                         type="date"
                         className="w-full"
-                        value={value}
-                        setValue={(str) => onChange(str)}
+                        defaultValue={dayjs(value)
+                          .tz('Asia/Seoul')
+                          .startOf('day')
+                          .format('YYYY-MM-DD')}
+                        setValue={(str) => {
+                          if (!str) {
+                            return;
+                          }
+                          onChange(dayjs.tz(str, 'Asia/Seoul').toISOString());
+                        }}
                       />
                       <button type="button" onClick={() => removeDaily(index)}>
                         <XIcon />

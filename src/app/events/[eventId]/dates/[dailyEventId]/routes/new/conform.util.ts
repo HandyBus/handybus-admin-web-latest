@@ -1,6 +1,6 @@
 import { CreateShuttleRouteForm } from './form.type';
 import { CreateShuttleRouteRequest } from '@/types/shuttleRoute.type';
-import { dayjsTz } from '@/utils/date.util';
+import dayjs from 'dayjs';
 
 export const conform = (
   data: CreateShuttleRouteForm,
@@ -10,7 +10,7 @@ export const conform = (
   ) => {
     const sortedByArrivalTime = [...hubs].sort(
       (a, b) =>
-        dayjsTz(a.arrivalTime).getTime() - dayjsTz(b.arrivalTime).getTime(),
+        dayjs.utc(a.arrivalTime).valueOf() - dayjs(b.arrivalTime).valueOf(),
     );
     const isSequenceValid = hubs.every(
       (hub, index) => hub.sequence === sortedByArrivalTime[index].sequence,
@@ -26,11 +26,11 @@ export const conform = (
     tos: CreateShuttleRouteRequest['shuttleRouteHubs'],
   ) => {
     const latestFromTime = Math.max(
-      ...froms.map((hub) => dayjsTz(hub.arrivalTime).getTime()),
+      ...froms.map((hub) => dayjs(hub.arrivalTime).valueOf()),
     );
 
     const earliestToTime = Math.min(
-      ...tos.map((hub) => dayjsTz(hub.arrivalTime).getTime()),
+      ...tos.map((hub) => dayjs(hub.arrivalTime).valueOf()),
     );
 
     if (latestFromTime >= earliestToTime) {
