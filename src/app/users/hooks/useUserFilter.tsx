@@ -123,9 +123,7 @@ const reducer = (
       return {
         ...prevState,
         orderBy: action.orderBy,
-        additionalOrderOptions: prevAdditionalOrderOptions
-          ? prevAdditionalOrderOptions
-          : 'ASC',
+        additionalOrderOptions: prevAdditionalOrderOptions || 'ASC',
       };
     case 'SET_ADDITIONAL_ORDER_OPTIONS':
       return {

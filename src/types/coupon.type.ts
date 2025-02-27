@@ -21,7 +21,7 @@ export const IssuedCouponsViewEntity = z.object({
   issuedCouponId: z.string(),
   userId: z.string(),
   userNickname: z.string(),
-  userProfileImage: z.string(),
+  userProfileImage: z.string().nullable(),
   code: z.string(),
   name: z.string(),
   discountType: DiscountTypeEnum,

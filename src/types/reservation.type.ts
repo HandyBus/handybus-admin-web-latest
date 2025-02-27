@@ -36,7 +36,7 @@ export const ReservationViewEntitySchema = z
     userId: z.string(),
     userNickname: z.string(),
     userPhoneNumber: z.string(),
-    userProfileImage: z.string(),
+    userProfileImage: z.string().nullable(),
     shuttleRouteId: z.string(),
     type: TripTypeEnum,
     fromDestinationShuttleRouteHubId: z.string().nullable(),

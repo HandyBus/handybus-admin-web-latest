@@ -39,7 +39,6 @@ const CoordInput = ({ coord, setCoord }: Props) => {
   );
 
   const setMarker = useCallback((latLng: kakao.maps.LatLng) => {
-    console.log('setMarker', latLng);
     if (markerRef.current === null) setError(true);
     else markerRef.current.setPosition(latLng);
   }, []);
@@ -68,7 +67,6 @@ const CoordInput = ({ coord, setCoord }: Props) => {
   };
 
   const initializeMap = useCallback(() => {
-    console.log('initializeMap');
     try {
       if (window.kakao && mapRef.current) {
         const options = {

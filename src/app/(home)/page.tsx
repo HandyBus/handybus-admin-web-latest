@@ -57,7 +57,7 @@ const Page = () => {
             height={20}
           />
         </article>
-        {/* <DashboardCard title="유저 통계" href="/statistics/users" /> */}
+        <DashboardCard title="유저 통계" href="/statistics/users" />
         <DashboardCard title="수요조사 통계" href="/statistics/demands" />
       </section>
       <section>

@@ -20,15 +20,6 @@ export type AgeRange = z.infer<typeof AgeRangeEnum>;
 export const GenderEnum = z.enum(['NONE', 'MALE', 'FEMALE']);
 export type Gender = z.infer<typeof GenderEnum>;
 
-const ProgressTypeEnum = z.enum([
-  'MARKETING_CONSENT',
-  'SERVICE_TERMS_AGREEMENT',
-  'PERSONAL_INFO_CONSENT',
-  'ONBOARDING_COMPLETE',
-  'PAYMENT_COMPLETE',
-]);
-export type ProgressType = z.infer<typeof ProgressTypeEnum>;
-
 // ----- GET -----
 
 export const UserStatsReadModel = z
@@ -54,15 +45,13 @@ export const UsersViewEntitySchema = z
     regionId: z.string().nullable(),
     lastLoginAt: z.string().nullable(),
     favoriteArtists: ArtistsViewEntitySchema.array().nullable(),
-    progresses: z
-      .object({
-        progressType: ProgressTypeEnum,
-        isCompleted: z.boolean(),
-      })
-      .array(),
     status: ActiveStatusEnum,
     isConnectedKakao: z.boolean(),
     isConnectedNaver: z.boolean(),
+    onboardingComplete: z.boolean(),
+    marketingConsent: z.boolean(),
+    serviceTermsAgreement: z.boolean(),
+    personalInfoConsent: z.boolean(),
   })
   .strict();
 export type UsersViewEntity = z.infer<typeof UsersViewEntitySchema>;
