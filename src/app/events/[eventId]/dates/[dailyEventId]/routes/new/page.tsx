@@ -253,7 +253,19 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
               <div className="flex flex-col gap-12">
                 <div className="flex flex-col items-start gap-8">
                   <label className="block break-keep text-16 font-500">
-                    목적지행
+                    왕복
+                  </label>
+                  <Controller
+                    control={control}
+                    name="regularPrice.roundTrip"
+                    render={({ field: { onChange, value } }) => (
+                      <NumberInput value={value ?? 0} setValue={onChange} />
+                    )}
+                  />
+                </div>
+                <div className="flex flex-col items-start gap-8">
+                  <label className="block break-keep text-16 font-500">
+                    가는편
                   </label>
                   <Controller
                     control={control}
@@ -265,23 +277,11 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                 </div>
                 <div className="flex flex-col items-start gap-8">
                   <label className="block break-keep text-16 font-500">
-                    귀가행
+                    오는편
                   </label>
                   <Controller
                     control={control}
                     name="regularPrice.fromDestination"
-                    render={({ field: { onChange, value } }) => (
-                      <NumberInput value={value ?? 0} setValue={onChange} />
-                    )}
-                  />
-                </div>
-                <div className="flex flex-col items-start gap-8">
-                  <label className="block break-keep text-16 font-500">
-                    왕복
-                  </label>
-                  <Controller
-                    control={control}
-                    name="regularPrice.roundTrip"
                     render={({ field: { onChange, value } }) => (
                       <NumberInput value={value ?? 0} setValue={onChange} />
                     )}
@@ -315,7 +315,25 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
               <div className="flex flex-col gap-12">
                 <div className="flex flex-col items-start gap-8">
                   <label className="block break-keep text-16 font-500">
-                    목적지행
+                    왕복
+                    <span className="ml-4 text-14 text-blue-500">
+                      {discountPercent(
+                        watchRegularPrice.roundTrip,
+                        watchEarlybirdPrice.roundTrip,
+                      )}
+                    </span>
+                  </label>
+                  <Controller
+                    control={control}
+                    name="earlybirdPrice.roundTrip"
+                    render={({ field: { onChange, value } }) => (
+                      <NumberInput value={value ?? 0} setValue={onChange} />
+                    )}
+                  />
+                </div>
+                <div className="flex flex-col items-start gap-8">
+                  <label className="block break-keep text-16 font-500">
+                    가는편
                     <span className="ml-4 text-14 text-blue-500">
                       {discountPercent(
                         watchRegularPrice.toDestination,
@@ -333,7 +351,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                 </div>
                 <div className="flex flex-col items-start gap-8">
                   <label className="block break-keep text-16 font-500">
-                    귀가행
+                    오는편
                     <span className="ml-4 text-14 text-blue-500">
                       {discountPercent(
                         watchRegularPrice.fromDestination,
@@ -349,24 +367,6 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                     )}
                   />
                 </div>
-                <div className="flex flex-col items-start gap-8">
-                  <label className="block break-keep text-16 font-500">
-                    왕복
-                    <span className="ml-4 text-14 text-blue-500">
-                      {discountPercent(
-                        watchRegularPrice.roundTrip,
-                        watchEarlybirdPrice.roundTrip,
-                      )}
-                    </span>
-                  </label>
-                  <Controller
-                    control={control}
-                    name="earlybirdPrice.roundTrip"
-                    render={({ field: { onChange, value } }) => (
-                      <NumberInput value={value ?? 0} setValue={onChange} />
-                    )}
-                  />
-                </div>
               </div>
             </div>
           </article>
@@ -377,7 +377,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
             파란색으로 표시된 경유지는 행사 장소 근처 경유지에 해당합니다. (ex.
             인스파이어 아레나)
             <br />
-            반드시 목적지행과 귀가행 마다 두개 이상의 경유지를 입력해주세요.
+            반드시 목적지행과 오는편 마다 두개 이상의 경유지를 입력해주세요.
             <br />
             경유지는 시간순서대로 입력해주세요.
             <br />
@@ -385,7 +385,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
           </Callout>
           <section className="pb-12">
             <Heading.h5 backgroundColor="yellow">
-              목적지행
+              가는편
               <button
                 type="button"
                 onClick={() =>
@@ -485,7 +485,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
           </section>
           <section>
             <Heading.h5 backgroundColor="yellow" className="flex">
-              귀가행
+              오는편
               <button
                 type="button"
                 onClick={() =>

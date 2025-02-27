@@ -128,9 +128,9 @@ const Stringifier = Object.freeze({
   tripType(v: TripType) {
     switch (v) {
       case 'TO_DESTINATION':
-        return '목적지행';
+        return '가는편';
       case 'FROM_DESTINATION':
-        return '귀가행';
+        return '오는편';
       case 'ROUND_TRIP':
         return '왕복';
     }

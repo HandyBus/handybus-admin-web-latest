@@ -18,7 +18,7 @@ export const ReviewsViewEntitySchema = z
     updatedAt: z.string(),
     userId: z.string(),
     userNickname: z.string(),
-    userProfileImage: z.string(),
+    userProfileImage: z.string().nullable(),
     eventId: z.string(),
     eventName: z.string(),
     eventType: EventTypeEnum,

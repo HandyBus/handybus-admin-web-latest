@@ -4,8 +4,8 @@ import { EventsViewEntitySchema } from './event.type';
 // ----- ENUM -----
 
 export const TripTypeEnum = z.enum([
-  'TO_DESTINATION', // 목적지행
-  'FROM_DESTINATION', // 귀가행
+  'TO_DESTINATION', // 가는편
+  'FROM_DESTINATION', // 오는편
   'ROUND_TRIP', // 왕복행
 ]);
 export type TripType = z.infer<typeof TripTypeEnum>;

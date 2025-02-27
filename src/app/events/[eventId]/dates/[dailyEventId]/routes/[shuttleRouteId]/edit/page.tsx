@@ -215,7 +215,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
           파란색으로 표시된 경유지는 행사 장소 근처 경유지에 해당합니다. (ex.
           인스파이어 아레나)
           <br />
-          반드시 목적지행과 귀가행 마다 두개 이상의 경유지를 입력해주세요.
+          반드시 목적지행과 오는편 마다 두개 이상의 경유지를 입력해주세요.
           <br />
           경유지는 시간순서대로 입력해주세요.
           <br />
@@ -223,7 +223,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
         </Callout>
         <section className="pb-12">
           <Heading.h5 backgroundColor="yellow">
-            목적지행
+            가는편
             <button
               type="button"
               onClick={() =>
@@ -324,7 +324,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
         <section>
           <Heading.h5 backgroundColor="yellow">
-            귀가행
+            오는편
             <button
               type="button"
               onClick={() =>

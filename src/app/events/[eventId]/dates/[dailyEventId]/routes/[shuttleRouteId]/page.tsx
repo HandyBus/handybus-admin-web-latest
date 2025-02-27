@@ -87,14 +87,14 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
                     <List.item title="얼리버드 예약 마감일">
                       {formatDateString(route.earlybirdDeadline)}
                     </List.item>
-                    <List.item title="귀가행 얼리버드 가격">
-                      {route.earlybirdPriceFromDestination?.toLocaleString()}
-                    </List.item>
-                    <List.item title="목적지행 얼리버드 가격">
-                      {route.earlybirdPriceToDestination?.toLocaleString()}
-                    </List.item>
                     <List.item title="왕복 얼리버드 가격">
                       {route.earlybirdPriceRoundTrip?.toLocaleString()}
+                    </List.item>
+                    <List.item title="오는편 얼리버드 가격">
+                      {route.earlybirdPriceFromDestination?.toLocaleString()}
+                    </List.item>
+                    <List.item title="가는편 얼리버드 가격">
+                      {route.earlybirdPriceToDestination?.toLocaleString()}
                     </List.item>
                   </>
                 )}
@@ -103,14 +103,14 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
                 <List.item title="예약 마감일">
                   {formatDateString(route.reservationDeadline)}
                 </List.item>
-                <List.item title="귀가행 가격">
-                  {route.regularPriceFromDestination.toLocaleString()}
-                </List.item>
-                <List.item title="목적지행 가격">
-                  {route.regularPriceToDestination.toLocaleString()}
-                </List.item>
                 <List.item title="왕복 가격">
                   {route.regularPriceRoundTrip.toLocaleString()}
+                </List.item>
+                <List.item title="오는편 가격">
+                  {route.regularPriceFromDestination.toLocaleString()}
+                </List.item>
+                <List.item title="가는편 가격">
+                  {route.regularPriceToDestination.toLocaleString()}
                 </List.item>
               </List>
               <List className="grid-cols-[72px_1fr]">
@@ -122,12 +122,12 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
           </Callout>
 
           <section className="flex flex-col">
-            <Heading.h2>경유지 - 목적지행</Heading.h2>
+            <Heading.h2>경유지 - 가는편</Heading.h2>
             <BaseTable table={toHubTable} />
           </section>
 
           <section className="flex flex-col">
-            <Heading.h2>경유지 - 귀가행</Heading.h2>
+            <Heading.h2>경유지 - 오는편</Heading.h2>
             <BaseTable table={fromHubTable} />
           </section>
 
