@@ -1,8 +1,8 @@
 'use client';
 
-import Heading from '@/components/text/Heading';
+import ChartBox from '@/components/chart/ChartSection';
 import { dayjsTz } from '@/utils/date.util';
-import CustomLineChart from './CustomLineChart';
+import CustomLineChart from '../../../components/chart/CustomLineChart';
 import { useGetTotalSalesCounts } from '@/services/billing.service';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
 import { TotalSalesCountsReadModel } from '@/types/dashboard.type';
@@ -33,10 +33,18 @@ const SalesCountChart = ({ options }: Props) => {
       : ['cumulativeGrossSales', 'cumulativeDiscountedSales'];
 
   return (
-    <article className="flex h-300 flex-col rounded-[4px] border border-grey-200 bg-white p-4">
-      <Heading.h4 className="text-14 font-600 text-grey-900">매출</Heading.h4>
-      <CustomLineChart data={parsedTotalSalesCounts ?? []} dataKey={dataKey} />
-    </article>
+    <ChartBox title="매출">
+      <CustomLineChart
+        data={parsedTotalSalesCounts ?? []}
+        dataKey={dataKey}
+        label={{
+          dailyGrossSales: '일일 판매액',
+          cumulativeGrossSales: '누적 판매액',
+          dailyDiscountedSales: '일일 할인 적용 판매액',
+          cumulativeDiscountedSales: '누적 할인 적용 판매액',
+        }}
+      />
+    </ChartBox>
   );
 };
 

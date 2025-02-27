@@ -1,8 +1,8 @@
 'use client';
 
-import Heading from '@/components/text/Heading';
+import ChartBox from '@/components/chart/ChartSection';
 import { dayjsTz } from '@/utils/date.util';
-import CustomLineChart from './CustomLineChart';
+import CustomLineChart from '../../../components/chart/CustomLineChart';
 import { useGetTotalReservationCounts } from '@/services/shuttleOperation.service';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
 import { TotalReservationPassengerCountsReadModel } from '@/types/dashboard.type';
@@ -36,15 +36,16 @@ const ReservationPassengerCountChart = ({ options }: Props) => {
       : ['cumulativeReservationPassengerCount'];
 
   return (
-    <article className="flex h-300 flex-col rounded-[4px] border border-grey-200 bg-white p-4">
-      <Heading.h4 className="text-14 font-600 text-grey-900">
-        예약 탑승객
-      </Heading.h4>
+    <ChartBox title="예약 탑승객">
       <CustomLineChart
         data={parsedReservationPassengerCounts ?? []}
         dataKey={dataKey}
+        label={{
+          intervalReservationPassengerCount: '일일 예약 탑승객',
+          cumulativeReservationPassengerCount: '누적 예약 탑승객',
+        }}
       />
-    </article>
+    </ChartBox>
   );
 };
 

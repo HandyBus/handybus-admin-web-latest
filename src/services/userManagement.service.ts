@@ -32,6 +32,7 @@ import dayjs from 'dayjs';
 import {
   DashboardOptions,
   TotalUserCountsReadModelSchema,
+  UserStatsAggregateResponseSchema,
 } from '@/types/dashboard.type';
 
 export interface GetUsersOptions {
@@ -283,5 +284,22 @@ export const useGetTotalUserCounts = (options?: Partial<DashboardOptions>) => {
   return useQuery({
     queryKey: ['user', 'count', options],
     queryFn: () => getTotalUserCounts(options),
+  });
+};
+
+export const getUserStatsAggregate = async () => {
+  const res = await authInstance.get(
+    '/v2/user-management/admin/users/all/total-aggregate',
+    {
+      shape: { userStatsAggregate: UserStatsAggregateResponseSchema },
+    },
+  );
+  return res.userStatsAggregate;
+};
+
+export const useGetUserStatsAggregate = () => {
+  return useQuery({
+    queryKey: ['user', 'aggregate'],
+    queryFn: () => getUserStatsAggregate(),
   });
 };

@@ -549,7 +549,7 @@ export const getTotalReservationCounts = async ({
   ...options
 }: Partial<GetTotalReservationCountsOptions> = {}) => {
   const res = await authInstance.get(
-    `/v2/shuttle-operation/admin/reservations/all/total-counts${toSearchParamString(
+    `/v2/shuttle-operation/admin/reservations/all/total-passengers${toSearchParamString(
       {
         baseDate,
         totalRangeDate,

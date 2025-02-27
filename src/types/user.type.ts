@@ -63,6 +63,10 @@ export const UsersViewEntitySchema = z
     status: ActiveStatusEnum,
     isConnectedKakao: z.boolean(),
     isConnectedNaver: z.boolean(),
+    onboardingComplete: z.boolean(),
+    marketingConsent: z.boolean(),
+    serviceTermsAgreement: z.boolean(),
+    personalInfoConsent: z.boolean(),
   })
   .strict();
 export type UsersViewEntity = z.infer<typeof UsersViewEntitySchema>;

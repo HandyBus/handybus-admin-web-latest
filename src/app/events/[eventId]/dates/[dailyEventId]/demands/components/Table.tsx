@@ -106,8 +106,6 @@ const Table = ({ eventId, dailyEventId }: Props) => {
     return sortedDemand;
   }, [demandTo, demandFrom]);
 
-  console.log(joinedDemand);
-
   const table = useTable({
     data: joinedDemand,
     columns,
