@@ -2,38 +2,20 @@
 
 import CustomPieChart from '@/components/chart/CustomPieChart';
 import Heading from '@/components/text/Heading';
-import { useGetUsersWithPagination } from '@/services/userManagement.service';
 
-const SocialLoginChart = () => {
-  const { data: kakao, isFetching: kakaoLoading } = useGetUsersWithPagination({
-    page: undefined,
-    limit: 1,
-    status: 'ACTIVE',
-    onboardingComplete: true,
-    isConnectedKakao: true,
-  });
-  const { data: naver, isFetching: naverLoading } = useGetUsersWithPagination({
-    page: undefined,
-    limit: 1,
-    status: 'ACTIVE',
-    onboardingComplete: true,
-    isConnectedNaver: true,
-  });
+interface Props {
+  data: { name: string; value: number }[];
+  isLoading: boolean;
+}
 
-  const chartData = [
-    { name: '카카오', value: kakao?.pages[0]?.totalCount ?? 0 },
-    { name: '네이버', value: naver?.pages[0]?.totalCount ?? 0 },
-  ];
-
-  const isLoading = kakaoLoading || naverLoading;
-
+const SocialLoginChart = ({ data, isLoading }: Props) => {
   return (
     <article className="flex h-300 flex-col rounded-[4px] border border-grey-200 bg-white p-4">
       <Heading.h4 className="text-14 font-600 text-grey-900">
         소셜 로그인
       </Heading.h4>
       <CustomPieChart
-        data={chartData}
+        data={data}
         dataKey="value"
         isLoading={isLoading}
         colors={['#F2DA00', '#34A634']}

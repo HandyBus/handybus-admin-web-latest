@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { AgeRangeEnum, GenderEnum } from './user.type';
 
 export interface DashboardOptions {
   baseDate: string; // 기준일자
@@ -52,4 +53,24 @@ export const TotalReviewCountsReadModelSchema = z.object({
 });
 export type TotalReviewCountsReadModel = z.infer<
   typeof TotalReviewCountsReadModelSchema
+>;
+
+export const UserStatsAggregateResponseSchema = z.object({
+  ageGenderStats: z
+    .object({
+      ageRange: AgeRangeEnum,
+      gender: GenderEnum,
+      totalCount: z.number(),
+    })
+    .array(),
+  marketingConsentCount: z.number(),
+  totalUserCount: z.number(),
+  onboardingIncompleteCount: z.number(),
+  withdrawnUserCount: z.number(),
+  todayLoginCount: z.number(),
+  kakaoUserCount: z.number(),
+  naverUserCount: z.number(),
+});
+export type UserStatsAggregateResponse = z.infer<
+  typeof UserStatsAggregateResponseSchema
 >;

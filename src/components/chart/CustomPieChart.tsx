@@ -32,7 +32,6 @@ const CustomPieChart = <T,>({
   if (!data || isLoading) {
     return null;
   }
-  console.log(data);
   return (
     <ResponsiveContainer width="80%" height="80%" className="mx-auto">
       <PieChart>
