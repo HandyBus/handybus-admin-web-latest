@@ -7,6 +7,7 @@ import SocialLoginChart from './components/SocialLoginChart';
 import MarketingConsentChart from './components/MarketingConsentChart';
 import { useGetUserStatsAggregate } from '@/services/userManagement.service';
 import { useMemo } from 'react';
+import ChartBox from '@/components/chart/ChartSection';
 
 const Page = () => {
   const { data: userStatsAggregate, isLoading } = useGetUserStatsAggregate();
@@ -148,6 +149,37 @@ const Page = () => {
           data={marketingConsentData}
           isLoading={isLoading}
         />
+        <ChartBox title="유저 수">
+          <div className="flex h-full w-full items-center justify-center pb-32">
+            <div className="flex w-192 flex-col gap-8">
+              <p className="flex items-baseline justify-between">
+                <span className="flex text-grey-800">총 유저 수 : </span>
+                <b className="text-24">
+                  {userStatsAggregate?.totalUserCount ?? 0}
+                </b>
+              </p>
+              <p className="flex items-baseline justify-between gap-4">
+                <span className="text-grey-800">온보딩 미완료 유저 수: </span>
+                <b className="text-24">
+                  {userStatsAggregate?.onboardingIncompleteCount ?? 0}
+                </b>
+              </p>
+              <p className="flex items-baseline justify-between gap-4">
+                <span className="text-grey-800">탈퇴한 유저 수: </span>
+                <b className="text-24">
+                  {userStatsAggregate?.withdrawnUserCount ?? 0}
+                </b>
+              </p>
+            </div>
+          </div>
+        </ChartBox>
+        <ChartBox title="오늘 접속한 유저 수">
+          <div className="flex h-full w-full items-center justify-center pb-32">
+            <p className="text-28 font-700">
+              {userStatsAggregate?.todayLoginCount ?? 0}
+            </p>
+          </div>
+        </ChartBox>
       </div>
     </main>
   );
