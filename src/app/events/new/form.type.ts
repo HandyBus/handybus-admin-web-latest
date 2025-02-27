@@ -1,6 +1,6 @@
 import { CreateEventRequest } from '@/types/event.type';
 import { z } from 'zod';
-import { convertToUTC } from '@/utils/date.util';
+import { conformEventData } from '../conform.util';
 
 export const CreateEventFormSchema = z.object({
   name: z.string(),
@@ -16,16 +16,5 @@ export const CreateEventFormSchema = z.object({
 export type CreateEventFormData = z.infer<typeof CreateEventFormSchema>;
 
 export const conform = (data: CreateEventFormData): CreateEventRequest => {
-  const artistIds = data.artistIds.filter(
-    (artist): artist is { artistId: string } => artist.artistId !== null,
-  );
-  const dailyEvents = data.dailyEvents.map((daily) => ({
-    ...daily,
-    date: convertToUTC(daily.date),
-  }));
-  return {
-    ...data,
-    artistIds: artistIds.map((artist) => artist.artistId),
-    dailyEvents,
-  } satisfies CreateEventRequest;
+  return conformEventData<CreateEventFormData, CreateEventRequest>(data);
 };
