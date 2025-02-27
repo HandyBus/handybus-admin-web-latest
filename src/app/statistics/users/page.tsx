@@ -117,8 +117,8 @@ const Page = () => {
     }
 
     return [
-      { name: '카카오', value: userStatsAggregate.kakaoUserCount ?? 0 },
-      { name: '네이버', value: userStatsAggregate.naverUserCount ?? 0 },
+      { name: '카카오', value: userStatsAggregate.kakaoUserCount },
+      { name: '네이버', value: userStatsAggregate.naverUserCount },
     ];
   }, [userStatsAggregate]);
 
@@ -128,12 +128,12 @@ const Page = () => {
     }
 
     return [
-      { name: '동의', value: userStatsAggregate.marketingConsentCount ?? 0 },
+      { name: '동의', value: userStatsAggregate.marketingConsentCount },
       {
         name: '미동의',
         value:
           userStatsAggregate.totalUserCount -
-            userStatsAggregate.marketingConsentCount ?? 0,
+          userStatsAggregate.marketingConsentCount,
       },
     ];
   }, [userStatsAggregate]);
