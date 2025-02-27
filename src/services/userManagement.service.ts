@@ -263,7 +263,7 @@ export const getTotalUserCounts = async ({
   intervalDays = 1,
 }: Partial<DashboardOptions> = {}) => {
   const res = await authInstance.get(
-    `/v2/user-management/admin/users/all/total-passengers${toSearchParamString(
+    `/v2/user-management/admin/users/all/total-counts${toSearchParamString(
       {
         baseDate,
         totalRangeDate,
