@@ -415,7 +415,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
                     backgroundColor="yellow"
                     className="flex items-center gap-12"
                   >
-                    <span> 귀가행</span>
+                    <span> 오는편</span>
                     <span className="ml-12 text-14 font-500 text-grey-500">
                       {`(${busWithSeat.fromDestinationFilledSeat}/${busWithSeat.maxSeat})`}
                     </span>
