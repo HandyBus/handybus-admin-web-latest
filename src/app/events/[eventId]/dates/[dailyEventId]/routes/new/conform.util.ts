@@ -9,8 +9,7 @@ export const conform = (
     hubs: CreateShuttleRouteRequest['shuttleRouteHubs'],
   ) => {
     const sortedByArrivalTime = [...hubs].sort(
-      (a, b) =>
-        dayjs.utc(a.arrivalTime).valueOf() - dayjs(b.arrivalTime).valueOf(),
+      (a, b) => dayjs(a.arrivalTime).valueOf() - dayjs(b.arrivalTime).valueOf(),
     );
     const isSequenceValid = hubs.every(
       (hub, index) => hub.sequence === sortedByArrivalTime[index].sequence,
