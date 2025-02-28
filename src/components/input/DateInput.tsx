@@ -1,6 +1,6 @@
 'use client';
 
-import { dayjsTz, toDateOnly } from '@/utils/date.util';
+import dayjs from 'dayjs';
 import DatePicker from 'react-datepicker';
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -14,8 +14,10 @@ const DateInput = ({ disabled, value, setValue }: Props) => {
   return (
     <DatePicker
       disabled={disabled}
-      selected={dayjsTz(value)}
-      onChange={(date) => date && setValue(toDateOnly(date).toISOString())}
+      selected={dayjs(value).tz('Asia/Seoul').toDate()}
+      onChange={(date) =>
+        date && setValue(dayjs(date, 'Asia/Seoul').startOf('day').toISOString())
+      }
       showIcon
       dateFormat="yyyy-MM-dd"
       className="rounded-[4px] border border-grey-200"

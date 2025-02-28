@@ -2,7 +2,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { formatDateString } from '@/utils/date.util';
 import { ReservationViewEntity } from '@/types/reservation.type';
 import Stringifier from '@/utils/stringifier.util';
-import { dayjsTz } from '@/utils/date.util';
+import dayjs from 'dayjs';
 
 const columnHelper = createColumnHelper<ReservationViewEntity>();
 
@@ -27,7 +27,7 @@ export const columns = [
           </span>
           <br />
           <span className="text-14 font-400 text-grey-600">
-            {date && dayjsTz(date).toLocaleDateString()}
+            {date && dayjs(date).tz('Asia/Seoul').format('YYYY.MM.DD')}
           </span>
           <br />
           <span className="text-14 font-500 text-grey-700">

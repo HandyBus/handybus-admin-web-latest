@@ -1,8 +1,9 @@
 import { createColumnHelper } from '@tanstack/react-table';
-import { dayjsTz, formatDateString } from '@/utils/date.util';
+import { formatDateString } from '@/utils/date.util';
 import { ShuttleDemandsViewEntity } from '@/types/demand.type';
 import Stringifier from '@/utils/stringifier.util';
 import { ID_TO_REGION } from '@/constants/regions';
+import dayjs from 'dayjs';
 
 const columnHelper = createColumnHelper<ShuttleDemandsViewEntity>();
 
@@ -25,7 +26,7 @@ export const columns = [
           <span className="text-16 font-500">{event?.eventName}</span>
           <br />
           <span className="text-14 font-400 text-grey-600">
-            {date && dayjsTz(date).toLocaleDateString()}
+            {date && dayjs(date).tz('Asia/Seoul').format('YYYY.MM.DD')}
           </span>
         </p>
       );
