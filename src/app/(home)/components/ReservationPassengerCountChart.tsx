@@ -4,7 +4,6 @@ import ChartBox from '@/components/chart/ChartSection';
 import CustomLineChart from '../../../components/chart/CustomLineChart';
 import { useGetTotalReservationCounts } from '@/services/shuttleOperation.service';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
-import { TotalReservationPassengerCountsReadModel } from '@/types/dashboard.type';
 import dayjs from 'dayjs';
 
 interface Props {
@@ -19,18 +18,41 @@ const ReservationPassengerCountChart = ({ options }: Props) => {
     intervalDays,
     reservationStatus: 'COMPLETE_PAYMENT',
   });
+  const { data: cancelledReservationPassengerCounts } =
+    useGetTotalReservationCounts({
+      intervalDays,
+      totalRangeDate,
+      reservationStatus: 'CANCEL',
+    });
 
   const parsedReservationPassengerCounts = reservationPassengerCounts?.map(
-    (item) => ({
+    (item, index) => ({
       ...item,
+      intervalCancelledReservationPassengerCount:
+        cancelledReservationPassengerCounts?.[index]
+          ?.intervalReservationPassengerCount,
+      cumulativeCancelledReservationPassengerCount:
+        cancelledReservationPassengerCounts?.[index]
+          ?.cumulativeReservationPassengerCount,
       date: dayjs(item.date).tz('Asia/Seoul').format('MM.DD.'),
     }),
   );
 
-  const dataKey: (keyof TotalReservationPassengerCountsReadModel)[] =
+  const dataKey: Array<
+    | 'intervalReservationPassengerCount'
+    | 'cumulativeReservationPassengerCount'
+    | 'intervalCancelledReservationPassengerCount'
+    | 'cumulativeCancelledReservationPassengerCount'
+  > =
     countType === '일일'
-      ? ['intervalReservationPassengerCount']
-      : ['cumulativeReservationPassengerCount'];
+      ? [
+          'intervalReservationPassengerCount',
+          'intervalCancelledReservationPassengerCount',
+        ]
+      : [
+          'cumulativeReservationPassengerCount',
+          'cumulativeCancelledReservationPassengerCount',
+        ];
 
   return (
     <ChartBox title="예약 탑승객">
@@ -40,6 +62,8 @@ const ReservationPassengerCountChart = ({ options }: Props) => {
         label={{
           intervalReservationPassengerCount: '일일 예약 탑승객',
           cumulativeReservationPassengerCount: '누적 예약 탑승객',
+          intervalCancelledReservationPassengerCount: '일일 예약 취소 탑승객',
+          cumulativeCancelledReservationPassengerCount: '누적 예약 취소 탑승객',
         }}
       />
     </ChartBox>
