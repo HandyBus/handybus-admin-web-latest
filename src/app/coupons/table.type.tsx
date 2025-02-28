@@ -51,7 +51,7 @@ export const columns = [
         const now = dayjs();
         return isActive ? (
           <span className="text-primary-600">진행중</span>
-        ) : now < dayjs(validFrom) ? (
+        ) : now.isBefore(dayjs(validFrom)) ? (
           <span className="text-grey-700">대기</span>
         ) : (
           <span className="text-red-600">만료</span>
