@@ -10,7 +10,6 @@ import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-dayjs.tz.setDefault('Asia/Seoul');
 dayjs.locale('ko');
 
 const TopLevelLayout = ({ children }: Readonly<{ children: ReactNode }>) => {

@@ -6,7 +6,7 @@ export const CreateEventFormSchema = z.object({
   imageUrl: z.string().url(),
   regionId: z.string(),
   regionHubId: z.string(),
-  dailyEvents: z.object({ date: z.date() }).array(),
+  dailyEvents: z.object({ date: z.string() }).array(),
   type: z.enum(['CONCERT', 'FESTIVAL']),
   // to work with react-hook-form
   artistIds: z.array(z.object({ artistId: z.string().nullable() })),

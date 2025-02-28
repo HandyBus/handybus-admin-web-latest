@@ -32,15 +32,17 @@ const Page = ({ searchParams }: Props) => {
     filter: { value: string; status: FilterType },
   ) => {
     const { value, status } = filter;
-    const now = dayjs().tz().toDate();
+    const now = dayjs();
+    const validFrom = dayjs(coupon.validFrom);
+
     const isFilteredByStatus =
       status === '전체' || !status
         ? true
         : status === '진행중'
-          ? coupon.isActive && now > dayjs(coupon.validFrom).tz().toDate()
+          ? coupon.isActive && now.isAfter(validFrom)
           : status === '대기'
-            ? !coupon.isActive && now < dayjs(coupon.validFrom).tz().toDate()
-            : !coupon.isActive && now > dayjs(coupon.validFrom).tz().toDate();
+            ? !coupon.isActive && now.isBefore(validFrom)
+            : !coupon.isActive && now.isAfter(validFrom);
     if (!value) {
       return isFilteredByStatus;
     }
