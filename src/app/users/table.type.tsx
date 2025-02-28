@@ -71,8 +71,8 @@ export const columns = [
       return value;
     },
   }),
-  columnHelper.accessor('lastLoginAt', {
-    header: () => '마지막 접속 시간',
+  columnHelper.accessor('createdAt', {
+    header: () => '생성일',
     cell: (info) => formatDateString(info.getValue(), 'datetime', '-'),
   }),
   columnHelper.display({

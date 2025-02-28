@@ -11,8 +11,17 @@ import Heading from '@/components/text/Heading';
 import BlueButton from '@/components/link/BlueButton';
 import BlueLink from '@/components/link/BlueLink';
 
-const VIEW_GUIDE =
-  '배너 목록을 조회합니다. 편집하기 버튼을 눌러서 배너를 편집할 수 있습니다.';
+const VIEW_GUIDE = (
+  <>
+    <span>
+      배너 목록을 조회합니다. 편집하기 버튼을 눌러서 배너를 편집할 수 있습니다.
+    </span>
+    <br />
+    <span>
+      배너 생성 및 수정시 <strong>약 1시간 이후</strong> 반영 됩니다.
+    </span>
+  </>
+);
 
 const BannerPage = () => {
   const { data, isLoading, isError } = useGetBanners();

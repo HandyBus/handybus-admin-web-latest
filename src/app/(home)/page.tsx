@@ -4,7 +4,6 @@ import Heading from '@/components/text/Heading';
 import UserCountChart from './components/UserCountChart';
 import DemandCountChart from './components/DemandCountChart';
 import ReservationPassengerCountChart from './components/ReservationPassengerCountChart';
-import CancelledReservationPassengerCountChart from './components/CancelledReservationPassengerCountChart';
 import SalesCountChart from './components/SalesCountChart';
 import ReviewCountChart from './components/ReviewCountChart';
 import useCountFilter from './hooks/useCountFilter';
@@ -70,7 +69,6 @@ const Page = () => {
           <UserCountChart options={countFilter} />
           <DemandCountChart options={countFilter} />
           <ReservationPassengerCountChart options={countFilter} />
-          <CancelledReservationPassengerCountChart options={countFilter} />
           <SalesCountChart options={countFilter} />
           <ReviewCountChart options={countFilter} />
         </div>

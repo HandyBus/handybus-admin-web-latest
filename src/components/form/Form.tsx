@@ -1,4 +1,5 @@
 import {
+  ButtonHTMLAttributes,
   FormHTMLAttributes,
   LabelHTMLAttributes,
   PropsWithChildren,
@@ -70,11 +71,19 @@ const Label = ({
 
 Form.label = Label;
 
-const SubmitButton = ({ children }: PropsWithChildren) => {
+interface SubmitButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  disabled?: boolean;
+}
+
+const SubmitButton = ({
+  children,
+  ...props
+}: PropsWithChildren<SubmitButtonProps>) => {
   return (
     <button
       type="submit"
-      className="flex items-center justify-center gap-8 rounded-lg bg-blue-500 p-8 font-500 text-white hover:bg-blue-600"
+      className="flex items-center justify-center gap-8 rounded-lg bg-blue-500 p-8 font-500 text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-grey-100 disabled:text-grey-500"
+      {...props}
     >
       {children}
     </button>

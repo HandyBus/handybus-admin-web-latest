@@ -13,8 +13,15 @@ import { usePutBanner } from '@/services/core.service';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
-const EDIT_GUIDE = `배너 추가/삭제/수정 및 순서를 변경할 수 있습니다.`;
-
+const EDIT_GUIDE = (
+  <>
+    <span>배너 추가/삭제/수정 및 순서를 변경할 수 있습니다.</span>
+    <br />
+    <span>
+      배너 생성 및 수정시 <strong>약 1시간 이후</strong> 반영 됩니다.
+    </span>
+  </>
+);
 interface Props {
   banners: AdminHandleBannerRequestBanners[];
 }

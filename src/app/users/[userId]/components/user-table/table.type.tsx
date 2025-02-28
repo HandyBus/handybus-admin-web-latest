@@ -72,6 +72,14 @@ export const columns = [
       return value;
     },
   }),
+  columnHelper.accessor('createdAt', {
+    header: () => '생성일',
+    cell: (info) => formatDateString(info.getValue(), 'datetime', '-'),
+  }),
+  columnHelper.accessor('updatedAt', {
+    header: () => '수정일',
+    cell: (info) => formatDateString(info.getValue(), 'datetime', '-'),
+  }),
   columnHelper.accessor('lastLoginAt', {
     header: () => '마지막 접속 시간',
     cell: (info) => formatDateString(info.getValue(), 'datetime', '-'),

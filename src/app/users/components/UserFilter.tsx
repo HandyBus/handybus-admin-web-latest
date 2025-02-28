@@ -14,7 +14,6 @@ import { ActiveStatusEnum } from '@/types/common.type';
 import DebouncedInput from '@/components/input/DebouncedInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
 import dayjs from 'dayjs';
-import { dayjsTz } from '@/utils/date.util';
 
 interface Props {
   option: GetUsersOptions;
@@ -188,9 +187,7 @@ const UserFilter = ({ option, dispatch }: Props) => {
             <Label>마지막 접속 시간</Label>
             <div className="flex flex-row gap-4">
               <DateTimeInput
-                value={
-                  option.lastLoginFrom ? dayjsTz(option.lastLoginFrom) : null
-                }
+                value={option.lastLoginFrom ?? null}
                 setValue={(value) =>
                   dispatch({
                     type: 'SET_LAST_LOGIN_FROM',
@@ -201,7 +198,7 @@ const UserFilter = ({ option, dispatch }: Props) => {
                 }
               />
               <DateTimeInput
-                value={option.lastLoginTo ? dayjsTz(option.lastLoginTo) : null}
+                value={option.lastLoginTo ?? null}
                 setValue={(value) =>
                   dispatch({
                     type: 'SET_LAST_LOGIN_TO',

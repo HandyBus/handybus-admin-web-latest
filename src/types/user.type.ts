@@ -52,6 +52,8 @@ export const UsersViewEntitySchema = z
     marketingConsent: z.boolean(),
     serviceTermsAgreement: z.boolean(),
     personalInfoConsent: z.boolean(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
   })
   .strict();
 export type UsersViewEntity = z.infer<typeof UsersViewEntitySchema>;

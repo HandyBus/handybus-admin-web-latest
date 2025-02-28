@@ -12,12 +12,11 @@ import { Button, Field, Label, RadioGroup, Radio } from '@headlessui/react';
 import ImageFileInput from '@/components/input/ImageFileInput';
 import RegionHubInput from '@/components/input/HubInput';
 import Input from '@/components/input/Input';
-import dayjs from 'dayjs';
-import { today } from '@/utils/date.util';
 import { usePostEvent } from '@/services/shuttleOperation.service';
 import Form from '@/components/form/Form';
 import { EventTypeEnum } from '@/types/event.type';
 import NewArtistsModal from '@/components/modal/NewArtistsModal';
+import dayjs from 'dayjs';
 
 const defaultValues = {
   name: '',
@@ -31,6 +30,7 @@ const defaultValues = {
 
 const CreateEventForm = () => {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { control, handleSubmit } = useForm<CreateEventFormData>({
     defaultValues,
@@ -70,12 +70,14 @@ const CreateEventForm = () => {
         '행사 추가에 실패했습니다, ' +
           (error instanceof Error && error.message),
       );
+      setIsSubmitting(false);
     },
   });
 
   const onSubmit = useCallback(
     (data: CreateEventFormData) => {
       if (confirm('행사를 추가하시겠습니까?')) {
+        setIsSubmitting(true);
         postEvent(conform(data));
       }
     },
@@ -131,7 +133,11 @@ const CreateEventForm = () => {
             날짜
             <button
               type="button"
-              onClick={() => appendDaily({ date: today() })}
+              onClick={() =>
+                appendDaily({
+                  date: dayjs().startOf('day').toISOString(),
+                })
+              }
               className="w-fit text-blue-500"
             >
               <PlusIcon />
@@ -149,8 +155,16 @@ const CreateEventForm = () => {
                       <Input
                         type="date"
                         className="w-full"
-                        value={dayjs(value).tz().format('YYYY-MM-DD')}
-                        setValue={(str) => onChange(dayjs(str).tz().toDate())}
+                        defaultValue={dayjs(value)
+                          .tz('Asia/Seoul')
+                          .startOf('day')
+                          .format('YYYY-MM-DD')}
+                        setValue={(str) => {
+                          if (!str) {
+                            return;
+                          }
+                          onChange(dayjs.tz(str, 'Asia/Seoul').toISOString());
+                        }}
                       />
                       <button type="button" onClick={() => removeDaily(index)}>
                         <XIcon />
@@ -254,7 +268,9 @@ const CreateEventForm = () => {
             ))}
           </div>
         </Form.section>
-        <Form.submitButton>추가하기</Form.submitButton>
+        <Form.submitButton disabled={isSubmitting}>
+          {isSubmitting ? '처리 중...' : '추가하기'}
+        </Form.submitButton>
       </Form>
       <NewArtistsModal
         isOpen={isArtistModalOpen}
