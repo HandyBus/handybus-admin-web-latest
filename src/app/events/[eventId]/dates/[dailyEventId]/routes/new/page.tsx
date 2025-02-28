@@ -5,7 +5,7 @@ import { type CreateShuttleRouteForm } from './form.type';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/input/Input';
 import { RegionHubInputSelfContained } from '@/components/input/HubInput';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import DateInput from '@/components/input/DateInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
 import {
@@ -102,6 +102,8 @@ interface FormProps extends Props {
 const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   const { eventId, dailyEventId } = params;
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const {
     register,
     control,
@@ -147,6 +149,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
       alert(
         '오류가 발생했습니다.\n' + (error instanceof Error && error.message),
       );
+      setIsSubmitting(false);
     },
   });
 
@@ -158,6 +161,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     )
       return;
     try {
+      setIsSubmitting(true);
       const shuttleRouteHubs = conform(data);
       postRoute({
         eventId,
@@ -165,6 +169,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
         body: shuttleRouteHubs,
       });
     } catch (error) {
+      setIsSubmitting(false);
       if (
         error instanceof Error &&
         error.message === 'arrivalTime is not validated'
@@ -590,7 +595,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
             </ul>
           </section>
         </FormContainer.section>
-        <FormContainer.submitButton>추가하기</FormContainer.submitButton>
+        <FormContainer.submitButton disabled={isSubmitting}>
+          {isSubmitting ? '처리 중...' : '추가하기'}
+        </FormContainer.submitButton>
       </FormContainer>
     </main>
   );

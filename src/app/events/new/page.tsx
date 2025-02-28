@@ -30,6 +30,7 @@ const defaultValues = {
 
 const CreateEventForm = () => {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { control, handleSubmit } = useForm<CreateEventFormData>({
     defaultValues,
@@ -69,12 +70,14 @@ const CreateEventForm = () => {
         '행사 추가에 실패했습니다, ' +
           (error instanceof Error && error.message),
       );
+      setIsSubmitting(false);
     },
   });
 
   const onSubmit = useCallback(
     (data: CreateEventFormData) => {
       if (confirm('행사를 추가하시겠습니까?')) {
+        setIsSubmitting(true);
         postEvent(conform(data));
       }
     },
@@ -265,7 +268,9 @@ const CreateEventForm = () => {
             ))}
           </div>
         </Form.section>
-        <Form.submitButton>추가하기</Form.submitButton>
+        <Form.submitButton disabled={isSubmitting}>
+          {isSubmitting ? '처리 중...' : '추가하기'}
+        </Form.submitButton>
       </Form>
       <NewArtistsModal
         isOpen={isArtistModalOpen}
