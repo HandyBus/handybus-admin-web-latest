@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import Input from '../input/Input';
 import CustomModal from './CustomModal';
-import { usePostArtist } from '@/services/shuttleOperation.service';
+import { usePostArtist } from '@/services/artist.service';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
 import { queryClient } from '../Provider';

@@ -12,7 +12,7 @@ import { Button, Field, Label, RadioGroup, Radio } from '@headlessui/react';
 import ImageFileInput from '@/components/input/ImageFileInput';
 import RegionHubInput from '@/components/input/HubInput';
 import Input from '@/components/input/Input';
-import { usePostEvent } from '@/services/shuttleOperation.service';
+import { usePostEvent } from '@/services/event.service';
 import Form from '@/components/form/Form';
 import { EventTypeEnum } from '@/types/event.type';
 import NewArtistsModal from '@/components/modal/NewArtistsModal';

@@ -8,7 +8,7 @@ import Input from '@/components/input/Input';
 import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
 import { CheckIcon } from 'lucide-react';
 import Stringifier from '@/utils/stringifier.util';
-import { usePostShuttleBus } from '@/services/shuttleOperation.service';
+import { usePostShuttleBus } from '@/services/shuttleBus.service';
 import { BusTypeEnum } from '@/types/shuttleBus.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';

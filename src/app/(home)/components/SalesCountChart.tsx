@@ -2,7 +2,7 @@
 
 import ChartBox from '@/components/chart/ChartSection';
 import CustomLineChart from '../../../components/chart/CustomLineChart';
-import { useGetTotalSalesCounts } from '@/services/billing.service';
+import { useGetTotalSalesCounts } from '@/services/payment.service';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
 import { TotalSalesCountsReadModel } from '@/types/dashboard.type';
 import dayjs from 'dayjs';

@@ -8,7 +8,7 @@ import {
 import { ChevronDownIcon, FilterIcon, RefreshCwIcon } from 'lucide-react';
 import { Dispatch, ReactNode } from 'react';
 import DebouncedInput from '@/components/input/DebouncedInput';
-import { GetRegionHubsOptions } from '@/services/location.service';
+import { GetRegionHubsOptions } from '@/services/hub.service';
 import { RegionHubFilterAction } from '../hooks/useRegionHubFilter';
 import RegionInput from '@/components/input/RegionInput';
 

@@ -10,7 +10,7 @@ import DateTimeInput from '@/components/input/DateTimeInput';
 import {
   useGetShuttleRoute,
   usePutShuttleRoute,
-} from '@/services/shuttleOperation.service';
+} from '@/services/shuttleRoute.service';
 import { UpdateShuttleRouteRequestFormData } from './form.type';
 import { conform } from './conform.util';
 import Heading from '@/components/text/Heading';

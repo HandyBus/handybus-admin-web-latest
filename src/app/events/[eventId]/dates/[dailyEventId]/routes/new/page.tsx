@@ -8,10 +8,8 @@ import { RegionHubInputSelfContained } from '@/components/input/HubInput';
 import { useMemo, useState } from 'react';
 import DateInput from '@/components/input/DateInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
-import {
-  useGetEvent,
-  usePostShuttleRoute,
-} from '@/services/shuttleOperation.service';
+import { useGetEvent } from '@/services/event.service';
+import { usePostShuttleRoute } from '@/services/shuttleRoute.service';
 import { EventsViewEntity } from '@/types/event.type';
 import { conform } from './conform.util';
 import Heading from '@/components/text/Heading';

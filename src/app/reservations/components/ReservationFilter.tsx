@@ -16,17 +16,15 @@ import { ReservationFilterAction } from '../hooks/userReservationFilter';
 import Toggle from '@/components/button/Toggle';
 import Stringifier from '@/utils/stringifier.util';
 import ShuttleBusInput from '@/components/input/ShuttleBusInput';
-import {
-  getEvent,
-  GetReservationsOptions,
-  getShuttleRoute,
-} from '@/services/shuttleOperation.service';
+import { GetReservationsOptions } from '@/services/reservation.service';
+import { getShuttleRoute } from '@/services/shuttleRoute.service';
 import {
   CancelStatusEnum,
   HandyStatusEnum,
   ReservationStatusEnum,
 } from '@/types/reservation.type';
 import DebouncedInput from '@/components/input/DebouncedInput';
+import { getEvent } from '@/services/event.service';
 
 interface Props {
   option: GetReservationsOptions;

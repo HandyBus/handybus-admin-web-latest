@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { EventsViewEntitySchema } from './event.type';
+import { ActiveStatusEnum } from './common.type';
 
 // ----- ENUM -----
 
@@ -30,10 +31,10 @@ export const ShuttleRouteHubsInShuttleRoutesViewEntitySchema = z
     address: z.string(),
     latitude: z.number(),
     longitude: z.number(),
-    type: TripTypeEnum.extract(['TO_DESTINATION', 'FROM_DESTINATION']),
+    type: TripTypeEnum.exclude(['ROUND_TRIP']),
     sequence: z.number().int(),
     arrivalTime: z.string(),
-    status: z.enum(['ACTIVE', 'INACTIVE']),
+    status: ActiveStatusEnum,
   })
   .strict();
 export type ShuttleRouteHubsInShuttleRoutesViewEntity = z.infer<
@@ -74,7 +75,7 @@ export type ShuttleRoutesViewEntity = z.infer<
   typeof ShuttleRoutesViewEntitySchema
 >;
 
-// ----- POST & PUT -----
+// ----- POST -----
 
 export const CreateShuttleRouteRequestSchema = z
   .object({
@@ -112,7 +113,7 @@ export type CreateShuttleRouteRequest = z.infer<
 export const UpdateShuttleRouteHubPropsSchema = z.object({
   shuttleRouteHubId: z.string().optional(),
   regionHubId: z.string(),
-  type: TripTypeEnum.extract(['TO_DESTINATION', 'FROM_DESTINATION']),
+  type: TripTypeEnum.exclude(['ROUND_TRIP']),
   sequence: z.number().int().positive(),
   arrivalTime: z.string(),
 });

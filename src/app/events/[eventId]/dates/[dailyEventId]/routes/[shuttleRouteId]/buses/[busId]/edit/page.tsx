@@ -10,7 +10,7 @@ import Stringifier from '@/utils/stringifier.util';
 import {
   useGetShuttleBus,
   usePutShuttleBus,
-} from '@/services/shuttleOperation.service';
+} from '@/services/shuttleBus.service';
 import { BusTypeEnum, ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';

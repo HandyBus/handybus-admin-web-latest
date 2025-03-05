@@ -3,7 +3,7 @@
 import Heading from '@/components/text/Heading';
 import Map from './components/Map';
 import RegionPieChart from './components/RegionPieChart';
-import { useGetDemandsStats } from '@/services/shuttleOperation.service';
+import { useGetDemandsStats } from '@/services/demand.service';
 
 const Page = () => {
   const { data: sidoStats, isLoading: isSidoStatsLoading } = useGetDemandsStats(

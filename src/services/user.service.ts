@@ -11,22 +11,7 @@ import {
   UserStatsReadModel,
   UsersViewEntitySchema,
 } from '@/types/user.type';
-import { IssuedCouponsViewEntity } from '@/types/coupon.type';
-import {
-  ShuttleDemandStatus,
-  ShuttleDemandsViewEntitySchema,
-} from '@/types/demand.type';
-import {
-  PaymentsViewEntitySchema,
-  TossPaymentsEntitySchema,
-} from '@/types/payment.type';
 import { toSearchParamString } from '@/utils/searchParam.util';
-import { ShuttleRouteStatus } from '@/types/shuttleRoute.type';
-import {
-  ReservationStatus,
-  ReservationViewEntitySchema,
-} from '@/types/reservation.type';
-import { ReviewsViewEntitySchema } from '@/types/reviews.type';
 import { ActiveStatus } from '@/types/common.type';
 import dayjs from 'dayjs';
 import {
@@ -34,6 +19,8 @@ import {
   TotalUserCountsReadModelSchema,
   UserStatsAggregateResponseSchema,
 } from '@/types/dashboard.type';
+
+// ----- GET -----
 
 export interface GetUsersOptions {
   nickname?: string;
@@ -122,138 +109,6 @@ export const useGetUserStats = (userId: string) => {
   return useQuery({
     queryKey: ['user', 'stats', userId],
     queryFn: () => getUserStats(userId),
-  });
-};
-
-export const getUserCoupons = async (userId: string) => {
-  const res = await authInstance.get(
-    `/v2/user-management/admin/users/${userId}/coupons`,
-    {
-      shape: {
-        issuedCoupons: IssuedCouponsViewEntity.array(),
-      },
-    },
-  );
-  return res.issuedCoupons;
-};
-
-export const useGetUserCoupons = (userId: string) => {
-  return useQuery({
-    queryKey: ['user', userId, 'coupon'],
-    queryFn: () => getUserCoupons(userId),
-  });
-};
-
-export const getUserDemands = async (
-  userId: string,
-  params?: { status?: ShuttleDemandStatus },
-) => {
-  const res = await authInstance.get(
-    `/v2/user-management/admin/users/${userId}/demands${toSearchParamString(params, '?')}`,
-    {
-      shape: {
-        shuttleDemands: ShuttleDemandsViewEntitySchema.array(),
-      },
-    },
-  );
-  return res.shuttleDemands;
-};
-
-export const useGetUserDemands = (userId: string) => {
-  return useQuery({
-    queryKey: ['user', userId, 'demand'],
-    queryFn: () => getUserDemands(userId),
-  });
-};
-
-export const getUserPayment = async (userId: string, paymentId: string) => {
-  const res = await authInstance.get(
-    `/v2/user-management/admin/users/${userId}/payments/${paymentId}`,
-    {
-      shape: {
-        payments: PaymentsViewEntitySchema.nullable(),
-        tossPayments: TossPaymentsEntitySchema.nullable(),
-      },
-    },
-  );
-  return res;
-};
-
-export const useGetUserPayment = (userId: string, paymentId: string) => {
-  return useQuery({
-    queryKey: ['user', userId, 'payment', paymentId],
-    queryFn: () => getUserPayment(userId, paymentId),
-  });
-};
-
-export const getUserReservations = async (
-  userId: string,
-  params?: {
-    reservationStatus?: ReservationStatus;
-    shuttleRouteStatus?: ShuttleRouteStatus;
-  },
-) => {
-  const res = await authInstance.get(
-    `/v2/user-management/admin/users/${userId}/reservations${toSearchParamString(params, '?')}`,
-    {
-      shape: {
-        reservations: ReservationViewEntitySchema.array(),
-      },
-    },
-  );
-  return res.reservations;
-};
-
-export const useGetUserReservations = (userId: string) => {
-  return useQuery({
-    queryKey: ['user', userId, 'reservation'],
-    queryFn: () => getUserReservations(userId),
-  });
-};
-
-export const getUserReservation = async (
-  userId: string,
-  reservationId: string,
-) => {
-  const res = await authInstance.get(
-    `/v2/user-management/admin/users/${userId}/reservations/${reservationId}`,
-    {
-      shape: {
-        reservation: ReservationViewEntitySchema.nullable(),
-        payment: PaymentsViewEntitySchema.nullable(),
-        tossPayments: TossPaymentsEntitySchema.nullable(),
-      },
-    },
-  );
-  return res;
-};
-
-export const useGetUserReservation = (
-  userId: string,
-  reservationId: string,
-) => {
-  return useQuery({
-    queryKey: ['user', userId, 'reservation', reservationId],
-    queryFn: () => getUserReservation(userId, reservationId),
-  });
-};
-
-export const getUserReviews = async (userId: string) => {
-  const res = await authInstance.get(
-    `/v2/user-management/admin/users/${userId}/reviews`,
-    {
-      shape: {
-        reviews: ReviewsViewEntitySchema.array(),
-      },
-    },
-  );
-  return res.reviews;
-};
-
-export const useGetUserReviews = (userId: string) => {
-  return useQuery({
-    queryKey: ['user', userId, 'review'],
-    queryFn: () => getUserReviews(userId),
   });
 };
 

@@ -17,7 +17,7 @@ interface Props {
 
 import { ChevronDown } from 'lucide-react';
 import Image from 'next/image';
-import { useGetEvents } from '@/services/shuttleOperation.service';
+import { useGetEvents } from '@/services/event.service';
 import { EventsViewEntity } from '@/types/event.type';
 
 const EventInput = ({ value, setValue }: Props) => {

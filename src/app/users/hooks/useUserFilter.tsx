@@ -1,4 +1,4 @@
-import { GetUsersOptions } from '@/services/userManagement.service';
+import { GetUsersOptions } from '@/services/user.service';
 import { useReducer } from 'react';
 
 const useUserFilter = (partial: GetUsersOptions = {}) => {

@@ -8,7 +8,7 @@ import EventInfo from './components/EventInfo';
 import PaymentInfo from './components/PaymentInfo';
 import RouteInfo from './components/RouteInfo';
 import RouteHubInfo from './components/RouteHubInfo';
-import { useGetReservation } from '@/services/shuttleOperation.service';
+import { useGetReservation } from '@/services/reservation.service';
 import Heading from '@/components/text/Heading';
 
 interface Props {

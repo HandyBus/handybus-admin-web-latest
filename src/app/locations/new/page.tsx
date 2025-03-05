@@ -8,8 +8,8 @@ import Input from '@/components/input/Input';
 import CoordInput from '@/components/input/CoordInput';
 import RegionInput from '@/components/input/RegionInput';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
-import { useGetRegions, usePostRegionHub } from '@/services/location.service';
-import { Region } from '@/types/region';
+import { useGetRegions, usePostRegionHub } from '@/services/hub.service';
+import { Region } from '@/types/region.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
 

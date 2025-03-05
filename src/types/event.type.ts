@@ -71,7 +71,7 @@ export type EventWithStatisticsViewEntity = z.infer<
   typeof EventWithStatisticsViewEntitySchema
 >;
 
-// ----- POST & PUT -----
+// ----- POST -----
 
 export const CreateEventRequestSchema = z.object({
   name: z.string(),
