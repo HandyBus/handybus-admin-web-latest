@@ -1,4 +1,4 @@
-import { GetReservationsOptions } from '@/services/shuttleOperation.service';
+import { GetReservationsOptions } from '@/services/reservation.service';
 import { useReducer } from 'react';
 
 const empty: GetReservationsOptions = {

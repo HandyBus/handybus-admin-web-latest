@@ -7,7 +7,7 @@ import { ChevronDownIcon, FilterIcon } from 'lucide-react';
 import Toggle from '@/components/button/Toggle';
 import { AgeRangeEnum, GenderEnum } from '@/types/user.type';
 import Stringifier from '@/utils/stringifier.util';
-import { GetUsersOptions } from '@/services/userManagement.service';
+import { GetUsersOptions } from '@/services/user.service';
 import { UserFilterAction } from '../hooks/useUserFilter';
 import { Dispatch, ReactNode } from 'react';
 import { ActiveStatusEnum } from '@/types/common.type';

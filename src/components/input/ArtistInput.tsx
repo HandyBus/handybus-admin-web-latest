@@ -8,7 +8,7 @@ import {
   ComboboxOptions,
 } from '@headlessui/react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
-import { useGetArtists } from '@/services/shuttleOperation.service';
+import { useGetArtists } from '@/services/artist.service';
 import { ArtistsViewEntity } from '@/types/artist.type';
 
 interface ModalState {

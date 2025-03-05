@@ -5,7 +5,7 @@ import GenderChart from './components/GenderChart';
 import AgeRangeChart from './components/AgeRangeChart';
 import SocialLoginChart from './components/SocialLoginChart';
 import MarketingConsentChart from './components/MarketingConsentChart';
-import { useGetUserStatsAggregate } from '@/services/userManagement.service';
+import { useGetUserStatsAggregate } from '@/services/user.service';
 import { useMemo } from 'react';
 import ChartBox from '@/components/chart/ChartSection';
 

@@ -11,7 +11,7 @@ import {
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { ChevronDown } from 'lucide-react';
 import dayjs from 'dayjs';
-import { useGetEvent } from '@/services/shuttleOperation.service';
+import { useGetEvent } from '@/services/event.service';
 import { EventDailyShuttlesInEventsViewEntity } from '@/types/event.type';
 
 interface Props {

@@ -3,7 +3,7 @@
 import BaseTable from '@/components/table/BaseTable';
 import { columns } from './table.type';
 import useTable from '@/hooks/useTable';
-import { useGetArtists } from '@/services/shuttleOperation.service';
+import { useGetArtists } from '@/services/artist.service';
 import Heading from '@/components/text/Heading';
 import BlueLink from '@/components/link/BlueLink';
 

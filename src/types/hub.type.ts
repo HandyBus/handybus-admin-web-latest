@@ -22,7 +22,7 @@ export const RegionHubSchema = z.object({
 });
 export type RegionHub = z.infer<typeof RegionHubSchema>;
 
-// ----- POST & PUT -----
+// ----- POST -----
 
 export const CreateHubRequestSchema = z.object({
   name: z.string(),

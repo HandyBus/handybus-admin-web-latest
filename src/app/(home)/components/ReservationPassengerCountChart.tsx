@@ -2,7 +2,7 @@
 
 import ChartBox from '@/components/chart/ChartSection';
 import CustomLineChart from '../../../components/chart/CustomLineChart';
-import { useGetTotalReservationCounts } from '@/services/shuttleOperation.service';
+import { useGetTotalReservationCounts } from '@/services/reservation.service';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
 import dayjs from 'dayjs';
 

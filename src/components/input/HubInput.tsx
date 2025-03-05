@@ -12,7 +12,7 @@ import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { RegionHub } from '@/types/hub.type';
 import { ChevronDown } from 'lucide-react';
 import RegionInput from './RegionInput';
-import { useGetRegionHubs } from '@/services/location.service';
+import { useGetRegionHubs } from '@/services/hub.service';
 import Link from 'next/link';
 
 interface Props {

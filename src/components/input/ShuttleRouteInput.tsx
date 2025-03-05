@@ -10,7 +10,7 @@ import {
 } from '@headlessui/react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { ChevronDown } from 'lucide-react';
-import { useGetShuttleRoutesOfDailyEvent } from '@/services/shuttleOperation.service';
+import { useGetShuttleRoutesOfDailyEvent } from '@/services/shuttleRoute.service';
 import { ShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 
 interface Props {

@@ -1,14 +1,11 @@
 'use client';
 
 import Heading from '@/components/text/Heading';
-import {
-  useGetUser,
-  useGetUserCoupons,
-  useGetUserDemands,
-  useGetUserReservations,
-  useGetUserReviews,
-  useGetUserStats,
-} from '@/services/userManagement.service';
+import { useGetUser, useGetUserStats } from '@/services/user.service';
+import { useGetUserCoupons } from '@/services/coupon.service';
+import { useGetUserDemands } from '@/services/demand.service';
+import { useGetUserReservations } from '@/services/reservation.service';
+import { useGetUserReviews } from '@/services/review.service';
 import UserTable from './components/user-table/UserTable';
 import ReservationsTable from './components/reservations-table/ReservationsTable';
 import DemandsTable from './components/demands-table/DemandsTable';
