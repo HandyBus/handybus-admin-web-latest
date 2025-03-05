@@ -35,40 +35,50 @@ const PriceSectionRegularType = ({
         )}
       />
       {/* Price inputs would need to be implemented as arrays */}
-      <div className="flex flex-col gap-12">
-        <div className="flex flex-col items-start gap-8">
-          <label className="block break-keep text-16 font-500">왕복</label>
-          <Controller
-            control={control}
-            name="regularPrice.roundTrip"
-            render={({ field: { onChange, value } }) => (
-              <NumberInput value={value ?? 0} setValue={onChange} />
-            )}
-          />
-        </div>
-        <div className="flex flex-col items-start gap-8">
-          <label className="block break-keep text-16 font-500">가는편</label>
-          <Controller
-            control={control}
-            name="regularPrice.toDestination"
-            render={({ field: { onChange, value } }) => (
-              <NumberInput value={value ?? 0} setValue={onChange} />
-            )}
-          />
-        </div>
-        <div className="flex flex-col items-start gap-8">
-          <label className="block break-keep text-16 font-500">오는편</label>
-          <Controller
-            control={control}
-            name="regularPrice.fromDestination"
-            render={({ field: { onChange, value } }) => (
-              <NumberInput value={value ?? 0} setValue={onChange} />
-            )}
-          />
-        </div>
-      </div>
+      <TripPriceInput control={control} />
     </div>
   );
 };
 
 export default PriceSectionRegularType;
+
+interface Props {
+  control: Control<EditFormData>;
+}
+
+const TripPriceInput = ({ control }: Props) => {
+  return (
+    <div className="flex flex-col gap-12">
+      <div className="flex flex-col items-start gap-8">
+        <label className="block break-keep text-16 font-500">왕복</label>
+        <Controller
+          control={control}
+          name="regularPrice.roundTrip"
+          render={({ field: { onChange, value } }) => (
+            <NumberInput value={value ?? 0} setValue={onChange} />
+          )}
+        />
+      </div>
+      <div className="flex flex-col items-start gap-8">
+        <label className="block break-keep text-16 font-500">가는편</label>
+        <Controller
+          control={control}
+          name="regularPrice.toDestination"
+          render={({ field: { onChange, value } }) => (
+            <NumberInput value={value ?? 0} setValue={onChange} />
+          )}
+        />
+      </div>
+      <div className="flex flex-col items-start gap-8">
+        <label className="block break-keep text-16 font-500">오는편</label>
+        <Controller
+          control={control}
+          name="regularPrice.fromDestination"
+          render={({ field: { onChange, value } }) => (
+            <NumberInput value={value ?? 0} setValue={onChange} />
+          )}
+        />
+      </div>
+    </div>
+  );
+};

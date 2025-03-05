@@ -31,81 +31,104 @@ const PriceSectionEarlybirdType = ({
           <DateInput disabled={true} value={value} />
         )}
       />
-      <div className="flex flex-col gap-12">
-        <div className="flex flex-col items-start gap-8">
-          <label className="block break-keep text-16 font-500">
-            왕복
-            <span className="ml-4 text-14 text-blue-500">
-              {watchEarlybirdPrice &&
-                discountPercent(
-                  watchRegularPrice.roundTrip,
-                  watchEarlybirdPrice.roundTrip,
-                )}
-            </span>
-          </label>
-          <Controller
-            control={control}
-            name="earlybirdPrice.roundTrip"
-            render={({ field: { onChange, value } }) => (
-              <NumberInput
-                value={value ?? 0}
-                setValue={onChange}
-                disabled={!hasEarlybird}
-              />
-            )}
-          />
-        </div>
-        <div className="flex flex-col items-start gap-8">
-          <label className="block break-keep text-16 font-500">
-            가는편
-            <span className="ml-4 text-14 text-blue-500">
-              {watchEarlybirdPrice &&
-                discountPercent(
-                  watchRegularPrice.toDestination,
-                  watchEarlybirdPrice.toDestination,
-                )}
-            </span>
-          </label>
-          <Controller
-            control={control}
-            name="earlybirdPrice.toDestination"
-            disabled={!hasEarlybird}
-            render={({ field: { onChange, value } }) => (
-              <NumberInput
-                value={value ?? 0}
-                setValue={onChange}
-                disabled={!hasEarlybird}
-              />
-            )}
-          />
-        </div>
-        <div className="flex flex-col items-start gap-8">
-          <label className="block break-keep text-16 font-500">
-            오는편
-            <span className="ml-4 text-14 text-blue-500">
-              {watchEarlybirdPrice &&
-                discountPercent(
-                  watchRegularPrice.fromDestination,
-                  watchEarlybirdPrice.fromDestination,
-                )}
-            </span>
-          </label>
-          <Controller
-            control={control}
-            name="earlybirdPrice.fromDestination"
-            disabled={!hasEarlybird}
-            render={({ field: { onChange, value } }) => (
-              <NumberInput
-                value={value ?? 0}
-                setValue={onChange}
-                disabled={!hasEarlybird}
-              />
-            )}
-          />
-        </div>
-      </div>
+      <TripPriceInputEarlybird
+        control={control}
+        hasEarlybird={hasEarlybird}
+        watchRegularPrice={watchRegularPrice}
+        watchEarlybirdPrice={watchEarlybirdPrice}
+      />
     </div>
   );
 };
 
 export default PriceSectionEarlybirdType;
+
+interface TripPriceInputEarlybirdProps {
+  control: Control<EditFormData>;
+  hasEarlybird: boolean;
+  watchRegularPrice: EditFormData['regularPrice'];
+  watchEarlybirdPrice: EditFormData['earlybirdPrice'];
+}
+
+const TripPriceInputEarlybird = ({
+  control,
+  hasEarlybird,
+  watchRegularPrice,
+  watchEarlybirdPrice,
+}: TripPriceInputEarlybirdProps) => {
+  return (
+    <div className="flex flex-col gap-12">
+      <div className="flex flex-col items-start gap-8">
+        <label className="block break-keep text-16 font-500">
+          왕복
+          <span className="ml-4 text-14 text-blue-500">
+            {watchEarlybirdPrice &&
+              discountPercent(
+                watchRegularPrice.roundTrip,
+                watchEarlybirdPrice.roundTrip,
+              )}
+          </span>
+        </label>
+        <Controller
+          control={control}
+          name="earlybirdPrice.roundTrip"
+          render={({ field: { onChange, value } }) => (
+            <NumberInput
+              value={value ?? 0}
+              setValue={onChange}
+              disabled={!hasEarlybird}
+            />
+          )}
+        />
+      </div>
+      <div className="flex flex-col items-start gap-8">
+        <label className="block break-keep text-16 font-500">
+          가는편
+          <span className="ml-4 text-14 text-blue-500">
+            {watchEarlybirdPrice &&
+              discountPercent(
+                watchRegularPrice.toDestination,
+                watchEarlybirdPrice.toDestination,
+              )}
+          </span>
+        </label>
+        <Controller
+          control={control}
+          name="earlybirdPrice.toDestination"
+          disabled={!hasEarlybird}
+          render={({ field: { onChange, value } }) => (
+            <NumberInput
+              value={value ?? 0}
+              setValue={onChange}
+              disabled={!hasEarlybird}
+            />
+          )}
+        />
+      </div>
+      <div className="flex flex-col items-start gap-8">
+        <label className="block break-keep text-16 font-500">
+          오는편
+          <span className="ml-4 text-14 text-blue-500">
+            {watchEarlybirdPrice &&
+              discountPercent(
+                watchRegularPrice.fromDestination,
+                watchEarlybirdPrice.fromDestination,
+              )}
+          </span>
+        </label>
+        <Controller
+          control={control}
+          name="earlybirdPrice.fromDestination"
+          disabled={!hasEarlybird}
+          render={({ field: { onChange, value } }) => (
+            <NumberInput
+              value={value ?? 0}
+              setValue={onChange}
+              disabled={!hasEarlybird}
+            />
+          )}
+        />
+      </div>
+    </div>
+  );
+};
