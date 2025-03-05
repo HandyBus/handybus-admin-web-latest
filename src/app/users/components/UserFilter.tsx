@@ -192,7 +192,7 @@ const UserFilter = ({ option, dispatch }: Props) => {
                   dispatch({
                     type: 'SET_LAST_LOGIN_FROM',
                     lastLoginFrom: value
-                      ? dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+                      ? dayjs(value).toISOString()
                       : undefined,
                   })
                 }
@@ -202,9 +202,7 @@ const UserFilter = ({ option, dispatch }: Props) => {
                 setValue={(value) =>
                   dispatch({
                     type: 'SET_LAST_LOGIN_TO',
-                    lastLoginTo: value
-                      ? dayjs(value).format('YYYY-MM-DD HH:mm:ss')
-                      : undefined,
+                    lastLoginTo: value ? dayjs(value).toISOString() : undefined,
                   })
                 }
               />
