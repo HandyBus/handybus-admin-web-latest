@@ -13,7 +13,6 @@ import { Dispatch, ReactNode } from 'react';
 import { ActiveStatusEnum } from '@/types/common.type';
 import DebouncedInput from '@/components/input/DebouncedInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
-import dayjs from 'dayjs';
 
 interface Props {
   option: GetUsersOptions;
@@ -191,9 +190,7 @@ const UserFilter = ({ option, dispatch }: Props) => {
                 setValue={(value) =>
                   dispatch({
                     type: 'SET_LAST_LOGIN_FROM',
-                    lastLoginFrom: value
-                      ? dayjs(value).toISOString()
-                      : undefined,
+                    lastLoginFrom: value ?? undefined,
                   })
                 }
               />
@@ -202,7 +199,7 @@ const UserFilter = ({ option, dispatch }: Props) => {
                 setValue={(value) =>
                   dispatch({
                     type: 'SET_LAST_LOGIN_TO',
-                    lastLoginTo: value ? dayjs(value).toISOString() : undefined,
+                    lastLoginTo: value ?? undefined,
                   })
                 }
               />
