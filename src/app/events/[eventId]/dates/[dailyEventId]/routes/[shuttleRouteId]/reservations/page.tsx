@@ -3,7 +3,7 @@
 import BusTable from './components/BusTable';
 import ReservationTable from './components/ReservationTable';
 import { formatDateString } from '@/utils/date.util';
-import { useGetShuttleRoute } from '@/services/shuttleOperation.service';
+import { useGetShuttleRoute } from '@/services/shuttleRoute.service';
 import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';

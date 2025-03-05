@@ -6,7 +6,7 @@ import useTable from '@/hooks/useTable';
 import BaseTable from '@/components/table/BaseTable';
 import Buses from './components/Buses';
 import { formatDateString } from '@/utils/date.util';
-import { useGetShuttleRoute } from '@/services/shuttleOperation.service';
+import { useGetShuttleRoute } from '@/services/shuttleRoute.service';
 import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';

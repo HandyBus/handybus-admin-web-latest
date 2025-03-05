@@ -7,7 +7,7 @@ import BaseTable from '@/components/table/BaseTable';
 import {
   useGetReservationsWithPagination,
   usePutReservation,
-} from '@/services/shuttleOperation.service';
+} from '@/services/reservation.service';
 import Heading from '@/components/text/Heading';
 import { reservationColumns } from '../table.type';
 

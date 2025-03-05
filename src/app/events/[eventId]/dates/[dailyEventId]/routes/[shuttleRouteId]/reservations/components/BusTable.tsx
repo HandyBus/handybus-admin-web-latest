@@ -3,18 +3,15 @@
 import Stringifier from '@/utils/stringifier.util';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
-import EditHandyStatusDialog from '../../../../../../../../../components/dialog/EditHandyStatusDialog';
+import EditHandyStatusDialog from '@/components/dialog/EditHandyStatusDialog';
 import BlueLink from '@/components/link/BlueLink';
-import {
-  useGetReservationsWithPagination,
-  useGetShuttleBuses,
-  usePostBulkAssignBus,
-} from '@/services/shuttleOperation.service';
+import { usePostBulkAssignBus } from '@/services/shuttleBus.service';
+import { useGetReservationsWithPagination } from '@/services/reservation.service';
 import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
 import { ReservationViewEntity } from '@/types/reservation.type';
 import { TripType } from '@/types/shuttleRoute.type';
 import Heading from '@/components/text/Heading';
-
+import { useGetShuttleBuses } from '@/services/shuttleBus.service';
 type BusAndReservation = {
   bus: ShuttleBusesViewEntity;
   reservation: ReservationViewEntity;

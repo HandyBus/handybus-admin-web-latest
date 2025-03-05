@@ -9,7 +9,7 @@ import { PAGINATION_LIMIT } from '@/constants/config';
 import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';
 import useReservationFilter from './hooks/userReservationFilter';
-import { useGetReservationsWithPagination } from '@/services/shuttleOperation.service';
+import { useGetReservationsWithPagination } from '@/services/reservation.service';
 import ColumnFilter from '@/components/table/ColumnFilter';
 import Heading from '@/components/text/Heading';
 

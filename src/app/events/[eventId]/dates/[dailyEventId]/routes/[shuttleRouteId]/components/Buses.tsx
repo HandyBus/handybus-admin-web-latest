@@ -5,10 +5,8 @@ import BlueLink from '@/components/link/BlueLink';
 import BaseTable from '@/components/table/BaseTable';
 import Heading from '@/components/text/Heading';
 import useTable from '@/hooks/useTable';
-import {
-  useGetReservationsWithPagination,
-  useGetShuttleBuses,
-} from '@/services/shuttleOperation.service';
+import { useGetReservationsWithPagination } from '@/services/reservation.service';
+import { useGetShuttleBuses } from '@/services/shuttleBus.service';
 import { useMemo } from 'react';
 
 interface Props {

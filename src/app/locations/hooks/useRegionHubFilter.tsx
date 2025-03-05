@@ -1,4 +1,4 @@
-import { GetRegionHubsOptions } from '@/services/location.service';
+import { GetRegionHubsOptions } from '@/services/hub.service';
 import { useReducer } from 'react';
 
 const useRegionHubFilter = (partial: GetRegionHubsOptions = {}) => {

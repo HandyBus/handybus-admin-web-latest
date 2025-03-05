@@ -2,7 +2,7 @@
 
 import BlueLink from '@/components/link/BlueLink';
 import { columns } from './table.type';
-import { useGetEventsStatsWithPagination } from '@/services/shuttleOperation.service';
+import { useGetEventsStatsWithPagination } from '@/services/event.service';
 import Heading from '@/components/text/Heading';
 import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';

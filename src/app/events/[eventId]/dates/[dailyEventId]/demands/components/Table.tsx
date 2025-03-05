@@ -8,7 +8,7 @@ import { useMemo, useState } from 'react';
 import {
   GetDemandOptions,
   useGetDemandsStats,
-} from '@/services/shuttleOperation.service';
+} from '@/services/demand.service';
 import { columns } from '../table.type';
 import BaseTable from '@/components/table/BaseTable';
 import Loading from '@/components/loading/Loading';

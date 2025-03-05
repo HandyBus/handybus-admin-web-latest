@@ -57,7 +57,7 @@ export type AdminCouponsResponseModel = z.infer<
   typeof AdminCouponsResponseModelSchema
 >;
 
-// ----- POST & PUT -----
+// ----- POST -----
 
 export const CreateCouponRequestSchema = z.object({
   code: z.string(),

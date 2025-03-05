@@ -36,7 +36,7 @@ export type ShuttleBusesViewEntity = z.infer<
   typeof ShuttleBusesViewEntitySchema
 >;
 
-// ----- POST & PUT -----
+// ----- POST -----
 
 export const CreateShuttleBusRequestSchema = z.object({
   type: BusTypeEnum,

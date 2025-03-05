@@ -8,6 +8,8 @@ import {
 } from '@/types/banner.type';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
+// ----- GET -----
+
 export type Extension = 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'svg';
 
 export const getPresignedUrl = async (
