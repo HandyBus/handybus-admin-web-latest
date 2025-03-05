@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { CustomError } from './custom-error';
-import replacer from './replacer';
 import { z } from 'zod';
 import { silentParse } from '@/utils/parse.util';
 import { getToken, logout } from '@/utils/handleToken.util';
@@ -43,7 +42,7 @@ class Instance {
         'Content-Type': 'application/json',
         ...pure?.headers,
       },
-      ...(body && { body: JSON.stringify(body, replacer) }),
+      ...(body && { body: JSON.stringify(body) }),
     };
 
     const getNotifiedUsingToast = shape !== undefined && method === 'GET';
