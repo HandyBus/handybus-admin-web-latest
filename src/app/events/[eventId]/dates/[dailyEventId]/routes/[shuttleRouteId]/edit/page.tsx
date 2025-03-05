@@ -293,27 +293,12 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
             className={`flex flex-col gap-8 rounded-[4px] p-8 ${hasEarlybird ? '' : 'bg-notion-grey'}`}
           >
             <Heading.h5 backgroundColor="blue">얼리버드 가격</Heading.h5>
-            {hasEarlybird && (
-              <label className="block text-16 font-500">예약 마감일</label>
-            )}
+            <label className="block text-16 font-500">예약 마감일</label>
             <Controller
               control={control}
               name="earlybirdDeadline"
-              render={({ field: { onChange, value } }) => (
-                <>
-                  {value && (
-                    <DateInput
-                      disabled={true}
-                      value={value}
-                      setValue={onChange}
-                    />
-                  )}
-                  {errors.reservationDeadline && (
-                    <p className="text-red-500">
-                      {errors.reservationDeadline.message}
-                    </p>
-                  )}
-                </>
+              render={({ field: { value } }) => (
+                <DateInput disabled={true} value={value} />
               )}
             />
             <div className="flex flex-col gap-12">
@@ -452,7 +437,6 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                   <div className="w-[1px] rounded-full bg-grey-100" />
                   <div className="flex flex-col gap-12">
                     <label className="text-16 font-500">시간</label>
-                    시간
                     <Controller
                       control={control}
                       name={
