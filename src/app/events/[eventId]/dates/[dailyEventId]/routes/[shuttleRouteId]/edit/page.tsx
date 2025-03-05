@@ -1,10 +1,10 @@
 'use client';
 
-import { useForm, useFieldArray, Controller } from 'react-hook-form';
+import { useForm, useFieldArray, Controller, useWatch } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/input/Input';
 import { RegionHubInputSelfContained } from '@/components/input/HubInput';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import DateInput from '@/components/input/DateInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
 import {
@@ -16,6 +16,8 @@ import { conform } from './conform.util';
 import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
 import FormContainer from '@/components/form/Form';
+import NumberInput from '@/components/input/NumberInput';
+import { discountPercent } from '../../discountPercent.util';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -68,6 +70,20 @@ const Page = ({ params }: Props) => {
   const defaultValues: UpdateShuttleRouteRequestFormData = useMemo(
     () => ({
       name: route?.name ?? '',
+      hasEarlybird: route?.hasEarlybird ?? false,
+      earlybirdDeadline: route?.earlybirdDeadline ?? '',
+      earlybirdPrice: route?.hasEarlybird
+        ? {
+            roundTrip: route?.earlybirdPriceRoundTrip ?? 0,
+            toDestination: route?.earlybirdPriceToDestination ?? 0,
+            fromDestination: route?.earlybirdPriceFromDestination ?? 0,
+          }
+        : undefined,
+      regularPrice: {
+        roundTrip: route?.regularPriceRoundTrip ?? 0,
+        toDestination: route?.regularPriceToDestination ?? 0,
+        fromDestination: route?.regularPriceFromDestination ?? 0,
+      },
       maxPassengerCount: route?.maxPassengerCount ?? 0,
       reservationDeadline: route?.reservationDeadline ?? '',
       shuttleRouteHubsFromDestination:
@@ -105,6 +121,7 @@ interface FormProps extends Props {
 
 const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   const { eventId, dailyEventId, shuttleRouteId } = params;
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const {
     register,
@@ -114,6 +131,10 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   } = useForm<UpdateShuttleRouteRequestFormData>({
     defaultValues,
   });
+
+  const hasEarlybird = defaultValues.hasEarlybird;
+  const watchRegularPrice = useWatch({ control, name: 'regularPrice' });
+  const watchEarlybirdPrice = useWatch({ control, name: 'earlybirdPrice' });
 
   const {
     fields: fromDestHubFields,
@@ -152,12 +173,13 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   const onSubmit = async (data: UpdateShuttleRouteRequestFormData) => {
     if (!confirm('수정하시겠습니까?')) return;
     try {
-      const shuttleRouteHubs = conform(data);
+      setIsSubmitting(true);
+      const body = conform(data);
       putRoute({
         eventId,
         dailyEventId,
         shuttleRouteId,
-        body: shuttleRouteHubs,
+        body,
       });
     } catch (error) {
       if (
@@ -165,6 +187,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
         error.message === 'arrivalTime is not validated'
       )
         alert('정류장들의 시간순서가 올바르지 않습니다. 확인해주세요.');
+      setIsSubmitting(false);
     }
   };
 
@@ -189,24 +212,185 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
           <p className="text-red-500">{errors.maxPassengerCount.message}</p>
         )}
       </FormContainer.section>
+
       <FormContainer.section>
-        <FormContainer.label htmlFor="reservationDeadline" required>
-          예약 마감일
-        </FormContainer.label>
-        <Controller
-          control={control}
-          name="reservationDeadline"
-          render={({ field: { onChange, value } }) => (
-            <>
-              <DateInput value={value} setValue={onChange} />
-              {errors.reservationDeadline && (
-                <p className="text-red-500">
-                  {errors.reservationDeadline.message}
-                </p>
+        <div className="flex items-baseline gap-20">
+          <FormContainer.label required>가격</FormContainer.label>
+          <div className="flex gap-8">
+            <span className="text-14 text-blue-600">
+              {`얼리버드 ${hasEarlybird ? '적용됨' : '미적용'}`}
+            </span>
+          </div>
+        </div>
+        <Callout className="text-14">
+          <b>주의: </b>얼리버드 적용 여부 및 얼리버드 마감일은 노선 추가 후{' '}
+          <b className="text-red-500">변경이 불가</b>합니다.
+        </Callout>
+        <article className="grid w-full grid-cols-2 gap-12">
+          <div className="flex flex-col gap-8 rounded-[4px] p-8">
+            <Heading.h5 backgroundColor="yellow">일반 가격</Heading.h5>
+            <Controller
+              control={control}
+              name="reservationDeadline"
+              render={({ field: { onChange, value } }) => (
+                <div className="space-y-2">
+                  <label
+                    htmlFor="reservationDeadline"
+                    className="block text-16 font-500"
+                  >
+                    예약 마감일
+                  </label>
+                  <DateInput value={value} setValue={onChange} />
+                  {errors.reservationDeadline && (
+                    <p className="text-red-500">
+                      {errors.reservationDeadline.message}
+                    </p>
+                  )}
+                </div>
               )}
-            </>
-          )}
-        />
+            />
+            {/* Price inputs would need to be implemented as arrays */}
+            <div className="flex flex-col gap-12">
+              <div className="flex flex-col items-start gap-8">
+                <label className="block break-keep text-16 font-500">
+                  왕복
+                </label>
+                <Controller
+                  control={control}
+                  name="regularPrice.roundTrip"
+                  render={({ field: { onChange, value } }) => (
+                    <NumberInput value={value ?? 0} setValue={onChange} />
+                  )}
+                />
+              </div>
+              <div className="flex flex-col items-start gap-8">
+                <label className="block break-keep text-16 font-500">
+                  가는편
+                </label>
+                <Controller
+                  control={control}
+                  name="regularPrice.toDestination"
+                  render={({ field: { onChange, value } }) => (
+                    <NumberInput value={value ?? 0} setValue={onChange} />
+                  )}
+                />
+              </div>
+              <div className="flex flex-col items-start gap-8">
+                <label className="block break-keep text-16 font-500">
+                  오는편
+                </label>
+                <Controller
+                  control={control}
+                  name="regularPrice.fromDestination"
+                  render={({ field: { onChange, value } }) => (
+                    <NumberInput value={value ?? 0} setValue={onChange} />
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            className={`flex flex-col gap-8 rounded-[4px] p-8 ${hasEarlybird ? '' : 'bg-notion-grey'}`}
+          >
+            <Heading.h5 backgroundColor="blue">얼리버드 가격</Heading.h5>
+            {hasEarlybird && (
+              <label className="block text-16 font-500">예약 마감일</label>
+            )}
+            <Controller
+              control={control}
+              name="earlybirdDeadline"
+              render={({ field: { onChange, value } }) => (
+                <>
+                  {value && (
+                    <DateInput
+                      disabled={true}
+                      value={value}
+                      setValue={onChange}
+                    />
+                  )}
+                  {errors.reservationDeadline && (
+                    <p className="text-red-500">
+                      {errors.reservationDeadline.message}
+                    </p>
+                  )}
+                </>
+              )}
+            />
+            <div className="flex flex-col gap-12">
+              <div className="flex flex-col items-start gap-8">
+                <label className="block break-keep text-16 font-500">
+                  왕복
+                  <span className="ml-4 text-14 text-blue-500">
+                    {watchEarlybirdPrice &&
+                      discountPercent(
+                        watchRegularPrice.roundTrip,
+                        watchEarlybirdPrice.roundTrip,
+                      )}
+                  </span>
+                </label>
+                <Controller
+                  control={control}
+                  name="earlybirdPrice.roundTrip"
+                  render={({ field: { onChange, value } }) => (
+                    <NumberInput
+                      value={value ?? 0}
+                      setValue={onChange}
+                      disabled={!hasEarlybird}
+                    />
+                  )}
+                />
+              </div>
+              <div className="flex flex-col items-start gap-8">
+                <label className="block break-keep text-16 font-500">
+                  가는편
+                  <span className="ml-4 text-14 text-blue-500">
+                    {watchEarlybirdPrice &&
+                      discountPercent(
+                        watchRegularPrice.toDestination,
+                        watchEarlybirdPrice.toDestination,
+                      )}
+                  </span>
+                </label>
+                <Controller
+                  control={control}
+                  name="earlybirdPrice.toDestination"
+                  disabled={!hasEarlybird}
+                  render={({ field: { onChange, value } }) => (
+                    <NumberInput
+                      value={value ?? 0}
+                      setValue={onChange}
+                      disabled={!hasEarlybird}
+                    />
+                  )}
+                />
+              </div>
+              <div className="flex flex-col items-start gap-8">
+                <label className="block break-keep text-16 font-500">
+                  오는편
+                  <span className="ml-4 text-14 text-blue-500">
+                    {watchEarlybirdPrice &&
+                      discountPercent(
+                        watchRegularPrice.fromDestination,
+                        watchEarlybirdPrice.fromDestination,
+                      )}
+                  </span>
+                </label>
+                <Controller
+                  control={control}
+                  name="earlybirdPrice.fromDestination"
+                  disabled={!hasEarlybird}
+                  render={({ field: { onChange, value } }) => (
+                    <NumberInput
+                      value={value ?? 0}
+                      setValue={onChange}
+                      disabled={!hasEarlybird}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+        </article>
       </FormContainer.section>
 
       <FormContainer.section>
@@ -321,7 +505,6 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
             })}
           </ul>
         </section>
-
         <section>
           <Heading.h5 backgroundColor="yellow">
             오는편
@@ -419,10 +602,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
           </ul>
         </section>
       </FormContainer.section>
-
-      <button type="submit" className="rounded bg-blue-500 p-8 text-white">
-        수정하기
-      </button>
+      <FormContainer.submitButton disabled={isSubmitting}>
+        {isSubmitting ? '처리 중...' : '수정하기'}
+      </FormContainer.submitButton>
     </FormContainer>
   );
 };

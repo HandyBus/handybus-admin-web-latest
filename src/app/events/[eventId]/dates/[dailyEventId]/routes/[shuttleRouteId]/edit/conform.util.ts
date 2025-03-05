@@ -80,6 +80,8 @@ export const conform = (
     maxPassengerCount: data.maxPassengerCount,
     reservationDeadline: data.reservationDeadline,
     shuttleRouteHubs: froms.concat(tos),
+    regularPrice: data.regularPrice,
+    earlybirdPrice: data.earlybirdPrice,
   } satisfies UpdateShuttleRouteRequest;
   return x;
 };

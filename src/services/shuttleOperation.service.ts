@@ -802,6 +802,16 @@ interface PutShuttleRouteBody {
     sequence?: number;
     arrivalTime?: string;
   }[];
+  regularPrice?: {
+    roundTrip?: number;
+    toDestination?: number;
+    fromDestination?: number;
+  };
+  earlybirdPrice?: {
+    roundTrip?: number;
+    toDestination?: number;
+    fromDestination?: number;
+  };
 }
 
 // ID가 주어지지 않은 셔틀 허브는 새로 생성합니다. ID가 주어진 기존 값은 수정합니다. ID가 주어지지 않은 기존 값은 아무 변화없이 유지합니다.

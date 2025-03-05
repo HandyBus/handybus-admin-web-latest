@@ -19,7 +19,7 @@ const DateInput = ({ disabled, value, setValue }: Props) => {
         date && setValue(dayjs(date, 'Asia/Seoul').startOf('day').toISOString())
       }
       showIcon
-      dateFormat="yyyy-MM-dd"
+      dateFormat=" yyyy-MM-dd"
       className="rounded-[4px] border border-grey-200"
     />
   );

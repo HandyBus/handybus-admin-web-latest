@@ -2,7 +2,7 @@
 
 import { twMerge } from 'tailwind-merge';
 
-interface Props {
+interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   value: number;
   setValue: (value: number) => void;
   placeholder?: string;
@@ -10,7 +10,13 @@ interface Props {
 }
 
 // NOTE: react hook form의 register을 직접 내려주지 않고 Controller으로 감싸서 사용해야 함
-const NumberInput = ({ value, setValue, placeholder, className }: Props) => {
+const NumberInput = ({
+  value,
+  setValue,
+  placeholder,
+  className,
+  ...props
+}: Props) => {
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat().format(num);
   };
@@ -28,6 +34,7 @@ const NumberInput = ({ value, setValue, placeholder, className }: Props) => {
         'w-full rounded-lg border border-grey-200 p-8 focus:outline-blue-400',
         className,
       )}
+      {...props}
     />
   );
 };
