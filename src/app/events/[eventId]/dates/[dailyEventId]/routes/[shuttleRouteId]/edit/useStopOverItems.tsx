@@ -2,7 +2,6 @@ import { FIELD_ARRAY_NAMES } from './components/StopOverSection';
 import { Control, useFieldArray } from 'react-hook-form';
 import { EditFormData } from './form.type';
 
-// 상태 관리 로직을 커스텀 훅으로 분리
 export const useStopOverItems = ({
   control,
   fieldArrayName,
@@ -36,6 +35,7 @@ export const useStopOverItems = ({
 
   const isVenue = (index: number) => isDestinationStop(index, fields.length);
 
+  // 배열의 index 순서에 따라 위아래 이동 및 삭제 가능 여부를 판단합니다.
   const canMoveUp = (index: number) => {
     if (fieldArrayName === FIELD_ARRAY_NAMES.TO_DESTINATION) {
       return index > 0 && index !== fields.length - 1;

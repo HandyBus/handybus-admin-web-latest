@@ -96,6 +96,7 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
       />
 
       <StopOverSection control={control} defaultDate={defaultDate} />
+
       <FormContainer.submitButton disabled={isSubmitting}>
         {isSubmitting ? '처리 중...' : '수정하기'}
       </FormContainer.submitButton>

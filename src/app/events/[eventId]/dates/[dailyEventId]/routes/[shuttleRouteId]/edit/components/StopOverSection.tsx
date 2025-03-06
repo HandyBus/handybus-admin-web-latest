@@ -66,7 +66,7 @@ const StopOverSection = ({ control, defaultDate }: Props) => {
 export default StopOverSection;
 
 interface StopOverItemsProps {
-  title: string;
+  title: '가는편' | '오는편';
   fields: FieldArrayWithId<
     EditFormData,
     'shuttleRouteHubsToDestination' | 'shuttleRouteHubsFromDestination',
@@ -122,7 +122,7 @@ const StopOverItems = ({
             isVenue={isVenue(index)}
             canMoveUp={canMoveUp(index)}
             canMoveDown={canMoveDown(index)}
-            canDelete={canDelete(index)}
+            canDelete={canDelete(index) && !field.shuttleRouteHubId} // 기존의 정류장은 삭제하지 못함.
             onMoveUp={() => swapItems(index, index - 1)}
             onMoveDown={() => swapItems(index, index + 1)}
             onDelete={() => removeItem(index)}
