@@ -42,6 +42,8 @@ const StopOverSection = ({ control, defaultDate }: Props) => {
         경유지는 시간순서대로 입력해주세요.
         <br />
         경유지는 장소들 중 선택 가능합니다.
+        <br />
+        기존에 생성된 경유지는 삭제는 불가능합니다. 수정만 가능합니다.
       </Callout>
 
       <StopOverItems
