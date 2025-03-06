@@ -126,6 +126,18 @@ export const UpdateShuttleRouteRequestSchema = z.object({
   reservationDeadline: z.string(),
   maxPassengerCount: z.number().int(),
   shuttleRouteHubs: UpdateShuttleRouteHubPropsSchema.array(),
+  regularPrice: z.object({
+    roundTrip: z.number().int(),
+    toDestination: z.number().int(),
+    fromDestination: z.number().int(),
+  }),
+  earlybirdPrice: z
+    .object({
+      roundTrip: z.number().int(),
+      toDestination: z.number().int(),
+      fromDestination: z.number().int(),
+    })
+    .optional(),
 });
 export type UpdateShuttleRouteRequest = z.infer<
   typeof UpdateShuttleRouteRequestSchema
