@@ -1,10 +1,16 @@
 import Callout from '@/components/text/Callout';
 import FormContainer from '@/components/form/Form';
 import Heading from '@/components/text/Heading';
-import { Control, Controller, useFieldArray } from 'react-hook-form';
+import { Control, Controller, FieldArrayWithId } from 'react-hook-form';
 import { EditFormData } from '../form.type';
 import DateTimeInput from '@/components/input/DateTimeInput';
 import { RegionHubInputSelfContained } from '@/components/input/HubInput';
+import { useStopOverItems } from '../useStopOverItems';
+
+export const FIELD_ARRAY_NAMES = {
+  TO_DESTINATION: 'shuttleRouteHubsToDestination' as const,
+  FROM_DESTINATION: 'shuttleRouteHubsFromDestination' as const,
+} as const;
 
 interface Props {
   control: Control<EditFormData>;
@@ -12,24 +18,18 @@ interface Props {
 }
 
 const StopOverSection = ({ control, defaultDate }: Props) => {
-  const {
-    fields: fromDestHubFields,
-    append: appendFromDestHub,
-    remove: removeFromDestHub,
-    swap: swapFromDestHub,
-  } = useFieldArray({
+  const toDestinationStop = useStopOverItems({
     control,
-    name: 'shuttleRouteHubsFromDestination',
+    fieldArrayName: FIELD_ARRAY_NAMES.TO_DESTINATION,
+    defaultDate,
+    isDestinationStop: (index, length) => index === length - 1,
   });
 
-  const {
-    fields: toDestHubFields,
-    prepend: prependToDestHub,
-    remove: removeToDestHub,
-    swap: swapToDestHub,
-  } = useFieldArray({
+  const fromDestinationStops = useStopOverItems({
     control,
-    name: 'shuttleRouteHubsToDestination',
+    fieldArrayName: FIELD_ARRAY_NAMES.FROM_DESTINATION,
+    defaultDate,
+    isDestinationStop: (index) => index === 0,
   });
 
   return (
@@ -46,47 +46,18 @@ const StopOverSection = ({ control, defaultDate }: Props) => {
         경유지는 장소들 중 선택 가능합니다.
       </Callout>
 
-      <StopOverList
+      <StopOverItems
         title="가는편"
-        fields={toDestHubFields}
-        addItem={() =>
-          prependToDestHub({
-            regionHubId: '',
-            arrivalTime: defaultDate ?? '',
-          })
-        }
-        removeItem={removeToDestHub}
-        swapItems={swapToDestHub}
-        getIsBlueBackground={(index) => index === toDestHubFields.length - 1}
-        canMoveUp={(index) => index > 0 && index !== toDestHubFields.length - 1}
-        canMoveDown={(index) =>
-          index < toDestHubFields.length - 1 &&
-          index !== toDestHubFields.length - 2
-        }
-        canDelete={(index) => index !== toDestHubFields.length - 1}
         control={control}
-        fieldArrayName="shuttleRouteHubsToDestination"
+        fieldArrayName={FIELD_ARRAY_NAMES.TO_DESTINATION}
+        {...toDestinationStop}
       />
 
-      <StopOverList
+      <StopOverItems
         title="오는편"
-        fields={fromDestHubFields}
-        addItem={() =>
-          appendFromDestHub({
-            regionHubId: '',
-            arrivalTime: defaultDate ?? '',
-          })
-        }
-        removeItem={removeFromDestHub}
-        swapItems={swapFromDestHub}
-        getIsBlueBackground={(index) => index === 0}
-        canMoveUp={(index) => index > 0 && index !== 1}
-        canMoveDown={(index) =>
-          index < fromDestHubFields.length - 1 && index !== 0
-        }
-        canDelete={(index) => index !== 0}
         control={control}
-        fieldArrayName="shuttleRouteHubsFromDestination"
+        fieldArrayName={FIELD_ARRAY_NAMES.FROM_DESTINATION}
+        {...fromDestinationStops}
       />
     </FormContainer.section>
   );
@@ -94,13 +65,17 @@ const StopOverSection = ({ control, defaultDate }: Props) => {
 
 export default StopOverSection;
 
-interface StopOverListProps {
+interface StopOverItemsProps {
   title: string;
-  fields: Record<'id', string>[];
+  fields: FieldArrayWithId<
+    EditFormData,
+    'shuttleRouteHubsToDestination' | 'shuttleRouteHubsFromDestination',
+    'id'
+  >[];
   addItem: () => void;
   removeItem: (index: number) => void;
   swapItems: (indexA: number, indexB: number) => void;
-  getIsBlueBackground: (index: number) => boolean;
+  isVenue: (index: number) => boolean;
   canMoveUp: (index: number) => boolean;
   canMoveDown: (index: number) => boolean;
   canDelete: (index: number) => boolean;
@@ -110,23 +85,23 @@ interface StopOverListProps {
     | 'shuttleRouteHubsFromDestination';
 }
 
-const StopOverList = ({
+const StopOverItems = ({
   title,
   fields,
   addItem,
   removeItem,
   swapItems,
-  getIsBlueBackground,
+  isVenue,
   canMoveUp,
   canMoveDown,
   canDelete,
   control,
   fieldArrayName,
-}: StopOverListProps) => {
+}: StopOverItemsProps) => {
   return (
     <section
       className={
-        fieldArrayName === 'shuttleRouteHubsToDestination' ? 'pb-12' : ''
+        fieldArrayName === FIELD_ARRAY_NAMES.TO_DESTINATION ? 'pb-12' : ''
       }
     >
       <Heading.h5 backgroundColor="yellow">
@@ -140,81 +115,114 @@ const StopOverList = ({
         </button>
       </Heading.h5>
       <ul className="flex flex-col gap-20">
-        {fields.map((field, index) => {
-          return (
-            <li
-              key={field.id}
-              className={`flex justify-between rounded-[6px] p-12 ${
-                getIsBlueBackground(index)
-                  ? 'bg-notion-blue'
-                  : 'bg-notion-grey/50'
-              }`}
-            >
-              <h5 className="my-auto text-16 font-500">{index + 1}</h5>
-              <div className="w-[1px] rounded-full bg-grey-100" />
-              <div className="flex flex-col">
-                <label className="text-16 font-500">정류장</label>
-                <Controller
-                  control={control}
-                  name={`${fieldArrayName}.${index}` as const}
-                  render={({ field: { onChange, value } }) => (
-                    <RegionHubInputSelfContained
-                      regionId={value.regionId ?? null}
-                      setRegionId={(regionId) =>
-                        onChange({ ...value, regionId })
-                      }
-                      regionHubId={value.regionHubId ?? null}
-                      setRegionHubId={(regionHubId) =>
-                        onChange({ ...value, regionHubId })
-                      }
-                    />
-                  )}
-                />
-              </div>
-              <div className="w-[1px] rounded-full bg-grey-100" />
-              <div className="flex flex-col gap-12">
-                <label className="text-16 font-500">시간</label>
-                <Controller
-                  control={control}
-                  name={`${fieldArrayName}.${index}.arrivalTime` as const}
-                  render={({ field: { onChange, value } }) => (
-                    <DateTimeInput value={value} setValue={onChange} />
-                  )}
-                />
-              </div>
-              <div className="w-[1px] rounded-full bg-grey-100" />
-              <div className="flex items-center gap-8">
-                <button
-                  type="button"
-                  onClick={() => index > 0 && swapItems(index, index - 1)}
-                  disabled={!canMoveUp(index)}
-                  className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
-                >
-                  위로
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    index < fields.length - 1 && swapItems(index, index + 1)
-                  }
-                  disabled={!canMoveDown(index)}
-                  className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
-                >
-                  아래로
-                </button>
-                <button
-                  type="button"
-                  onClick={() => removeItem(index)}
-                  className="text-red-500 disabled:opacity-30"
-                  disabled={!canDelete(index)}
-                >
-                  삭제
-                </button>
-              </div>
-            </li>
-          );
-        })}
+        {fields.map((field, index) => (
+          <StopOverItem
+            key={field.id}
+            index={index}
+            isVenue={isVenue(index)}
+            canMoveUp={canMoveUp(index)}
+            canMoveDown={canMoveDown(index)}
+            canDelete={canDelete(index)}
+            onMoveUp={() => swapItems(index, index - 1)}
+            onMoveDown={() => swapItems(index, index + 1)}
+            onDelete={() => removeItem(index)}
+            control={control}
+            fieldArrayName={fieldArrayName}
+          />
+        ))}
       </ul>
     </section>
   );
 };
+
+interface StopOverItemProps {
+  index: number;
+  isVenue: boolean;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
+  canDelete: boolean;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  onDelete: () => void;
+  control: Control<EditFormData>;
+  fieldArrayName:
+    | typeof FIELD_ARRAY_NAMES.TO_DESTINATION
+    | typeof FIELD_ARRAY_NAMES.FROM_DESTINATION;
+}
+
+const StopOverItem = ({
+  index,
+  isVenue,
+  canMoveUp,
+  canMoveDown,
+  canDelete,
+  onMoveUp,
+  onMoveDown,
+  onDelete,
+  control,
+  fieldArrayName,
+}: StopOverItemProps) => (
+  <li
+    className={`flex justify-between rounded-[6px] p-12 ${
+      isVenue ? 'bg-notion-blue' : 'bg-notion-grey/50'
+    }`}
+  >
+    <h5 className="my-auto text-16 font-500">{index + 1}</h5>
+    <div className="w-[1px] rounded-full bg-grey-100" />
+    <div className="flex flex-col">
+      <label className="text-16 font-500">정류장</label>
+      <Controller
+        control={control}
+        name={`${fieldArrayName}.${index}` as const}
+        render={({ field: { onChange, value } }) => (
+          <RegionHubInputSelfContained
+            regionId={value.regionId ?? null}
+            setRegionId={(regionId) => onChange({ ...value, regionId })}
+            regionHubId={value.regionHubId ?? null}
+            setRegionHubId={(regionHubId) =>
+              onChange({ ...value, regionHubId })
+            }
+          />
+        )}
+      />
+    </div>
+    <div className="w-[1px] rounded-full bg-grey-100" />
+    <div className="flex flex-col gap-12">
+      <label className="text-16 font-500">시간</label>
+      <Controller
+        control={control}
+        name={`${fieldArrayName}.${index}.arrivalTime` as const}
+        render={({ field: { onChange, value } }) => (
+          <DateTimeInput value={value} setValue={onChange} />
+        )}
+      />
+    </div>
+    <div className="w-[1px] rounded-full bg-grey-100" />
+    <div className="flex items-center gap-8">
+      <button
+        type="button"
+        onClick={() => canMoveUp && onMoveUp()}
+        disabled={!canMoveUp}
+        className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
+      >
+        위로
+      </button>
+      <button
+        type="button"
+        onClick={() => canMoveDown && onMoveDown()}
+        disabled={!canMoveDown}
+        className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
+      >
+        아래로
+      </button>
+      <button
+        type="button"
+        onClick={() => canDelete && onDelete()}
+        className="text-red-500 disabled:opacity-30"
+        disabled={!canDelete}
+      >
+        삭제
+      </button>
+    </div>
+  </li>
+);

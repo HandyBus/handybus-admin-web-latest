@@ -18,7 +18,8 @@ interface Props {
 const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
   const { eventId, dailyEventId, shuttleRouteId } = params;
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
+  const { push } = useRouter();
+  const { mutateAsync: putRoute } = usePutShuttleRoute();
   const {
     register,
     control,
@@ -27,44 +28,39 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
   } = useForm<EditFormData>({
     defaultValues,
   });
-
   const hasEarlybird = defaultValues.hasEarlybird;
   const [watchRegularPrice, watchEarlybirdPrice] = useWatch({
     control,
     name: ['regularPrice', 'earlybirdPrice'],
   });
 
-  const { mutate: putRoute } = usePutShuttleRoute({
-    onSuccess: () => {
-      alert('노선이 수정되었습니다.');
-      router.push(
-        `/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`,
-      );
-    },
-    onError: (error) => {
-      alert(
-        '오류가 발생했습니다.\n' + (error instanceof Error && error.message),
-      );
-    },
-  });
-
   const onSubmit = async (data: EditFormData) => {
     if (!confirm('수정하시겠습니까?')) return;
+
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
       const body = conform(data);
-      putRoute({
+      await putRoute({
         eventId,
         dailyEventId,
         shuttleRouteId,
         body,
       });
+      alert('노선이 수정되었습니다.');
+      push(`/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`);
     } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message === 'arrivalTime is not validated'
-      )
-        alert('정류장들의 시간순서가 올바르지 않습니다. 확인해주세요.');
+      let errorMessage = '오류가 발생했습니다.';
+
+      if (error instanceof Error) {
+        if (error.message === 'arrivalTime is not validated') {
+          errorMessage =
+            '정류장들의 시간순서가 올바르지 않습니다. 확인해주세요.';
+        } else {
+          errorMessage += `\n${error.message}`;
+        }
+      }
+
+      alert(errorMessage);
       setIsSubmitting(false);
     }
   };
