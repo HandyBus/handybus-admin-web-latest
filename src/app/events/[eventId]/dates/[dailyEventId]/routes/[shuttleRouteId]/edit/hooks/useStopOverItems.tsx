@@ -1,6 +1,6 @@
-import { FIELD_ARRAY_NAMES } from './components/StopOverSection';
+import { FIELD_ARRAY_NAMES } from '../components/StopOverSection';
 import { Control, useFieldArray } from 'react-hook-form';
-import { EditFormData } from './form.type';
+import { EditFormValues } from '../form.type';
 
 export const useStopOverItems = ({
   control,
@@ -8,7 +8,7 @@ export const useStopOverItems = ({
   defaultDate,
   isDestinationStop,
 }: {
-  control: Control<EditFormData>;
+  control: Control<EditFormValues>;
   fieldArrayName: (typeof FIELD_ARRAY_NAMES)[keyof typeof FIELD_ARRAY_NAMES];
   defaultDate: string | undefined;
   isDestinationStop: (index: number, length: number) => boolean;

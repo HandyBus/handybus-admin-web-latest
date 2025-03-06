@@ -1,8 +1,8 @@
 import Callout from '@/components/text/Callout';
 import FormContainer from '@/components/form/Form';
 import { Control } from 'react-hook-form';
-import { EditFormData } from '../form.type';
-import { useStopOverItems } from '../useStopOverItems';
+import { EditFormValues } from '../form.type';
+import { useStopOverItems } from '../hooks/useStopOverItems';
 import { StopOverItems } from './StopOverItems';
 
 export const FIELD_ARRAY_NAMES = {
@@ -11,7 +11,7 @@ export const FIELD_ARRAY_NAMES = {
 } as const;
 
 interface Props {
-  control: Control<EditFormData>;
+  control: Control<EditFormValues>;
   defaultDate: string | undefined;
 }
 

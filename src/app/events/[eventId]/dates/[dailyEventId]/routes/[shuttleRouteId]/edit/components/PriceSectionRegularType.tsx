@@ -2,14 +2,14 @@ import { Control, Controller, FieldErrors } from 'react-hook-form';
 import Heading from '@/components/text/Heading';
 import NumberInput from '@/components/input/NumberInput';
 import DateInput from '@/components/input/DateInput';
-import { EditFormData } from '../form.type';
+import { EditFormValues } from '../form.type';
 
 const PriceSectionRegularType = ({
   control,
   errors,
 }: {
-  control: Control<EditFormData>;
-  errors: FieldErrors<EditFormData>;
+  control: Control<EditFormValues>;
+  errors: FieldErrors<EditFormValues>;
 }) => {
   return (
     <div className="flex flex-col gap-8 rounded-[4px] p-8">
@@ -43,7 +43,7 @@ const PriceSectionRegularType = ({
 export default PriceSectionRegularType;
 
 interface Props {
-  control: Control<EditFormData>;
+  control: Control<EditFormValues>;
 }
 
 const TripPriceInput = ({ control }: Props) => {

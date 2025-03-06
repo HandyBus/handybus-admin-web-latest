@@ -1,5 +1,5 @@
 import { Control, Controller } from 'react-hook-form';
-import { EditFormData } from '../form.type';
+import { EditFormValues } from '../form.type';
 import { FieldArrayWithId } from 'react-hook-form';
 import { FIELD_ARRAY_NAMES } from './StopOverSection';
 import Heading from '@/components/text/Heading';
@@ -9,7 +9,7 @@ import { RegionHubInputSelfContained } from '@/components/input/HubInput';
 interface StopOverItemsProps {
   title: '가는편' | '오는편';
   fields: FieldArrayWithId<
-    EditFormData,
+    EditFormValues,
     'shuttleRouteHubsToDestination' | 'shuttleRouteHubsFromDestination',
     'id'
   >[];
@@ -20,7 +20,7 @@ interface StopOverItemsProps {
   canMoveUp: (index: number) => boolean;
   canMoveDown: (index: number) => boolean;
   canDelete: (index: number) => boolean;
-  control: Control<EditFormData>;
+  control: Control<EditFormValues>;
   fieldArrayName:
     | 'shuttleRouteHubsToDestination'
     | 'shuttleRouteHubsFromDestination';
@@ -85,7 +85,7 @@ interface StopOverItemProps {
   onMoveUp: () => void;
   onMoveDown: () => void;
   onDelete: () => void;
-  control: Control<EditFormData>;
+  control: Control<EditFormValues>;
   fieldArrayName:
     | typeof FIELD_ARRAY_NAMES.TO_DESTINATION
     | typeof FIELD_ARRAY_NAMES.FROM_DESTINATION;

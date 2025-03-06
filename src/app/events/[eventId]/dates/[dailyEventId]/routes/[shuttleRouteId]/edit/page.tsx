@@ -2,10 +2,10 @@
 
 import { useMemo } from 'react';
 import { useGetShuttleRoute } from '@/services/shuttleRoute.service';
-import { EditFormData } from './form.type';
 import Heading from '@/components/text/Heading';
-import EditForm from './EditForm';
+import EditForm from './components/EditForm';
 import { extractSortedShuttleHubs } from './utils/extractSortedShuttleHubs.util';
+import { EditFormValues } from './form.type';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -27,7 +27,7 @@ const Page = ({ params }: Props) => {
     )?.date;
   }, [route]);
 
-  const defaultValues: EditFormData = useMemo(
+  const defaultValues: EditFormValues = useMemo(
     () => ({
       name: route?.name ?? '',
       hasEarlybird: route?.hasEarlybird ?? false,

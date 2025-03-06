@@ -1,4 +1,4 @@
-import { EditFormData } from '../form.type';
+import { EditFormValues } from '../form.type';
 import PriceSectionRegularType from './PriceSectionRegularType';
 import PriceSectionEarlybirdType from './PriceSectionEarlyBirdType';
 import { Control, FieldErrors } from 'react-hook-form';
@@ -6,11 +6,11 @@ import FormContainer from '@/components/form/Form';
 import Callout from '@/components/text/Callout';
 
 interface Props {
-  control: Control<EditFormData>;
-  errors: FieldErrors<EditFormData>;
+  control: Control<EditFormValues>;
+  errors: FieldErrors<EditFormValues>;
   hasEarlybird: boolean;
-  watchRegularPrice: EditFormData['regularPrice'];
-  watchEarlybirdPrice: EditFormData['earlybirdPrice'];
+  watchRegularPrice: EditFormValues['regularPrice'];
+  watchEarlybirdPrice: EditFormValues['earlybirdPrice'];
 }
 
 const PriceSection = ({

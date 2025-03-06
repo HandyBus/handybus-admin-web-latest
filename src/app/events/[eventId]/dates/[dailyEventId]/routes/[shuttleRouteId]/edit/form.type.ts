@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const EditFormSchema = z.object({
+export const EditFormValuesSchema = z.object({
   name: z.string(),
   reservationDeadline: z.string(),
   hasEarlybird: z.boolean(),
@@ -36,4 +36,4 @@ export const EditFormSchema = z.object({
     .optional(),
 });
 
-export type EditFormData = z.infer<typeof EditFormSchema>;
+export type EditFormValues = z.infer<typeof EditFormValuesSchema>;

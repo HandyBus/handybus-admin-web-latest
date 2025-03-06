@@ -1,8 +1,8 @@
 import { UpdateShuttleRouteRequest } from '@/types/shuttleRoute.type';
-import { EditFormData } from '../form.type';
+import { EditFormValues } from '../form.type';
 import dayjs from 'dayjs';
 
-export const conform = (data: EditFormData): UpdateShuttleRouteRequest => {
+export const conform = (data: EditFormValues): UpdateShuttleRouteRequest => {
   const validateSequenceOrder = (
     hubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
   ) => {

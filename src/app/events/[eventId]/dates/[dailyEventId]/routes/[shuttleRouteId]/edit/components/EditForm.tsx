@@ -3,15 +3,15 @@ import { useRouter } from 'next/navigation';
 import Input from '@/components/input/Input';
 import { useState } from 'react';
 import { usePutShuttleRoute } from '@/services/shuttleRoute.service';
-import { EditFormData } from './form.type';
-import { conform } from './utils/conform.util';
+import { EditFormValues } from '../form.type';
+import { conform } from '../utils/conform.util';
 import FormContainer from '@/components/form/Form';
-import PriceSection from './components/PriceSection';
-import StopOverSection from './components/StopOverSection';
+import PriceSection from './PriceSection';
+import StopOverSection from './StopOverSection';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
-  defaultValues: EditFormData;
+  defaultValues: EditFormValues;
   defaultDate: string | undefined;
 }
 
@@ -25,7 +25,7 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<EditFormData>({
+  } = useForm<EditFormValues>({
     defaultValues,
   });
   const hasEarlybird = defaultValues.hasEarlybird;
@@ -34,7 +34,7 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
     name: ['regularPrice', 'earlybirdPrice'],
   });
 
-  const onSubmit = async (data: EditFormData) => {
+  const onSubmit = async (data: EditFormValues) => {
     if (!confirm('수정하시겠습니까?')) return;
 
     setIsSubmitting(true);
