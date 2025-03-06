@@ -133,8 +133,10 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   });
 
   const hasEarlybird = defaultValues.hasEarlybird;
-  const watchRegularPrice = useWatch({ control, name: 'regularPrice' });
-  const watchEarlybirdPrice = useWatch({ control, name: 'earlybirdPrice' });
+  const [watchRegularPrice, watchEarlybirdPrice] = useWatch({
+    control,
+    name: ['regularPrice', 'earlybirdPrice'],
+  });
 
   const {
     fields: fromDestHubFields,

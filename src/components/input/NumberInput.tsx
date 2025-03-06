@@ -1,8 +1,9 @@
 'use client';
 
+import { InputHTMLAttributes } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
+interface Props extends InputHTMLAttributes<HTMLInputElement> {
   value: number;
   setValue: (value: number) => void;
   placeholder?: string;
