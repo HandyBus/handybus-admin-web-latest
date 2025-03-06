@@ -29,8 +29,10 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
   });
 
   const hasEarlybird = defaultValues.hasEarlybird;
-  const watchRegularPrice = useWatch({ control, name: 'regularPrice' });
-  const watchEarlybirdPrice = useWatch({ control, name: 'earlybirdPrice' });
+  const [watchRegularPrice, watchEarlybirdPrice] = useWatch({
+    control,
+    name: ['regularPrice', 'earlybirdPrice'],
+  });
 
   const { mutate: putRoute } = usePutShuttleRoute({
     onSuccess: () => {
