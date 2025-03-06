@@ -2,8 +2,8 @@ import Callout from '@/components/text/Callout';
 import FormContainer from '@/components/form/Form';
 import { Control } from 'react-hook-form';
 import { EditFormValues } from '../form.type';
-import { useStopOverItems } from '../hooks/useStopOverItems';
-import { StopOverItems } from './StopOverItems';
+import { useShuttleRouteHubActions } from '../hooks/useShuttleRouteHubActions';
+import { ShuttleRouteHubItems } from './ShuttleRouteHubItems';
 
 export const FIELD_ARRAY_NAMES = {
   TO_DESTINATION: 'shuttleRouteHubsToDestination' as const,
@@ -15,15 +15,15 @@ interface Props {
   defaultDate: string | undefined;
 }
 
-const StopOverSection = ({ control, defaultDate }: Props) => {
-  const toDestinationStop = useStopOverItems({
+const ShuttleRouteHubSection = ({ control, defaultDate }: Props) => {
+  const toDestinationStop = useShuttleRouteHubActions({
     control,
     fieldArrayName: FIELD_ARRAY_NAMES.TO_DESTINATION,
     defaultDate,
     isDestinationStop: (index, length) => index === length - 1,
   });
 
-  const fromDestinationStops = useStopOverItems({
+  const fromDestinationStops = useShuttleRouteHubActions({
     control,
     fieldArrayName: FIELD_ARRAY_NAMES.FROM_DESTINATION,
     defaultDate,
@@ -46,14 +46,14 @@ const StopOverSection = ({ control, defaultDate }: Props) => {
         기존에 생성된 경유지는 삭제는 불가능합니다. 수정만 가능합니다.
       </Callout>
 
-      <StopOverItems
+      <ShuttleRouteHubItems
         title="가는편"
         control={control}
         fieldArrayName={FIELD_ARRAY_NAMES.TO_DESTINATION}
         {...toDestinationStop}
       />
 
-      <StopOverItems
+      <ShuttleRouteHubItems
         title="오는편"
         control={control}
         fieldArrayName={FIELD_ARRAY_NAMES.FROM_DESTINATION}
@@ -63,4 +63,4 @@ const StopOverSection = ({ control, defaultDate }: Props) => {
   );
 };
 
-export default StopOverSection;
+export default ShuttleRouteHubSection;

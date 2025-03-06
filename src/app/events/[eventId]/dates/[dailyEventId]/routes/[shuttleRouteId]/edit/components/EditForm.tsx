@@ -7,7 +7,7 @@ import { EditFormValues } from '../form.type';
 import { conform } from '../utils/conform.util';
 import FormContainer from '@/components/form/Form';
 import PriceSection from './PriceSection';
-import StopOverSection from './StopOverSection';
+import ShuttleRouteHubSection from './ShuttleRouteHubSection';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -95,7 +95,7 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
         watchEarlybirdPrice={watchEarlybirdPrice}
       />
 
-      <StopOverSection control={control} defaultDate={defaultDate} />
+      <ShuttleRouteHubSection control={control} defaultDate={defaultDate} />
 
       <FormContainer.submitButton disabled={isSubmitting}>
         {isSubmitting ? '처리 중...' : '수정하기'}

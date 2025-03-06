@@ -1,12 +1,12 @@
 import { Control, Controller } from 'react-hook-form';
 import { EditFormValues } from '../form.type';
 import { FieldArrayWithId } from 'react-hook-form';
-import { FIELD_ARRAY_NAMES } from './StopOverSection';
+import { FIELD_ARRAY_NAMES } from './ShuttleRouteHubSection';
 import Heading from '@/components/text/Heading';
 import DateTimeInput from '@/components/input/DateTimeInput';
 import { RegionHubInputSelfContained } from '@/components/input/HubInput';
 
-interface StopOverItemsProps {
+interface ShuttleRouteHubItemsProps {
   title: '가는편' | '오는편';
   fields: FieldArrayWithId<
     EditFormValues,
@@ -26,7 +26,7 @@ interface StopOverItemsProps {
     | 'shuttleRouteHubsFromDestination';
 }
 
-export const StopOverItems = ({
+export const ShuttleRouteHubItems = ({
   title,
   fields,
   addItem,
@@ -38,7 +38,7 @@ export const StopOverItems = ({
   canDelete,
   control,
   fieldArrayName,
-}: StopOverItemsProps) => {
+}: ShuttleRouteHubItemsProps) => {
   return (
     <section
       className={
@@ -57,7 +57,7 @@ export const StopOverItems = ({
       </Heading.h5>
       <ul className="flex flex-col gap-20">
         {fields.map((field, index) => (
-          <StopOverItem
+          <ShuttleRouteHubItem
             key={field.id}
             index={index}
             isVenue={isVenue(index)}
@@ -76,7 +76,7 @@ export const StopOverItems = ({
   );
 };
 
-interface StopOverItemProps {
+interface ShuttleRouteHubItemProps {
   index: number;
   isVenue: boolean;
   canMoveUp: boolean;
@@ -91,7 +91,7 @@ interface StopOverItemProps {
     | typeof FIELD_ARRAY_NAMES.FROM_DESTINATION;
 }
 
-const StopOverItem = ({
+const ShuttleRouteHubItem = ({
   index,
   isVenue,
   canMoveUp,
@@ -102,7 +102,7 @@ const StopOverItem = ({
   onDelete,
   control,
   fieldArrayName,
-}: StopOverItemProps) => (
+}: ShuttleRouteHubItemProps) => (
   <li
     className={`flex justify-between rounded-[6px] p-12 ${
       isVenue ? 'bg-notion-blue' : 'bg-notion-grey/50'

@@ -1,8 +1,8 @@
-import { FIELD_ARRAY_NAMES } from '../components/StopOverSection';
+import { FIELD_ARRAY_NAMES } from '../components/ShuttleRouteHubSection';
 import { Control, useFieldArray } from 'react-hook-form';
 import { EditFormValues } from '../form.type';
 
-export const useStopOverItems = ({
+export const useShuttleRouteHubActions = ({
   control,
   fieldArrayName,
   defaultDate,
