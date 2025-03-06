@@ -16,6 +16,7 @@ import Heading from '@/components/text/Heading';
 import FormContainer from '@/components/form/Form';
 import Callout from '@/components/text/Callout';
 import NumberInput from '@/components/input/NumberInput';
+import { discountPercent } from '../discountPercent.util';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -226,7 +227,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
             </div>
           </div>
           <Callout className="text-14">
-            <b>주의: </b>가격은 노선 추가 후{' '}
+            <b>주의: </b>얼리버드 적용 여부 및 얼리버드 마감일은 노선 추가 후{' '}
             <b className="text-red-500">변경이 불가</b>합니다.
           </Callout>
           <article className="grid w-full grid-cols-2 gap-12">
@@ -599,10 +600,4 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
       </FormContainer>
     </main>
   );
-};
-
-const discountPercent = (price: number, priceAfterDiscount: number) => {
-  const amount = ((price - priceAfterDiscount) / price) * 100;
-  if (amount < 0) return '(오류: 얼리버드가 더 비쌉니다.)';
-  return '(' + amount.toFixed(2) + '% 할인)';
 };
