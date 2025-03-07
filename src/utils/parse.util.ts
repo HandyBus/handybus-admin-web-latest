@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { toast } from 'react-toastify';
-import { isServer } from '@tanstack/react-query';
 
 interface SilentParseOptions {
   useToast?: boolean;
@@ -22,7 +21,11 @@ export const silentParse = <T extends z.ZodTypeAny>(
 ): z.infer<T> => {
   const parseResult = zod.safeParse(input);
   if (!parseResult.success) {
-    if (!isServer && options.useToast) {
+    // vercel env 를 사용하면 vercel deployment 상에서 production 인지 development 인지 분간할 수 있습니다.
+    if (
+      process.env.NEXT_PUBLIC_VERCEL_ENV !== 'production' &&
+      options.useToast
+    ) {
       toast.error(
         '파싱 과정에서 타입 오류가 발생했습니다. 자세한 내용은 어드민 개발팀에 문의해주세요.',
       );

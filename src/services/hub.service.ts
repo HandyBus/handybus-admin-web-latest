@@ -14,7 +14,7 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import regions from '../data/regions.json';
-import { RegionSchema } from '@/types/region';
+import { RegionSchema } from '@/types/region.type';
 import { toSearchParamString } from '@/utils/searchParam.util';
 import { withPagination } from '@/types/common.type';
 

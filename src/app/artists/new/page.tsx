@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { PlusIcon } from 'lucide-react';
 import Input from '@/components/input/Input';
-import { usePostArtist } from '@/services/shuttleOperation.service';
+import { usePostArtist } from '@/services/artist.service';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
 

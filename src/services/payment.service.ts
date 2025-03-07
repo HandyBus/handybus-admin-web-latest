@@ -1,34 +1,35 @@
-// ----- 조회 -----.
-
 import {
-  AdminCouponsResponseModelSchema,
-  CreateCouponRequest,
-  CreateCouponRequestSchema,
-} from '@/types/coupon.type';
+  PaymentsViewEntitySchema,
+  TossPaymentsEntitySchema,
+} from '@/types/payment.type';
 import { authInstance } from './config';
-import { silentParse } from '@/utils/parse.util';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import {
   DashboardOptions,
   TotalSalesCountsReadModelSchema,
 } from '@/types/dashboard.type';
-import dayjs from 'dayjs';
 import { toSearchParamString } from '@/utils/searchParam.util';
 
-// ----- 조회 -----
+// ----- GET -----
 
-export const getCoupons = async () => {
-  const res = await authInstance.get('/v1/billing/admin/coupons', {
-    shape: { coupons: AdminCouponsResponseModelSchema.array() },
-  });
-  return res.coupons;
+export const getUserPayment = async (userId: string, paymentId: string) => {
+  const res = await authInstance.get(
+    `/v2/user-management/admin/users/${userId}/payments/${paymentId}`,
+    {
+      shape: {
+        payments: PaymentsViewEntitySchema.nullable(),
+        tossPayments: TossPaymentsEntitySchema.nullable(),
+      },
+    },
+  );
+  return res;
 };
 
-export const useGetCoupons = () => {
+export const useGetUserPayment = (userId: string, paymentId: string) => {
   return useQuery({
-    queryKey: ['coupon'],
-    queryFn: getCoupons,
-    initialData: [],
+    queryKey: ['user', userId, 'payment', paymentId],
+    queryFn: () => getUserPayment(userId, paymentId),
   });
 };
 
@@ -62,27 +63,7 @@ export const useGetTotalSalesCounts = (options?: Partial<DashboardOptions>) => {
   });
 };
 
-// ----- 명령 -----
-export const postCoupon = async (body: CreateCouponRequest) => {
-  return await authInstance.post(
-    '/v1/billing/admin/coupons',
-    silentParse(CreateCouponRequestSchema, body),
-  );
-};
-
-export const usePostCoupon = ({
-  onSuccess,
-  onError,
-}: {
-  onSuccess?: () => void;
-  onError?: (error: unknown) => void;
-}) => {
-  return useMutation({
-    mutationFn: postCoupon,
-    onSuccess,
-    onError,
-  });
-};
+// ----- POST -----
 
 // body에 refundAmount를 제공할 경우 원본 refundRequest의 refundAmount를 덮어씁니다
 export const postCompleteRefundRequest = async (

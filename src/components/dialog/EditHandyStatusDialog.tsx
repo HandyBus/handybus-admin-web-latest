@@ -5,15 +5,13 @@ import {
   Dialog,
   DialogPanel,
   DialogTitle,
-} from '@headlessui/react';
-import React, { useCallback, useMemo, useState } from 'react';
-import BlueButton from '@/components/link/BlueButton';
-import {
   Listbox,
   ListboxButton,
   ListboxOption,
   ListboxOptions,
 } from '@headlessui/react';
+import React, { useCallback, useMemo, useState } from 'react';
+import BlueButton from '@/components/link/BlueButton';
 import {
   ArrowDownIcon,
   ChevronDownIcon,
@@ -24,7 +22,7 @@ import Stringifier from '@/utils/stringifier.util';
 import {
   PutReservationBody,
   usePutReservation,
-} from '@/services/shuttleOperation.service';
+} from '@/services/reservation.service';
 import {
   HandyStatus,
   HandyStatusEnum,

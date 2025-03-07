@@ -7,13 +7,12 @@ import { ChevronDownIcon, FilterIcon } from 'lucide-react';
 import Toggle from '@/components/button/Toggle';
 import { AgeRangeEnum, GenderEnum } from '@/types/user.type';
 import Stringifier from '@/utils/stringifier.util';
-import { GetUsersOptions } from '@/services/userManagement.service';
+import { GetUsersOptions } from '@/services/user.service';
 import { UserFilterAction } from '../hooks/useUserFilter';
 import { Dispatch, ReactNode } from 'react';
 import { ActiveStatusEnum } from '@/types/common.type';
 import DebouncedInput from '@/components/input/DebouncedInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
-import dayjs from 'dayjs';
 
 interface Props {
   option: GetUsersOptions;
@@ -191,9 +190,7 @@ const UserFilter = ({ option, dispatch }: Props) => {
                 setValue={(value) =>
                   dispatch({
                     type: 'SET_LAST_LOGIN_FROM',
-                    lastLoginFrom: value
-                      ? dayjs(value).format('YYYY-MM-DD HH:mm:ss')
-                      : undefined,
+                    lastLoginFrom: value ?? undefined,
                   })
                 }
               />
@@ -202,9 +199,7 @@ const UserFilter = ({ option, dispatch }: Props) => {
                 setValue={(value) =>
                   dispatch({
                     type: 'SET_LAST_LOGIN_TO',
-                    lastLoginTo: value
-                      ? dayjs(value).format('YYYY-MM-DD HH:mm:ss')
-                      : undefined,
+                    lastLoginTo: value ?? undefined,
                   })
                 }
               />

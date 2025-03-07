@@ -4,7 +4,7 @@ import Form from '@/components/form/Form';
 import Input from '@/components/input/Input';
 import NumberInput from '@/components/input/NumberInput';
 import Heading from '@/components/text/Heading';
-import { usePostCoupon } from '@/services/billing.service';
+import { usePostCoupon } from '@/services/coupon.service';
 import { CreateCouponRequest } from '@/types/coupon.type';
 import { Label, Radio } from '@headlessui/react';
 import { Field } from '@headlessui/react';

@@ -1,8 +1,10 @@
 import { z } from 'zod';
 
-export const UpdateShuttleRouteRequestFormSchema = z.object({
+export const EditFormValuesSchema = z.object({
   name: z.string(),
   reservationDeadline: z.string(),
+  hasEarlybird: z.boolean(),
+  earlybirdDeadline: z.string().optional(),
   maxPassengerCount: z.number().int(),
   shuttleRouteHubsFromDestination: z.array(
     z.object({
@@ -20,8 +22,18 @@ export const UpdateShuttleRouteRequestFormSchema = z.object({
       arrivalTime: z.string(),
     }),
   ),
+  regularPrice: z.object({
+    roundTrip: z.number().int(),
+    toDestination: z.number().int(),
+    fromDestination: z.number().int(),
+  }),
+  earlybirdPrice: z
+    .object({
+      roundTrip: z.number().int(),
+      toDestination: z.number().int(),
+      fromDestination: z.number().int(),
+    })
+    .optional(),
 });
 
-export type UpdateShuttleRouteRequestFormData = z.infer<
-  typeof UpdateShuttleRouteRequestFormSchema
->;
+export type EditFormValues = z.infer<typeof EditFormValuesSchema>;

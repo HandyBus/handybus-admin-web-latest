@@ -12,8 +12,8 @@ import {
   useGetRegionHub,
   useGetRegions,
   usePutRegionHub,
-} from '@/services/location.service';
-import { Region } from '@/types/region';
+} from '@/services/hub.service';
+import { Region } from '@/types/region.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
 import { RegionHub } from '@/types/hub.type';

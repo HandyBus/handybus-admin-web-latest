@@ -5,7 +5,7 @@ import useTable from '@/hooks/useTable';
 import { useMemo } from 'react';
 import BlueLink from '@/components/link/BlueLink';
 import Heading from '@/components/text/Heading';
-import { useGetRegionHubs } from '@/services/location.service';
+import { useGetRegionHubs } from '@/services/hub.service';
 import { columns } from './table.type';
 import { PAGINATION_LIMIT } from '@/constants/config';
 import RegionHubFilter from './components/RegionHubFilter';

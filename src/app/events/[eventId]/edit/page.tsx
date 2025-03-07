@@ -13,7 +13,7 @@ import ImageFileInput from '@/components/input/ImageFileInput';
 import RegionHubInput from '@/components/input/HubInput';
 import Input from '@/components/input/Input';
 import dayjs from 'dayjs';
-import { useGetEvent, usePutEvent } from '@/services/shuttleOperation.service';
+import { useGetEvent, usePutEvent } from '@/services/event.service';
 import Form from '@/components/form/Form';
 import { EventsViewEntity, EventTypeEnum } from '@/types/event.type';
 import Heading from '@/components/text/Heading';

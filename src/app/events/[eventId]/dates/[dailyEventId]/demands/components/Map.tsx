@@ -6,7 +6,7 @@ import { BIG_REGIONS_TO_COORDINATES } from '@/constants/regions';
 import {
   useGetDemandBasedRouteTree,
   useGetDemandsStats,
-} from '@/services/shuttleOperation.service';
+} from '@/services/demand.service';
 import {
   DemandBasedRouteResponse,
   RegionHubClusterNode,

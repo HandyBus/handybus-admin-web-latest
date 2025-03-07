@@ -1,7 +1,7 @@
 'use client';
 
 import useTable from '@/hooks/useTable';
-import { useGetUsersWithPagination } from '@/services/userManagement.service';
+import { useGetUsersWithPagination } from '@/services/user.service';
 import { columns } from './table.type';
 import { useMemo } from 'react';
 import Heading from '@/components/text/Heading';

@@ -9,7 +9,7 @@ import DebouncedInput from '@/components/input/DebouncedInput';
 import BlueLink from '@/components/link/BlueLink';
 import useTable from '@/hooks/useTable';
 import BaseTable from '@/components/table/BaseTable';
-import { useGetCoupons } from '@/services/billing.service';
+import { useGetCoupons } from '@/services/coupon.service';
 import { AdminCouponsResponseModel } from '@/types/coupon.type';
 import Heading from '@/components/text/Heading';
 import dayjs from 'dayjs';
