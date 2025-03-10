@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import {
-  ShuttleRoutesViewEntitySchema,
+  AdminShuttleRoutesViewEntitySchema,
   TripTypeEnum,
 } from './shuttleRoute.type';
 
@@ -54,7 +54,7 @@ export const ReservationViewEntitySchema = z
     paymentUpdatedAt: z.string().nullable(),
     shuttleBusId: z.string().nullable(),
     passengerCount: z.number().int(),
-    shuttleRoute: ShuttleRoutesViewEntitySchema,
+    shuttleRoute: AdminShuttleRoutesViewEntitySchema,
     createdAt: z.string(),
     updatedAt: z.string(),
     hasReview: z.boolean(),

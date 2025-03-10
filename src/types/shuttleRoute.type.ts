@@ -41,7 +41,7 @@ export type ShuttleRouteHubsInShuttleRoutesViewEntity = z.infer<
   typeof ShuttleRouteHubsInShuttleRoutesViewEntitySchema
 >;
 
-export const ShuttleRoutesViewEntitySchema = z
+export const AdminShuttleRoutesViewEntitySchema = z
   .object({
     shuttleRouteId: z.string(),
     eventId: z.string(),
@@ -66,13 +66,14 @@ export const ShuttleRoutesViewEntitySchema = z
       ShuttleRouteHubsInShuttleRoutesViewEntitySchema.array(),
     fromDestinationShuttleRouteHubs:
       ShuttleRouteHubsInShuttleRoutesViewEntitySchema.array(),
+    demandCount: z.number().int(),
     event: z.lazy(() => EventsViewEntitySchema),
     createdAt: z.string(),
     updatedAt: z.string(),
   })
   .strict();
-export type ShuttleRoutesViewEntity = z.infer<
-  typeof ShuttleRoutesViewEntitySchema
+export type AdminShuttleRoutesViewEntity = z.infer<
+  typeof AdminShuttleRoutesViewEntitySchema
 >;
 
 // ----- POST -----

@@ -2,7 +2,7 @@ import {
   CreateShuttleRouteRequest,
   CreateShuttleRouteRequestSchema,
   ShuttleRouteStatus,
-  ShuttleRoutesViewEntitySchema,
+  AdminShuttleRoutesViewEntitySchema,
   TripType,
 } from '@/types/shuttleRoute.type';
 import { authInstance } from './config';
@@ -38,7 +38,7 @@ export const getShuttleRoutesOfDailyEvent = async (
     `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes${toSearchParamString({ ...options }, '?')}`,
     {
       shape: withPagination({
-        shuttleRoutes: ShuttleRoutesViewEntitySchema.array(),
+        shuttleRoutes: AdminShuttleRoutesViewEntitySchema.array(),
       }),
     },
   );
@@ -64,7 +64,7 @@ export const getShuttleRoutes = async (options?: GetShuttleRoutesOptions) => {
     `/v2/shuttle-operation/admin/events/all/dates/all/routes${toSearchParamString({ ...options }, '?')}`,
     {
       shape: withPagination({
-        shuttleRoutes: ShuttleRoutesViewEntitySchema.array(),
+        shuttleRoutes: AdminShuttleRoutesViewEntitySchema.array(),
       }),
     },
   );
@@ -80,7 +80,7 @@ export const getShuttleRoute = async (
     `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`,
     {
       shape: {
-        shuttleRoute: ShuttleRoutesViewEntitySchema,
+        shuttleRoute: AdminShuttleRoutesViewEntitySchema,
       },
     },
   );

@@ -11,7 +11,7 @@ import {
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { ChevronDown } from 'lucide-react';
 import { useGetShuttleRoutesOfDailyEvent } from '@/services/shuttleRoute.service';
-import { ShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
+import { AdminShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 
 interface Props {
   eventId: string;
@@ -33,20 +33,20 @@ const ShuttleRouteInput = ({
     dailyEventId,
   );
 
-  const setSelectedRoute: (route: ShuttleRoutesViewEntity | null) => void =
+  const setSelectedRoute: (route: AdminShuttleRoutesViewEntity | null) => void =
     useCallback(
-      (route: ShuttleRoutesViewEntity | null) => {
+      (route: AdminShuttleRoutesViewEntity | null) => {
         setValue(route?.shuttleRouteId ?? null);
       },
       [setValue],
     );
 
-  const selectedRoute: ShuttleRoutesViewEntity | null = useMemo(
+  const selectedRoute: AdminShuttleRoutesViewEntity | null = useMemo(
     () => data?.find((ds) => ds.shuttleRouteId === value) || null,
     [data, value],
   );
 
-  const filtered: ShuttleRoutesViewEntity[] = useMemo(() => {
+  const filtered: AdminShuttleRoutesViewEntity[] = useMemo(() => {
     return query
       ? filterByFuzzy(data ?? [], query, (p) => p.name)
       : (data ?? []);
@@ -55,7 +55,7 @@ const ShuttleRouteInput = ({
   if (error) return <div>Failed to load artists</div>;
 
   return (
-    <Combobox<ShuttleRoutesViewEntity | null>
+    <Combobox<AdminShuttleRoutesViewEntity | null>
       immediate
       value={selectedRoute}
       onChange={setSelectedRoute}
@@ -76,7 +76,7 @@ const ShuttleRouteInput = ({
                 : '노선 선택'
           }
           defaultValue={null}
-          displayValue={(route: null | ShuttleRoutesViewEntity) =>
+          displayValue={(route: null | AdminShuttleRoutesViewEntity) =>
             route?.name ?? ''
           }
           onChange={(event) => setQuery(event.target.value)}
