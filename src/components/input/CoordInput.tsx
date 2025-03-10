@@ -19,7 +19,6 @@ interface StationData {
   longitude: number;
 }
 
-// 상수로 초기 줌 레벨 정의
 const INITIAL_ZOOM_LEVEL = 4;
 
 const CoordInput = ({ coord, setCoord }: Props) => {
@@ -193,7 +192,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
       await getCurrentRegion();
 
       if (!currentRegionId) {
-        console.warn('지역 정보를 찾을 수 없거나 지원되지 않는 지역입니다.');
+        alert('지역 정보를 찾을 수 없거나 지원되지 않는 지역입니다.');
         return;
       }
 
