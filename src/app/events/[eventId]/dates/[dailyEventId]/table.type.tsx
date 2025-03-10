@@ -16,6 +16,30 @@ export const columns = [
     header: () => '상태',
     cell: (info) => Stringifier.shuttleRouteStatus(info.getValue()),
   }),
+  columnHelper.accessor('toDestinationCount', {
+    header: () => '가는 편',
+    cell: (info) => {
+      const count = info.getValue();
+      const maxCount = info.row.original.maxPassengerCount;
+      return (
+        <span className={`${count === maxCount ? 'text-red-500' : ''}`}>
+          ({count} / {maxCount})
+        </span>
+      );
+    },
+  }),
+  columnHelper.accessor('fromDestinationCount', {
+    header: () => '오는 편',
+    cell: (info) => {
+      const count = info.getValue();
+      const maxCount = info.row.original.maxPassengerCount;
+      return (
+        <span className={`${count === maxCount ? 'text-red-500' : ''}`}>
+          ({count} / {maxCount})
+        </span>
+      );
+    },
+  }),
   columnHelper.display({
     id: 'reservation-detail',
     header: () => '예약 상세',
