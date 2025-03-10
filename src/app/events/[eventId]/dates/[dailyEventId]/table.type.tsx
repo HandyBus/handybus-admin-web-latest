@@ -2,7 +2,7 @@
 
 import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
-import { ShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
+import { AdminShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 import Stringifier from '@/utils/stringifier.util';
 import {
   getShuttleRouteDemand,
@@ -10,7 +10,7 @@ import {
   setShuttleRouteDemand,
 } from './routeDemand.util';
 
-const columnHelper = createColumnHelper<ShuttleRoutesViewEntity>();
+const columnHelper = createColumnHelper<AdminShuttleRoutesViewEntity>();
 
 export const columns = [
   columnHelper.accessor('name', {
@@ -45,32 +45,33 @@ export const columns = [
       );
     },
   }),
-  columnHelper.accessor('createdAt', {
+  columnHelper.accessor('demandCount', {
     header: () => '추가 개설 요청',
-    cell: (props) => {
+    cell: (info) => {
+      const value = info.getValue();
       const savedValue = getShuttleRouteDemand({
-        eventId: props.row.original.eventId,
-        dailyEventId: props.row.original.dailyEventId,
-        shuttleRouteId: props.row.original.shuttleRouteId,
+        eventId: info.row.original.eventId,
+        dailyEventId: info.row.original.dailyEventId,
+        shuttleRouteId: info.row.original.shuttleRouteId,
       });
       const handleSave = () => {
         setShuttleRouteDemand(savedValue ?? 0, {
-          eventId: props.row.original.eventId,
-          dailyEventId: props.row.original.dailyEventId,
-          shuttleRouteId: props.row.original.shuttleRouteId,
+          eventId: info.row.original.eventId,
+          dailyEventId: info.row.original.dailyEventId,
+          shuttleRouteId: info.row.original.shuttleRouteId,
         });
       };
       const handleRemove = () => {
         removeShuttleRouteDemand({
-          eventId: props.row.original.eventId,
-          dailyEventId: props.row.original.dailyEventId,
-          shuttleRouteId: props.row.original.shuttleRouteId,
+          eventId: info.row.original.eventId,
+          dailyEventId: info.row.original.dailyEventId,
+          shuttleRouteId: info.row.original.shuttleRouteId,
         });
       };
       return (
         <div className="group relative text-center">
           <p>
-            {1}{' '}
+            {value}{' '}
             {savedValue !== null && (
               <span className="ml-[2px] text-12 text-grey-500">
                 {savedValue}
