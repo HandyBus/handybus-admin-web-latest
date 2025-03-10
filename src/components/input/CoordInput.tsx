@@ -163,9 +163,8 @@ const CoordInput = ({ coord, setCoord }: Props) => {
     });
   };
 
-  const getCurrentRegion = useCallback(async () => {
-    if (!kakaoMapRef.current) return '';
-    // 현재 지도 중심점의 지역 정보만 가져오기
+  const getCurrentRegion = async () => {
+    if (!kakaoMapRef.current) return;
     const center = kakaoMapRef.current.getCenter();
 
     try {
@@ -176,21 +175,17 @@ const CoordInput = ({ coord, setCoord }: Props) => {
         const bigRegion = standardizeRegionName(addressParts[0]);
         const smallRegion = addressParts[1];
         const region = `${bigRegion} ${smallRegion}`;
-
-        setCurrentRegion(region);
-
         const regionId = findRegionId(bigRegion, smallRegion);
+        setCurrentRegion(region);
         setCurrentRegionId(typeof regionId === 'string' ? regionId : null);
-
-        console.log('현재 지역:', region, '지역 ID:', regionId);
         return region;
       }
-      return '';
+      return;
     } catch (error) {
       console.error('지역 정보를 가져오는 데 실패했습니다.', error);
-      return '';
+      return;
     }
-  }, [findRegionId]);
+  };
 
   // 지역 재검색 버튼 클릭 함수
   const searchCurrentRegion = useCallback(async () => {
@@ -248,8 +243,6 @@ const CoordInput = ({ coord, setCoord }: Props) => {
               const address = await toAddress(center.getLat(), center.getLng());
               const addressParts = address.split(' ');
               if (addressParts.length >= 2) {
-                const region = addressParts.slice(0, 2).join(' ');
-                console.log('현재 지역:', region);
                 getCurrentRegion();
               }
             } catch (error) {
@@ -271,8 +264,6 @@ const CoordInput = ({ coord, setCoord }: Props) => {
                 );
                 const addressParts = address.split(' ');
                 if (addressParts.length >= 2) {
-                  const region = addressParts.slice(0, 2).join(' ');
-                  console.log('현재 지역:', region);
                   getCurrentRegion();
                 }
               } catch (error) {
@@ -429,10 +420,8 @@ const standardizeRegionName = (regionName: string): string => {
 
   if (regionName === '충북') return '충청북도';
   if (regionName === '충남') return '충청남도';
-
   if (regionName === '경북') return '경상북도';
   if (regionName === '경남') return '경상남도';
-
   if (regionName === '전남') return '전라남도';
 
   return regionName;
@@ -443,13 +432,7 @@ const findRegionId = (
   smallRegion: string,
 ): string | null => {
   if (!bigRegion || !smallRegion) return null;
-
   const regionId = REGION_TO_ID[bigRegion][smallRegion];
-
-  if (regionId) {
-    console.log('찾은 regionId:', regionId);
-    return regionId;
-  }
-
+  if (regionId) return regionId;
   return null;
 };
