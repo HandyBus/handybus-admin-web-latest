@@ -45,6 +45,30 @@ export interface GetRegionHubsOptionsWithPagination
   limit?: number;
 }
 
+export const getRegionHubsWithoutPagination = async (regionId: string) => {
+  const res = await authInstance.get(
+    `/v2/location/admin/regions/${regionId}/hubs`,
+    {
+      shape: withPagination({ regionHubs: RegionHubSchema.array() }),
+    },
+  );
+  return res.regionHubs;
+};
+
+export const useGetRegionHubsWithoutPagination = ({
+  regionId,
+  enabled,
+}: {
+  regionId: string;
+  enabled?: boolean;
+}) => {
+  return useQuery({
+    queryKey: ['regionHub'],
+    queryFn: () => getRegionHubsWithoutPagination(regionId),
+    enabled,
+  });
+};
+
 export const getRegionHubs = async (
   options?: GetRegionHubsOptionsWithPagination,
 ) => {
