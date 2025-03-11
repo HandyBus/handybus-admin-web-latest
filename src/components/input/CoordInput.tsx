@@ -178,9 +178,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
   // 지역 재검색 버튼 클릭 함수
   const searchCurrentRegion = useCallback(async () => {
     try {
-      const regionId = await getCurrentRegion();
-
-      if (!regionId) {
+      if (!currentRegionId) {
         alert('지역 정보를 찾을 수 없거나 지원되지 않는 지역입니다.');
         return;
       }
@@ -188,12 +186,12 @@ const CoordInput = ({ coord, setCoord }: Props) => {
       setHasRequestedSearch(true);
       refetch();
       setShowSearchButton(false);
-      setLastSearchedRegionId(regionId);
+      setLastSearchedRegionId(currentRegionId);
     } catch (error) {
       console.error('정류장 데이터를 불러오는 데 실패했습니다.', error);
       setError(true);
     }
-  }, [regionHubsData]);
+  }, [currentRegionId]);
 
   // 지도 초기화 시 정류장 데이터도 함께 불러오기
   const initializeMap = useCallback(() => {
