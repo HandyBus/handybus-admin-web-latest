@@ -63,7 +63,7 @@ export const useGetRegionHubsWithoutPagination = ({
   enabled?: boolean;
 }) => {
   return useQuery({
-    queryKey: ['regionHub', regionId],
+    queryKey: ['regionHub'],
     queryFn: () => getRegionHubsWithoutPagination(regionId),
     enabled,
   });

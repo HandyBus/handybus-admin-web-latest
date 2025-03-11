@@ -23,7 +23,7 @@ const INITIAL_ZOOM_LEVEL = 4;
 
 const CoordInput = ({ coord, setCoord }: Props) => {
   const mapRef = useRef<HTMLDivElement>(null);
-
+  const [hasRequestedSearch, setHasRequestedSearch] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const kakaoMapRef = useRef<kakao.maps.Map | null>(null);
@@ -35,9 +35,9 @@ const CoordInput = ({ coord, setCoord }: Props) => {
     string | null
   >(null);
 
-  const { data: regionHubs } = useGetRegionHubsWithoutPagination({
+  const { data: regionHubs, refetch } = useGetRegionHubsWithoutPagination({
     regionId: currentRegionId ?? '',
-    enabled: !!currentRegionId,
+    enabled: !!currentRegionId && hasRequestedSearch,
   });
 
   const regionHubsData = useMemo(
@@ -185,14 +185,15 @@ const CoordInput = ({ coord, setCoord }: Props) => {
         return;
       }
 
+      setHasRequestedSearch(true);
+      refetch();
       setShowSearchButton(false);
-      displayHubs(regionHubsData ?? []);
       setLastSearchedRegionId(regionId);
     } catch (error) {
       console.error('정류장 데이터를 불러오는 데 실패했습니다.', error);
       setError(true);
     }
-  }, [getCurrentRegion, regionHubsData]);
+  }, [regionHubsData]);
 
   // 지도 초기화 시 정류장 데이터도 함께 불러오기
   const initializeMap = useCallback(() => {
@@ -219,12 +220,12 @@ const CoordInput = ({ coord, setCoord }: Props) => {
         window.kakao.maps.event.addListener(
           map,
           'click',
-          function (mouseEvent: kakao.maps.event.MouseEvent) {
+          (mouseEvent: kakao.maps.event.MouseEvent) => {
             setCoordWithAddress(mouseEvent.latLng);
           },
         );
 
-        window.kakao.maps.event.addListener(map, 'dragend', async function () {
+        window.kakao.maps.event.addListener(map, 'dragend', async () => {
           if (map) {
             const center = map.getCenter();
             try {
@@ -239,27 +240,20 @@ const CoordInput = ({ coord, setCoord }: Props) => {
           }
         });
 
-        window.kakao.maps.event.addListener(
-          map,
-          'zoom_changed',
-          async function () {
-            if (map) {
-              const center = map.getCenter();
-              try {
-                const address = await toAddress(
-                  center.getLat(),
-                  center.getLng(),
-                );
-                const addressParts = address.split(' ');
-                if (addressParts.length >= 2) {
-                  getCurrentRegion();
-                }
-              } catch (error) {
-                console.error('지역 정보를 가져오는 데 실패했습니다.', error);
+        window.kakao.maps.event.addListener(map, 'zoom_changed', async () => {
+          if (map) {
+            const center = map.getCenter();
+            try {
+              const address = await toAddress(center.getLat(), center.getLng());
+              const addressParts = address.split(' ');
+              if (addressParts.length >= 2) {
+                getCurrentRegion();
               }
+            } catch (error) {
+              console.error('지역 정보를 가져오는 데 실패했습니다.', error);
             }
-          },
-        );
+          }
+        });
 
         const ps = new window.kakao.maps.services.Places();
 
@@ -281,13 +275,19 @@ const CoordInput = ({ coord, setCoord }: Props) => {
       setError(true);
       alert('지도를 불러오는 중 오류가 발생했습니다. \n' + error);
     }
-  }, [coord.latitude, coord.longitude, getCurrentRegion, setCoordWithAddress]);
+  }, [coord.latitude, coord.longitude, setCoordWithAddress]);
 
   useEffect(() => {
     if (currentRegionId !== lastSearchedRegionId) {
       setShowSearchButton(true);
     }
   }, [currentRegionId, lastSearchedRegionId]);
+
+  useEffect(() => {
+    if (regionHubsData) {
+      displayHubs(regionHubsData);
+    }
+  }, [regionHubsData]);
 
   return (
     <>
@@ -370,13 +370,13 @@ const toAddress = async (latitude: number, longitude: number) =>
 
     const geocoder = new window.kakao.maps.services.Geocoder();
     const coord = new window.kakao.maps.LatLng(latitude, longitude);
-    const callback = function (
+    const callback = (
       result: Array<{
         address: kakao.maps.services.Address;
         road_address: kakao.maps.services.RoadAaddress | null;
       }>,
       status: kakao.maps.services.Status,
-    ) {
+    ) => {
       if (status === window.kakao.maps.services.Status.OK) {
         const address = result[0].address.address_name;
         resolve(address);
