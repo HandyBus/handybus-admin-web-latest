@@ -7,8 +7,6 @@ export const RegionSchema = z.object({
   cityFullName: z.string(),
   cityShortName: z.string(),
   relatedRegionIds: z.string().array(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
 });
 export type Region = z.infer<typeof RegionSchema>;
 
