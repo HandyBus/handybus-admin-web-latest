@@ -30,7 +30,6 @@ const CoordInput = ({ coord, setCoord }: Props) => {
   const markerRef = useRef<kakao.maps.Marker | null>(null);
   const [currentRegion, setCurrentRegion] = useState<string>('');
   const [currentRegionId, setCurrentRegionId] = useState<string | null>(null);
-  const markersRef = useRef<Map<string, kakao.maps.Marker>>(new Map());
   const [showSearchButton, setShowSearchButton] = useState<boolean>(true);
   const [lastSearchedRegionId, setLastSearchedRegionId] = useState<
     string | null
@@ -112,11 +111,6 @@ const CoordInput = ({ coord, setCoord }: Props) => {
   const displayHubs = (hubList: HubData[]) => {
     if (!kakaoMapRef.current) return;
 
-    // 기존 마커 모두 제거가 필요할까?
-    // markersRef.current.forEach((marker) => marker.setMap(null));
-    // markersRef.current.clear();
-
-    // 새 마커 생성 및 표시
     hubList.forEach((hub) => {
       const position = new kakao.maps.LatLng(hub.latitude, hub.longitude);
       const marker = new kakao.maps.Marker({
@@ -154,8 +148,6 @@ const CoordInput = ({ coord, setCoord }: Props) => {
       kakao.maps.event.addListener(marker, 'mouseout', () => {
         customOverlay.setMap(null);
       });
-
-      markersRef.current.set(hub.id, marker);
     });
   };
 
