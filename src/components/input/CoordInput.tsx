@@ -160,7 +160,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
   };
 
   const getCurrentRegion = async () => {
-    if (!kakaoMapRef.current) return;
+    if (!kakaoMapRef.current) return null;
     const center = kakaoMapRef.current.getCenter();
 
     try {
@@ -174,33 +174,33 @@ const CoordInput = ({ coord, setCoord }: Props) => {
         const regionId = findRegionId(bigRegion, smallRegion);
         setCurrentRegion(region);
         setCurrentRegionId(typeof regionId === 'string' ? regionId : null);
-        return region;
+        return regionId;
       }
-      return;
+      return null;
     } catch (error) {
       console.error('지역 정보를 가져오는 데 실패했습니다.', error);
-      return;
+      return null;
     }
   };
 
   // 지역 재검색 버튼 클릭 함수
   const searchCurrentRegion = useCallback(async () => {
     try {
-      await getCurrentRegion();
+      const regionId = await getCurrentRegion();
 
-      if (!currentRegionId) {
+      if (!regionId) {
         alert('지역 정보를 찾을 수 없거나 지원되지 않는 지역입니다.');
         return;
       }
 
       setShowSearchButton(false);
       displayHubs(regionHubsData ?? []);
-      setLastSearchedRegionId(currentRegionId);
+      setLastSearchedRegionId(regionId);
     } catch (error) {
       console.error('정류장 데이터를 불러오는 데 실패했습니다.', error);
       setError(true);
     }
-  }, [currentRegionId, getCurrentRegion, regionHubsData]);
+  }, [getCurrentRegion, regionHubsData]);
 
   // 지도 초기화 시 정류장 데이터도 함께 불러오기
   const initializeMap = useCallback(() => {
