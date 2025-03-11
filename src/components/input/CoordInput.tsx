@@ -12,7 +12,7 @@ interface Props {
   setCoord: (coord: Coord) => void;
 }
 
-interface StationData {
+interface HubData {
   id: string;
   name: string;
   latitude: number;
@@ -109,7 +109,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
   };
 
   // 여러 마커 표시 함수
-  const displayStations = (stationList: StationData[]) => {
+  const displayHubs = (hubList: HubData[]) => {
     if (!kakaoMapRef.current) return;
 
     // 기존 마커 모두 제거가 필요할까?
@@ -117,15 +117,12 @@ const CoordInput = ({ coord, setCoord }: Props) => {
     // markersRef.current.clear();
 
     // 새 마커 생성 및 표시
-    stationList.forEach((station) => {
-      const position = new kakao.maps.LatLng(
-        station.latitude,
-        station.longitude,
-      );
+    hubList.forEach((hub) => {
+      const position = new kakao.maps.LatLng(hub.latitude, hub.longitude);
       const marker = new kakao.maps.Marker({
         map: kakaoMapRef.current ?? undefined,
         position: position,
-        title: station.name,
+        title: hub.name,
         image: createHubsMarkerImage(),
       });
 
@@ -143,22 +140,22 @@ const CoordInput = ({ coord, setCoord }: Props) => {
               position: relative;
               bottom: 80px;
               white-space: nowrap;
-            ">${station.name}</div>
+            ">${hub.name}</div>
           `,
         xAnchor: 0.5,
         yAnchor: 0,
       });
 
       // 마우스오버시 정류장 이름표시
-      kakao.maps.event.addListener(marker, 'mouseover', function () {
+      kakao.maps.event.addListener(marker, 'mouseover', () => {
         customOverlay.setMap(kakaoMapRef.current);
       });
 
-      kakao.maps.event.addListener(marker, 'mouseout', function () {
+      kakao.maps.event.addListener(marker, 'mouseout', () => {
         customOverlay.setMap(null);
       });
 
-      markersRef.current.set(station.id, marker);
+      markersRef.current.set(hub.id, marker);
     });
   };
 
@@ -197,7 +194,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
       }
 
       setShowSearchButton(false);
-      displayStations(regionHubsData ?? []);
+      displayHubs(regionHubsData ?? []);
       setLastSearchedRegionId(currentRegionId);
     } catch (error) {
       console.error('정류장 데이터를 불러오는 데 실패했습니다.', error);
