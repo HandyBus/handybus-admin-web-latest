@@ -9,9 +9,10 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { ANIMATION_DURATION } from './chart.const';
+import { numberTickFormatter } from './chart.util';
 
 const STROKE_COLORS = ['#6366f1', '#f59e0b', '#14b8a6'];
-const ANIMATION_DURATION = 700;
 
 interface Props<T> {
   data: T[];
@@ -44,18 +45,7 @@ const CustomLineChart = <T,>({ data, dataKey, label }: Props<T>) => {
               const max = Math.ceil((dataMax * (1 + diff)) / 10) * 10;
               return [min, max];
             }}
-            tickFormatter={(value) => {
-              if (value >= 100000000) {
-                return `${(value / 100000000).toFixed(1)}억`;
-              }
-              if (value >= 10000000) {
-                return `${(value / 10000000).toFixed(1)}천만`;
-              }
-              if (value >= 10000) {
-                return `${(value / 10000).toFixed(1)}만`;
-              }
-              return value.toString();
-            }}
+            tickFormatter={numberTickFormatter}
           />
           {dataKey.map((key, index) => (
             <Line

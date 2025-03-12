@@ -1,6 +1,6 @@
 'use client';
 
-import ChartBox from '@/components/chart/ChartSection';
+import ChartBox from '@/components/chart/ChartBox';
 import CustomLineChart from '../../../components/chart/CustomLineChart';
 import { useGetTotalReservationCounts } from '@/services/reservation.service';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';

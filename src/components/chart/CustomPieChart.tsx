@@ -9,10 +9,10 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
+import { ANIMATION_DURATION } from './chart.const';
+import { getColorByIndex } from './chart.util';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 const RADIAN = Math.PI / 180;
-const ANIMATION_DURATION = 700;
 
 interface Props<T> {
   data: T[] | undefined;
@@ -77,12 +77,7 @@ const CustomPieChart = <T,>({
           }}
         >
           {data.map((_, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={
-                colors?.[index % colors.length] ?? COLORS[index % COLORS.length]
-              }
-            />
+            <Cell key={`cell-${index}`} fill={getColorByIndex(index, colors)} />
           ))}
         </Pie>
         {renderTooltip && (

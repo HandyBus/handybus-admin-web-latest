@@ -10,6 +10,7 @@ import useCountFilter from './hooks/useCountFilter';
 import CountFilter from './components/CountFilter';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import UserFunnelChart from './components/UserFunnelChart';
 
 const GA_LINK =
   'https://analytics.google.com/analytics/web/?hl=ko#/p464197268/reports/intelligenthome';
@@ -58,6 +59,11 @@ const Page = () => {
         </article>
         <DashboardCard title="유저 통계" href="/statistics/users" />
         <DashboardCard title="수요조사 통계" href="/statistics/demands" />
+      </section>
+      <section>
+        <div className="flex w-full">
+          <UserFunnelChart />
+        </div>
       </section>
       <section>
         <Heading.h2>성과 통계</Heading.h2>
