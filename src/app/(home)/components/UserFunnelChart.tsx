@@ -5,41 +5,37 @@ import CustomBarChart from '@/components/chart/CustomBarChart';
 import { useGetTotalDemandCounts } from '@/services/demand.service';
 import { useGetTotalReservationCounts } from '@/services/reservation.service';
 import { useGetTotalReviewCounts } from '@/services/review.service';
-import {
-  getUserStatsAggregate,
-  useGetTotalUserCounts,
-} from '@/services/user.service';
+import { getUserStatsAggregate } from '@/services/user.service';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 const UserFunnelChart = () => {
   const { data: totalUserCounts, isLoading: isTotalUserCountsLoading } =
-    useGetTotalUserCounts({
-      useDistinctUserId: true,
-    });
-  const { data: totalOnboardedUsers, isLoading: isTotalOnboardedUsersLoading } =
-    useGetOnboardedUsers();
+    useGetTotalUserCounts();
   const { data: totalDemandCounts, isLoading: isTotalDemandCountsLoading } =
     useGetTotalDemandCounts({
+      totalRangeDate: 1,
       useDistinctUserId: true,
     });
   const {
     data: totalReservationCounts,
     isLoading: isTotalReservationCountsLoading,
   } = useGetTotalReservationCounts({
+    totalRangeDate: 1,
     useDistinctUserId: true,
   });
   const { data: totalReviewCounts, isLoading: isTotalReviewCountsLoading } =
     useGetTotalReviewCounts({
+      totalRangeDate: 1,
       useDistinctUserId: true,
     });
 
   const funnelData = useMemo(
     () => [
-      { name: '전체', value: totalUserCounts?.[0].cumulativeUserCount ?? 0 },
+      { name: '전체', value: totalUserCounts?.totalUserCounts ?? 0 },
       {
         name: '온보딩 완료',
-        value: totalOnboardedUsers ?? 0,
+        value: totalUserCounts?.onboardingCompleteUserCounts ?? 0,
       },
       {
         name: '수요조사 완료',
@@ -56,7 +52,6 @@ const UserFunnelChart = () => {
     ],
     [
       totalUserCounts,
-      totalOnboardedUsers,
       totalDemandCounts,
       totalReservationCounts,
       totalReviewCounts,
@@ -65,7 +60,6 @@ const UserFunnelChart = () => {
 
   const isLoading =
     isTotalUserCountsLoading ||
-    isTotalOnboardedUsersLoading ||
     isTotalDemandCountsLoading ||
     isTotalReservationCountsLoading ||
     isTotalReviewCountsLoading;
@@ -79,12 +73,16 @@ const UserFunnelChart = () => {
 
 export default UserFunnelChart;
 
-const useGetOnboardedUsers = () => {
+const useGetTotalUserCounts = () => {
   return useQuery({
-    queryKey: ['user', 'onboarded'],
+    queryKey: ['user', 'total-counts'],
     queryFn: async () => {
       const res = await getUserStatsAggregate();
-      return res.totalUserCount - res.onboardingIncompleteCount;
+      return {
+        totalUserCounts: res.totalUserCount,
+        onboardingCompleteUserCounts:
+          res.totalUserCount - res.onboardingIncompleteCount,
+      };
     },
   });
 };
