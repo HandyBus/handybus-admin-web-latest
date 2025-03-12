@@ -28,7 +28,14 @@ const ReservationPassengerCountChart = ({ options }: Props) => {
 
   const parsedReservationPassengerCounts = reservationPassengerCounts?.map(
     (item, index) => ({
-      ...item,
+      intervalReservationPassengerCount:
+        item.intervalReservationPassengerCount +
+        (cancelledReservationPassengerCounts?.[index]
+          ?.intervalReservationPassengerCount ?? 0),
+      cumulativeReservationPassengerCount:
+        item.cumulativeReservationPassengerCount +
+        (cancelledReservationPassengerCounts?.[index]
+          ?.cumulativeReservationPassengerCount ?? 0),
       intervalCancelledReservationPassengerCount:
         cancelledReservationPassengerCounts?.[index]
           ?.intervalReservationPassengerCount,
@@ -56,7 +63,16 @@ const ReservationPassengerCountChart = ({ options }: Props) => {
         ];
 
   return (
-    <ChartBox title="예약 탑승객">
+    <ChartBox
+      title={
+        <>
+          <span className="keep-word shrink-0">예약 탑승객</span>
+          <span className="ml-[6px] line-clamp-1 text-12 font-400 text-grey-600">
+            예약 탑승객 수는 취소한 예약 탑승객 수를 포함합니다.
+          </span>
+        </>
+      }
+    >
       <CustomLineChart
         data={parsedReservationPassengerCounts ?? []}
         dataKey={dataKey}
