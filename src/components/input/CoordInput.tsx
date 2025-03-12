@@ -221,6 +221,12 @@ const CoordInput = ({ coord, setCoord }: Props) => {
           'click',
           (mouseEvent: kakao.maps.event.MouseEvent) => {
             setCoordWithAddress(mouseEvent.latLng);
+
+            const currentLevel = map.getLevel();
+            if (currentLevel >= 5) {
+              map.setCenter(mouseEvent.latLng);
+              map.setLevel(4);
+            }
           },
         );
 

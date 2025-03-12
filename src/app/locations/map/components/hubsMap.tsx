@@ -185,10 +185,9 @@ const HubsMap = () => {
           (mouseEvent: kakao.maps.event.MouseEvent) => {
             setCoordWithAddress(mouseEvent.latLng);
 
-            map.setCenter(mouseEvent.latLng);
-
             const currentLevel = map.getLevel();
             if (currentLevel >= 5) {
+              map.setCenter(mouseEvent.latLng);
               map.setLevel(4);
             }
           },
