@@ -21,6 +21,7 @@ import {
 import dayjs from 'dayjs';
 import {
   DashboardOptions,
+  TotalReservationCountsReadModelSchema,
   TotalReservationPassengerCountsReadModelSchema,
 } from '@/types/dashboard.type';
 import { ShuttleRouteStatus } from '@/types/shuttleRoute.type';
@@ -94,37 +95,6 @@ export const useGetReservation = (reservationId: string) => {
   });
 };
 
-interface GetTotalReservationCountsOptions extends DashboardOptions {
-  shuttleRouteId: string; // 복수 가능
-  reservationStatus: ReservationStatus;
-}
-
-export const getTotalReservationCounts = async ({
-  baseDate = dayjs().tz().endOf('day').toISOString(),
-  totalRangeDate = 6,
-  intervalDays = 1,
-  ...options
-}: Partial<GetTotalReservationCountsOptions> = {}) => {
-  const res = await authInstance.get(
-    `/v2/shuttle-operation/admin/reservations/all/total-passengers${toSearchParamString(
-      {
-        baseDate,
-        totalRangeDate,
-        intervalDays,
-        ...options,
-      },
-      '?',
-    )}`,
-    {
-      shape: {
-        totalReservationPassengerCounts:
-          TotalReservationPassengerCountsReadModelSchema.array(),
-      },
-    },
-  );
-  return res.totalReservationPassengerCounts;
-};
-
 export const getUserReservations = async (
   userId: string,
   params?: {
@@ -177,8 +147,73 @@ export const useGetUserReservation = (
   });
 };
 
+interface GetTotalReservationPassengerCountsOptions extends DashboardOptions {
+  shuttleRouteId: string; // 복수 가능
+  reservationStatus: ReservationStatus;
+}
+
+export const getTotalReservationPassengerCounts = async ({
+  baseDate = dayjs().tz().endOf('day').toISOString(),
+  totalRangeDate = 6,
+  intervalDays = 1,
+  ...options
+}: Partial<GetTotalReservationPassengerCountsOptions> = {}) => {
+  const res = await authInstance.get(
+    `/v2/shuttle-operation/admin/reservations/all/total-passengers${toSearchParamString(
+      {
+        baseDate,
+        totalRangeDate,
+        intervalDays,
+        ...options,
+      },
+      '?',
+    )}`,
+    {
+      shape: {
+        totalReservationPassengerCounts:
+          TotalReservationPassengerCountsReadModelSchema.array(),
+      },
+    },
+  );
+  return res.totalReservationPassengerCounts;
+};
+
+export const useGetTotalReservationPassengerCounts = (
+  options?: Partial<GetTotalReservationPassengerCountsOptions>,
+) => {
+  return useQuery({
+    queryKey: ['reservation', 'passenger-count', options],
+    queryFn: () => getTotalReservationPassengerCounts(options),
+  });
+};
+
+export const getTotalReservationCounts = async ({
+  baseDate = dayjs().tz().endOf('day').toISOString(),
+  totalRangeDate = 1,
+  intervalDays = 1,
+  ...options
+}: Partial<GetTotalReservationPassengerCountsOptions> = {}) => {
+  const res = await authInstance.get(
+    `/v2/shuttle-operation/admin/reservations/all/total-counts${toSearchParamString(
+      {
+        baseDate,
+        totalRangeDate,
+        intervalDays,
+        ...options,
+      },
+      '?',
+    )}`,
+    {
+      shape: {
+        totalReservationCounts: TotalReservationCountsReadModelSchema.array(),
+      },
+    },
+  );
+  return res.totalReservationCounts;
+};
+
 export const useGetTotalReservationCounts = (
-  options?: Partial<GetTotalReservationCountsOptions>,
+  options?: Partial<GetTotalReservationPassengerCountsOptions>,
 ) => {
   return useQuery({
     queryKey: ['reservation', 'count', options],
