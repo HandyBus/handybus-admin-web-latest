@@ -28,7 +28,11 @@ const HubsMap = () => {
   const [error, setError] = useState<boolean>(false);
   const kakaoMapRef = useRef<kakao.maps.Map | null>(null);
   const markerRef = useRef<kakao.maps.Marker | null>(null);
-  const { data: regionHubs } = useGetRegionHubs({});
+  const {
+    data: regionHubs,
+    error: regionHubsError,
+    isLoading: regionHubsLoading,
+  } = useGetRegionHubs({});
 
   const regionHubsData = useMemo(
     () =>
@@ -102,9 +106,8 @@ const HubsMap = () => {
 
   // 여러 마커 표시 함수
   const displayHubs = (hubList: HubData[]) => {
-    console.log('displayHubs', hubList);
     if (!kakaoMapRef.current) return;
-    console.log('kakaoMapRef.current', kakaoMapRef.current);
+
     hubList.forEach((hub) => {
       const position = new kakao.maps.LatLng(hub.latitude, hub.longitude);
       const marker = new kakao.maps.Marker({
@@ -181,6 +184,13 @@ const HubsMap = () => {
           'click',
           (mouseEvent: kakao.maps.event.MouseEvent) => {
             setCoordWithAddress(mouseEvent.latLng);
+
+            map.setCenter(mouseEvent.latLng);
+
+            const currentLevel = map.getLevel();
+            if (currentLevel >= 5) {
+              map.setLevel(4);
+            }
           },
         );
 
@@ -210,6 +220,7 @@ const HubsMap = () => {
     }
   }, [regionHubsData]);
 
+  if (regionHubsError || regionHubsLoading) return null;
   return (
     <>
       <KakaoMapScript
