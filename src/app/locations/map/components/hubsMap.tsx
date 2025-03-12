@@ -2,53 +2,49 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { twJoin } from 'tailwind-merge';
-import { BanIcon, Loader2Icon, RotateCwIcon } from 'lucide-react';
-import KakaoMapScript from '../script/KakaoMapScript';
-import { useGetRegionHubsWithoutPagination } from '@/services/hub.service';
-import { findRegionId, toAddress } from '@/utils/region.uitl';
-import { standardizeRegionName } from '@/utils/region.uitl';
-
-interface Props {
-  coord: Coord;
-  setCoord: (coord: Coord) => void;
-}
+import { BanIcon, Loader2Icon } from 'lucide-react';
+import { useGetRegionHubs } from '@/services/hub.service';
+import { toAddress } from '@/utils/region.uitl';
+import KakaoMapScript from '@/components/script/KakaoMapScript';
 
 interface HubData {
   id: string;
   name: string;
   latitude: number;
   longitude: number;
+  regionId: string;
 }
 
 const INITIAL_ZOOM_LEVEL = 4;
 
-const CoordInput = ({ coord, setCoord }: Props) => {
+const HubsMap = () => {
+  const [coord, setCoord] = useState<Coord>({
+    latitude: 37.574187,
+    longitude: 126.976882,
+    address: '',
+  });
   const mapRef = useRef<HTMLDivElement>(null);
-  const [hasRequestedSearch, setHasRequestedSearch] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const kakaoMapRef = useRef<kakao.maps.Map | null>(null);
   const markerRef = useRef<kakao.maps.Marker | null>(null);
-  const [currentRegion, setCurrentRegion] = useState<string>('');
-  const [currentRegionId, setCurrentRegionId] = useState<string | null>(null);
-  const [showSearchButton, setShowSearchButton] = useState<boolean>(true);
-  const [lastSearchedRegionId, setLastSearchedRegionId] = useState<
-    string | null
-  >(null);
-
-  const { data: regionHubs, refetch } = useGetRegionHubsWithoutPagination({
-    regionId: currentRegionId ?? '',
-    enabled: !!currentRegionId && hasRequestedSearch,
-  });
+  const {
+    data: regionHubs,
+    error: regionHubsError,
+    isLoading: regionHubsLoading,
+  } = useGetRegionHubs({});
 
   const regionHubsData = useMemo(
     () =>
-      regionHubs?.map((regionHub) => ({
-        id: regionHub.regionHubId,
-        name: regionHub.name,
-        latitude: regionHub.latitude,
-        longitude: regionHub.longitude,
-      })),
+      regionHubs.pages
+        .flatMap((page) => page.regionHubs)
+        .map((regionHub) => ({
+          id: regionHub.regionHubId,
+          name: regionHub.name,
+          latitude: regionHub.latitude,
+          longitude: regionHub.longitude,
+          regionId: regionHub.regionId,
+        })),
     [regionHubs],
   );
 
@@ -133,9 +129,9 @@ const CoordInput = ({ coord, setCoord }: Props) => {
               font-weight: bold;
               text-align: center;
               position: relative;
-              bottom: 80px;
+              bottom: 95px;
               white-space: nowrap;
-            ">${hub.name}</div>
+            ">${hub.name}<br/>(클릭시 수정페이지로 이동)</div>
           `,
         xAnchor: 0.5,
         yAnchor: 0,
@@ -146,53 +142,20 @@ const CoordInput = ({ coord, setCoord }: Props) => {
         customOverlay.setMap(kakaoMapRef.current);
       });
 
+      // 마커 직접 클릭 시 상세 페이지로 이동
+      kakao.maps.event.addListener(marker, 'click', () => {
+        window.open(
+          `/locations/${hub.regionId}/hubs/${hub.id}/edit`,
+          '_blank',
+          'noopener',
+        );
+      });
+
       kakao.maps.event.addListener(marker, 'mouseout', () => {
         customOverlay.setMap(null);
       });
     });
   };
-
-  const getCurrentRegion = async () => {
-    if (!kakaoMapRef.current) return null;
-    const center = kakaoMapRef.current.getCenter();
-
-    try {
-      const address = await toAddress(center.getLat(), center.getLng());
-      const addressParts = address.split(' ');
-
-      if (addressParts.length >= 2) {
-        const bigRegion = standardizeRegionName(addressParts[0]);
-        const smallRegion = addressParts[1];
-        const region = `${bigRegion} ${smallRegion}`;
-        const regionId = findRegionId(bigRegion, smallRegion);
-        setCurrentRegion(region);
-        setCurrentRegionId(typeof regionId === 'string' ? regionId : null);
-        return regionId;
-      }
-      return null;
-    } catch (error) {
-      console.error('지역 정보를 가져오는 데 실패했습니다.', error);
-      return null;
-    }
-  };
-
-  // 지역 재검색 버튼 클릭 함수
-  const searchCurrentRegion = useCallback(async () => {
-    try {
-      if (!currentRegionId) {
-        alert('지역 정보를 찾을 수 없거나 지원되지 않는 지역입니다.');
-        return;
-      }
-
-      setHasRequestedSearch(true);
-      refetch();
-      setShowSearchButton(false);
-      setLastSearchedRegionId(currentRegionId);
-    } catch (error) {
-      console.error('정류장 데이터를 불러오는 데 실패했습니다.', error);
-      setError(true);
-    }
-  }, [currentRegionId]);
 
   // 지도 초기화 시 정류장 데이터도 함께 불러오기
   const initializeMap = useCallback(() => {
@@ -230,36 +193,6 @@ const CoordInput = ({ coord, setCoord }: Props) => {
           },
         );
 
-        window.kakao.maps.event.addListener(map, 'dragend', async () => {
-          if (map) {
-            const center = map.getCenter();
-            try {
-              const address = await toAddress(center.getLat(), center.getLng());
-              const addressParts = address.split(' ');
-              if (addressParts.length >= 2) {
-                getCurrentRegion();
-              }
-            } catch (error) {
-              console.error('지역 정보를 가져오는 데 실패했습니다.', error);
-            }
-          }
-        });
-
-        window.kakao.maps.event.addListener(map, 'zoom_changed', async () => {
-          if (map) {
-            const center = map.getCenter();
-            try {
-              const address = await toAddress(center.getLat(), center.getLng());
-              const addressParts = address.split(' ');
-              if (addressParts.length >= 2) {
-                getCurrentRegion();
-              }
-            } catch (error) {
-              console.error('지역 정보를 가져오는 데 실패했습니다.', error);
-            }
-          }
-        });
-
         const ps = new window.kakao.maps.services.Places();
 
         const searchInput = document.getElementById('search-input');
@@ -273,8 +206,6 @@ const CoordInput = ({ coord, setCoord }: Props) => {
             ps.keywordSearch(target.value, setBoundOnSearch);
           });
         }
-
-        getCurrentRegion();
       }
     } catch (error) {
       setError(true);
@@ -283,29 +214,24 @@ const CoordInput = ({ coord, setCoord }: Props) => {
   }, [coord.latitude, coord.longitude, setCoordWithAddress]);
 
   useEffect(() => {
-    if (currentRegionId !== lastSearchedRegionId) {
-      setShowSearchButton(true);
-    }
-  }, [currentRegionId, lastSearchedRegionId]);
-
-  useEffect(() => {
     if (regionHubsData) {
       displayHubs(regionHubsData);
     }
   }, [regionHubsData]);
 
+  if (regionHubsError || regionHubsLoading) return null;
   return (
     <>
       <KakaoMapScript
         onReady={() => window.kakao.maps.load(initializeMap)}
         libraries={['services']}
       />
-      <article className="relative h-auto p-16 [&_div]:cursor-pointer">
-        <div className="relative rounded-[12px] transition-opacity">
+      <article className="relative h-screen p-16 [&_div]:cursor-pointer">
+        <div className="relative h-5/6 rounded-[12px] transition-opacity">
           <div
             ref={mapRef}
             className={twJoin(
-              'z-0 size-512 w-full rounded-t-[12px] transition-opacity',
+              'z-0 size-512 h-full w-full rounded-t-[12px] transition-opacity',
               (error || loading) && 'opacity-50',
             )}
           />
@@ -313,7 +239,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
             <input
               id="search-input"
               type="text"
-              placeholder="키워드로 검색"
+              placeholder="키워드로 지도 검색"
               className="h-full w-full p-12 outline-none"
             />
           </div>
@@ -338,30 +264,13 @@ const CoordInput = ({ coord, setCoord }: Props) => {
             오류가 발생하여 데이터 정합성을 위해 작동을 중지합니다. 새로고침
             해주세요.
           </div>
-          {showSearchButton && (
-            <div className="absolute bottom-12 left-1/2 z-10 -translate-x-1/2 transform">
-              <button
-                type="button"
-                onClick={searchCurrentRegion}
-                className="flex items-center gap-8 rounded-full bg-blue-400 px-16 py-8 text-white shadow-lg hover:bg-blue-300"
-              >
-                <RotateCwIcon />이 지역 재검색하기{' '}
-                {currentRegion ? `(${currentRegion})` : ''}
-              </button>
-            </div>
-          )}
-        </div>
-        <div>
-          좌표: {coord.latitude}, {coord.longitude}
-          <br />
-          주소: {coord.address}
         </div>
       </article>
     </>
   );
 };
 
-export default CoordInput;
+export default HubsMap;
 
 interface Coord {
   latitude: number;
