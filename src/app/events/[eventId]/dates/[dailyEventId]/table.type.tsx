@@ -26,8 +26,17 @@ export const columns = [
     cell: (info) => {
       const count = info.getValue();
       const maxCount = info.row.original.maxPassengerCount;
+      const diff = maxCount - count;
       return (
-        <span className={`${count === maxCount ? 'text-red-500' : ''}`}>
+        <span
+          className={`${
+            diff === 0
+              ? 'text-grey-600'
+              : diff <= 5
+                ? 'text-red-600'
+                : 'text-green-500'
+          }`}
+        >
           ({count} / {maxCount})
         </span>
       );
@@ -38,8 +47,17 @@ export const columns = [
     cell: (info) => {
       const count = info.getValue();
       const maxCount = info.row.original.maxPassengerCount;
+      const diff = maxCount - count;
       return (
-        <span className={`${count === maxCount ? 'text-red-500' : ''}`}>
+        <span
+          className={`${
+            diff === 0
+              ? 'text-grey-600'
+              : diff <= 5
+                ? 'text-red-600'
+                : 'text-green-500'
+          }`}
+        >
           ({count} / {maxCount})
         </span>
       );
