@@ -25,60 +25,62 @@ const Page = () => {
   return (
     <main className="grow">
       <Heading>통계 대시보드</Heading>
-      <section className="flex gap-20 pb-12">
-        <article className="relative flex h-188 w-188 flex-col justify-center gap-4 rounded-[8px] border border-grey-200 bg-white pl-28">
-          <Link
-            href={GA_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-14 font-600 text-blue-500 underline underline-offset-2"
-          >
-            구글 애널리틱스
-          </Link>
-          <Link
-            href={GOOGLE_SEARCH_CONSOLE_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-14 font-600 text-blue-500 underline underline-offset-2"
-          >
-            구글 서치 콘솔
-          </Link>
-          <Link
-            href={NAVER_SEARCH_ADVISOR_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-14 font-600 text-blue-500 underline underline-offset-2"
-          >
-            네이버 서치어드바이저
-          </Link>
-          <ArrowRight
-            className="absolute bottom-4 right-4 text-grey-400"
-            width={20}
-            height={20}
+      <div className="flex flex-col gap-12">
+        <section className="flex gap-20">
+          <article className="relative flex h-188 w-188 flex-col justify-center gap-4 rounded-[8px] border border-grey-200 bg-white pl-28">
+            <Link
+              href={GA_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-14 font-600 text-blue-500 underline underline-offset-2"
+            >
+              구글 애널리틱스
+            </Link>
+            <Link
+              href={GOOGLE_SEARCH_CONSOLE_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-14 font-600 text-blue-500 underline underline-offset-2"
+            >
+              구글 서치 콘솔
+            </Link>
+            <Link
+              href={NAVER_SEARCH_ADVISOR_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-14 font-600 text-blue-500 underline underline-offset-2"
+            >
+              네이버 서치어드바이저
+            </Link>
+            <ArrowRight
+              className="absolute bottom-4 right-4 text-grey-400"
+              width={20}
+              height={20}
+            />
+          </article>
+          <DashboardCard title="유저 통계" href="/statistics/users" />
+          <DashboardCard title="수요조사 통계" href="/statistics/demands" />
+        </section>
+        <section>
+          <div className="flex w-full">
+            <UserFunnelChart />
+          </div>
+        </section>
+        <section>
+          <Heading.h2>성과 통계</Heading.h2>
+          <CountFilter
+            countFilter={countFilter}
+            dispatchCountFilter={dispatchCountFilter}
           />
-        </article>
-        <DashboardCard title="유저 통계" href="/statistics/users" />
-        <DashboardCard title="수요조사 통계" href="/statistics/demands" />
-      </section>
-      <section>
-        <div className="flex w-full">
-          <UserFunnelChart />
-        </div>
-      </section>
-      <section>
-        <Heading.h2>성과 통계</Heading.h2>
-        <CountFilter
-          countFilter={countFilter}
-          dispatchCountFilter={dispatchCountFilter}
-        />
-        <div className="grid w-full grid-cols-3 gap-8 max-md:grid-cols-2 max-sm:grid-cols-1">
-          <UserCountChart options={countFilter} />
-          <DemandCountChart options={countFilter} />
-          <ReservationPassengerCountChart options={countFilter} />
-          <SalesCountChart options={countFilter} />
-          <ReviewCountChart options={countFilter} />
-        </div>
-      </section>
+          <div className="grid w-full grid-cols-3 gap-8 max-md:grid-cols-2 max-sm:grid-cols-1">
+            <UserCountChart options={countFilter} />
+            <DemandCountChart options={countFilter} />
+            <ReservationPassengerCountChart options={countFilter} />
+            <SalesCountChart options={countFilter} />
+            <ReviewCountChart options={countFilter} />
+          </div>
+        </section>
+      </div>
     </main>
   );
 };
