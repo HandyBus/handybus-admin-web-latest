@@ -33,6 +33,7 @@ export const getTotalReviewCounts = async ({
   baseDate = dayjs().tz().endOf('day').toISOString(),
   totalRangeDate = 6,
   intervalDays = 1,
+  ...options
 }: Partial<DashboardOptions> = {}) => {
   const res = await authInstance.get(
     `/v2/shuttle-operation/admin/reviews/all/total-counts${toSearchParamString(
@@ -40,6 +41,7 @@ export const getTotalReviewCounts = async ({
         baseDate,
         totalRangeDate,
         intervalDays,
+        ...options,
       },
       '?',
     )}`,
