@@ -1,6 +1,6 @@
 'use client';
 
-import ChartBox from '@/components/chart/ChartSection';
+import ChartBox from '@/components/chart/ChartBox';
 import CustomPieChart from '@/components/chart/CustomPieChart';
 import { AgeRange, Gender } from '@/types/user.type';
 

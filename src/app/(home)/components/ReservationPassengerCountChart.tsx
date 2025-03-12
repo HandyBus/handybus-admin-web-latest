@@ -1,8 +1,8 @@
 'use client';
 
-import ChartBox from '@/components/chart/ChartSection';
+import ChartBox from '@/components/chart/ChartBox';
 import CustomLineChart from '../../../components/chart/CustomLineChart';
-import { useGetTotalReservationCounts } from '@/services/reservation.service';
+import { useGetTotalReservationPassengerCounts } from '@/services/reservation.service';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
 import dayjs from 'dayjs';
 
@@ -13,13 +13,14 @@ interface Props {
 const ReservationPassengerCountChart = ({ options }: Props) => {
   const { countType, range } = options;
   const { intervalDays, totalRangeDate } = getInterval(range);
-  const { data: reservationPassengerCounts } = useGetTotalReservationCounts({
-    totalRangeDate,
-    intervalDays,
-    reservationStatus: 'COMPLETE_PAYMENT',
-  });
+  const { data: reservationPassengerCounts } =
+    useGetTotalReservationPassengerCounts({
+      totalRangeDate,
+      intervalDays,
+      reservationStatus: 'COMPLETE_PAYMENT',
+    });
   const { data: cancelledReservationPassengerCounts } =
-    useGetTotalReservationCounts({
+    useGetTotalReservationPassengerCounts({
       intervalDays,
       totalRangeDate,
       reservationStatus: 'CANCEL',

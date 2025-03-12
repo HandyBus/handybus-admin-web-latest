@@ -54,7 +54,9 @@ const Map = ({ eventId, dailyEventId }: Props) => {
   const map = useRef<kakao.maps.Map | null>(null);
   const regionClusters = useRef<kakao.maps.CustomOverlay[]>([]);
   const hubMarkers = useRef<kakao.maps.CustomOverlay[]>([]);
-  const clustersInRegion = useRef<Record<string, RegionHubClusterNode[]>>({});
+  const [clustersInRegion, setClustersInRegion] = useState<
+    Record<string, RegionHubClusterNode[]>
+  >({});
   const routeLine = useRef<kakao.maps.Polyline | null>(null);
 
   const [viewingRegion, setViewingRegion] = useState<string | null>(null);
@@ -78,7 +80,7 @@ const Map = ({ eventId, dailyEventId }: Props) => {
         initializeHubMarker();
 
         const newClustersInRegion = await getClustersInRegion();
-        clustersInRegion.current = newClustersInRegion;
+        setClustersInRegion(newClustersInRegion);
 
         // 줌에 따른 마커 종류 표시 핸들링
         kakao.maps.event.addListener(newMap, 'zoom_changed', () => {
@@ -376,7 +378,7 @@ const Map = ({ eventId, dailyEventId }: Props) => {
                   </ToolTip>
                 </h6>
                 <ul className="flex flex-col gap-[1px]">
-                  {clustersInRegion.current?.[viewingRegion]?.map((cluster) => {
+                  {clustersInRegion?.[viewingRegion]?.map((cluster) => {
                     return (
                       <button
                         key={cluster.clusterId}

@@ -44,16 +44,17 @@ export const UsersViewEntitySchema = z
     ageRange: AgeRangeEnum,
     regionId: z.string().nullable(),
     lastLoginAt: z.string().nullable(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
     favoriteArtists: ArtistsViewEntitySchema.array().nullable(),
     status: ActiveStatusEnum,
     isConnectedKakao: z.boolean(),
     isConnectedNaver: z.boolean(),
     onboardingComplete: z.boolean(),
-    marketingConsent: z.boolean(),
     serviceTermsAgreement: z.boolean(),
     personalInfoConsent: z.boolean(),
-    createdAt: z.string(),
-    updatedAt: z.string(),
+    marketingConsent: z.boolean(),
+    entryGreetingChecked: z.boolean(),
   })
   .strict();
 export type UsersViewEntity = z.infer<typeof UsersViewEntitySchema>;
