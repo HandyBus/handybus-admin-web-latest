@@ -39,15 +39,21 @@ const UserFunnelChart = () => {
       },
       {
         name: '수요조사 완료',
-        value: totalDemandCounts?.[0].cumulativeDemandCount ?? 0,
+        value:
+          totalDemandCounts?.[totalDemandCounts.length - 1]
+            .cumulativeDemandCount ?? 0,
       },
       {
         name: '예약 완료',
-        value: totalReservationCounts?.[0].cumulativeReservationCount ?? 0,
+        value:
+          totalReservationCounts?.[totalReservationCounts.length - 1]
+            .cumulativeReservationCount ?? 0,
       },
       {
         name: '리뷰 작성 완료',
-        value: totalReviewCounts?.[0].cumulativeReviewCount ?? 0,
+        value:
+          totalReviewCounts?.[totalReviewCounts.length - 1]
+            .cumulativeReviewCount ?? 0,
       },
     ],
     [
