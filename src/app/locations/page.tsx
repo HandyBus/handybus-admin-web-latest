@@ -51,6 +51,9 @@ const Page = () => {
         <BlueLink href="/locations/new" className="text-14">
           추가하기
         </BlueLink>
+        <BlueLink href="/locations/map" className="text-14">
+          지도 보기
+        </BlueLink>
       </Heading>
       <section className="flex flex-col">
         <RegionHubFilter option={option} dispatch={dispatch} />
