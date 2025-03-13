@@ -244,35 +244,40 @@ const Map = ({ eventId, dailyEventId }: Props) => {
 
   // 군집들의 지역 정보 조회
   const getClustersInRegion = useCallback(async () => {
+    if (!routeTree?.clusters || routeTree.clusters.length === 0) {
+      return {};
+    }
+
     const geocoder = new kakao.maps.services.Geocoder();
+    const chunkSize = 15;
     const clustersWithRegion: {
       region: string;
       cluster: RegionHubClusterNode;
     }[] = [];
 
-    const promises = routeTree?.clusters.map((cluster) => {
-      return new Promise<void>((resolve) => {
-        geocoder.coord2RegionCode(
-          cluster.longitude,
-          cluster.latitude,
-          (result, status) => {
-            if (status === kakao.maps.services.Status.OK) {
-              clustersWithRegion.push({
-                region: result[0].region_1depth_name,
-                cluster: cluster,
-              });
-            }
-            resolve();
-          },
-        );
+    // NOTE: 카카오의 단기간 동시호출 방지로 인해 15개씩 나누어 처리
+    for (let i = 0; i < routeTree.clusters.length; i += chunkSize) {
+      const chunk = routeTree.clusters.slice(i, i + chunkSize);
+      const chunkPromises = chunk.map((cluster) => {
+        return new Promise<void>((resolve) => {
+          geocoder.coord2RegionCode(
+            cluster.longitude,
+            cluster.latitude,
+            (result, status) => {
+              if (status === kakao.maps.services.Status.OK) {
+                clustersWithRegion.push({
+                  region: result[0].region_1depth_name,
+                  cluster: cluster,
+                });
+              }
+              resolve();
+            },
+          );
+        });
       });
-    });
-
-    if (!promises) {
-      return {};
+      await Promise.all(chunkPromises);
     }
 
-    await Promise.all(promises);
     const clustersInRegion = clustersWithRegion.reduce<
       Record<string, RegionHubClusterNode[]>
     >((acc, { region, cluster }) => {
