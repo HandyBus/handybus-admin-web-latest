@@ -18,6 +18,7 @@ interface HubData {
 const INITIAL_ZOOM_LEVEL = 4;
 
 const HubsMap = () => {
+  const [mapInitialized, setMapInitialized] = useState(false);
   const [coord, setCoord] = useState<Coord>({
     latitude: 37.574187,
     longitude: 126.976882,
@@ -171,6 +172,7 @@ const HubsMap = () => {
 
         const map = new window.kakao.maps.Map(mapRef.current, options);
         kakaoMapRef.current = map;
+        setMapInitialized(true);
 
         // 개별 클릭 위치 표시용 마커
         const marker = new kakao.maps.Marker({
@@ -214,10 +216,10 @@ const HubsMap = () => {
   }, [coord.latitude, coord.longitude, setCoordWithAddress]);
 
   useEffect(() => {
-    if (regionHubsData) {
+    if (regionHubsData && mapInitialized) {
       displayHubs(regionHubsData);
     }
-  }, [regionHubsData]);
+  }, [regionHubsData, mapInitialized]);
 
   if (regionHubsError || regionHubsLoading) return null;
   return (
