@@ -181,11 +181,52 @@ const HubsMap = () => {
         marker.setMap(map);
         markerRef.current = marker;
 
+        const clickMarkerOverlay = new kakao.maps.CustomOverlay({
+          position: marker.getPosition(),
+          content: `
+            <div style="
+              background: white; 
+              padding: 8px 12px;
+              border-radius: 8px; 
+              box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+              font-size: 13px;
+              font-weight: bold;
+              text-align: center;
+              position: relative;
+              bottom: 95px;
+              white-space: nowrap;
+            ">이 위치로 정류장 생성하기 (핀 클릭)</div>
+          `,
+          xAnchor: 0.5,
+          yAnchor: 0,
+        });
+
+        kakao.maps.event.addListener(marker, 'mouseover', () => {
+          clickMarkerOverlay.setMap(map);
+        });
+
+        kakao.maps.event.addListener(marker, 'mouseout', () => {
+          clickMarkerOverlay.setMap(null);
+        });
+
+        kakao.maps.event.addListener(marker, 'click', () => {
+          const position = marker.getPosition();
+          const latitude = position.getLat();
+          const longitude = position.getLng();
+          const address = toAddress(latitude, longitude);
+          window.open(
+            `/locations/new?latitude=${latitude}&longitude=${longitude}&address=${address}`,
+            '_blank',
+            'noopener',
+          );
+        });
+
         window.kakao.maps.event.addListener(
           map,
           'click',
           (mouseEvent: kakao.maps.event.MouseEvent) => {
             setCoordWithAddress(mouseEvent.latLng);
+            clickMarkerOverlay.setPosition(mouseEvent.latLng);
 
             const currentLevel = map.getLevel();
             if (currentLevel >= 6) {

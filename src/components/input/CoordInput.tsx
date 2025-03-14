@@ -23,6 +23,7 @@ interface HubData {
 const INITIAL_ZOOM_LEVEL = 4;
 
 const CoordInput = ({ coord, setCoord }: Props) => {
+  const [mapInitialized, setMapInitialized] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
   const [hasRequestedSearch, setHasRequestedSearch] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -208,6 +209,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
 
         const map = new window.kakao.maps.Map(mapRef.current, options);
         kakaoMapRef.current = map;
+        setMapInitialized(true);
 
         // 개별 클릭 위치 표시용 마커
         const marker = new kakao.maps.Marker({
@@ -293,6 +295,15 @@ const CoordInput = ({ coord, setCoord }: Props) => {
       displayHubs(regionHubsData);
     }
   }, [regionHubsData]);
+
+  // 지도보기에서 핀을 클릭해서 새 정류장 만들기로 넘어온 경우 핀 위치 좌표 가져오기
+  useEffect(() => {
+    if (coord.latitude && coord.longitude && mapInitialized) {
+      setCoordWithAddress(
+        new window.kakao.maps.LatLng(coord.latitude, coord.longitude),
+      );
+    }
+  }, [mapInitialized, setCoordWithAddress]);
 
   return (
     <>
