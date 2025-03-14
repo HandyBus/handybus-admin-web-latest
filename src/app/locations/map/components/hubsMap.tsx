@@ -269,8 +269,8 @@ const HubsMap = () => {
         onReady={() => window.kakao.maps.load(initializeMap)}
         libraries={['services']}
       />
-      <article className="relative h-screen p-16 [&_div]:cursor-pointer">
-        <div className="relative h-5/6 rounded-[12px] transition-opacity">
+      <article className="relative h-[68vh] p-16 [&_div]:cursor-pointer">
+        <div className="relative h-full rounded-[12px] transition-opacity">
           <div
             ref={mapRef}
             className={twJoin(
