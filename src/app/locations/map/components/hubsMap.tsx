@@ -186,9 +186,9 @@ const HubsMap = () => {
             setCoordWithAddress(mouseEvent.latLng);
 
             const currentLevel = map.getLevel();
-            if (currentLevel >= 5) {
+            if (currentLevel >= 6) {
               map.setCenter(mouseEvent.latLng);
-              map.setLevel(4);
+              map.setLevel(currentLevel - 1);
             }
           },
         );
