@@ -21,7 +21,7 @@ const Page = () => {
           <li>3. 핀을 클릭하면 해당 정류장의 수정 페이지로 이동합니다.</li>
         </ul>
       </Callout>
-      <HubsMap />;
+      <HubsMap />
     </div>
   );
 };
