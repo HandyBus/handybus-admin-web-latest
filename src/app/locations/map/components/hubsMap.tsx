@@ -30,7 +30,7 @@ const MAP_CONSTANTS = {
 };
 
 const HubsMap = () => {
-  const [mapInitialized, setMapInitialized] = useState(false);
+  const [isScriptReady, setIsScriptReady] = useState(false);
   const [coord, setCoord] = useState<Coord>({
     latitude: MAP_CONSTANTS.DEFAULT_LAT,
     longitude: MAP_CONSTANTS.DEFAULT_LNG,
@@ -244,7 +244,6 @@ const HubsMap = () => {
 
         const map = new window.kakao.maps.Map(mapRef.current, options);
         kakaoMapRef.current = map;
-        setMapInitialized(true);
 
         const marker = new kakao.maps.Marker({
           position: map.getCenter(),
@@ -263,6 +262,8 @@ const HubsMap = () => {
         );
 
         setupSearch();
+
+        displayHubs(regionHubsData);
       }
     } catch (error) {
       setError(true);
@@ -274,19 +275,20 @@ const HubsMap = () => {
     setupClickMarker,
     handleMapClick,
     setupSearch,
+    regionHubsData,
   ]);
 
   useEffect(() => {
-    if (regionHubsData && mapInitialized) {
-      displayHubs(regionHubsData);
+    if (isScriptReady && regionHubsData) {
+      window.kakao.maps.load(initializeMap);
     }
-  }, [regionHubsData, mapInitialized]);
+  }, [regionHubsData, isScriptReady]);
 
   if (regionHubsError || regionHubsLoading) return null;
   return (
     <>
       <KakaoMapScript
-        onReady={() => window.kakao.maps.load(initializeMap)}
+        onReady={() => setIsScriptReady(true)}
         libraries={['services']}
       />
       <article className="relative h-[68vh] p-16 [&_div]:cursor-pointer">
