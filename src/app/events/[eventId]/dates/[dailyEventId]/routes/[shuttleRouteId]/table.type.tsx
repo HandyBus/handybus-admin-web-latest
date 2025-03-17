@@ -4,8 +4,99 @@ import { createColumnHelper } from '@tanstack/react-table';
 import BlueLink from '@/components/link/BlueLink';
 import { formatDateString } from '@/utils/date.util';
 import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
-import { ShuttleRouteHubsInShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
+import {
+  AdminShuttleRoutesViewEntity,
+  ShuttleRouteHubsInShuttleRoutesViewEntity,
+} from '@/types/shuttleRoute.type';
 import Stringifier from '@/utils/stringifier.util';
+
+type ExtendedAdminShuttleRoutesViewEntity = AdminShuttleRoutesViewEntity & {
+  totalSales: number;
+  totalSalesWithDiscount: number;
+};
+
+const shuttleRouteColumnHelper =
+  createColumnHelper<ExtendedAdminShuttleRoutesViewEntity>();
+
+export const shuttleRouteColumns = [
+  shuttleRouteColumnHelper.accessor('event.eventName', {
+    header: () => '행사명',
+    cell: (info) => info.getValue(),
+  }),
+  shuttleRouteColumnHelper.accessor('dailyEventId', {
+    header: () => '날짜',
+    cell: (info) => {
+      const dailyEvents = info.row.original.event.dailyEvents;
+      const dailyEvent = dailyEvents.find(
+        (dailyEvent) => dailyEvent.dailyEventId === info.getValue(),
+      );
+      return dailyEvent ? formatDateString(dailyEvent.date, 'date') : '-';
+    },
+  }),
+  shuttleRouteColumnHelper.accessor('name', {
+    header: () => '노선 이름',
+    cell: (info) => info.getValue(),
+  }),
+  shuttleRouteColumnHelper.accessor('reservationDeadline', {
+    header: () => '예약 마감일',
+    cell: (info) => formatDateString(info.getValue()),
+  }),
+  shuttleRouteColumnHelper.accessor('status', {
+    header: () => '상태',
+    cell: (info) => Stringifier.shuttleRouteStatus(info.getValue()),
+  }),
+  shuttleRouteColumnHelper.accessor('maxPassengerCount', {
+    header: () => '최대 승객 수',
+    cell: (info) => info.getValue(),
+  }),
+  shuttleRouteColumnHelper.accessor('regularPriceRoundTrip', {
+    header: () => '왕복 가격',
+    cell: (info) => info.getValue().toLocaleString(),
+  }),
+  shuttleRouteColumnHelper.accessor('regularPriceToDestination', {
+    header: () => '가는 편 가격',
+    cell: (info) => info.getValue().toLocaleString(),
+  }),
+  shuttleRouteColumnHelper.accessor('regularPriceFromDestination', {
+    header: () => '오는 편 가격',
+    cell: (info) => info.getValue().toLocaleString(),
+  }),
+  shuttleRouteColumnHelper.accessor('earlybirdDeadline', {
+    header: () => '얼리버드 마감일',
+    cell: (info) => {
+      const value = info.getValue();
+      return value ? formatDateString(value, 'datetime') : '-';
+    },
+  }),
+  shuttleRouteColumnHelper.accessor('earlybirdPriceToDestination', {
+    header: () => '얼리버드 가는 편 가격',
+    cell: (info) => {
+      const value = info.getValue();
+      return value ? value.toLocaleString() : '-';
+    },
+  }),
+  shuttleRouteColumnHelper.accessor('earlybirdPriceFromDestination', {
+    header: () => '얼리버드 오는 편 가격',
+    cell: (info) => {
+      const value = info.getValue();
+      return value ? value.toLocaleString() : '-';
+    },
+  }),
+  shuttleRouteColumnHelper.accessor('totalSales', {
+    header: () => '일반 매출',
+    cell: (info) => {
+      const value = info.getValue();
+      return value ? value.toLocaleString() : '-';
+    },
+  }),
+  shuttleRouteColumnHelper.accessor('totalSalesWithDiscount', {
+    header: () => '실제 매출',
+    cell: (info) => {
+      const value = info.getValue();
+      return value ? value.toLocaleString() : '-';
+    },
+  }),
+];
 
 type ExtendedShuttleBusesViewEntity = ShuttleBusesViewEntity & {
   eventId: string;

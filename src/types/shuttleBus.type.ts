@@ -31,7 +31,6 @@ export const ShuttleBusesViewEntitySchema = z
     openChatLink: z.string().nullable(),
   })
   .strict();
-
 export type ShuttleBusesViewEntity = z.infer<
   typeof ShuttleBusesViewEntitySchema
 >;
