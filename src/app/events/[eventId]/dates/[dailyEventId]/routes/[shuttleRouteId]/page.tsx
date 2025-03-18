@@ -1,28 +1,68 @@
 'use client';
 
 import BlueLink from '@/components/link/BlueLink';
-import { routeHubColumns } from './table.type';
+import { routeHubColumns, shuttleRouteColumns } from './table.type';
 import useTable from '@/hooks/useTable';
 import BaseTable from '@/components/table/BaseTable';
 import Buses from './components/Buses';
-import { formatDateString } from '@/utils/date.util';
 import { useGetShuttleRoute } from '@/services/shuttleRoute.service';
 import Heading from '@/components/text/Heading';
-import Callout from '@/components/text/Callout';
-import List from '@/components/text/List';
-import Stringifier from '@/utils/stringifier.util';
+import { useGetReservationsWithPagination } from '@/services/reservation.service';
+import { useMemo } from 'react';
+import VerticalTable from '@/components/table/VerticalTable';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
 }
 
 const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
-  const {
-    data: route,
-    isPending: isRoutePending,
-    isError: isRouteError,
-    error: routeError,
-  } = useGetShuttleRoute(eventId, dailyEventId, shuttleRouteId);
+  const { data: route } = useGetShuttleRoute(
+    eventId,
+    dailyEventId,
+    shuttleRouteId,
+  );
+
+  const { data: reservationsPages } = useGetReservationsWithPagination({
+    eventId,
+    dailyEventId,
+    shuttleRouteId,
+    reservationStatus: 'COMPLETE_PAYMENT',
+  });
+
+  const createRouteWithSales = () => {
+    const reservations = reservationsPages.pages?.[0]?.reservations;
+    if (!route || !reservations) {
+      return;
+    }
+    const sales = reservations.reduce(
+      (acc, reservation) => {
+        return {
+          totalSales:
+            acc.totalSales + (reservation.paymentPrincipalAmount ?? 0),
+          totalSalesWithDiscount:
+            acc.totalSalesWithDiscount + (reservation.paymentAmount ?? 0),
+        };
+      },
+      { totalSales: 0, totalSalesWithDiscount: 0 },
+    );
+    return [
+      {
+        ...route,
+        totalSales: sales.totalSales,
+        totalSalesWithDiscount: sales.totalSalesWithDiscount,
+      },
+    ];
+  };
+
+  const routeWithSales = useMemo(createRouteWithSales, [
+    route,
+    reservationsPages,
+  ]);
+
+  const routeWithSalesTable = useTable({
+    data: routeWithSales,
+    columns: shuttleRouteColumns,
+  });
 
   const fromHubTable = useTable({
     data: route?.fromDestinationShuttleRouteHubs.sort(
@@ -49,95 +89,28 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
           수정하기
         </BlueLink>
       </Heading>
-
-      {isRoutePending && <div>Loading...</div>}
-      {isRouteError && <div>Error: {routeError.message}</div>}
-      {route && (
-        <div className="flex flex-col gap-16">
-          <Callout>
-            <div className="grid grid-cols-4 gap-16 p-8">
-              <List className="grid-cols-[90px_1fr]">
-                <List.item title="행사명">
-                  <BlueLink href={`/events/${eventId}`}>
-                    {route.event.eventName}
-                  </BlueLink>
-                </List.item>
-                <List.item title="노선 이름">{route.name}</List.item>
-                <List.item title="날짜">
-                  <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>
-                    {formatDateString(
-                      route?.event?.dailyEvents.find(
-                        (dailyEvent) =>
-                          dailyEvent.dailyEventId === dailyEventId,
-                      )?.date,
-                      'date',
-                    )}
-                  </BlueLink>
-                </List.item>{' '}
-                <List.item title="최대 승객 수">
-                  {route.maxPassengerCount}
-                </List.item>
-              </List>
-              <List className="grid-cols-[160px_1fr]">
-                <List.item title="얼리버드 여부">
-                  {route.hasEarlybird ? 'O' : 'X'}
-                </List.item>
-                {route.hasEarlybird && (
-                  <>
-                    <List.item title="얼리버드 예약 마감일">
-                      {formatDateString(route.earlybirdDeadline)}
-                    </List.item>
-                    <List.item title="왕복 얼리버드 가격">
-                      {route.earlybirdPriceRoundTrip?.toLocaleString()}
-                    </List.item>
-                    <List.item title="오는편 얼리버드 가격">
-                      {route.earlybirdPriceFromDestination?.toLocaleString()}
-                    </List.item>
-                    <List.item title="가는편 얼리버드 가격">
-                      {route.earlybirdPriceToDestination?.toLocaleString()}
-                    </List.item>
-                  </>
-                )}
-              </List>
-              <List className="grid-cols-[102px_1fr]">
-                <List.item title="예약 마감일">
-                  {formatDateString(route.reservationDeadline)}
-                </List.item>
-                <List.item title="왕복 가격">
-                  {route.regularPriceRoundTrip.toLocaleString()}
-                </List.item>
-                <List.item title="오는편 가격">
-                  {route.regularPriceFromDestination.toLocaleString()}
-                </List.item>
-                <List.item title="가는편 가격">
-                  {route.regularPriceToDestination.toLocaleString()}
-                </List.item>
-              </List>
-              <List className="grid-cols-[72px_1fr]">
-                <List.item title="상태">
-                  {Stringifier.shuttleRouteStatus(route.status)}
-                </List.item>
-              </List>
-            </div>
-          </Callout>
-
+      <div className="flex flex-col gap-16">
+        {routeWithSales && (
           <section className="flex flex-col">
-            <Heading.h2>경유지 - 가는편</Heading.h2>
-            <BaseTable table={toHubTable} />
+            <Heading.h2>상세 정보</Heading.h2>
+            <VerticalTable table={routeWithSalesTable} />
           </section>
-
+        )}
+        {route && (
           <section className="flex flex-col">
-            <Heading.h2>경유지 - 오는편</Heading.h2>
+            <Heading.h2>경유지</Heading.h2>
+            <Heading.h4>가는 편</Heading.h4>
+            <BaseTable table={toHubTable} />
+            <Heading.h4>오는 편</Heading.h4>
             <BaseTable table={fromHubTable} />
           </section>
-
-          <Buses
-            eventId={eventId}
-            dailyEventId={dailyEventId}
-            shuttleRouteId={shuttleRouteId}
-          />
-        </div>
-      )}
+        )}
+        <Buses
+          eventId={eventId}
+          dailyEventId={dailyEventId}
+          shuttleRouteId={shuttleRouteId}
+        />
+      </div>
     </main>
   );
 };
