@@ -82,4 +82,4 @@ export const FutureRouteSchema = z.object({
   ),
 });
 
-export type FutureRouteSchemaType = z.infer<typeof FutureRouteSchema>;
+export type FutureRoute = z.infer<typeof FutureRouteSchema>;

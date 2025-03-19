@@ -1,8 +1,5 @@
 import { z } from 'zod';
-import {
-  FutureRouteSchema,
-  FutureRouteSchemaType,
-} from '@/types/kakaomoblity.type';
+import { FutureRoute, FutureRouteSchema } from '@/types/kakaomoblity.type';
 import { silentParse } from '@/utils/parse.util';
 
 const REST_API_KEY = process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY;
@@ -36,7 +33,7 @@ export const getEstimatedRoute = async ({
   road_details,
   car_type = 3, // 고속버스 이므로 대형
   summary = true,
-}: Props): Promise<FutureRouteSchemaType> => {
+}: Props): Promise<FutureRoute> => {
   const url = new URL(BASE_URL);
   url.searchParams.append('origin', origin);
   url.searchParams.append('destination', destination);
