@@ -18,7 +18,11 @@ import Link from 'next/link';
 interface Props {
   regionId: string | undefined;
   value: string | null;
-  setValue: (value: string | null) => void;
+  setValue: (
+    value: string | null,
+    latitude: number | null,
+    longitude: number | null,
+  ) => void;
 }
 
 const RegionHubInput = ({ regionId, value, setValue }: Props) => {
@@ -39,7 +43,11 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
 
   const setSelectedHub = useCallback(
     (hub: RegionHub | null) => {
-      setValue(hub?.regionHubId ?? null);
+      setValue(
+        hub?.regionHubId ?? null,
+        hub?.latitude ?? null,
+        hub?.longitude ?? null,
+      );
     },
     [setValue],
   );
@@ -131,7 +139,11 @@ export const RegionHubInputSelfContained = ({
   regionId: string | null;
   setRegionId: (value: string | null) => void;
   regionHubId: string | null;
-  setRegionHubId: (value: string | null) => void;
+  setRegionHubId: (
+    value: string | null,
+    latitude: number | null,
+    longitude: number | null,
+  ) => void;
 }) => {
   return (
     <div className="flex flex-col gap-4">
