@@ -3,7 +3,7 @@ import { getEstimatedRoute } from '@/services/kakaomoblility.service';
 import {
   roundDownToNearestFiveMinutes,
   roundUpToNearestFiveMinutes,
-} from '../components/roundNearestFiveMinutes';
+} from './round-nearest-five-minutes.util';
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { CreateShuttleRouteFormValues } from '../new/form.type';
 
@@ -19,7 +19,13 @@ export interface RouteHubData {
 }
 
 /**
- * 출발 시간 기준으로 경로를 계산하고 도착 시간을 설정합니다.
+ * calculateRoute 는 출발 시간 기준으로 경로를 계산하고 도착 시간을 설정합니다.
+ *
+ * @param type 경로 계산 방향
+ * @param hubsArray 경유지 배열
+ * @param setValue
+ * @param getValues
+ * @return 도착 시간
  */
 export const calculateRoute = async (
   type: 'toDestination' | 'fromDestination',
@@ -44,7 +50,7 @@ export const calculateRoute = async (
       .join('|');
     const departureTime = dayjs(hubsArray[0].arrivalTime)
       .tz('Asia/Seoul')
-      .format('YYYYMMDDHHmm');
+      .format('YYYYMMDDHHmm'); // kakaomobility api 는 한국시간을 기준으로 받기에 한국시간으로 변환
 
     const res = await getEstimatedRoute({
       origin,
@@ -83,16 +89,6 @@ export const calculateRoute = async (
       );
     });
 
-    alert(
-      `출발시간 기준 경로 계산이 완료되었습니다.\n출발시간 : ${dayjs(hubsArray[0].arrivalTime).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm')}\n총 소요시간 : ${Math.floor(result[0].duration / 60)}분\n총 거리 : ${result[0].distance}m
-      ${hubsArray.map((_, index) => {
-        if (index === 0) return '\n경유지 별 소요시간';
-        return `\n${index}번째 경유지 : ${Math.floor(
-          result[0].sections[index - 1].duration / 60,
-        )}분`;
-      })}`,
-    );
-
     const destinationArrivalTime = getValues(
       type === 'toDestination'
         ? 'shuttleRouteHubsToDestination'
@@ -110,7 +106,14 @@ export const calculateRoute = async (
 };
 
 /**
- * 도착 시간 기준으로 경로를 계산하고 출발 시간을 설정합니다.
+ * calculateRouteBackward 는 도착 시간 기준으로 경로를 계산하고 출발 시간을 설정합니다.
+ * api 에서 도착시간을 기준으로 계산해주지 않아, 호출자의 현재 시각을 기준으로 총 소요시간을 계산한뒤,
+ * 도착시간에서 총 소요시간을 빼서 실제 출발 시간을 계산합니다.
+ *
+ * @param type 경로 계산 방향
+ * @param hubsArray 경유지 배열
+ * @param setValue
+ * @return 출발 시간
  */
 export const calculateRouteBackward = async (
   type: 'toDestination' | 'fromDestination',
@@ -137,7 +140,7 @@ export const calculateRouteBackward = async (
       .join('|');
 
     // 임의의 출발 시간
-    const tempDepartureTime = dayjs().format('YYYYMMDDHHmm');
+    const tempDepartureTime = dayjs().format('YYYYMMDDHHmm'); // kakaomobility api 는 한국시간을 기준으로 받기에 한국시간으로 변환
 
     const res = await getEstimatedRoute({
       origin,
@@ -191,17 +194,6 @@ export const calculateRouteBackward = async (
       }
     }
 
-    alert(
-      `도착시간 기준 경로 계산이 완료되었습니다.\n출발 시간이 ${roundedActualDepartureTime.format('HH:mm')}로 설정되었습니다.\n` +
-        `총 소요시간: ${Math.floor(totalDuration / 60)}분\n총 거리: ${result.summary.distance}m
-        ${hubsArray.map((_, index) => {
-          if (index === 0) return '\n경유지 별 소요시간';
-          return `\n${index}번째 경유지 : ${Math.floor(
-            result.sections[index - 1].duration / 60,
-          )}분`;
-        })}`,
-    );
-
     return roundedActualDepartureTime.toISOString();
   } catch (error) {
     console.error('경로 계산 중 오류 발생:', error);
@@ -214,7 +206,13 @@ export const calculateRouteBackward = async (
 };
 
 /**
- * 출발시간과 도착시간을 모두 고려하여 경로를 계산합니다.
+ * calculateUnion 는 출발시간과 도착시간을 모두 고려하여 경로를 계산합니다.
+ * calculateRouteBackward와 calculateRoute를 순차적으로 호출하여 경로 소요시간을 계산합니다.
+ * 설정한 도착시간과 10분이상 차이나게되면 출발시간을 시간 차 만큼 보상하여 경로를 재계산합니다.
+ *
+ * @param getValues
+ * @param setValue
+ * @return void
  */
 export const calculateUnion = async (
   getValues: UseFormGetValues<CreateShuttleRouteFormValues>,
@@ -222,8 +220,6 @@ export const calculateUnion = async (
 ): Promise<void> => {
   const hubsArray = getValues('shuttleRouteHubsToDestination');
   const plannedArrivalTime = hubsArray[hubsArray.length - 1].arrivalTime;
-
-  alert('도착시간 기준 경로를 계산합니다. 재조정이 있을 수 있습니다.');
 
   try {
     // 1. 도착 시간 기준으로 출발 시간 계산
@@ -242,7 +238,9 @@ export const calculateUnion = async (
     );
 
     if (!estimatedDepartureTime || !estimatedDestinationArrivalTime) {
-      return;
+      throw new Error(
+        '경로 계산에 필요한 시간 정보가 누락되었습니다. 각 정류장의 위치와 시간을 다시 확인해주세요.',
+      );
     }
 
     // 3. 예상 도착 시간과 계획된 도착 시간 비교
@@ -252,7 +250,6 @@ export const calculateUnion = async (
     );
 
     if (diff >= 10) {
-      alert('예상 도착시간이 10분 이상 벗어나 재조정합니다');
       const arrivalTimeDifference = dayjs(plannedArrivalTime).diff(
         estimatedDestinationArrivalTime,
         'minute',

@@ -412,6 +412,16 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
             경유지는 시간순서대로 입력해주세요.
             <br />
             경유지는 장소들 중 선택 가능합니다.
+            <br />
+            <br />
+            <b>경로소요시간 계산하기</b>
+            <br />
+            정류장들을 모두 기입하고, <b>가는 편</b>의 경우 원하는{' '}
+            <b>도착시간</b>을 입력하세요.
+            <b> 오는 편</b>의 경우 원하는 <b>출발시간</b>을 입력해주세요.
+            <br />
+            카카오 지도 길찾기 결과를 통해 경로소요시간을 <b>자동 계산</b> 및
+            반영합니다.
           </Callout>
           <section className="pb-12">
             <Heading.h5 backgroundColor="yellow" className="flex">
@@ -554,7 +564,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                 onClick={() => handleCalculateRoute('fromDestination')}
                 className="ml-auto block text-14 text-green-500 underline underline-offset-2"
               >
-                출발 시간 기준 계산하기
+                경로 소요 시간 계산하기
               </button>
               <button
                 type="button"
