@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const CreateShuttleRouteFormSchema = z.object({
+export const CreateShuttleRouteFormValuesSchema = z.object({
   name: z.string(),
   reservationDeadline: z.string(),
   hasEarlybird: z.boolean(),
@@ -21,6 +21,8 @@ export const CreateShuttleRouteFormSchema = z.object({
       regionId: z.string().nullable(),
       regionHubId: z.string().nullable(),
       arrivalTime: z.string(),
+      latitude: z.number().nullable(),
+      longitude: z.number().nullable(),
     }),
   ),
   shuttleRouteHubsFromDestination: z.array(
@@ -28,10 +30,12 @@ export const CreateShuttleRouteFormSchema = z.object({
       regionId: z.string().nullable(),
       regionHubId: z.string().nullable(),
       arrivalTime: z.string(),
+      latitude: z.number().nullable(),
+      longitude: z.number().nullable(),
     }),
   ),
 });
 
-export type CreateShuttleRouteForm = z.infer<
-  typeof CreateShuttleRouteFormSchema
+export type CreateShuttleRouteFormValues = z.infer<
+  typeof CreateShuttleRouteFormValuesSchema
 >;

@@ -1,9 +1,9 @@
-import { CreateShuttleRouteForm } from './form.type';
+import { CreateShuttleRouteFormValues } from './form.type';
 import { CreateShuttleRouteRequest } from '@/types/shuttleRoute.type';
 import dayjs from 'dayjs';
 
 export const conform = (
-  data: CreateShuttleRouteForm,
+  data: CreateShuttleRouteFormValues,
 ): CreateShuttleRouteRequest => {
   const validateSequenceOrder = (
     hubs: CreateShuttleRouteRequest['shuttleRouteHubs'],
@@ -46,6 +46,8 @@ export const conform = (
           regionId: string;
           regionHubId: string;
           arrivalTime: string;
+          latitude: number;
+          longitude: number;
         } => dest.regionHubId !== null,
       )
       .map((v, idx) => ({
@@ -64,6 +66,8 @@ export const conform = (
           regionId: string;
           regionHubId: string;
           arrivalTime: string;
+          latitude: number;
+          longitude: number;
         } => dest.regionHubId !== null,
       )
       .map((v, idx) => ({
