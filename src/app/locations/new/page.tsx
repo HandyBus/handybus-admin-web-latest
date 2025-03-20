@@ -13,19 +13,22 @@ import { Region } from '@/types/region.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
 
-const NewHubPage = () => {
+const NewHubPage = ({
+  searchParams,
+}: {
+  searchParams: { latitude: string; longitude: string; address: string };
+}) => {
   const router = useRouter();
 
   const { data: regions } = useGetRegions();
-
   const { control, handleSubmit } = useForm<CreateHubFormType>({
     defaultValues: {
       regionId: undefined,
       name: '',
       coord: {
-        address: '',
-        latitude: 0,
-        longitude: 0,
+        address: searchParams.address ?? '',
+        latitude: parseFloat(searchParams.latitude) ?? 0,
+        longitude: parseFloat(searchParams.longitude) ?? 0,
       },
     },
   });

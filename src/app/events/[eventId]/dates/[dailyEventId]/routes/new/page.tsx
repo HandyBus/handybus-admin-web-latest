@@ -1,11 +1,10 @@
 'use client';
 
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import { type CreateShuttleRouteForm } from './form.type';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/input/Input';
 import { RegionHubInputSelfContained } from '@/components/input/HubInput';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import DateInput from '@/components/input/DateInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
 import { useGetEvent } from '@/services/event.service';
@@ -17,6 +16,9 @@ import FormContainer from '@/components/form/Form';
 import Callout from '@/components/text/Callout';
 import NumberInput from '@/components/input/NumberInput';
 import { discountPercent } from '../discountPercent.util';
+import { CreateShuttleRouteFormValues } from './form.type';
+import { calculateUnion } from '../utils/calculateRoute';
+import { calculateRoute } from '../utils/calculateRoute';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -32,7 +34,7 @@ const Page = ({ params }: Props) => {
       ?.date;
   }, [event, dailyEventId]);
 
-  const defaultValues: CreateShuttleRouteForm = useMemo(
+  const defaultValues: CreateShuttleRouteFormValues = useMemo(
     () => ({
       name: '',
       maxPassengerCount: 0,
@@ -53,10 +55,14 @@ const Page = ({ params }: Props) => {
         {
           regionId: null,
           regionHubId: null,
+          latitude: null,
+          longitude: null,
           arrivalTime: defaultDate ?? '',
         },
         {
           regionId: null,
+          latitude: null,
+          longitude: null,
           regionHubId: null,
           arrivalTime: defaultDate ?? '',
         },
@@ -65,11 +71,15 @@ const Page = ({ params }: Props) => {
         {
           regionId: null,
           regionHubId: null,
+          latitude: null,
+          longitude: null,
           arrivalTime: defaultDate ?? '',
         },
         {
           regionId: null,
           regionHubId: null,
+          latitude: null,
+          longitude: null,
           arrivalTime: defaultDate ?? '',
         },
       ],
@@ -94,7 +104,7 @@ export default Page;
 
 interface FormProps extends Props {
   event: EventsViewEntity;
-  defaultValues: CreateShuttleRouteForm;
+  defaultValues: CreateShuttleRouteFormValues;
   defaultDate: string;
 }
 
@@ -111,7 +121,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     formState: { errors },
     getValues,
     setValue,
-  } = useForm<CreateShuttleRouteForm>({
+  } = useForm<CreateShuttleRouteFormValues>({
     defaultValues,
   });
 
@@ -152,7 +162,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     },
   });
 
-  const onSubmit = async (data: CreateShuttleRouteForm) => {
+  const onSubmit = async (data: CreateShuttleRouteFormValues) => {
     if (
       !confirm(
         '추가하시겠습니까? 확인을 누르시면 가격은 더 이상 변경할 수 없습니다. ',
@@ -189,6 +199,22 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     ).toReversed();
     setValue('shuttleRouteHubsFromDestination', reversedToDestinationHubs);
   };
+
+  const handleCalculateRoute = useCallback(
+    async (type: 'toDestination' | 'fromDestination') => {
+      const hubsArray = getValues(
+        type === 'toDestination'
+          ? 'shuttleRouteHubsToDestination'
+          : 'shuttleRouteHubsFromDestination',
+      );
+      return calculateRoute(type, hubsArray, setValue, getValues);
+    },
+    [],
+  );
+
+  const handleCalculateUnion = useCallback(async () => {
+    return calculateUnion(getValues, setValue);
+  }, []);
 
   return (
     <main>
@@ -386,9 +412,19 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
             경유지는 시간순서대로 입력해주세요.
             <br />
             경유지는 장소들 중 선택 가능합니다.
+            <br />
+            <br />
+            <b>경로소요시간 계산하기</b>
+            <br />
+            정류장들을 모두 기입하고, <b>가는 편</b>의 경우 원하는{' '}
+            <b>도착시간</b>을 입력하세요.
+            <b> 오는 편</b>의 경우 원하는 <b>출발시간</b>을 입력해주세요.
+            <br />
+            카카오 지도 길찾기 결과를 통해 경로소요시간을 <b>자동 계산</b> 및
+            반영합니다.
           </Callout>
           <section className="pb-12">
-            <Heading.h5 backgroundColor="yellow">
+            <Heading.h5 backgroundColor="yellow" className="flex">
               가는편
               <button
                 type="button"
@@ -397,11 +433,20 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                     regionId: null,
                     regionHubId: null,
                     arrivalTime: defaultDate,
+                    latitude: null,
+                    longitude: null,
                   })
                 }
                 className="ml-8 text-14 text-blue-500"
               >
                 추가
+              </button>
+              <button
+                type="button"
+                onClick={handleCalculateUnion}
+                className="ml-auto block text-14 text-green-500 underline underline-offset-2"
+              >
+                경로 소요 시간 계산하기
               </button>
             </Heading.h5>
             <ul className="flex flex-col gap-8">
@@ -425,8 +470,17 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                               onChange({ ...value, regionId })
                             }
                             regionHubId={value.regionHubId}
-                            setRegionHubId={(regionHubId) =>
-                              onChange({ ...value, regionHubId })
+                            setRegionHubId={(
+                              regionHubId,
+                              latitude,
+                              longitude,
+                            ) =>
+                              onChange({
+                                ...value,
+                                regionHubId,
+                                latitude,
+                                longitude,
+                              })
                             }
                           />
                         )}
@@ -497,6 +551,8 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                     regionId: null,
                     regionHubId: null,
                     arrivalTime: defaultDate,
+                    latitude: null,
+                    longitude: null,
                   })
                 }
                 className="ml-8 text-14 text-blue-500"
@@ -505,8 +561,15 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
               </button>
               <button
                 type="button"
+                onClick={() => handleCalculateRoute('fromDestination')}
+                className="ml-auto block text-14 text-green-500 underline underline-offset-2"
+              >
+                경로 소요 시간 계산하기
+              </button>
+              <button
+                type="button"
                 onClick={handleMirrorHub}
-                className="ml-auto block text-14 text-blue-500 underline underline-offset-2"
+                className="ml-4 block text-14 text-blue-500 underline underline-offset-2"
               >
                 목적지행을 미러링하기
               </button>
@@ -534,8 +597,17 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                               onChange({ ...value, regionId })
                             }
                             regionHubId={value.regionHubId}
-                            setRegionHubId={(regionHubId) =>
-                              onChange({ ...value, regionHubId })
+                            setRegionHubId={(
+                              regionHubId,
+                              latitude,
+                              longitude,
+                            ) =>
+                              onChange({
+                                ...value,
+                                regionHubId,
+                                latitude,
+                                longitude,
+                              })
                             }
                           />
                         )}

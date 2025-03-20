@@ -1,6 +1,6 @@
 import dayjs, { Dayjs } from 'dayjs';
 
-export const formatDate = (date: Dayjs, type: 'date' | 'datetime' = 'date') => {
+const formatDate = (date: Dayjs, type: 'date' | 'datetime' = 'date') => {
   if (type === 'datetime') {
     return date.format('YYYY. MM. DD. HH:mm:ss');
   } else {
