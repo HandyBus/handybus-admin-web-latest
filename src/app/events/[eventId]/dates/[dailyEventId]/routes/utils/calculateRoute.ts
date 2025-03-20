@@ -3,7 +3,7 @@ import { getEstimatedRoute } from '@/services/kakaomoblility.service';
 import {
   roundDownToNearestFiveMinutes,
   roundUpToNearestFiveMinutes,
-} from './round-nearest-five-minutes.util';
+} from './roundNearestFiveMinutes.util';
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { CreateShuttleRouteFormValues } from '../new/form.type';
 

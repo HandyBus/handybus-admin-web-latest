@@ -17,8 +17,8 @@ import Callout from '@/components/text/Callout';
 import NumberInput from '@/components/input/NumberInput';
 import { discountPercent } from '../discountPercent.util';
 import { CreateShuttleRouteFormValues } from './form.type';
-import { calculateUnion } from '../utils/calculate-route';
-import { calculateRoute } from '../utils/calculate-route';
+import { calculateUnion } from '../utils/calculateRoute';
+import { calculateRoute } from '../utils/calculateRoute';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
