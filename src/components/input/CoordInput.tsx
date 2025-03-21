@@ -220,15 +220,9 @@ const CoordInput = ({ coord, setCoord }: Props) => {
 
         window.kakao.maps.event.addListener(
           map,
-          'click',
+          'rightclick',
           (mouseEvent: kakao.maps.event.MouseEvent) => {
             setCoordWithAddress(mouseEvent.latLng);
-
-            const currentLevel = map.getLevel();
-            if (currentLevel >= 6) {
-              map.setCenter(mouseEvent.latLng);
-              map.setLevel(currentLevel - 1);
-            }
           },
         );
 
@@ -324,7 +318,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
             <input
               id="search-input"
               type="text"
-              placeholder="키워드로 검색"
+              placeholder="키워드로 지도 검색"
               className="h-full w-full p-12 outline-none"
             />
           </div>

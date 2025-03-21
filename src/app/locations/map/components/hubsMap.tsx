@@ -197,24 +197,6 @@ const HubsMap = () => {
     [],
   );
 
-  const handleMapClick = useCallback(
-    (
-      map: kakao.maps.Map,
-      mouseEvent: kakao.maps.event.MouseEvent,
-      clickMarkerOverlay: kakao.maps.CustomOverlay,
-    ) => {
-      setCoordWithAddress(mouseEvent.latLng);
-      clickMarkerOverlay.setPosition(mouseEvent.latLng);
-
-      const currentLevel = map.getLevel();
-      if (currentLevel >= 6) {
-        map.setCenter(mouseEvent.latLng);
-        map.setLevel(currentLevel - 1);
-      }
-    },
-    [setCoordWithAddress],
-  );
-
   const setupSearch = useCallback(() => {
     const ps = new window.kakao.maps.services.Places();
     const searchInput = document.getElementById('search-input');
@@ -255,9 +237,10 @@ const HubsMap = () => {
 
         window.kakao.maps.event.addListener(
           map,
-          'click',
+          'rightclick',
           (mouseEvent: kakao.maps.event.MouseEvent) => {
-            handleMapClick(map, mouseEvent, clickMarkerOverlay);
+            setCoordWithAddress(mouseEvent.latLng);
+            clickMarkerOverlay.setPosition(mouseEvent.latLng);
           },
         );
 
@@ -273,7 +256,6 @@ const HubsMap = () => {
     coord.latitude,
     coord.longitude,
     setupClickMarker,
-    handleMapClick,
     setupSearch,
     regionHubsData,
   ]);
