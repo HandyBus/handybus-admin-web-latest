@@ -54,21 +54,20 @@ const CoordInput = ({ coord, setCoord }: Props) => {
   );
 
   const setCoordWithAddress = useCallback(
-    (latLng: kakao.maps.LatLng) => {
+    async (latLng: kakao.maps.LatLng) => {
       const latitude = latLng.getLat();
       const longitude = latLng.getLng();
 
       setLoading(true);
-      toAddress(latitude, longitude)
-        .then((address) => {
-          setLoading(false);
-          setCoord({ latitude, longitude, address: address.address_name });
-        })
-        .catch(() => {
-          setLoading(false);
-          setCoord({ latitude, longitude, address: 'unknown address' });
-          setError(true);
-        });
+      try {
+        const address = await toAddress(latitude, longitude);
+        setLoading(false);
+        setCoord({ latitude, longitude, address: address.address_name });
+      } catch {
+        setLoading(false);
+        setCoord({ latitude, longitude, address: 'unknown address' });
+        setError(true);
+      }
     },
     [setCoord],
   );
