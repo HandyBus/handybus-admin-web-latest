@@ -2,7 +2,7 @@
 
 import HubsMap from './components/hubsMap';
 import Heading from '@/components/text/Heading';
-import MapGuides from '../components/MapGuides';
+import { MapGuides } from '../components/MapGuides';
 
 const Page = () => {
   return (

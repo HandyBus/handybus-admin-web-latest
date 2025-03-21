@@ -12,7 +12,7 @@ import { useGetRegions, usePostRegionHub } from '@/services/hub.service';
 import { Region } from '@/types/region.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
-import MapGuides from '../components/MapGuides';
+import { MapGuidesNewEditPage } from '../components/MapGuides';
 
 const NewHubPage = ({
   searchParams,
@@ -88,7 +88,7 @@ const NewHubPage = ({
         </Form.section>
         <Form.section>
           <Form.label>위치 및 좌표</Form.label>
-          <MapGuides />
+          <MapGuidesNewEditPage />
           <Controller
             control={control}
             name={`coord`}
