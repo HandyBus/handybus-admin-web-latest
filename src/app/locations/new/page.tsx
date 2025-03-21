@@ -27,9 +27,9 @@ const NewHubPage = ({
       regionId: undefined,
       name: '',
       coord: {
-        address: searchParams.address ?? '',
-        latitude: parseFloat(searchParams.latitude) ?? 0,
-        longitude: parseFloat(searchParams.longitude) ?? 0,
+        address: searchParams.address || '',
+        latitude: parseFloat(searchParams.latitude) || 37.574187,
+        longitude: parseFloat(searchParams.longitude) || 126.976882,
       },
     },
   });
