@@ -1,7 +1,7 @@
 import { REGION_TO_ID } from '@/constants/regions';
 
-export const toAddress = async (latitude: number, longitude: number) =>
-  new Promise<string>((resolve, reject) => {
+export const toAddress = (latitude: number, longitude: number) =>
+  new Promise<kakao.maps.services.Address>((resolve, reject) => {
     if (!window.kakao?.maps?.services) reject('Geocoder is not available');
 
     const geocoder = new window.kakao.maps.services.Geocoder();
@@ -14,7 +14,7 @@ export const toAddress = async (latitude: number, longitude: number) =>
       status: kakao.maps.services.Status,
     ) => {
       if (status === window.kakao.maps.services.Status.OK) {
-        const address = result[0].address.address_name;
+        const address = result[0].address;
         resolve(address);
       } else {
         reject('Geocoder failed');
