@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { twJoin } from 'tailwind-merge';
 import { BanIcon, Loader2Icon } from 'lucide-react';
 import { useGetRegionHubs } from '@/services/hub.service';
-import { toAddress } from '@/utils/region.uitl';
+import { toAddress } from '@/utils/region.util';
 import KakaoMapScript from '@/components/script/KakaoMapScript';
 import { createOverlayHTML } from '../createOverlayHTML.util';
 interface HubData {
@@ -77,7 +77,7 @@ const HubsMap = () => {
       toAddress(latitude, longitude)
         .then((address) => {
           setLoading(false);
-          setCoord({ latitude, longitude, address });
+          setCoord({ latitude, longitude, address: address.address_name });
         })
         .catch(() => {
           setLoading(false);
@@ -180,13 +180,13 @@ const HubsMap = () => {
         clickMarkerOverlay.setMap(null);
       });
 
-      kakao.maps.event.addListener(marker, 'click', () => {
+      kakao.maps.event.addListener(marker, 'click', async () => {
         const position = marker.getPosition();
         const latitude = position.getLat();
         const longitude = position.getLng();
-        const address = toAddress(latitude, longitude);
+        const address = await toAddress(latitude, longitude);
         window.open(
-          `/locations/new?latitude=${latitude}&longitude=${longitude}&address=${address}`,
+          `/locations/new?latitude=${latitude}&longitude=${longitude}&address=${address.address_name}`,
           '_blank',
           'noopener',
         );

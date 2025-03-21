@@ -5,8 +5,8 @@ import { twJoin } from 'tailwind-merge';
 import { BanIcon, Loader2Icon, RotateCwIcon } from 'lucide-react';
 import KakaoMapScript from '../script/KakaoMapScript';
 import { useGetRegionHubsWithoutPagination } from '@/services/hub.service';
-import { findRegionId, toAddress } from '@/utils/region.uitl';
-import { standardizeRegionName } from '@/utils/region.uitl';
+import { findRegionId, toAddress } from '@/utils/region.util';
+import { standardizeRegionName } from '@/utils/region.util';
 
 interface Props {
   coord: Coord;
@@ -62,7 +62,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
       toAddress(latitude, longitude)
         .then((address) => {
           setLoading(false);
-          setCoord({ latitude, longitude, address });
+          setCoord({ latitude, longitude, address: address.address_name });
         })
         .catch(() => {
           setLoading(false);
@@ -159,20 +159,16 @@ const CoordInput = ({ coord, setCoord }: Props) => {
 
     try {
       const address = await toAddress(center.getLat(), center.getLng());
-      const addressParts = address.split(' ');
-
-      if (addressParts.length >= 2) {
-        const bigRegion = standardizeRegionName(addressParts[0]);
-        const smallRegion = addressParts[1];
-        const region = `${bigRegion} ${smallRegion}`;
-        const regionId = findRegionId(bigRegion, smallRegion);
-        setCurrentRegion(region);
-        setCurrentRegionId(typeof regionId === 'string' ? regionId : null);
-        return regionId;
-      }
-      return null;
+      const bigRegion = standardizeRegionName(address.region_1depth_name);
+      const smallRegion = address.region_2depth_name;
+      const region = `${bigRegion} ${smallRegion}`;
+      const regionId = findRegionId(bigRegion, smallRegion);
+      setCurrentRegion(region);
+      setCurrentRegionId(typeof regionId === 'string' ? regionId : null);
+      return regionId;
     } catch (error) {
       console.error('지역 정보를 가져오는 데 실패했습니다.', error);
+      setError(true);
       return null;
     }
   };
@@ -228,31 +224,13 @@ const CoordInput = ({ coord, setCoord }: Props) => {
 
         window.kakao.maps.event.addListener(map, 'dragend', async () => {
           if (map) {
-            const center = map.getCenter();
-            try {
-              const address = await toAddress(center.getLat(), center.getLng());
-              const addressParts = address.split(' ');
-              if (addressParts.length >= 2) {
-                getCurrentRegion();
-              }
-            } catch (error) {
-              console.error('지역 정보를 가져오는 데 실패했습니다.', error);
-            }
+            getCurrentRegion();
           }
         });
 
         window.kakao.maps.event.addListener(map, 'zoom_changed', async () => {
           if (map) {
-            const center = map.getCenter();
-            try {
-              const address = await toAddress(center.getLat(), center.getLng());
-              const addressParts = address.split(' ');
-              if (addressParts.length >= 2) {
-                getCurrentRegion();
-              }
-            } catch (error) {
-              console.error('지역 정보를 가져오는 데 실패했습니다.', error);
-            }
+            getCurrentRegion();
           }
         });
 
