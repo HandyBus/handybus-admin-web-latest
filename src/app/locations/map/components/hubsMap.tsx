@@ -94,7 +94,7 @@ const HubsMap = () => {
   }, []);
 
   useEffect(() => {
-    if (window.kakao?.maps) {
+    if (window.kakao?.maps && markerRef.current) {
       setMarker(new window.kakao.maps.LatLng(coord.latitude, coord.longitude));
     }
   }, [coord, setMarker]);
