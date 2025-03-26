@@ -17,8 +17,12 @@ import Callout from '@/components/text/Callout';
 import NumberInput from '@/components/input/NumberInput';
 import { discountPercent } from '../discountPercent.util';
 import { CreateShuttleRouteFormValues } from './form.type';
-import { calculateUnion } from '../utils/calculateRoute';
-import { calculateRoute } from '../utils/calculateRoute';
+import {
+  calculateUnionTimes,
+  updateRouteFormValues,
+} from '../utils/calculateRoute';
+import { calculateRouteTimes } from '../utils/calculateRoute';
+import { RouteHubData } from '../utils/calculateRoute';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -201,20 +205,48 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   };
 
   const handleCalculateRoute = useCallback(
-    async (type: 'toDestination' | 'fromDestination') => {
-      const hubsArray = getValues(
-        type === 'toDestination'
-          ? 'shuttleRouteHubsToDestination'
-          : 'shuttleRouteHubsFromDestination',
+    async (hubsArray: RouteHubData[]) => {
+      const userConfirmed = confirm(
+        '경로 소요 시간을 계산하시겠습니까?\n경로 소요 시간은 `출발시간`을 기준으로 카카오 지도 길찾기 결과를 통해 계산됩니다.\n기존에 설정해두었던 나머지 경유지의 시간은 변경됩니다.',
       );
-      return calculateRoute(type, hubsArray, setValue, getValues);
+      if (!userConfirmed) return;
+      try {
+        const result = await calculateRouteTimes('fromDestination', hubsArray);
+        if (result) {
+          updateRouteFormValues('fromDestination', result, setValue);
+          alert('경로 소요 시간 계산이 완료되었습니다.');
+        }
+      } catch (error) {
+        alert(
+          '경로 소요 시간 계산 중 오류가 발생했습니다.\n' +
+            (error instanceof Error ? error.message : '알 수 없는 오류'),
+        );
+      }
     },
     [],
   );
 
-  const handleCalculateUnion = useCallback(async () => {
-    return calculateUnion(getValues, setValue);
-  }, []);
+  const handleCalculateUnion = useCallback(
+    async (hubsArray: RouteHubData[]) => {
+      const userConfirmed = confirm(
+        '경로 소요 시간을 계산하시겠습니까?\n경로 소요 시간은 `도착시간`을 기준으로 카카오 지도 길찾기 결과를 통해 계산됩니다.\n기존에 설정해두었던 나머지 경유지의 시간은 변경됩니다.',
+      );
+      if (!userConfirmed) return;
+      try {
+        const result = await calculateUnionTimes(hubsArray);
+        if (result) {
+          updateRouteFormValues('toDestination', result, setValue);
+          alert('경로 소요 시간 계산이 완료되었습니다.');
+        }
+      } catch (error) {
+        alert(
+          '경로 소요 시간 계산 중 오류가 발생했습니다.\n' +
+            (error instanceof Error ? error.message : '알 수 없는 오류'),
+        );
+      }
+    },
+    [],
+  );
 
   return (
     <main>
@@ -443,7 +475,11 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
               </button>
               <button
                 type="button"
-                onClick={handleCalculateUnion}
+                onClick={() =>
+                  handleCalculateUnion(
+                    getValues('shuttleRouteHubsToDestination'),
+                  )
+                }
                 className="ml-auto block text-14 text-green-500 underline underline-offset-2"
               >
                 경로 소요 시간 계산하기
@@ -561,7 +597,11 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
               </button>
               <button
                 type="button"
-                onClick={() => handleCalculateRoute('fromDestination')}
+                onClick={() =>
+                  handleCalculateRoute(
+                    getValues('shuttleRouteHubsFromDestination'),
+                  )
+                }
                 className="ml-auto block text-14 text-green-500 underline underline-offset-2"
               >
                 경로 소요 시간 계산하기

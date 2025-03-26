@@ -12,6 +12,7 @@ import { useGetRegions, usePostRegionHub } from '@/services/hub.service';
 import { Region } from '@/types/region.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
+import MapGuidesAtNewEditPage from '../components/MapGuidesAtNewEditPage';
 
 const NewHubPage = ({
   searchParams,
@@ -26,9 +27,9 @@ const NewHubPage = ({
       regionId: undefined,
       name: '',
       coord: {
-        address: searchParams.address ?? '',
-        latitude: parseFloat(searchParams.latitude) ?? 0,
-        longitude: parseFloat(searchParams.longitude) ?? 0,
+        address: searchParams.address || '',
+        latitude: parseFloat(searchParams.latitude) || 37.574187,
+        longitude: parseFloat(searchParams.longitude) || 126.976882,
       },
     },
   });
@@ -87,6 +88,7 @@ const NewHubPage = ({
         </Form.section>
         <Form.section>
           <Form.label>위치 및 좌표</Form.label>
+          <MapGuidesAtNewEditPage />
           <Controller
             control={control}
             name={`coord`}
