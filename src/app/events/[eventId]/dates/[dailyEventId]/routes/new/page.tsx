@@ -206,16 +206,15 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
   const handleCalculateRoute = useCallback(
     async (hubsArray: RouteHubData[]) => {
-      if (
-        !confirm(
-          '경로 소요 시간을 계산하시겠습니까?\n경로 소요 시간은 `출발시간`을 기준으로 카카오 지도 길찾기 결과를 통해 계산됩니다.\n기존에 설정해두었던 나머지 경유지의 시간은 변경됩니다.',
-        )
-      )
-        return;
+      const userConfirmed = confirm(
+        '경로 소요 시간을 계산하시겠습니까?\n경로 소요 시간은 `출발시간`을 기준으로 카카오 지도 길찾기 결과를 통해 계산됩니다.\n기존에 설정해두었던 나머지 경유지의 시간은 변경됩니다.',
+      );
+      if (!userConfirmed) return;
       try {
         const result = await calculateRouteTimes('fromDestination', hubsArray);
         if (result) {
           updateRouteFormValues('fromDestination', result, setValue);
+          alert('경로 소요 시간 계산이 완료되었습니다.');
         }
       } catch (error) {
         alert(
@@ -229,16 +228,15 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
   const handleCalculateUnion = useCallback(
     async (hubsArray: RouteHubData[]) => {
-      if (
-        !confirm(
-          '경로 소요 시간을 계산하시겠습니까?\n경로 소요 시간은 `도착시간`을 기준으로 카카오 지도 길찾기 결과를 통해 계산됩니다.\n기존에 설정해두었던 나머지 경유지의 시간은 변경됩니다.',
-        )
-      )
-        return;
+      const userConfirmed = confirm(
+        '경로 소요 시간을 계산하시겠습니까?\n경로 소요 시간은 `도착시간`을 기준으로 카카오 지도 길찾기 결과를 통해 계산됩니다.\n기존에 설정해두었던 나머지 경유지의 시간은 변경됩니다.',
+      );
+      if (!userConfirmed) return;
       try {
         const result = await calculateUnionTimes(hubsArray);
         if (result) {
           updateRouteFormValues('toDestination', result, setValue);
+          alert('경로 소요 시간 계산이 완료되었습니다.');
         }
       } catch (error) {
         alert(
