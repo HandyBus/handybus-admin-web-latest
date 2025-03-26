@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { twJoin } from 'tailwind-merge';
 import { BanIcon, Loader2Icon } from 'lucide-react';
 import { useGetRegionHubs } from '@/services/hub.service';
-import { toAddress } from '@/utils/region.uitl';
+import { toAddress } from '@/utils/region.util';
 import KakaoMapScript from '@/components/script/KakaoMapScript';
 import { createOverlayHTML } from '../createOverlayHTML.util';
 interface HubData {
@@ -69,21 +69,20 @@ const HubsMap = () => {
   }, []);
 
   const setCoordWithAddress = useCallback(
-    (latLng: kakao.maps.LatLng) => {
+    async (latLng: kakao.maps.LatLng) => {
       const latitude = latLng.getLat();
       const longitude = latLng.getLng();
 
       setLoading(true);
-      toAddress(latitude, longitude)
-        .then((address) => {
-          setLoading(false);
-          setCoord({ latitude, longitude, address });
-        })
-        .catch(() => {
-          setLoading(false);
-          setCoord({ latitude, longitude, address: 'unknown address' });
-          setError(true);
-        });
+      try {
+        const address = await toAddress(latitude, longitude);
+        setLoading(false);
+        setCoord({ latitude, longitude, address: address.address_name });
+      } catch {
+        setLoading(false);
+        setCoord({ latitude, longitude, address: 'unknown address' });
+        setError(true);
+      }
     },
     [setCoord],
   );
@@ -94,7 +93,7 @@ const HubsMap = () => {
   }, []);
 
   useEffect(() => {
-    if (window.kakao?.maps) {
+    if (window.kakao?.maps && markerRef.current) {
       setMarker(new window.kakao.maps.LatLng(coord.latitude, coord.longitude));
     }
   }, [coord, setMarker]);
@@ -180,13 +179,13 @@ const HubsMap = () => {
         clickMarkerOverlay.setMap(null);
       });
 
-      kakao.maps.event.addListener(marker, 'click', () => {
+      kakao.maps.event.addListener(marker, 'click', async () => {
         const position = marker.getPosition();
         const latitude = position.getLat();
         const longitude = position.getLng();
-        const address = toAddress(latitude, longitude);
+        const address = await toAddress(latitude, longitude);
         window.open(
-          `/locations/new?latitude=${latitude}&longitude=${longitude}&address=${address}`,
+          `/locations/new?latitude=${latitude}&longitude=${longitude}&address=${address.address_name}`,
           '_blank',
           'noopener',
         );
@@ -195,24 +194,6 @@ const HubsMap = () => {
       return clickMarkerOverlay;
     },
     [],
-  );
-
-  const handleMapClick = useCallback(
-    (
-      map: kakao.maps.Map,
-      mouseEvent: kakao.maps.event.MouseEvent,
-      clickMarkerOverlay: kakao.maps.CustomOverlay,
-    ) => {
-      setCoordWithAddress(mouseEvent.latLng);
-      clickMarkerOverlay.setPosition(mouseEvent.latLng);
-
-      const currentLevel = map.getLevel();
-      if (currentLevel >= 6) {
-        map.setCenter(mouseEvent.latLng);
-        map.setLevel(currentLevel - 1);
-      }
-    },
-    [setCoordWithAddress],
   );
 
   const setupSearch = useCallback(() => {
@@ -255,9 +236,10 @@ const HubsMap = () => {
 
         window.kakao.maps.event.addListener(
           map,
-          'click',
+          'rightclick',
           (mouseEvent: kakao.maps.event.MouseEvent) => {
-            handleMapClick(map, mouseEvent, clickMarkerOverlay);
+            setCoordWithAddress(mouseEvent.latLng);
+            clickMarkerOverlay.setPosition(mouseEvent.latLng);
           },
         );
 
@@ -273,7 +255,6 @@ const HubsMap = () => {
     coord.latitude,
     coord.longitude,
     setupClickMarker,
-    handleMapClick,
     setupSearch,
     regionHubsData,
   ]);
