@@ -17,7 +17,7 @@ import { Region } from '@/types/region.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
 import { RegionHub } from '@/types/hub.type';
-import { MapGuidesNewEditPage } from '@/app/locations/components/MapGuides';
+import MapGuidesAtNewEditPage from '@/app/locations/components/MapGuidesAtNewEditPage';
 
 const EditHubPage = ({
   params,
@@ -131,7 +131,7 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
         </Form.section>
         <Form.section>
           <Form.label>위치 및 좌표</Form.label>
-          <MapGuidesNewEditPage />
+          <MapGuidesAtNewEditPage />
           <Controller
             control={control}
             name={`coord`}
