@@ -137,6 +137,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     );
 
     const newEditingBusAndReservations = [...editingBusAndReservations];
+    let stagedBusWithSeats = [...editingBusWithSeats];
 
     unAssignedReservations.forEach((reservation) => {
       if (
@@ -150,10 +151,9 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
       }
       const requiredSeat = reservation.passengerCount;
       const requiredSeatType = reservation.type;
-
       // 좌석이 충분한 버스 찾기
       const availableBusWithSeat = findAvailableBus(
-        editingBusWithSeats,
+        stagedBusWithSeats,
         requiredSeat,
         requiredSeatType,
       );
@@ -167,15 +167,33 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
         reservation,
       });
 
-      // 좌석 수 업데이트
-      updateBusWithSeats(
-        availableBusWithSeat.bus.shuttleBusId,
-        requiredSeat,
-        requiredSeatType,
+      // 직접 지역 변수를 업데이트하여 다음 순회에 반영
+      stagedBusWithSeats = stagedBusWithSeats.map((busWithSeat) =>
+        busWithSeat.bus.shuttleBusId === availableBusWithSeat.bus.shuttleBusId
+          ? {
+              ...busWithSeat,
+              ...(requiredSeatType === 'TO_DESTINATION' ||
+              requiredSeatType === 'ROUND_TRIP'
+                ? {
+                    toDestinationFilledSeat:
+                      busWithSeat.toDestinationFilledSeat + requiredSeat,
+                  }
+                : {}),
+              ...(requiredSeatType === 'FROM_DESTINATION' ||
+              requiredSeatType === 'ROUND_TRIP'
+                ? {
+                    fromDestinationFilledSeat:
+                      busWithSeat.fromDestinationFilledSeat + requiredSeat,
+                  }
+                : {}),
+            }
+          : busWithSeat,
       );
     });
 
+    // 최종 업데이트된 상태 한번에 적용
     setEditingBusAndReservations(newEditingBusAndReservations);
+    setEditingBusWithSeats(stagedBusWithSeats);
   };
 
   // 좌석이 충분한 버스 찾기
