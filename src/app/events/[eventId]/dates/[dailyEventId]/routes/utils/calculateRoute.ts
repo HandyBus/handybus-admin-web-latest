@@ -223,19 +223,16 @@ export const calculateUnionTimes = async (
       if (arrivalTimeDifference > 0) {
         newDepartureTime = dayjs(
           resultOfCalculateRouteBackwardTimes[0].arrivalTime,
-        )
-          .add(arrivalTimeDifference, 'minute')
-          .toISOString();
+        ).add(arrivalTimeDifference, 'minute');
       } else {
         newDepartureTime = dayjs(
           resultOfCalculateRouteBackwardTimes[0].arrivalTime,
-        )
-          .subtract(Math.abs(arrivalTimeDifference), 'minute')
-          .toISOString();
+        ).subtract(Math.abs(arrivalTimeDifference), 'minute');
       }
 
       const newHubsArray = [...hubsArray];
-      newHubsArray[0].arrivalTime = newDepartureTime;
+      newHubsArray[0].arrivalTime =
+        roundDownToNearestFiveMinutes(newDepartureTime).toISOString();
 
       const newEstimatedDestinationArrivalTimeResult =
         await calculateRouteTimes('toDestination', newHubsArray);
