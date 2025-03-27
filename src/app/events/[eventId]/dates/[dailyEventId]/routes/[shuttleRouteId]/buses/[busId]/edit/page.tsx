@@ -71,6 +71,8 @@ const EditForm = ({ bus, params }: EditFormProps) => {
     openChatLink: bus?.openChatLink ?? undefined, // 오픈채팅방 링크를 등록하지 않았을 수 있음.
   } satisfies EditBusFormType;
 
+  const defaultOpenChatLink = bus?.openChatLink ?? undefined;
+
   const { control, handleSubmit } = useForm<EditBusFormType>({
     defaultValues,
   });
@@ -96,7 +98,7 @@ const EditForm = ({ bus, params }: EditFormProps) => {
           dailyEventId: params.dailyEventId,
           shuttleRouteId: params.shuttleRouteId,
           shuttleBusId: params.busId,
-          body: conform(data),
+          body: conform(data, defaultOpenChatLink),
         });
       }
     },
@@ -185,7 +187,7 @@ const EditForm = ({ bus, params }: EditFormProps) => {
             오픈채팅방 링크를 입력해주세요. 첫 등록 이후에는 링크는 지울 수
             없고, 오직 변경만 가능합니다.
             <br />
-            또, 오픈채팅방 링크가 등록되면 탑승객에게 카카오톡 알림이
+            또, 오픈채팅방 링크를 등록하거나 변경하면 탑승객에게 카카오톡 알림이
             발송됩니다.
           </Callout>
           <Controller
@@ -196,7 +198,7 @@ const EditForm = ({ bus, params }: EditFormProps) => {
             )}
           />
         </Form.section>
-        <Form.submitButton>추가하기</Form.submitButton>
+        <Form.submitButton>수정하기</Form.submitButton>
       </Form>
     </main>
   );
