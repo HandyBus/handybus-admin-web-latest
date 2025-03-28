@@ -1,8 +1,8 @@
 import { CreateShuttleRouteRequest } from '@/types/shuttleRoute.type';
-import { CreateShuttleRouteFormValues } from '../form.type';
+import { CreateFormValues } from '../form.type';
 
 export const transformToShuttleRouteRequest = (
-  data: CreateShuttleRouteFormValues,
+  data: CreateFormValues,
   forwardHubs: CreateShuttleRouteRequest['shuttleRouteHubs'],
   returnHubs: CreateShuttleRouteRequest['shuttleRouteHubs'],
 ): CreateShuttleRouteRequest => {

@@ -15,7 +15,7 @@ import FormContainer from '@/components/form/Form';
 import Callout from '@/components/text/Callout';
 import NumberInput from '@/components/input/NumberInput';
 import { discountPercent } from '../discountPercent.util';
-import { CreateShuttleRouteFormValues } from './form.type';
+import { CreateFormValues } from './form.type';
 import {
   calculateUnionTimes,
   updateRouteFormValues,
@@ -40,7 +40,7 @@ const Page = ({ params }: Props) => {
       ?.date;
   }, [event, dailyEventId]);
 
-  const defaultValues: CreateShuttleRouteFormValues = useMemo(
+  const defaultValues: CreateFormValues = useMemo(
     () => ({
       name: '',
       maxPassengerCount: 0,
@@ -110,7 +110,7 @@ export default Page;
 
 interface FormProps extends Props {
   event: EventsViewEntity;
-  defaultValues: CreateShuttleRouteFormValues;
+  defaultValues: CreateFormValues;
   defaultDate: string;
 }
 
@@ -127,7 +127,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     formState: { errors },
     getValues,
     setValue,
-  } = useForm<CreateShuttleRouteFormValues>({
+  } = useForm<CreateFormValues>({
     defaultValues,
   });
 
@@ -157,7 +157,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
   const { mutateAsync: postRoute } = usePostShuttleRoute();
 
-  const onSubmit = async (data: CreateShuttleRouteFormValues) => {
+  const onSubmit = async (data: CreateFormValues) => {
     if (
       !confirm(
         '추가하시겠습니까? 확인을 누르시면 가격은 더 이상 변경할 수 없습니다. ',
