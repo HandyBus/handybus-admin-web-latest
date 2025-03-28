@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const CreateShuttleRouteFormValuesSchema = z.object({
+export const CreateFormValuesSchema = z.object({
   name: z.string(),
   reservationDeadline: z.string(),
   hasEarlybird: z.boolean(),
@@ -36,6 +36,4 @@ export const CreateShuttleRouteFormValuesSchema = z.object({
   ),
 });
 
-export type CreateShuttleRouteFormValues = z.infer<
-  typeof CreateShuttleRouteFormValuesSchema
->;
+export type CreateFormValues = z.infer<typeof CreateFormValuesSchema>;
