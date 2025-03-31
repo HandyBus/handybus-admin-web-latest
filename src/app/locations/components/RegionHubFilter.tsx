@@ -11,6 +11,7 @@ import DebouncedInput from '@/components/input/DebouncedInput';
 import { GetRegionHubsOptions } from '@/services/hub.service';
 import { RegionHubFilterAction } from '../hooks/useRegionHubFilter';
 import RegionInput from '@/components/input/RegionInput';
+import Toggle from '@/components/button/Toggle';
 
 interface Props {
   option: GetRegionHubsOptions;
@@ -57,6 +58,45 @@ const RegionHubFilter = ({ option, dispatch }: Props) => {
                 })
               }
             />
+          </article>
+          <article>
+            <Label>태그</Label>
+            <div className="flex flex-row gap-4">
+              <Toggle
+                label={'행사장'}
+                value={option.usageType?.includes('EVENT_DESTINATION') ?? false}
+                setValue={() => {
+                  const newUsageType = option.usageType?.includes(
+                    'EVENT_DESTINATION',
+                  )
+                    ? option.usageType?.filter(
+                        (type) => type !== 'EVENT_DESTINATION',
+                      )
+                    : [...(option.usageType ?? []), 'EVENT_DESTINATION'];
+
+                  dispatch({
+                    type: 'SET_USAGE_TYPE',
+                    usageType:
+                      newUsageType.length > 0 ? newUsageType : undefined,
+                  });
+                }}
+              />
+              <Toggle
+                label={'정류장'}
+                value={option.usageType?.includes('SHUTTLE_HUB') ?? false}
+                setValue={() => {
+                  const newUsageType = option.usageType?.includes('SHUTTLE_HUB')
+                    ? option.usageType?.filter((type) => type !== 'SHUTTLE_HUB')
+                    : [...(option.usageType ?? []), 'SHUTTLE_HUB'];
+
+                  dispatch({
+                    type: 'SET_USAGE_TYPE',
+                    usageType:
+                      newUsageType.length > 0 ? newUsageType : undefined,
+                  });
+                }}
+              />
+            </div>
           </article>
         </section>
       </DisclosurePanel>

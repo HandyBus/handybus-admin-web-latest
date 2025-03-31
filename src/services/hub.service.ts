@@ -36,6 +36,7 @@ export const useGetRegions = () => {
 export interface GetRegionHubsOptions {
   regionId?: string;
   name?: string;
+  usageType?: string[];
   orderBy?: 'name' | 'address' | 'latitude' | 'longitude';
   order?: 'ASC' | 'DESC';
 }

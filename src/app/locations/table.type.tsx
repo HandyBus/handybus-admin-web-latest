@@ -12,6 +12,28 @@ export const columns = [
     header: () => '이름',
     cell: (info) => info.getValue(),
   }),
+  columnHelper.display({
+    id: 'tags',
+    header: () => '태그',
+    cell: (info) => {
+      const eventDestination = info.row.original.eventDestination;
+      const shuttleHub = info.row.original.shuttleHub;
+      return (
+        <div className="flex flex-col gap-4">
+          {eventDestination && (
+            <span className="py-2 rounded-xl bg-green-50 px-4 text-center text-14 font-500 text-green-500">
+              행사장
+            </span>
+          )}
+          {shuttleHub && (
+            <span className="py-2 rounded-xl bg-blue-50 px-4 text-center text-14 font-500 text-blue-500">
+              정류장
+            </span>
+          )}
+        </div>
+      );
+    },
+  }),
   columnHelper.accessor('regionId', {
     header: () => '지역',
     cell: (info) => {
