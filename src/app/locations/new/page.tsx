@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { conform, type CreateHubFormType } from './form.type';
 import Input from '@/components/input/Input';
@@ -13,13 +13,24 @@ import { Region } from '@/types/region.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
 import MapGuidesAtNewEditPage from '../components/MapGuidesAtNewEditPage';
+import Toggle from '@/components/button/Toggle';
+import { postShuttleStop } from '@/services/shuttleStops.service';
 
-const NewHubPage = ({
-  searchParams,
-}: {
+interface Props {
   searchParams: { latitude: string; longitude: string; address: string };
-}) => {
+}
+
+interface TagStates {
+  isEventDestination: boolean;
+  isShuttleHub: boolean;
+}
+
+const NewHubPage = ({ searchParams }: Props) => {
   const router = useRouter();
+  const [tagStates, setTagStates] = useState<TagStates>({
+    isEventDestination: false,
+    isShuttleHub: false,
+  });
 
   const { data: regions } = useGetRegions();
   const { control, handleSubmit } = useForm<CreateHubFormType>({
@@ -47,11 +58,7 @@ const NewHubPage = ({
     ).at(0);
   }, [regions, address]);
 
-  const { mutate: addHub } = usePostRegionHub({
-    onSuccess: () => {
-      alert('장소가 추가되었습니다.');
-      router.push('/locations');
-    },
+  const { mutateAsync: addHub } = usePostRegionHub({
     onError: (error) => {
       alert(`장소 추가에 실패했습니다.`);
       console.error(error);
@@ -59,18 +66,34 @@ const NewHubPage = ({
   });
 
   const onSubmit = useCallback(
-    (data: CreateHubFormType) => {
+    async (data: CreateHubFormType) => {
       const target = regions?.find((r) => r.regionId === data.regionId);
       const confirmMessage =
         recommended?.regionId === data.regionId || false
           ? `장소를 추가하시겠습니까?`
           : `선택한 주소 "${data.coord.address}"가 지역 "${target ? `${target.provinceFullName} ${target.cityFullName}` : '<오류: 알수 없는 위치>'}에 등록됩니다. 장소를 추가하시겠습니까?`;
       if (confirm(confirmMessage)) {
-        addHub({ regionId: data.regionId, body: conform(data) });
+        const res = await addHub({
+          regionId: data.regionId,
+          body: conform(data),
+        });
+        await postShuttleStop({
+          regionHubId: res.regionHubId,
+          type: 'SHUTTLE_HUB',
+        });
+        alert('장소가 추가되었습니다.');
+        router.push('/locations');
       }
     },
     [recommended, router, regions],
   );
+
+  const handleTagToggle = (key: keyof TagStates) => {
+    setTagStates((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
 
   return (
     <main>
@@ -120,6 +143,21 @@ const NewHubPage = ({
               </div>
             )}
           />
+        </Form.section>
+        <Form.section>
+          <Form.label>태그 선택</Form.label>
+          <div className="flex flex-row gap-4">
+            <Toggle
+              label="행사장소"
+              value={tagStates.isEventDestination}
+              setValue={() => handleTagToggle('isEventDestination')}
+            />
+            <Toggle
+              label="정류장"
+              value={tagStates.isShuttleHub}
+              setValue={() => handleTagToggle('isShuttleHub')}
+            />
+          </div>
         </Form.section>
         <Form.submitButton>추가하기</Form.submitButton>
       </Form>

@@ -17,8 +17,9 @@ import regions from '../data/regions.json';
 import { RegionSchema } from '@/types/region.type';
 import { toSearchParamString } from '@/utils/searchParam.util';
 import { withPagination } from '@/types/common.type';
+import { z } from 'zod';
 
-// ----- 조회 -----
+// ----- GET -----
 
 // 실제 API 호출이 아니고 데이터 객체를 불러옴
 export const getRegions = () => {
@@ -124,7 +125,7 @@ export const useGetRegionHub = (regionId: string, regionHubId: string) => {
   });
 };
 
-// ----- 명령 -----
+// ----- POST -----
 
 export const postRegionHub = async (
   regionId: string,
@@ -133,6 +134,11 @@ export const postRegionHub = async (
   return await authInstance.post(
     `/v1/location/admin/regions/${regionId}/hubs`,
     silentParse(CreateHubRequestSchema, body),
+    {
+      shape: {
+        regionHubId: z.string(),
+      },
+    },
   );
 };
 
@@ -166,6 +172,11 @@ export const putRegionHub = async (
   return await authInstance.put(
     `/v1/location/admin/regions/${regionId}/hubs/${regionHubId}`,
     body,
+    {
+      shape: {
+        regionHubId: z.string(),
+      },
+    },
   );
 };
 
