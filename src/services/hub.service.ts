@@ -173,11 +173,6 @@ export const putRegionHub = async (
   return await authInstance.put(
     `/v1/location/admin/regions/${regionId}/hubs/${regionHubId}`,
     body,
-    {
-      shape: {
-        regionHubId: z.string(),
-      },
-    },
   );
 };
 
