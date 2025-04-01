@@ -14,13 +14,14 @@ import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
 import MapGuidesAtNewEditPage from '../components/MapGuidesAtNewEditPage';
 import Toggle from '@/components/button/Toggle';
-import { postShuttleStop } from '@/services/shuttleStops.service';
+import { putShuttleStop } from '@/services/shuttleStops.service';
+import { getTags } from '../utils/getTags.util';
 
 interface Props {
   searchParams: { latitude: string; longitude: string; address: string };
 }
 
-interface TagStates {
+export interface TagStates {
   isEventDestination: boolean;
   isShuttleHub: boolean;
 }
@@ -77,15 +78,15 @@ const NewHubPage = ({ searchParams }: Props) => {
           regionId: data.regionId,
           body: conform(data),
         });
-        await postShuttleStop({
+        await putShuttleStop({
           regionHubId: res.regionHubId,
-          type: 'SHUTTLE_HUB',
+          types: getTags(tagStates),
         });
         alert('장소가 추가되었습니다.');
         router.push('/locations');
       }
     },
-    [recommended, router, regions],
+    [recommended, router, regions, tagStates],
   );
 
   const handleTagToggle = (key: keyof TagStates) => {

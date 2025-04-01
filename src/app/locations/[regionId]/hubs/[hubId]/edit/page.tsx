@@ -20,12 +20,14 @@ import { RegionHub } from '@/types/hub.type';
 import MapGuidesAtNewEditPage from '@/app/locations/components/MapGuidesAtNewEditPage';
 import Toggle from '@/components/button/Toggle';
 import { putShuttleStop } from '@/services/shuttleStops.service';
+import { TagStates } from '@/app/locations/new/page';
+import { getTags } from '@/app/locations/utils/getTags.util';
 
-const EditHubPage = ({
-  params,
-}: {
+interface Props {
   params: { regionId: string; hubId: string };
-}) => {
+}
+
+const EditHubPage = ({ params }: Props) => {
   const {
     data: regions,
     isPending: isRegionsPending,
@@ -59,18 +61,12 @@ interface EditFormProps {
   hub: RegionHub;
 }
 
-interface TagStates {
-  isEventDestination: boolean;
-  isShuttleHub: boolean;
-}
-
 const EditForm = ({ regions, hub }: EditFormProps) => {
   const router = useRouter();
   const [tagStates, setTagStates] = useState<TagStates>({
     isEventDestination: hub.eventDestination,
     isShuttleHub: hub.shuttleHub,
   });
-  console.log(tagStates);
   const defaultValues = {
     regionId: hub.regionId,
     name: hub.name,
@@ -112,13 +108,6 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
     }));
   };
 
-  const getTags = useCallback(() => {
-    const tags: ('EVENT_DESTINATION' | 'SHUTTLE_HUB')[] = [];
-    if (tagStates.isEventDestination) tags.push('EVENT_DESTINATION');
-    if (tagStates.isShuttleHub) tags.push('SHUTTLE_HUB');
-    return tags;
-  }, [tagStates]);
-
   const onSubmit = useCallback(
     async (data: EditHubFormType) => {
       const target = regions?.find((r) => r.regionId === data.regionId);
@@ -134,13 +123,13 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
         });
         await putShuttleStop({
           regionHubId: hub.regionHubId,
-          types: getTags(),
+          types: getTags(tagStates),
         });
         alert('장소가 수정되었습니다.');
         router.push('/locations');
       }
     },
-    [recommended, router, regions, getTags],
+    [recommended, router, regions, tagStates],
   );
 
   return (
