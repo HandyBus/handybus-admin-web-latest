@@ -9,8 +9,6 @@ export const EditHubFormSchema = z.object({
     latitude: z.number(),
     longitude: z.number(),
   }),
-  eventDestination: z.boolean(),
-  shuttleHub: z.boolean(),
 });
 
 export type EditHubFormType = z.infer<typeof EditHubFormSchema>;

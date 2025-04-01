@@ -4,6 +4,8 @@ import {
   AdminCreateShuttleStopRequest,
   AdminDeleteShuttleStopRequest,
   AdminDeleteShuttleStopRequestSchema,
+  AdminSaveShuttleStopTagRequest,
+  AdminSaveShuttleStopTagRequestSchema,
 } from '@/types/shuttleStop.type';
 import { AdminCreateShuttleStopRequestSchema } from '@/types/shuttleStop.type';
 
@@ -24,5 +26,14 @@ export const deleteShuttleStop = async (
   await authInstance.delete(
     `/v1/shuttle-operation/admin/shuttle-stops`,
     silentParse(AdminDeleteShuttleStopRequestSchema, data),
+  );
+};
+
+// ----- PUT -----
+
+export const putShuttleStop = async (data: AdminSaveShuttleStopTagRequest) => {
+  await authInstance.put(
+    `/v1/shuttle-operation/admin/shuttle-stop-tags`,
+    silentParse(AdminSaveShuttleStopTagRequestSchema, data),
   );
 };

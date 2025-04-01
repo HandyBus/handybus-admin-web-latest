@@ -17,3 +17,12 @@ export const AdminDeleteShuttleStopRequestSchema = z.object({
 export type AdminDeleteShuttleStopRequest = z.infer<
   typeof AdminDeleteShuttleStopRequestSchema
 >;
+
+export const AdminSaveShuttleStopTagRequestSchema = z.object({
+  regionHubId: z.string(),
+  types: z.array(z.enum(['EVENT_DESTINATION', 'SHUTTLE_HUB'])),
+});
+
+export type AdminSaveShuttleStopTagRequest = z.infer<
+  typeof AdminSaveShuttleStopTagRequestSchema
+>;
