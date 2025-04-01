@@ -59,12 +59,7 @@ const NewHubPage = ({ searchParams }: Props) => {
     ).at(0);
   }, [regions, address]);
 
-  const { mutateAsync: addHub } = usePostRegionHub({
-    onError: (error) => {
-      alert(`장소 추가에 실패했습니다.`);
-      console.error(error);
-    },
-  });
+  const { mutateAsync: addHub } = usePostRegionHub();
 
   const onSubmit = useCallback(
     async (data: CreateHubFormType) => {
@@ -74,16 +69,21 @@ const NewHubPage = ({ searchParams }: Props) => {
           ? `장소를 추가하시겠습니까?`
           : `선택한 주소 "${data.coord.address}"가 지역 "${target ? `${target.provinceFullName} ${target.cityFullName}` : '<오류: 알수 없는 위치>'}에 등록됩니다. 장소를 추가하시겠습니까?`;
       if (confirm(confirmMessage)) {
-        const res = await addHub({
-          regionId: data.regionId,
-          body: conform(data),
-        });
-        await putShuttleStop({
-          regionHubId: res.regionHubId,
-          types: getTags(tagStates),
-        });
-        alert('장소가 추가되었습니다.');
-        router.push('/locations');
+        try {
+          const res = await addHub({
+            regionId: data.regionId,
+            body: conform(data),
+          });
+          await putShuttleStop({
+            regionHubId: res.regionHubId,
+            types: getTags(tagStates),
+          });
+          alert('장소가 추가되었습니다.');
+          router.push('/locations');
+        } catch (error) {
+          alert('장소 추가에 실패했습니다.');
+          console.error(error);
+        }
       }
     },
     [recommended, router, regions, tagStates],
