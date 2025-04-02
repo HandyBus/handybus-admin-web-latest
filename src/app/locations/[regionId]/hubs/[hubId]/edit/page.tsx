@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { conform, type EditHubFormType } from './form.type';
 import Input from '@/components/input/Input';
@@ -18,12 +18,16 @@ import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
 import { RegionHub } from '@/types/hub.type';
 import MapGuidesAtNewEditPage from '@/app/locations/components/MapGuidesAtNewEditPage';
+import Toggle from '@/components/button/Toggle';
+import { putShuttleStop } from '@/services/shuttleStops.service';
+import { TagStates } from '@/app/locations/location.type';
+import { getTags } from '@/app/locations/utils/getTags.util';
 
-const EditHubPage = ({
-  params,
-}: {
+interface Props {
   params: { regionId: string; hubId: string };
-}) => {
+}
+
+const EditHubPage = ({ params }: Props) => {
   const {
     data: regions,
     isPending: isRegionsPending,
@@ -59,7 +63,10 @@ interface EditFormProps {
 
 const EditForm = ({ regions, hub }: EditFormProps) => {
   const router = useRouter();
-
+  const [tagStates, setTagStates] = useState<TagStates>({
+    isEventDestination: hub.eventDestination,
+    isShuttleHub: hub.shuttleHub,
+  });
   const defaultValues = {
     regionId: hub.regionId,
     name: hub.name,
@@ -87,33 +94,42 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
     ).at(0);
   }, [regions, address]);
 
-  const { mutate: putHub } = usePutRegionHub({
-    onSuccess: () => {
-      alert('장소가 수정되었습니다.');
-      router.push('/locations');
-    },
+  const { mutateAsync: putHub } = usePutRegionHub({
     onError: (error) => {
       alert(`장소 수정에 실패했습니다.`);
       console.error(error);
     },
   });
 
+  const handleTagToggle = (key: keyof TagStates) => {
+    setTagStates((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
   const onSubmit = useCallback(
-    (data: EditHubFormType) => {
+    async (data: EditHubFormType) => {
       const target = regions?.find((r) => r.regionId === data.regionId);
       const confirmMessage =
         recommended?.regionId === data.regionId || false
           ? `장소를 수정하시겠습니까?`
           : `선택한 주소 "${data.coord.address}"가 지역 "${target ? `${target.provinceFullName} ${target.cityFullName}` : '<오류: 알수 없는 위치>'}에 등록됩니다. 장소를 수정하시겠습니까?`;
       if (confirm(confirmMessage)) {
-        putHub({
+        await putHub({
           regionId: data.regionId,
           regionHubId: hub.regionHubId,
           body: conform(data),
         });
+        await putShuttleStop({
+          regionHubId: hub.regionHubId,
+          types: getTags(tagStates),
+        });
+        alert('장소가 수정되었습니다.');
+        router.push('/locations');
       }
     },
-    [recommended, router, regions],
+    [recommended, router, regions, tagStates],
   );
 
   return (
@@ -163,6 +179,21 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
               </div>
             )}
           />
+        </Form.section>
+        <Form.section>
+          <Form.label>태그 선택</Form.label>
+          <div className="flex flex-row gap-4">
+            <Toggle
+              label="행사장소"
+              value={tagStates.isEventDestination}
+              setValue={() => handleTagToggle('isEventDestination')}
+            />
+            <Toggle
+              label="정류장"
+              value={tagStates.isShuttleHub}
+              setValue={() => handleTagToggle('isShuttleHub')}
+            />
+          </div>
         </Form.section>
         <Form.submitButton>수정하기</Form.submitButton>
       </Form>

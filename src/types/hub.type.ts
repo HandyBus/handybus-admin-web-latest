@@ -19,6 +19,8 @@ export const RegionHubSchema = z.object({
   address: z.string(),
   latitude: z.number(),
   longitude: z.number(),
+  eventDestination: z.boolean(),
+  shuttleHub: z.boolean(),
 });
 export type RegionHub = z.infer<typeof RegionHubSchema>;
 

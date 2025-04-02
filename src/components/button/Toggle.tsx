@@ -19,12 +19,13 @@ const Toggle = ({ disabled, value, setValue, label, onClick }: Props) => {
   return (
     <button
       className={twJoin(
-        'font-500 text-14 rounded-xl px-8 py-4 active:scale-90 transition-all border border-blue-100 hover:border-blue-600 flex flex-row items-center justify-start',
-        'disabled:opacity-50 disabled:cursor-not-allowed',
+        'flex flex-row items-center justify-start rounded-xl border border-blue-100 px-8 py-4 text-14 font-500 transition-all hover:border-blue-600 active:scale-90',
+        'disabled:cursor-not-allowed disabled:opacity-50',
         value ? 'bg-blue-400 text-white' : 'bg-neutral-50',
       )}
       onClick={onClick ?? (setValue && (() => setValue((prev) => !prev)))}
       disabled={disabled}
+      type="button"
     >
       {value ? <CheckIcon size={18} /> : <XIcon size={18} />} {label}
     </button>
