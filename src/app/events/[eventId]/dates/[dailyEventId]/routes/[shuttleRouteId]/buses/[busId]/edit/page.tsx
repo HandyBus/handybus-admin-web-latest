@@ -11,10 +11,14 @@ import {
   useGetShuttleBus,
   usePutShuttleBus,
 } from '@/services/shuttleBus.service';
-import { BusTypeEnum, ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
+import {
+  BusTypeEnum,
+  ShuttleBusesViewEntity,
+  AdminUpdateShuttleBusRequest,
+} from '@/types/shuttleBus.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
-import { conform, EditBusFormType } from './form.type';
+import { transformToAdminUpdateShuttleBusRequest } from './transformToAdminUpdateShuttleBusRequest.util';
 import Callout from '@/components/text/Callout';
 import Loading from '@/components/loading/Loading';
 
@@ -66,11 +70,9 @@ const EditForm = ({ bus, params }: EditFormProps) => {
     number: bus?.busNumber,
     phoneNumber: bus?.busDriverPhoneNumber,
     openChatLink: bus?.openChatLink ?? undefined, // 오픈채팅방 링크를 등록하지 않았을 수 있음.
-  } satisfies EditBusFormType;
+  } satisfies AdminUpdateShuttleBusRequest;
 
-  const defaultOpenChatLink = bus?.openChatLink ?? undefined;
-
-  const { control, handleSubmit } = useForm<EditBusFormType>({
+  const { control, handleSubmit } = useForm<AdminUpdateShuttleBusRequest>({
     defaultValues,
   });
 
@@ -88,18 +90,18 @@ const EditForm = ({ bus, params }: EditFormProps) => {
   });
 
   const onSubmit = useCallback(
-    (data: EditBusFormType) => {
+    (data: AdminUpdateShuttleBusRequest) => {
       if (confirm('버스를 수정하시겠습니까?')) {
         putBus({
           eventId: params.eventId,
           dailyEventId: params.dailyEventId,
           shuttleRouteId: params.shuttleRouteId,
           shuttleBusId: params.busId,
-          body: conform(data, defaultOpenChatLink),
+          body: transformToAdminUpdateShuttleBusRequest(data, defaultValues),
         });
       }
     },
-    [params],
+    [params, defaultValues],
   );
 
   return (
