@@ -16,6 +16,7 @@ import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
 import { conform, EditBusFormType } from './form.type';
 import Callout from '@/components/text/Callout';
+import Loading from '@/components/loading/Loading';
 
 interface Props {
   params: {
@@ -39,13 +40,9 @@ const EditBusPage = ({ params }: Props) => {
     params.busId,
   );
 
-  return (
-    <>
-      {isBusPending && <div>Loading...</div>}
-      {isBusError && <div>Error: {busError.message}</div>}
-      {bus && <EditForm bus={bus} params={params} />}
-    </>
-  );
+  if (isBusPending) return <Loading />;
+  if (isBusError) throw busError;
+  return <>{bus && <EditForm bus={bus} params={params} />}</>;
 };
 
 export default EditBusPage;
