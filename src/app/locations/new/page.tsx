@@ -16,14 +16,10 @@ import MapGuidesAtNewEditPage from '../components/MapGuidesAtNewEditPage';
 import Toggle from '@/components/button/Toggle';
 import { putShuttleStop } from '@/services/shuttleStops.service';
 import { getTags } from '../utils/getTags.util';
+import { TagStates } from '../location.type';
 
 interface Props {
   searchParams: { latitude: string; longitude: string; address: string };
-}
-
-export interface TagStates {
-  isEventDestination: boolean;
-  isShuttleHub: boolean;
 }
 
 const NewHubPage = ({ searchParams }: Props) => {

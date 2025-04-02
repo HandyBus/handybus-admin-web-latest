@@ -1,4 +1,4 @@
-import { TagStates } from '@/app/locations/new/page';
+import { TagStates } from '../location.type';
 
 export const getTags = (tagStates: TagStates) => {
   const tags: ('EVENT_DESTINATION' | 'SHUTTLE_HUB')[] = [];

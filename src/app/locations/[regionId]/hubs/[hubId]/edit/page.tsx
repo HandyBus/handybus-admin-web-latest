@@ -20,7 +20,7 @@ import { RegionHub } from '@/types/hub.type';
 import MapGuidesAtNewEditPage from '@/app/locations/components/MapGuidesAtNewEditPage';
 import Toggle from '@/components/button/Toggle';
 import { putShuttleStop } from '@/services/shuttleStops.service';
-import { TagStates } from '@/app/locations/new/page';
+import { TagStates } from '@/app/locations/location.type';
 import { getTags } from '@/app/locations/utils/getTags.util';
 
 interface Props {
