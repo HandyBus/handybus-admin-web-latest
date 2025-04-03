@@ -4,10 +4,12 @@ import Input from '@/components/input/Input';
 import { useState } from 'react';
 import { usePutShuttleRoute } from '@/services/shuttleRoute.service';
 import { EditFormValues } from '../form.type';
-import { conform } from '../utils/conform.util';
 import FormContainer from '@/components/form/Form';
 import PriceSection from './PriceSection';
 import ShuttleRouteHubSection from './ShuttleRouteHubSection';
+import { extractHubs } from '../utils/extractHubs';
+import { validateShuttleRouteData } from '../utils/validateShuttleRouteData';
+import { transformToShuttleRouteRequest } from '../utils/transformToShuttleRouteRequest';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -39,12 +41,18 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
 
     setIsSubmitting(true);
     try {
-      const body = conform(data);
+      const { forwardHubs, returnHubs } = extractHubs(data);
+      validateShuttleRouteData(forwardHubs, returnHubs);
+      const shuttleRouteRequest = transformToShuttleRouteRequest(
+        data,
+        forwardHubs,
+        returnHubs,
+      );
       await putRoute({
         eventId,
         dailyEventId,
         shuttleRouteId,
-        body,
+        body: shuttleRouteRequest,
       });
       alert('노선이 수정되었습니다.');
       push(`/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`);

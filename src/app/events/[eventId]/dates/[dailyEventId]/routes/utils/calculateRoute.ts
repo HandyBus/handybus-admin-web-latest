@@ -5,7 +5,7 @@ import {
   roundUpToNearestFiveMinutes,
 } from './roundNearestFiveMinutes.util';
 import { UseFormSetValue } from 'react-hook-form';
-import { CreateShuttleRouteFormValues } from '../new/form.type';
+import { CreateFormValues } from '../new/form.type';
 
 /**
  * 경로 계산을 위한 허브 데이터 타입
@@ -258,7 +258,7 @@ export const calculateUnionTimes = async (
 export const updateRouteFormValues = (
   type: 'toDestination' | 'fromDestination',
   calculatedTimes: RouteHubData[],
-  setValue: UseFormSetValue<CreateShuttleRouteFormValues>,
+  setValue: UseFormSetValue<CreateFormValues>,
 ) => {
   calculatedTimes.forEach((hub, index) => {
     setValue(
