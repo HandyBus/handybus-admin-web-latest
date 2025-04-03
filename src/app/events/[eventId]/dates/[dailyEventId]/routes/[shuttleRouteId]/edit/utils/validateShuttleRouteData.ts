@@ -5,31 +5,49 @@ export const validateShuttleRouteData = (
   forwardHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
   returnHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
 ): void => {
-  if (!hasHubs(forwardHubs, returnHubs)) {
-    throw new Error('가는편/오는편의 정류장을 채워주세요.');
-  }
-  if (
-    !validateEachSequenceOrder(forwardHubs) ||
-    !validateEachSequenceOrder(returnHubs) ||
-    !validateFromToOrder(forwardHubs, returnHubs)
-  ) {
-    throw new Error('정류장들의 순서가 올바르지 않습니다.');
-  }
-  if (!validateHubsMatch(forwardHubs, returnHubs)) {
-    throw new Error('정류장들의 목록이 서로 일치하지 않습니다.');
+  const tripType = checkTripType(forwardHubs, returnHubs);
+  switch (true) {
+    case tripType === 'none':
+      throw new Error('가는편/오는편의 정류장을 채워주세요.');
+    case !validateEachSequenceOrder(forwardHubs) ||
+      !validateEachSequenceOrder(returnHubs):
+      throw new Error('정류장들의 순서가 올바르지 않습니다.');
+    case tripType === 'roundTrip' &&
+      !validateFromToOrder(forwardHubs, returnHubs):
+      throw new Error('가는편/오는편의 정류장들의 순서가 올바르지 않습니다.');
+    case tripType === 'roundTrip' &&
+      !validateHubsMatch(forwardHubs, returnHubs):
+      throw new Error('정류장들의 목록이 서로 일치하지 않습니다.');
   }
 };
 
-const hasHubs = (
+const checkTripType = (
   forwardHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
   returnHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
-) => {
-  return forwardHubs.length > 0 && returnHubs.length > 0;
+): 'roundTrip' | 'oneWay' | 'none' => {
+  switch (true) {
+    case forwardHubs.length > 0 && returnHubs.length > 0:
+      return 'roundTrip';
+    case forwardHubs.length > 0 && returnHubs.length === 0:
+      return 'oneWay';
+    case forwardHubs.length === 0 && returnHubs.length > 0:
+      return 'oneWay';
+    default:
+      return 'none';
+  }
 };
 
 const validateEachSequenceOrder = (
   hubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
 ) => {
+  const arrivalTimes = hubs.map((hub) => dayjs(hub.arrivalTime).valueOf());
+  const hasDuplicateArrivalTimes =
+    new Set(arrivalTimes).size !== arrivalTimes.length;
+
+  if (hasDuplicateArrivalTimes) {
+    return false;
+  }
+
   const sortedByArrivalTime = [...hubs].sort(
     (a, b) => dayjs(a.arrivalTime).valueOf() - dayjs(b.arrivalTime).valueOf(),
   );
