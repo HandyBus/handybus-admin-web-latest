@@ -13,6 +13,7 @@ export default useRegionHubFilter;
 const EMPTY_REGION_HUB_FILTER: GetRegionHubsOptions = {
   regionId: undefined,
   name: undefined,
+  usageType: undefined,
 };
 
 export type RegionHubFilterAction =
@@ -23,6 +24,10 @@ export type RegionHubFilterAction =
   | {
       type: 'SET_NAME';
       name: GetRegionHubsOptions['name'];
+    }
+  | {
+      type: 'SET_USAGE_TYPE';
+      usageType: GetRegionHubsOptions['usageType'];
     }
   | {
       type: 'RESET';
@@ -43,10 +48,13 @@ const reducer = (
         ...prevState,
         name: action.name,
       };
-    case 'RESET':
+    case 'SET_USAGE_TYPE':
       return {
-        ...EMPTY_REGION_HUB_FILTER,
+        ...prevState,
+        usageType: action.usageType,
       };
+    case 'RESET':
+      return EMPTY_REGION_HUB_FILTER;
     default:
       console.error('Unknown action type', action);
       return prevState;
