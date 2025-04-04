@@ -159,7 +159,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
     try {
       const address = await toAddress(center.getLat(), center.getLng());
       const bigRegion = standardizeRegionName(address.region_1depth_name);
-      const smallRegion = address.region_2depth_name;
+      const smallRegion = address.region_2depth_name.split(' ')[0];
       const region = `${bigRegion} ${smallRegion}`;
       const regionId = findRegionId(bigRegion, smallRegion);
       setCurrentRegion(region);
