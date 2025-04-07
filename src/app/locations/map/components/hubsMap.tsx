@@ -13,8 +13,6 @@ interface HubData {
   latitude: number;
   longitude: number;
   regionId: string;
-  shuttleHub: boolean;
-  eventDestination: boolean;
 }
 
 interface Coord {
@@ -27,11 +25,8 @@ const MAP_CONSTANTS = {
   INITIAL_ZOOM_LEVEL: 4,
   DEFAULT_LAT: 37.574187,
   DEFAULT_LNG: 126.976882,
-  MARKER_IMAGES: {
-    DEFAULT: '/icons/default-marker.svg',
-    BUS_STOP: '/icons/bus-stop-marker.svg',
-    EVENT_VENUE: '/icons/event-venue-marker.svg',
-  },
+  HUB_MARKER_IMAGE_URL:
+    'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
 };
 
 const HubsMap = () => {
@@ -62,31 +57,16 @@ const HubsMap = () => {
           latitude: regionHub.latitude,
           longitude: regionHub.longitude,
           regionId: regionHub.regionId,
-          shuttleHub: regionHub.shuttleHub,
-          eventDestination: regionHub.eventDestination,
         })),
     [regionHubs],
   );
 
-  const createHubsMarkerImage = useCallback(
-    ({
-      shuttleHub,
-      eventDestination,
-    }: {
-      shuttleHub: boolean;
-      eventDestination: boolean;
-    }) => {
-      const imageSrc = shuttleHub
-        ? MAP_CONSTANTS.MARKER_IMAGES.BUS_STOP
-        : eventDestination
-          ? MAP_CONSTANTS.MARKER_IMAGES.EVENT_VENUE
-          : MAP_CONSTANTS.MARKER_IMAGES.DEFAULT;
-      return new kakao.maps.MarkerImage(imageSrc, new kakao.maps.Size(40, 40), {
-        offset: new kakao.maps.Point(20, 40),
-      });
-    },
-    [],
-  );
+  const createHubsMarkerImage = useCallback(() => {
+    const imageSrc = MAP_CONSTANTS.HUB_MARKER_IMAGE_URL;
+    return new kakao.maps.MarkerImage(imageSrc, new kakao.maps.Size(24, 35), {
+      offset: new kakao.maps.Point(12, 35),
+    });
+  }, []);
 
   const setCoordWithAddress = useCallback(
     async (latLng: kakao.maps.LatLng) => {
@@ -142,10 +122,7 @@ const HubsMap = () => {
         map: map,
         position: position,
         title: hub.name,
-        image: createHubsMarkerImage({
-          shuttleHub: hub.shuttleHub,
-          eventDestination: hub.eventDestination,
-        }),
+        image: createHubsMarkerImage(),
       });
 
       const customOverlay = new kakao.maps.CustomOverlay({
