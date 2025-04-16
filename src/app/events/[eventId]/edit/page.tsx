@@ -56,7 +56,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
     dailyEvents: event?.dailyEvents?.map((dailyEvent) => ({
       status: dailyEvent.status,
       dailyEventId: dailyEvent.dailyEventId,
-      date: dayjs(dailyEvent.date, 'Asia/Seoul').format('YYYY-MM-DD'),
+      date: dayjs(dailyEvent.date, 'Asia/Seoul').toISOString(),
     })),
     artistIds:
       event?.eventArtists?.map((artist) => ({
@@ -67,7 +67,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
   const previousDailyEvents = event?.dailyEvents?.map((dailyEvent) => ({
     status: dailyEvent.status,
     dailyEventId: dailyEvent.dailyEventId,
-    date: dayjs(dailyEvent.date, 'Asia/Seoul').format('YYYY-MM-DD'),
+    date: dayjs(dailyEvent.date, 'Asia/Seoul').toISOString(),
   }));
 
   const { control, handleSubmit } = useForm<EditEventFormData>({
