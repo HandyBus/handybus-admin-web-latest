@@ -10,19 +10,21 @@ import DateTimeInput from '@/components/input/DateTimeInput';
 import { useGetEvent } from '@/services/event.service';
 import { usePostShuttleRoute } from '@/services/shuttleRoute.service';
 import { EventsViewEntity } from '@/types/event.type';
-import { conform } from './conform.util';
 import Heading from '@/components/text/Heading';
 import FormContainer from '@/components/form/Form';
 import Callout from '@/components/text/Callout';
 import NumberInput from '@/components/input/NumberInput';
 import { discountPercent } from '../discountPercent.util';
-import { CreateShuttleRouteFormValues } from './form.type';
+import { CreateFormValues } from './form.type';
 import {
   calculateUnionTimes,
   updateRouteFormValues,
 } from '../utils/calculateRoute';
 import { calculateRouteTimes } from '../utils/calculateRoute';
 import { RouteHubData } from '../utils/calculateRoute';
+import { extractHubs } from './utils/extractHubs';
+import { transformToShuttleRouteRequest } from './utils/transformToShuttleRouteRequest';
+import { validateShuttleRouteData } from './utils/validateShuttleRouteData';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -38,7 +40,7 @@ const Page = ({ params }: Props) => {
       ?.date;
   }, [event, dailyEventId]);
 
-  const defaultValues: CreateShuttleRouteFormValues = useMemo(
+  const defaultValues: CreateFormValues = useMemo(
     () => ({
       name: '',
       maxPassengerCount: 0,
@@ -108,7 +110,7 @@ export default Page;
 
 interface FormProps extends Props {
   event: EventsViewEntity;
-  defaultValues: CreateShuttleRouteFormValues;
+  defaultValues: CreateFormValues;
   defaultDate: string;
 }
 
@@ -125,7 +127,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     formState: { errors },
     getValues,
     setValue,
-  } = useForm<CreateShuttleRouteFormValues>({
+  } = useForm<CreateFormValues>({
     defaultValues,
   });
 
@@ -153,20 +155,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
     name: 'shuttleRouteHubsToDestination',
   });
 
-  const { mutate: postRoute } = usePostShuttleRoute({
-    onSuccess: () => {
-      alert('노선이 추가되었습니다.');
-      router.push(`/events/${eventId}/dates/${dailyEventId}`);
-    },
-    onError: (error) => {
-      alert(
-        '오류가 발생했습니다.\n' + (error instanceof Error && error.message),
-      );
-      setIsSubmitting(false);
-    },
-  });
+  const { mutateAsync: postRoute } = usePostShuttleRoute();
 
-  const onSubmit = async (data: CreateShuttleRouteFormValues) => {
+  const onSubmit = async (data: CreateFormValues) => {
     if (
       !confirm(
         '추가하시겠습니까? 확인을 누르시면 가격은 더 이상 변경할 수 없습니다. ',
@@ -175,19 +166,26 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
       return;
     try {
       setIsSubmitting(true);
-      const shuttleRouteHubs = conform(data);
-      postRoute({
+      const { forwardHubs, returnHubs } = extractHubs(data);
+      validateShuttleRouteData(forwardHubs, returnHubs);
+      const shuttleRouteRequest = transformToShuttleRouteRequest(
+        data,
+        forwardHubs,
+        returnHubs,
+      );
+      await postRoute({
         eventId,
         dailyEventId,
-        body: shuttleRouteHubs,
+        body: shuttleRouteRequest,
       });
+      alert('노선이 추가되었습니다.');
+      router.push(`/events/${eventId}/dates/${dailyEventId}`);
     } catch (error) {
       setIsSubmitting(false);
-      if (
-        error instanceof Error &&
-        error.message === 'arrivalTime is not validated'
-      )
-        alert('정류장들의 시간순서가 올바르지 않습니다. 확인해주세요.');
+      alert(
+        '노선 추가 과정에서 오류가 발생했습니다.\n' +
+          (error instanceof Error && error.message),
+      );
     }
   };
 
