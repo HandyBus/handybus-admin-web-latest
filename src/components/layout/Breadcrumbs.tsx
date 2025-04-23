@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Fragment } from 'react';
 
 interface RouteConfig {
   path: string;
@@ -68,6 +69,14 @@ const ROUTES: RouteConfig[] = [
   // 아티스트 관리
   { path: '/artists', name: '아티스트 대시보드' },
   { path: '/artists/new', name: '아티스트 추가하기', parent: '/artists' },
+  // 공지사항 관리
+  { path: '/notices', name: '공지사항 대시보드' },
+  { path: '/notices/new', name: '공지사항 추가하기', parent: '/notices' },
+  {
+    path: '/notices/:id',
+    name: '공지사항 상세 정보',
+    parent: '/notices',
+  },
 ];
 
 const Breadcrumbs = () => {
@@ -127,8 +136,8 @@ const Breadcrumbs = () => {
   return (
     <div className="flex shrink-0 items-center gap-4 text-12 text-grey-600">
       {breadcrumbs.map((route, index) => (
-        <>
-          <span key={route.path}>
+        <Fragment key={index}>
+          <span>
             <Link
               href={generateActualPath(route.path)}
               className="underline underline-offset-2"
@@ -137,11 +146,9 @@ const Breadcrumbs = () => {
             </Link>
           </span>
           {index !== breadcrumbs.length - 1 && (
-            <span key={index} className="text-grey-600">
-              &gt;
-            </span>
+            <span className="text-grey-600">&gt;</span>
           )}
-        </>
+        </Fragment>
       ))}
     </div>
   );
