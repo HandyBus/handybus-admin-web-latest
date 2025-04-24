@@ -6,7 +6,7 @@ import useTable from '@/hooks/useTable';
 import { columns } from './table.type';
 import BlueLink from '@/components/link/BlueLink';
 
-const mockData = [
+const MOCK_DATA = [
   {
     id: 1,
     title: '공지사항 1',
@@ -40,7 +40,7 @@ const mockData = [
 const NoticePage = () => {
   const table = useTable({
     columns,
-    data: mockData,
+    data: MOCK_DATA,
   });
 
   return (
