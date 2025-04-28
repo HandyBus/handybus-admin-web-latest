@@ -7,6 +7,7 @@ import { EventWithStatisticsViewEntity } from '@/types/event.type';
 import { DEFAULT_EVENT_IMAGE } from '@/constants/common';
 import Stringifier from '@/utils/stringifier.util';
 import BlueLink from '@/components/link/BlueLink';
+import dayjs from 'dayjs';
 
 const columnHelper = createColumnHelper<EventWithStatisticsViewEntity>();
 
@@ -47,7 +48,10 @@ export const columns = [
     },
   }),
   columnHelper.accessor(
-    (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.date),
+    (row) =>
+      row.dailyEvents
+        .toSorted((a, b) => dayjs(a.date).diff(dayjs(b.date)))
+        .map((dailyEvent) => dailyEvent.date),
     {
       header: '날짜',
       cell: ({ getValue }) => {
