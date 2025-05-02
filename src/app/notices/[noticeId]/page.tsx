@@ -5,12 +5,38 @@ import Callout from '@/components/text/Callout';
 import Heading from '@/components/text/Heading';
 import List from '@/components/text/List';
 import ReactMarkdown from 'react-markdown';
+import {
+  useGetAnnouncement,
+  useUpdateAnnouncement,
+} from '@/services/core.service';
+import dayjs from 'dayjs';
+import { useRouter } from 'next/navigation';
 
 const NoticeDetailPage = ({
   params: { noticeId },
 }: {
   params: { noticeId: string };
 }) => {
+  const { data: announcement } = useGetAnnouncement(noticeId);
+  const { mutateAsync: deleteAnnouncement } = useUpdateAnnouncement();
+  const router = useRouter();
+
+  const onDelete = async () => {
+    if (confirm('삭제하시겠습니까?')) {
+      try {
+        await deleteAnnouncement({
+          announcementId: noticeId,
+          body: { isDeleted: true },
+        });
+        alert('삭제되었습니다.');
+        router.push('/notices');
+      } catch (error) {
+        console.error(error);
+        alert('삭제에 실패했습니다.\n' + error);
+      }
+    }
+  };
+
   return (
     <main>
       <div className="flex items-baseline gap-20">
@@ -18,43 +44,39 @@ const NoticeDetailPage = ({
         <BlueLink href={`/notices/${noticeId}/edit`} className="text-14">
           수정하기
         </BlueLink>
+        <button
+          onClick={onDelete}
+          type="button"
+          className="whitespace-nowrap break-keep text-14 text-blue-500 underline underline-offset-[3px]"
+        >
+          삭제하기
+        </button>
       </div>
       <Callout>
         <List>
           <List.item title="제목">
-            <span>공지사항 제목</span>
+            <span>{announcement?.title}</span>
           </List.item>
           <List.item title="작성일">
-            <span>2024-01-01</span>
+            <span>
+              {announcement?.createdAt &&
+                dayjs(announcement?.createdAt).format('YYYY-MM-DD HH:mm')}
+            </span>
           </List.item>
           <List.item title="수정일">
-            <span>2024-01-01</span>
+            <span>
+              {announcement?.updatedAt &&
+                dayjs(announcement?.updatedAt).format('YYYY-MM-DD HH:mm')}
+            </span>
           </List.item>
         </List>
       </Callout>
       <Heading.h2>내용</Heading.h2>
       <section className="prose w-dvw max-w-full bg-notion-grey p-20">
-        <ReactMarkdown>{markdownContent}</ReactMarkdown>
+        <ReactMarkdown>{announcement?.content}</ReactMarkdown>
       </section>
     </main>
   );
 };
 
 export default NoticeDetailPage;
-
-const markdownContent = `
-# 공지사항 제목 공지사항 제목
-
-- 항목 1
-- 항목 2
-
-**굵은 글씨**
-
-[링크](https://www.google.com)
-
-![이미지](https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png)
-
-> 인용문
-
-
-`;

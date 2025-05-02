@@ -5,42 +5,21 @@ import Heading from '@/components/text/Heading';
 import useTable from '@/hooks/useTable';
 import { columns } from './table.type';
 import BlueLink from '@/components/link/BlueLink';
-
-const MOCK_DATA = [
-  {
-    id: 1,
-    title: '공지사항 1',
-    content: '공지사항 1 내용',
-    createdAt: '2024-01-01',
-    updatedAt: '2024-01-01',
-  },
-  {
-    id: 2,
-    title: '공지사항 2',
-    content: '공지사항 2 내용',
-    createdAt: '2024-01-01',
-    updatedAt: '2024-01-01',
-  },
-  {
-    id: 3,
-    title: '공지사항 3',
-    content: '공지사항 3 내용',
-    createdAt: '2024-01-01',
-    updatedAt: '2024-01-01',
-  },
-  {
-    id: 4,
-    title: '공지사항 4',
-    content: '공지사항 4 내용',
-    createdAt: '2024-01-01',
-    updatedAt: '2024-01-01',
-  },
-];
+import { useGetAnnouncements } from '@/services/core.service';
+import NoticeFilter from './components/NoticeFilter';
+import { useNoticeFilter } from './hooks/useNoticeFilter';
 
 const NoticePage = () => {
+  const [option, dispatch] = useNoticeFilter({
+    withDeleted: undefined,
+  });
+  const { data: announcements } = useGetAnnouncements({
+    withDeleted: option.withDeleted,
+  });
   const table = useTable({
     columns,
-    data: MOCK_DATA,
+    data: announcements,
+    manualFiltering: true,
   });
 
   return (
@@ -51,6 +30,7 @@ const NoticePage = () => {
           작성하기
         </BlueLink>
       </div>
+      <NoticeFilter option={option} dispatch={dispatch} />
       <BaseTable table={table} />
     </main>
   );

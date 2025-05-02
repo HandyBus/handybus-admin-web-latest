@@ -8,6 +8,8 @@ import Form from '@/components/form/Form';
 import { Controller } from 'react-hook-form';
 import Input from '@/components/input/Input';
 import { useForm } from 'react-hook-form';
+import { useCreateAnnouncement } from '@/services/core.service';
+import { useRouter } from 'next/navigation';
 
 type CreateNoticeFormData = {
   title: string;
@@ -15,16 +17,28 @@ type CreateNoticeFormData = {
 };
 
 const NewPage = () => {
+  const router = useRouter();
   const { control, handleSubmit } = useForm<CreateNoticeFormData>({
     defaultValues: {
       title: '',
       content: '',
     },
   });
+  const { mutateAsync: createAnnouncement } = useCreateAnnouncement();
 
-  const onSubmit = (data: CreateNoticeFormData) => {
+  const onSubmit = async (data: CreateNoticeFormData) => {
     if (confirm('작성하시겠습니까?')) {
-      console.log('작성', data);
+      try {
+        console.log('작성', data);
+        await createAnnouncement({
+          title: data.title,
+          content: data.content,
+        });
+        alert('작성되었습니다.');
+        router.push('/notices');
+      } catch (error) {
+        alert('작성에 실패했습니다. \n' + error);
+      }
     }
   };
 
