@@ -4,16 +4,16 @@ import Heading from '@/components/text/Heading';
 import { useForm } from 'react-hook-form';
 import { useCreateAnnouncement } from '@/services/core.service';
 import { useRouter } from 'next/navigation';
-import NoticeForm from '@/components/notice/NoticeForm';
+import AnnouncementForm from '@/components/announcement/AnnouncementForm';
 
-type CreateNoticeFormData = {
+type CreateAnnouncementFormData = {
   title: string;
   content: string;
 };
 
 const NewPage = () => {
   const router = useRouter();
-  const { control, handleSubmit } = useForm<CreateNoticeFormData>({
+  const { control, handleSubmit } = useForm<CreateAnnouncementFormData>({
     defaultValues: {
       title: '',
       content: '',
@@ -21,7 +21,7 @@ const NewPage = () => {
   });
   const { mutateAsync: createAnnouncement } = useCreateAnnouncement();
 
-  const onSubmit = async (data: CreateNoticeFormData) => {
+  const onSubmit = async (data: CreateAnnouncementFormData) => {
     if (confirm('작성하시겠습니까?')) {
       try {
         console.log('작성', data);
@@ -30,7 +30,7 @@ const NewPage = () => {
           content: data.content,
         });
         alert('작성되었습니다.');
-        router.push('/notices');
+        router.push('/announcements');
       } catch (error) {
         alert('작성에 실패했습니다. \n' + error);
       }
@@ -40,7 +40,7 @@ const NewPage = () => {
   return (
     <main>
       <Heading>공지사항 작성</Heading>
-      <NoticeForm
+      <AnnouncementForm
         control={control}
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}

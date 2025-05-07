@@ -1,23 +1,24 @@
 import { Control, UseFormHandleSubmit, Controller } from 'react-hook-form';
 import MdEditor from 'react-markdown-editor-lite';
+import 'react-markdown-editor-lite/lib/index.css';
 import ReactMarkdown from 'react-markdown';
 import Form from '@/components/form/Form';
 import Input from '@/components/input/Input';
 import { FC } from 'react';
 
-export type NoticeFormData = {
+export type AnnouncementFormData = {
   title: string;
   content: string;
 };
 
-interface NoticeFormProps {
-  control: Control<NoticeFormData>;
-  handleSubmit: UseFormHandleSubmit<NoticeFormData>;
-  onSubmit: (data: NoticeFormData) => void;
+interface AnnouncementFormProps {
+  control: Control<AnnouncementFormData>;
+  handleSubmit: UseFormHandleSubmit<AnnouncementFormData>;
+  onSubmit: (data: AnnouncementFormData) => void;
   submitButtonText: string;
 }
 
-const NoticeForm: FC<NoticeFormProps> = ({
+const AnnouncementForm: FC<AnnouncementFormProps> = ({
   control,
   handleSubmit,
   onSubmit,
@@ -57,4 +58,4 @@ const NoticeForm: FC<NoticeFormProps> = ({
   );
 };
 
-export default NoticeForm;
+export default AnnouncementForm;

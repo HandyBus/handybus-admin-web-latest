@@ -12,12 +12,12 @@ import {
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 
-const NoticeDetailPage = ({
-  params: { noticeId },
+const AnnouncementDetailPage = ({
+  params: { announcementId },
 }: {
-  params: { noticeId: string };
+  params: { announcementId: string };
 }) => {
-  const { data: announcement } = useGetAnnouncement(noticeId);
+  const { data: announcement } = useGetAnnouncement(announcementId);
   const { mutateAsync: deleteAnnouncement } = useUpdateAnnouncement();
   const router = useRouter();
 
@@ -25,11 +25,11 @@ const NoticeDetailPage = ({
     if (confirm('삭제하시겠습니까?')) {
       try {
         await deleteAnnouncement({
-          announcementId: noticeId,
+          announcementId: announcementId,
           body: { isDeleted: true },
         });
         alert('삭제되었습니다.');
-        router.push('/notices');
+        router.push('/announcements');
       } catch (error) {
         console.error(error);
         alert('삭제에 실패했습니다.\n' + error);
@@ -41,7 +41,10 @@ const NoticeDetailPage = ({
     <main>
       <div className="flex items-baseline gap-20">
         <Heading>공지사항 상세 정보</Heading>
-        <BlueLink href={`/notices/${noticeId}/edit`} className="text-14">
+        <BlueLink
+          href={`/announcements/${announcementId}/edit`}
+          className="text-14"
+        >
           수정하기
         </BlueLink>
         <button
@@ -79,4 +82,4 @@ const NoticeDetailPage = ({
   );
 };
 
-export default NoticeDetailPage;
+export default AnnouncementDetailPage;

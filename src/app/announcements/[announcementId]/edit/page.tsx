@@ -7,40 +7,40 @@ import {
   useUpdateAnnouncement,
 } from '@/services/core.service';
 import { useRouter } from 'next/navigation';
-import NoticeForm from '@/components/notice/NoticeForm';
+import AnnouncementForm from '@/components/announcement/AnnouncementForm';
 
-type CreateNoticeFormData = {
+type CreateAnnouncementFormData = {
   title: string;
   content: string;
 };
 
 interface Props {
-  params: { noticeId: string };
+  params: { announcementId: string };
 }
 
-const EditPage = ({ params: { noticeId } }: Props) => {
+const EditPage = ({ params: { announcementId } }: Props) => {
   const router = useRouter();
-  const { data: announcement } = useGetAnnouncement(noticeId);
+  const { data: announcement } = useGetAnnouncement(announcementId);
   const { mutateAsync: updateAnnouncement } = useUpdateAnnouncement();
-  const { control, handleSubmit } = useForm<CreateNoticeFormData>({
+  const { control, handleSubmit } = useForm<CreateAnnouncementFormData>({
     defaultValues: {
       title: announcement?.title ?? '',
       content: announcement?.content ?? '',
     },
   });
 
-  const onSubmit = async (data: CreateNoticeFormData) => {
+  const onSubmit = async (data: CreateAnnouncementFormData) => {
     if (confirm('수정하시겠습니까?')) {
       try {
         await updateAnnouncement({
-          announcementId: noticeId,
+          announcementId: announcementId,
           body: {
             ...data,
             isDeleted: false,
           },
         });
         alert('수정되었습니다.');
-        router.push(`/notices/${noticeId}`);
+        router.push(`/announcements/${announcementId}`);
       } catch (error) {
         console.error(error);
         alert('수정에 실패했습니다.\n' + error);
@@ -51,7 +51,7 @@ const EditPage = ({ params: { noticeId } }: Props) => {
   return (
     <main>
       <Heading>공지사항 수정</Heading>
-      <NoticeForm
+      <AnnouncementForm
         control={control}
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}

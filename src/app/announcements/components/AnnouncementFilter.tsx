@@ -5,16 +5,16 @@ import { Disclosure } from '@headlessui/react';
 import { ChevronDownIcon } from 'lucide-react';
 import { FilterIcon } from 'lucide-react';
 import {
-  NoticeFilterState,
-  NoticeFilterAction,
-} from '../hooks/useNoticeFilter';
+  AnnouncementFilterState,
+  AnnouncementFilterAction,
+} from '../hooks/useAnnouncementFilter';
 
-const NoticeFilter = ({
+const AnnouncementFilter = ({
   option,
   dispatch,
 }: {
-  option: NoticeFilterState;
-  dispatch: Dispatch<NoticeFilterAction>;
+  option: AnnouncementFilterState;
+  dispatch: Dispatch<AnnouncementFilterAction>;
 }) => (
   <Disclosure>
     <DisclosureButton className="group flex w-fit items-center justify-start gap-4 rounded-[8px] p-4 transition-all hover:bg-grey-50 active:scale-90 active:bg-grey-100">
@@ -42,4 +42,4 @@ const NoticeFilter = ({
   </Disclosure>
 );
 
-export default NoticeFilter;
+export default AnnouncementFilter;

@@ -2,7 +2,7 @@ import BlueLink from '@/components/link/BlueLink';
 import { createColumnHelper } from '@tanstack/react-table';
 import dayjs from 'dayjs';
 
-type Notice = {
+type Announcement = {
   id: string;
   title: string;
   createdAt: string;
@@ -10,7 +10,7 @@ type Notice = {
   deletedAt: string | null;
 };
 
-const columnHelper = createColumnHelper<Notice>();
+const columnHelper = createColumnHelper<Announcement>();
 
 export const columns = [
   columnHelper.accessor('id', {
@@ -37,7 +37,9 @@ export const columns = [
     id: 'actions',
     header: () => 'actions',
     cell: (info) => (
-      <BlueLink href={`/notices/${info.row.original.id}`}>상세보기</BlueLink>
+      <BlueLink href={`/announcements/${info.row.original.id}`}>
+        상세보기
+      </BlueLink>
     ),
   }),
 ];

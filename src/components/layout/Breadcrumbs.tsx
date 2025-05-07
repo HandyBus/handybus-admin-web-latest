@@ -70,12 +70,16 @@ const ROUTES: RouteConfig[] = [
   { path: '/artists', name: '아티스트 대시보드' },
   { path: '/artists/new', name: '아티스트 추가하기', parent: '/artists' },
   // 공지사항 관리
-  { path: '/notices', name: '공지사항 대시보드' },
-  { path: '/notices/new', name: '공지사항 추가하기', parent: '/notices' },
+  { path: '/announcements', name: '공지사항 대시보드' },
   {
-    path: '/notices/:id',
+    path: '/announcements/new',
+    name: '공지사항 추가하기',
+    parent: '/announcements',
+  },
+  {
+    path: '/announcements/:id',
     name: '공지사항 상세 정보',
-    parent: '/notices',
+    parent: '/announcements',
   },
 ];
 
