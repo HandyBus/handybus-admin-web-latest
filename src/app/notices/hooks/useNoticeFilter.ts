@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
 
-export interface GetNoticesOptions {
+export interface NoticeFilterState {
   withDeleted?: boolean;
 }
 
@@ -10,9 +10,9 @@ export type NoticeFilterAction = {
 };
 
 const reducer = (
-  state: GetNoticesOptions,
+  state: NoticeFilterState,
   action: NoticeFilterAction,
-): GetNoticesOptions => {
+): NoticeFilterState => {
   switch (action.type) {
     case 'SET_WITH_DELETED':
       return { ...state, withDeleted: action.withDeleted };
@@ -22,7 +22,7 @@ const reducer = (
   }
 };
 
-export const useNoticeFilter = (partial: GetNoticesOptions = {}) => {
+export const useNoticeFilter = (partial: NoticeFilterState = {}) => {
   return useReducer(reducer, {
     ...partial,
   });

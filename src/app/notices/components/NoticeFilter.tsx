@@ -5,7 +5,7 @@ import { Disclosure } from '@headlessui/react';
 import { ChevronDownIcon } from 'lucide-react';
 import { FilterIcon } from 'lucide-react';
 import {
-  GetNoticesOptions,
+  NoticeFilterState,
   NoticeFilterAction,
 } from '../hooks/useNoticeFilter';
 
@@ -13,7 +13,7 @@ const NoticeFilter = ({
   option,
   dispatch,
 }: {
-  option: GetNoticesOptions;
+  option: NoticeFilterState;
   dispatch: Dispatch<NoticeFilterAction>;
 }) => (
   <Disclosure>
