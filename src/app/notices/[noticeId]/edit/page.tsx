@@ -1,18 +1,13 @@
 'use client';
 
 import Heading from '@/components/text/Heading';
-import MdEditor from 'react-markdown-editor-lite';
-import ReactMarkdown from 'react-markdown';
-import 'react-markdown-editor-lite/lib/index.css';
-import Form from '@/components/form/Form';
-import { Control, Controller, UseFormHandleSubmit } from 'react-hook-form';
-import Input from '@/components/input/Input';
 import { useForm } from 'react-hook-form';
 import {
   useGetAnnouncement,
   useUpdateAnnouncement,
 } from '@/services/core.service';
 import { useRouter } from 'next/navigation';
+import NoticeForm from '@/components/notice/NoticeForm';
 
 type CreateNoticeFormData = {
   title: string;
@@ -56,55 +51,13 @@ const EditPage = ({ params: { noticeId } }: Props) => {
   return (
     <main>
       <Heading>공지사항 수정</Heading>
-      <EditForm
+      <NoticeForm
         control={control}
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}
+        submitButtonText="수정하기"
       />
     </main>
-  );
-};
-
-const EditForm = ({
-  control,
-  handleSubmit,
-  onSubmit,
-}: {
-  control: Control<CreateNoticeFormData>;
-  handleSubmit: UseFormHandleSubmit<CreateNoticeFormData>;
-  onSubmit: (data: CreateNoticeFormData) => void;
-}) => {
-  const plugins = ['font-bold', 'link'];
-  return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <Form.section>
-        <Form.label>제목</Form.label>
-        <Controller
-          control={control}
-          name="title"
-          render={({ field: { onChange, value } }) => (
-            <Input type="text" value={value} setValue={onChange} />
-          )}
-        />
-      </Form.section>
-      <Form.section className="w-full">
-        <Form.label>내용</Form.label>
-        <Controller
-          control={control}
-          name="content"
-          render={({ field: { onChange, value } }) => (
-            <MdEditor
-              value={value}
-              className="min-h-400 min-w-full"
-              renderHTML={(text) => <ReactMarkdown>{text}</ReactMarkdown>}
-              onChange={({ text }) => onChange(text)}
-              plugins={plugins}
-            />
-          )}
-        />
-      </Form.section>
-      <Form.submitButton>작성하기</Form.submitButton>
-    </Form>
   );
 };
 

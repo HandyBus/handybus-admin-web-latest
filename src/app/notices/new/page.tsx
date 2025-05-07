@@ -1,15 +1,10 @@
 'use client';
 
 import Heading from '@/components/text/Heading';
-import MdEditor from 'react-markdown-editor-lite';
-import ReactMarkdown from 'react-markdown';
-import 'react-markdown-editor-lite/lib/index.css';
-import Form from '@/components/form/Form';
-import { Controller } from 'react-hook-form';
-import Input from '@/components/input/Input';
 import { useForm } from 'react-hook-form';
 import { useCreateAnnouncement } from '@/services/core.service';
 import { useRouter } from 'next/navigation';
+import NoticeForm from '@/components/notice/NoticeForm';
 
 type CreateNoticeFormData = {
   title: string;
@@ -42,40 +37,15 @@ const NewPage = () => {
     }
   };
 
-  const plugins = ['font-bold', 'link'];
-
   return (
     <main>
       <Heading>공지사항 작성</Heading>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Form.section>
-          <Form.label>제목</Form.label>
-          <Controller
-            control={control}
-            name="title"
-            render={({ field: { onChange, value } }) => (
-              <Input type="text" value={value} setValue={onChange} />
-            )}
-          />
-        </Form.section>
-        <Form.section className="w-full">
-          <Form.label>내용</Form.label>
-          <Controller
-            control={control}
-            name="content"
-            render={({ field: { onChange, value } }) => (
-              <MdEditor
-                value={value}
-                className="min-h-400 min-w-full"
-                renderHTML={(text) => <ReactMarkdown>{text}</ReactMarkdown>}
-                onChange={({ text }) => onChange(text)}
-                plugins={plugins}
-              />
-            )}
-          />
-        </Form.section>
-        <Form.submitButton>작성하기</Form.submitButton>
-      </Form>
+      <NoticeForm
+        control={control}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        submitButtonText="작성하기"
+      />
     </main>
   );
 };
