@@ -7,8 +7,14 @@ import {
   AdminHandleBannerRequestBannersSchema,
 } from '@/types/banner.type';
 import { useMutation, useQuery } from '@tanstack/react-query';
-
-// ----- GET -----
+import {
+  AdminCreateAnnouncementRequestSchema,
+  AdminCreateAnnouncementRequest,
+  AdminAnnouncementResponseModelSchema,
+  AdminUpdateAnnouncementRequestSchema,
+  AdminUpdateAnnouncementRequest,
+} from '@/types/announcement.type';
+import { silentParse } from '@/utils/parse.util';
 
 export type Extension = 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'svg';
 
@@ -26,6 +32,8 @@ export const getPresignedUrl = async (
     },
   );
 };
+
+// ----- BANNER -----
 
 export const getBanners = async () => {
   return await authInstance.get('/v1/core/admin/banners', {
@@ -59,5 +67,86 @@ export const usePutBanner = ({
     mutationFn: putBanner,
     onSuccess,
     onError,
+  });
+};
+
+// ----- ANNOUNCEMENT -----
+
+export const getAnnouncements = async ({
+  withDeleted,
+}: {
+  withDeleted?: boolean;
+}) => {
+  const res = await authInstance.get(
+    `/v1/core/admin/announcements?withDeleted=${withDeleted}`,
+    {
+      shape: {
+        announcements: AdminAnnouncementResponseModelSchema.array(),
+      },
+    },
+  );
+  return res.announcements;
+};
+
+export const useGetAnnouncements = (options: { withDeleted?: boolean }) => {
+  return useQuery({
+    queryKey: ['announcements', options],
+    queryFn: () => getAnnouncements(options),
+  });
+};
+
+export const getAnnouncement = async (announcementId: string) => {
+  const res = await authInstance.get(
+    `/v1/core/admin/announcements/${announcementId}`,
+    {
+      shape: {
+        announcement: AdminAnnouncementResponseModelSchema,
+      },
+    },
+  );
+  return res.announcement;
+};
+
+export const useGetAnnouncement = (announcementId: string) => {
+  return useQuery({
+    queryKey: ['announcement', announcementId],
+    queryFn: () => getAnnouncement(announcementId),
+  });
+};
+
+export const postAnnouncement = async (
+  body: AdminCreateAnnouncementRequest,
+) => {
+  return await authInstance.post(
+    '/v1/core/admin/announcements',
+    silentParse(AdminCreateAnnouncementRequestSchema, body),
+  );
+};
+
+export const usePostAnnouncement = () => {
+  return useMutation({
+    mutationFn: postAnnouncement,
+  });
+};
+
+export const putAnnouncement = async (
+  announcementId: string,
+  body: AdminUpdateAnnouncementRequest,
+) => {
+  return await authInstance.put(
+    `/v1/core/admin/announcements/${announcementId}`,
+    silentParse(AdminUpdateAnnouncementRequestSchema, body),
+  );
+};
+
+export const usePutAnnouncement = () => {
+  return useMutation({
+    mutationFn: ({
+      announcementId,
+      body,
+    }: {
+      announcementId: string;
+      body: AdminUpdateAnnouncementRequest;
+    }) => putAnnouncement(announcementId, body),
   });
 };

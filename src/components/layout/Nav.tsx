@@ -69,7 +69,7 @@ const NavItems = () => {
       <NavItem href="/locations">장소</NavItem>
       <NavItem href="/coupons">쿠폰</NavItem>
       <NavItem href="/banners">배너</NavItem>
-      <NavItem href="/notices">공지</NavItem>
+      <NavItem href="/announcements">공지</NavItem>
     </>
   );
 };
