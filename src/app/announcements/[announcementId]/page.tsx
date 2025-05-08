@@ -7,7 +7,7 @@ import List from '@/components/text/List';
 import ReactMarkdown from 'react-markdown';
 import {
   useGetAnnouncement,
-  useUpdateAnnouncement,
+  usePutAnnouncement,
 } from '@/services/core.service';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
@@ -18,7 +18,7 @@ const AnnouncementDetailPage = ({
   params: { announcementId: string };
 }) => {
   const { data: announcement } = useGetAnnouncement(announcementId);
-  const { mutateAsync: deleteAnnouncement } = useUpdateAnnouncement();
+  const { mutateAsync: deleteAnnouncement } = usePutAnnouncement();
   const router = useRouter();
 
   const onDelete = async () => {

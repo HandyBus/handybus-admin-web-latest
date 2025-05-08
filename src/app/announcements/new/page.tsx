@@ -2,7 +2,7 @@
 
 import Heading from '@/components/text/Heading';
 import { useForm } from 'react-hook-form';
-import { useCreateAnnouncement } from '@/services/core.service';
+import { usePostAnnouncement } from '@/services/core.service';
 import { useRouter } from 'next/navigation';
 import AnnouncementForm from '@/components/announcement/AnnouncementForm';
 
@@ -19,13 +19,13 @@ const NewPage = () => {
       content: '',
     },
   });
-  const { mutateAsync: createAnnouncement } = useCreateAnnouncement();
+  const { mutateAsync: postAnnouncement } = usePostAnnouncement();
 
   const onSubmit = async (data: CreateAnnouncementFormData) => {
     if (confirm('작성하시겠습니까?')) {
       try {
         console.log('작성', data);
-        await createAnnouncement({
+        await postAnnouncement({
           title: data.title,
           content: data.content,
         });

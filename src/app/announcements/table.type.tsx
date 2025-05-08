@@ -1,16 +1,9 @@
 import BlueLink from '@/components/link/BlueLink';
+import { AdminAnnouncementResponseModel } from '@/types/announcement.type';
 import { createColumnHelper } from '@tanstack/react-table';
 import dayjs from 'dayjs';
 
-type Announcement = {
-  id: string;
-  title: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-};
-
-const columnHelper = createColumnHelper<Announcement>();
+const columnHelper = createColumnHelper<AdminAnnouncementResponseModel>();
 
 export const columns = [
   columnHelper.accessor('id', {

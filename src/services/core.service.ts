@@ -114,7 +114,7 @@ export const useGetAnnouncement = (announcementId: string) => {
   });
 };
 
-export const createAnnouncement = async (
+export const postAnnouncement = async (
   body: AdminCreateAnnouncementRequest,
 ) => {
   return await authInstance.post(
@@ -123,13 +123,13 @@ export const createAnnouncement = async (
   );
 };
 
-export const useCreateAnnouncement = () => {
+export const usePostAnnouncement = () => {
   return useMutation({
-    mutationFn: createAnnouncement,
+    mutationFn: postAnnouncement,
   });
 };
 
-export const updateAnnouncement = async (
+export const putAnnouncement = async (
   announcementId: string,
   body: AdminUpdateAnnouncementRequest,
 ) => {
@@ -139,7 +139,7 @@ export const updateAnnouncement = async (
   );
 };
 
-export const useUpdateAnnouncement = () => {
+export const usePutAnnouncement = () => {
   return useMutation({
     mutationFn: ({
       announcementId,
@@ -147,6 +147,6 @@ export const useUpdateAnnouncement = () => {
     }: {
       announcementId: string;
       body: AdminUpdateAnnouncementRequest;
-    }) => updateAnnouncement(announcementId, body),
+    }) => putAnnouncement(announcementId, body),
   });
 };

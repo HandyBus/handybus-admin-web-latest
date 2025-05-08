@@ -4,12 +4,12 @@ import Heading from '@/components/text/Heading';
 import { useForm } from 'react-hook-form';
 import {
   useGetAnnouncement,
-  useUpdateAnnouncement,
+  usePutAnnouncement,
 } from '@/services/core.service';
 import { useRouter } from 'next/navigation';
 import AnnouncementForm from '@/components/announcement/AnnouncementForm';
 
-type CreateAnnouncementFormData = {
+type PutAnnouncementFormData = {
   title: string;
   content: string;
 };
@@ -21,18 +21,18 @@ interface Props {
 const EditPage = ({ params: { announcementId } }: Props) => {
   const router = useRouter();
   const { data: announcement } = useGetAnnouncement(announcementId);
-  const { mutateAsync: updateAnnouncement } = useUpdateAnnouncement();
-  const { control, handleSubmit } = useForm<CreateAnnouncementFormData>({
+  const { mutateAsync: putAnnouncement } = usePutAnnouncement();
+  const { control, handleSubmit } = useForm<PutAnnouncementFormData>({
     defaultValues: {
       title: announcement?.title ?? '',
       content: announcement?.content ?? '',
     },
   });
 
-  const onSubmit = async (data: CreateAnnouncementFormData) => {
+  const onSubmit = async (data: PutAnnouncementFormData) => {
     if (confirm('수정하시겠습니까?')) {
       try {
-        await updateAnnouncement({
+        await putAnnouncement({
           announcementId: announcementId,
           body: {
             ...data,
