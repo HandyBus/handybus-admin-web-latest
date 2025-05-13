@@ -10,6 +10,7 @@ import { useMemo } from 'react';
 import EventFilter from './components/EventFilter';
 import useEventFilter from './hooks/useEventFilter';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
+import dayjs from 'dayjs';
 
 const EVENT_PAGINATION_LIMIT = 7;
 
@@ -26,7 +27,17 @@ const Page = () => {
   });
 
   const flattenedEventsStats = useMemo(
-    () => eventsStats?.pages.flatMap((page) => page.events),
+    () =>
+      eventsStats?.pages
+        .flatMap((page) => page.events)
+        .map((event) => ({
+          ...event,
+          dailyEvents: event.dailyEvents
+            ? [...event.dailyEvents].sort((a, b) =>
+                dayjs(a.date).diff(dayjs(b.date)),
+              )
+            : [],
+        })),
     [eventsStats],
   );
 
