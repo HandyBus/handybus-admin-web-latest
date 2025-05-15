@@ -20,6 +20,12 @@ export const ShuttleRouteStatusEnum = z.enum([
 ]);
 export type ShuttleRouteStatus = z.infer<typeof ShuttleRouteStatusEnum>;
 
+export const ShuttleRouteHubRoleEnum = z.enum([
+  'HUB', // 허브
+  'DESTINATION', // 목적지
+]);
+export type ShuttleRouteHubRole = z.infer<typeof ShuttleRouteHubRoleEnum>;
+
 // ----- GET -----
 
 export const ShuttleRouteHubsInShuttleRoutesViewEntitySchema = z
@@ -31,6 +37,7 @@ export const ShuttleRouteHubsInShuttleRoutesViewEntitySchema = z
     address: z.string(),
     latitude: z.number(),
     longitude: z.number(),
+    role: ShuttleRouteHubRoleEnum,
     type: TripTypeEnum.exclude(['ROUND_TRIP']),
     sequence: z.number().int(),
     arrivalTime: z.string(),
@@ -101,6 +108,7 @@ export const CreateShuttleRouteRequestSchema = z
       .object({
         regionHubId: z.string(),
         type: TripTypeEnum,
+        role: ShuttleRouteHubRoleEnum,
         sequence: z.number().int().positive(),
         arrivalTime: z.string(),
       })
@@ -115,6 +123,7 @@ export const UpdateShuttleRouteHubPropsSchema = z.object({
   shuttleRouteHubId: z.string().optional(),
   regionHubId: z.string(),
   type: TripTypeEnum.exclude(['ROUND_TRIP']),
+  role: ShuttleRouteHubRoleEnum,
   sequence: z.number().int().positive(),
   arrivalTime: z.string(),
 });
