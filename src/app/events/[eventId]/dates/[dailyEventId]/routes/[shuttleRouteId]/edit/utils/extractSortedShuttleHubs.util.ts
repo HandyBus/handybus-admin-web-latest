@@ -12,5 +12,6 @@ export const extractSortedShuttleHubs = (
       regionHubId: hub.regionHubId,
       regionId: hub.regionId,
       arrivalTime: hub.arrivalTime,
+      role: hub.role,
     }));
 };

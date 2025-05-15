@@ -20,6 +20,7 @@ export const extractHubs = (data: CreateFormValues) => {
         type: 'FROM_DESTINATION',
         regionHubId: v.regionHubId,
         arrivalTime: v.arrivalTime,
+        role: idx === 0 ? 'DESTINATION' : 'HUB',
       })) satisfies CreateShuttleRouteRequest['shuttleRouteHubs'];
 
   const forwardHubs: CreateShuttleRouteRequest['shuttleRouteHubs'] =
@@ -35,11 +36,12 @@ export const extractHubs = (data: CreateFormValues) => {
           longitude: number;
         } => dest.regionHubId !== null,
       )
-      .map((v, idx) => ({
+      .map((v, idx, arr) => ({
         sequence: idx + 1,
         type: 'TO_DESTINATION',
         regionHubId: v.regionHubId,
         arrivalTime: v.arrivalTime,
+        role: idx === arr.length - 1 ? 'DESTINATION' : 'HUB',
       })) satisfies CreateShuttleRouteRequest['shuttleRouteHubs'];
 
   return { forwardHubs, returnHubs };

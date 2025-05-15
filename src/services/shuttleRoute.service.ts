@@ -106,7 +106,7 @@ export const postShuttleRoute = async (
   body: CreateShuttleRouteRequest,
 ) => {
   await authInstance.post(
-    `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes`,
+    `/v3/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes`,
     silentParse(CreateShuttleRouteRequestSchema, body),
   );
 };
@@ -164,7 +164,7 @@ export const putShuttleRoute = async (
   body: PutShuttleRouteBody,
 ) => {
   await authInstance.put(
-    `/v2/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`,
+    `/v3/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}`,
     body,
   );
 };
