@@ -4,6 +4,7 @@ import {
   EventTypeEnum,
   UpdateEventRequest,
 } from '@/types/event.type';
+import dayjs from 'dayjs';
 
 export const EditEventFormSchema = z.object({
   status: EventStatusEnum,
@@ -31,5 +32,9 @@ export const conform = (data: EditEventFormData): UpdateEventRequest => {
   return {
     ...data,
     artistIds: artistIds.map((artist) => artist.artistId),
+    dailyEvents: data.dailyEvents.map((dailyEvent) => ({
+      ...dailyEvent,
+      closeDeadline: dayjs(dailyEvent.date).subtract(14, 'day').toISOString(),
+    })),
   } satisfies UpdateEventRequest;
 };
