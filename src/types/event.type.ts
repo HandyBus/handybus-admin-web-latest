@@ -21,6 +21,7 @@ export const EventDailyShuttlesInEventsViewEntitySchema = z
     dailyEventId: z.string(),
     date: z.string(),
     status: EventStatusEnum,
+    closeDeadline: z.string(),
   })
   .strict();
 export type EventDailyShuttlesInEventsViewEntity = z.infer<
@@ -78,7 +79,9 @@ export const CreateEventRequestSchema = z.object({
   imageUrl: z.string().url(),
   regionId: z.string(),
   regionHubId: z.string(),
-  dailyEvents: z.object({ date: z.string() }).array(),
+  dailyEvents: z
+    .object({ date: z.string(), closeDeadline: z.string() })
+    .array(),
   type: EventTypeEnum,
   artistIds: z.string().array(),
 });
@@ -96,6 +99,7 @@ export const UpdateEventRequestSchema = z
         status: EventStatusEnum.optional(),
         dailyEventId: z.string().optional(),
         date: z.string(),
+        closeDeadline: z.string(),
       })
       .array(),
     type: EventTypeEnum,
