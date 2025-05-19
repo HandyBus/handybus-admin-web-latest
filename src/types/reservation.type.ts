@@ -57,7 +57,7 @@ export const ReservationViewEntitySchema = z
     shuttleRoute: AdminShuttleRoutesViewEntitySchema,
     createdAt: z.string(),
     updatedAt: z.string(),
-    hasReview: z.boolean(),
+    reviewId: z.string().nullable(),
   })
   .strict();
 export type ReservationViewEntity = z.infer<typeof ReservationViewEntitySchema>;
