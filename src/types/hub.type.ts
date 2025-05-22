@@ -12,17 +12,18 @@ export const RouteHubSchema = z.object({
 });
 export type RouteHubType = z.infer<typeof RouteHubSchema>;
 
-export const RegionHubSchema = z.object({
+export const RegionHubsViewEntitySchema = z.object({
   regionHubId: z.string(),
   regionId: z.string(),
   name: z.string(),
   address: z.string(),
   latitude: z.number(),
   longitude: z.number(),
-  eventDestination: z.boolean(),
+  eventLocation: z.boolean(),
+  eventParkingLot: z.boolean(),
   shuttleHub: z.boolean(),
 });
-export type RegionHub = z.infer<typeof RegionHubSchema>;
+export type RegionHubsViewEntity = z.infer<typeof RegionHubsViewEntitySchema>;
 
 // ----- POST -----
 

@@ -499,6 +499,11 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         name={`shuttleRouteHubsToDestination.${index}` as const}
                         render={({ field: { onChange, value } }) => (
                           <RegionHubInputSelfContained
+                            hubType={
+                              index === toDestHubFields.length - 1
+                                ? 'DESTINATION'
+                                : 'SHUTTLE_ROUTE_HUB'
+                            }
                             regionId={value.regionId}
                             setRegionId={(regionId) =>
                               onChange({ ...value, regionId })
@@ -630,6 +635,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         }
                         render={({ field: { onChange, value } }) => (
                           <RegionHubInputSelfContained
+                            hubType={
+                              index === 0 ? 'DESTINATION' : 'SHUTTLE_ROUTE_HUB'
+                            }
                             regionId={value.regionId}
                             setRegionId={(regionId) =>
                               onChange({ ...value, regionId })

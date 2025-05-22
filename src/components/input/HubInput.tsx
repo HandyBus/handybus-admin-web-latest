@@ -9,13 +9,14 @@ import {
   ComboboxButton,
 } from '@headlessui/react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
-import { RegionHub } from '@/types/hub.type';
+import { RegionHubsViewEntity } from '@/types/hub.type';
 import { ChevronDown } from 'lucide-react';
 import RegionInput from './RegionInput';
 import { useGetRegionHubs } from '@/services/hub.service';
 import Link from 'next/link';
 
 interface Props {
+  hubType: 'SHUTTLE_ROUTE_HUB' | 'DESTINATION';
   regionId: string | undefined;
   value: string | null;
   setValue: (
@@ -25,13 +26,18 @@ interface Props {
   ) => void;
 }
 
-const RegionHubInput = ({ regionId, value, setValue }: Props) => {
+const RegionHubInput = ({ hubType, regionId, value, setValue }: Props) => {
   const [query, setQuery] = useState('');
 
   const { data, isLoading, error } = useGetRegionHubs({
     options: {
       regionId: validRegionID(regionId) ? regionId : '',
       page: undefined,
+      usageType: [
+        hubType === 'SHUTTLE_ROUTE_HUB'
+          ? 'SHUTTLE_HUB'
+          : 'EVENT_LOCATION,EVENT_PARKING_LOT',
+      ],
     },
     enabled: validRegionID(regionId),
   });
@@ -42,7 +48,7 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
   );
 
   const setSelectedHub = useCallback(
-    (hub: RegionHub | null) => {
+    (hub: RegionHubsViewEntity | null) => {
       setValue(
         hub?.regionHubId ?? null,
         hub?.latitude ?? null,
@@ -57,7 +63,7 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
     [regionHubs, value],
   );
 
-  const filtered: RegionHub[] = useMemo(() => {
+  const filtered: RegionHubsViewEntity[] = useMemo(() => {
     const filterByID =
       regionId === undefined
         ? regionHubs
@@ -94,7 +100,7 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
                   : '장소 선택'
           }
           defaultValue={null}
-          displayValue={(hub: null | RegionHub) => hub?.name ?? ''}
+          displayValue={(hub: null | RegionHubsViewEntity) => hub?.name ?? ''}
           onChange={(event) => setQuery(event.target.value)}
           autoComplete="off"
         />
@@ -131,11 +137,13 @@ const RegionHubInput = ({ regionId, value, setValue }: Props) => {
 export default RegionHubInput;
 
 export const RegionHubInputSelfContained = ({
+  hubType,
   regionId,
   setRegionId,
   regionHubId,
   setRegionHubId,
 }: {
+  hubType: 'SHUTTLE_ROUTE_HUB' | 'DESTINATION';
   regionId: string | null;
   setRegionId: (value: string | null) => void;
   regionHubId: string | null;
@@ -149,6 +157,7 @@ export const RegionHubInputSelfContained = ({
     <div className="flex flex-col gap-4">
       <RegionInput value={regionId} setValue={setRegionId} />
       <RegionHubInput
+        hubType={hubType}
         regionId={regionId ?? undefined}
         value={regionHubId}
         setValue={setRegionHubId}
