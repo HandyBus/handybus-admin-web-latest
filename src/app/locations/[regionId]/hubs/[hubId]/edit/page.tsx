@@ -16,12 +16,11 @@ import {
 import { Region } from '@/types/region.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
-import { RegionHub } from '@/types/hub.type';
+import { RegionHubsViewEntity } from '@/types/hub.type';
 import MapGuidesAtNewEditPage from '@/app/locations/components/MapGuidesAtNewEditPage';
 import Toggle from '@/components/button/Toggle';
 import { putShuttleStop } from '@/services/shuttleStops.service';
 import { TagStates } from '@/app/locations/location.type';
-import { getTags } from '@/app/locations/utils/getTags.util';
 
 interface Props {
   params: { regionId: string; hubId: string };
@@ -58,15 +57,20 @@ export default EditHubPage;
 
 interface EditFormProps {
   regions: Region[];
-  hub: RegionHub;
+  hub: RegionHubsViewEntity;
 }
 
 const EditForm = ({ regions, hub }: EditFormProps) => {
   const router = useRouter();
-  const [tagStates, setTagStates] = useState<TagStates>({
-    isEventDestination: hub.eventDestination,
-    isShuttleHub: hub.shuttleHub,
-  });
+  const [tagState, setTagState] = useState<TagStates>(
+    hub.eventLocation
+      ? 'EVENT_LOCATION'
+      : hub.eventParkingLot
+        ? 'EVENT_PARKING_LOT'
+        : hub.shuttleHub
+          ? 'SHUTTLE_HUB'
+          : undefined,
+  );
   const defaultValues = {
     regionId: hub.regionId,
     name: hub.name,
@@ -101,11 +105,8 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
     },
   });
 
-  const handleTagToggle = (key: keyof TagStates) => {
-    setTagStates((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+  const handleTagToggle = (key: TagStates) => {
+    setTagState(key);
   };
 
   const onSubmit = useCallback(
@@ -123,13 +124,13 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
         });
         await putShuttleStop({
           regionHubId: hub.regionHubId,
-          types: getTags(tagStates),
+          types: tagState ? [tagState] : [],
         });
         alert('장소가 수정되었습니다.');
         router.push('/locations');
       }
     },
-    [recommended, router, regions, tagStates],
+    [recommended, router, regions, tagState],
   );
 
   return (
@@ -184,14 +185,19 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
           <Form.label>태그 선택</Form.label>
           <div className="flex flex-row gap-4">
             <Toggle
-              label="행사장소"
-              value={tagStates.isEventDestination}
-              setValue={() => handleTagToggle('isEventDestination')}
+              label="행사장"
+              value={tagState === 'EVENT_LOCATION'}
+              setValue={() => handleTagToggle('EVENT_LOCATION')}
+            />
+            <Toggle
+              label="주차장"
+              value={tagState === 'EVENT_PARKING_LOT'}
+              setValue={() => handleTagToggle('EVENT_PARKING_LOT')}
             />
             <Toggle
               label="정류장"
-              value={tagStates.isShuttleHub}
-              setValue={() => handleTagToggle('isShuttleHub')}
+              value={tagState === 'SHUTTLE_HUB'}
+              setValue={() => handleTagToggle('SHUTTLE_HUB')}
             />
           </div>
         </Form.section>

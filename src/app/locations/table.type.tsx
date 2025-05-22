@@ -2,10 +2,10 @@
 
 import BlueLink from '@/components/link/BlueLink';
 import { ID_TO_REGION } from '@/constants/regions';
-import { RegionHub } from '@/types/hub.type';
+import { RegionHubsViewEntity } from '@/types/hub.type';
 import { createColumnHelper } from '@tanstack/react-table';
 
-const columnHelper = createColumnHelper<RegionHub>();
+const columnHelper = createColumnHelper<RegionHubsViewEntity>();
 
 export const columns = [
   columnHelper.accessor('name', {
@@ -16,11 +16,12 @@ export const columns = [
     id: 'tags',
     header: () => '태그',
     cell: (info) => {
-      const eventDestination = info.row.original.eventDestination;
+      const eventLocation = info.row.original.eventLocation;
       const shuttleHub = info.row.original.shuttleHub;
+      const eventParkingLot = info.row.original.eventParkingLot;
       return (
         <div className="flex flex-col gap-4">
-          {eventDestination && (
+          {eventLocation && (
             <span className="py-2 rounded-xl bg-green-50 px-4 text-center text-14 font-500 text-green-500">
               행사장
             </span>
@@ -28,6 +29,11 @@ export const columns = [
           {shuttleHub && (
             <span className="py-2 rounded-xl bg-blue-50 px-4 text-center text-14 font-500 text-blue-500">
               정류장
+            </span>
+          )}
+          {eventParkingLot && (
+            <span className="py-2 rounded-xl bg-red-50 px-4 text-center text-14 font-500 text-red-500">
+              주차장
             </span>
           )}
         </div>
