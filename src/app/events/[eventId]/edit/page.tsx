@@ -157,6 +157,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
             name="regionHubId"
             render={({ field: { onChange, value } }) => (
               <RegionHubInput
+                hubType="EVENT_LOCATION"
                 regionId={watch.regionId}
                 value={value}
                 setValue={(n) => onChange(n)}

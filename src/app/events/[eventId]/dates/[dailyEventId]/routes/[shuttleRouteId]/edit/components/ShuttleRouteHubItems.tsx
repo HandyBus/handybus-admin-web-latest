@@ -117,6 +117,7 @@ const ShuttleRouteHubItem = ({
         name={`${fieldArrayName}.${index}` as const}
         render={({ field: { onChange, value } }) => (
           <RegionHubInputSelfContained
+            hubType={isVenue ? 'DESTINATION' : 'SHUTTLE_HUB'}
             regionId={value.regionId ?? null}
             setRegionId={(regionId) => onChange({ ...value, regionId })}
             regionHubId={value.regionHubId ?? null}

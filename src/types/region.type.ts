@@ -9,13 +9,3 @@ export const RegionSchema = z.object({
   relatedRegionIds: z.string().array(),
 });
 export type Region = z.infer<typeof RegionSchema>;
-
-export const RegionHubsViewEntitySchema = z.object({
-  regionHubId: z.string(),
-  regionId: z.string(),
-  name: z.string(),
-  address: z.string(),
-  latitude: z.number(),
-  longitude: z.number(),
-});
-export type RegionHubsViewEntity = z.infer<typeof RegionHubsViewEntitySchema>;
