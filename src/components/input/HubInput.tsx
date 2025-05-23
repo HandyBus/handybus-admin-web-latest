@@ -9,14 +9,14 @@ import {
   ComboboxButton,
 } from '@headlessui/react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
-import { RegionHubsViewEntity } from '@/types/hub.type';
+import { HubType, RegionHubsViewEntity } from '@/types/hub.type';
 import { ChevronDown } from 'lucide-react';
 import RegionInput from './RegionInput';
 import { useGetRegionHubs } from '@/services/hub.service';
 import Link from 'next/link';
 
 interface Props {
-  hubType: 'SHUTTLE_ROUTE_HUB' | 'DESTINATION';
+  hubType: HubType;
   regionId: string | undefined;
   value: string | null;
   setValue: (
@@ -33,11 +33,14 @@ const RegionHubInput = ({ hubType, regionId, value, setValue }: Props) => {
     options: {
       regionId: validRegionID(regionId) ? regionId : '',
       page: undefined,
-      usageType: [
-        hubType === 'SHUTTLE_ROUTE_HUB'
-          ? 'SHUTTLE_HUB'
-          : 'EVENT_LOCATION,EVENT_PARKING_LOT',
-      ],
+      usageType:
+        hubType === 'SHUTTLE_HUB'
+          ? ['SHUTTLE_HUB']
+          : hubType === 'EVENT_LOCATION'
+            ? ['EVENT_LOCATION']
+            : hubType === 'EVENT_PARKING_LOT'
+              ? ['EVENT_PARKING_LOT']
+              : undefined,
     },
     enabled: validRegionID(regionId),
   });
@@ -143,7 +146,7 @@ export const RegionHubInputSelfContained = ({
   regionHubId,
   setRegionHubId,
 }: {
-  hubType: 'SHUTTLE_ROUTE_HUB' | 'DESTINATION';
+  hubType: HubType;
   regionId: string | null;
   setRegionId: (value: string | null) => void;
   regionHubId: string | null;

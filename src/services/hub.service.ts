@@ -81,8 +81,14 @@ export const getRegionHubs = async (
     url = `/v2/location/admin/regions/all/hubs`;
   }
 
+  const {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    regionId,
+    ...restOptions
+  } = options || {};
+
   const res = await authInstance.get(
-    url + toSearchParamString({ ...options }, '?'),
+    url + toSearchParamString({ ...restOptions }, '?'),
     {
       shape: withPagination({ regionHubs: RegionHubsViewEntitySchema.array() }),
     },

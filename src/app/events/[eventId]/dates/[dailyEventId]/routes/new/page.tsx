@@ -501,8 +501,8 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                           <RegionHubInputSelfContained
                             hubType={
                               index === toDestHubFields.length - 1
-                                ? 'DESTINATION'
-                                : 'SHUTTLE_ROUTE_HUB'
+                                ? 'EVENT_PARKING_LOT'
+                                : 'SHUTTLE_HUB'
                             }
                             regionId={value.regionId}
                             setRegionId={(regionId) =>
@@ -636,7 +636,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         render={({ field: { onChange, value } }) => (
                           <RegionHubInputSelfContained
                             hubType={
-                              index === 0 ? 'DESTINATION' : 'SHUTTLE_ROUTE_HUB'
+                              index === 0 ? 'EVENT_PARKING_LOT' : 'SHUTTLE_HUB'
                             }
                             regionId={value.regionId}
                             setRegionId={(regionId) =>
