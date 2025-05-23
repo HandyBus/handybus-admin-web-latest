@@ -30,10 +30,9 @@ const MAP_CONSTANTS = {
   DEFAULT_LNG: 126.976882,
   MARKER_IMAGES: {
     DEFAULT: '/icons/default-marker.svg',
-    BUS_STOP: '/icons/bus-stop-marker.svg',
+    SHUTTLE_HUB: '/icons/bus-stop-marker.svg',
     EVENT_LOCATION: '/icons/event-venue-marker.svg',
-    EVENT_PARKING_LOT:
-      'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
+    EVENT_PARKING_LOT: '/icons/parking-lot-marker.svg',
   },
 };
 
@@ -83,7 +82,7 @@ const HubsMap = () => {
       shuttleHub: boolean;
     }) => {
       const imageSrc = shuttleHub
-        ? MAP_CONSTANTS.MARKER_IMAGES.BUS_STOP
+        ? MAP_CONSTANTS.MARKER_IMAGES.SHUTTLE_HUB
         : eventLocation
           ? MAP_CONSTANTS.MARKER_IMAGES.EVENT_LOCATION
           : eventParkingLot
