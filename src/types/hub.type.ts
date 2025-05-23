@@ -1,12 +1,5 @@
 import { z } from 'zod';
 
-export const HubTypeSchema = z.enum([
-  'SHUTTLE_HUB',
-  'EVENT_LOCATION',
-  'EVENT_PARKING_LOT',
-]);
-export type HubType = z.infer<typeof HubTypeSchema>;
-
 // ----- GET -----
 
 export const RouteHubSchema = z.object({
