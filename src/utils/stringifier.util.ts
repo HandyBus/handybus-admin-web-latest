@@ -55,6 +55,10 @@ const Stringifier = Object.freeze({
         return '12인승 스프린터';
       case 'VAN_12':
         return '12인승 밴';
+      case 'STARIA_7':
+        return '7인승 스타리아';
+      case 'STARIA_9':
+        return '9인승 스타리아';
     }
   },
   eventStatus(v: EventStatus) {

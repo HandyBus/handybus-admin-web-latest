@@ -14,6 +14,8 @@ export const BusTypeEnum = z.enum([
   'PREMIUM_BUS_21', // 21인승 프리미엄버스
   'MEDIUM_BUS_21', // 21인승 중형우등버스
   'SMALL_BUS_33', // 33인승 우등버스
+  'STARIA_7', // 7인승 스타리아
+  'STARIA_9', // 9인승 스타리아
 ]);
 export type BusType = z.infer<typeof BusTypeEnum>;
 
