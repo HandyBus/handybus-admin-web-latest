@@ -13,8 +13,9 @@ interface HubData {
   latitude: number;
   longitude: number;
   regionId: string;
+  eventLocation: boolean;
+  eventParkingLot: boolean;
   shuttleHub: boolean;
-  eventDestination: boolean;
 }
 
 interface Coord {
@@ -29,8 +30,9 @@ const MAP_CONSTANTS = {
   DEFAULT_LNG: 126.976882,
   MARKER_IMAGES: {
     DEFAULT: '/icons/default-marker.svg',
-    BUS_STOP: '/icons/bus-stop-marker.svg',
-    EVENT_VENUE: '/icons/event-venue-marker.svg',
+    SHUTTLE_HUB: '/icons/bus-stop-marker.svg',
+    EVENT_LOCATION: '/icons/event-venue-marker.svg',
+    EVENT_PARKING_LOT: '/icons/parking-lot-marker.svg',
   },
 };
 
@@ -62,25 +64,30 @@ const HubsMap = () => {
           latitude: regionHub.latitude,
           longitude: regionHub.longitude,
           regionId: regionHub.regionId,
+          eventLocation: regionHub.eventLocation,
+          eventParkingLot: regionHub.eventParkingLot,
           shuttleHub: regionHub.shuttleHub,
-          eventDestination: regionHub.eventDestination,
         })),
     [regionHubs],
   );
 
   const createHubsMarkerImage = useCallback(
     ({
+      eventLocation,
+      eventParkingLot,
       shuttleHub,
-      eventDestination,
     }: {
+      eventLocation: boolean;
+      eventParkingLot: boolean;
       shuttleHub: boolean;
-      eventDestination: boolean;
     }) => {
       const imageSrc = shuttleHub
-        ? MAP_CONSTANTS.MARKER_IMAGES.BUS_STOP
-        : eventDestination
-          ? MAP_CONSTANTS.MARKER_IMAGES.EVENT_VENUE
-          : MAP_CONSTANTS.MARKER_IMAGES.DEFAULT;
+        ? MAP_CONSTANTS.MARKER_IMAGES.SHUTTLE_HUB
+        : eventLocation
+          ? MAP_CONSTANTS.MARKER_IMAGES.EVENT_LOCATION
+          : eventParkingLot
+            ? MAP_CONSTANTS.MARKER_IMAGES.EVENT_PARKING_LOT
+            : MAP_CONSTANTS.MARKER_IMAGES.DEFAULT;
       return new kakao.maps.MarkerImage(imageSrc, new kakao.maps.Size(40, 40), {
         offset: new kakao.maps.Point(20, 40),
       });
@@ -143,8 +150,9 @@ const HubsMap = () => {
         position: position,
         title: hub.name,
         image: createHubsMarkerImage({
+          eventLocation: hub.eventLocation,
+          eventParkingLot: hub.eventParkingLot,
           shuttleHub: hub.shuttleHub,
-          eventDestination: hub.eventDestination,
         }),
       });
 
