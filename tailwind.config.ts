@@ -127,6 +127,6 @@ const config: Config = {
       sans: ['Pretendard', 'Arial'],
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 };
 export default config;
