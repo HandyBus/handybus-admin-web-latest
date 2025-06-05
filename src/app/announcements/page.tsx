@@ -8,6 +8,7 @@ import BlueLink from '@/components/link/BlueLink';
 import { useGetAnnouncements } from '@/services/core.service';
 import AnnouncementFilter from './components/AnnouncementFilter';
 import { useAnnouncementFilter } from './hooks/useAnnouncementFilter';
+import { useMemo } from 'react';
 
 const AnnouncementPage = () => {
   const [option, dispatch] = useAnnouncementFilter({
@@ -16,9 +17,14 @@ const AnnouncementPage = () => {
   const { data: announcements } = useGetAnnouncements({
     withDeleted: option.withDeleted,
   });
+  const announcementsSorted = useMemo(() => {
+    return announcements?.sort((a, b) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+  }, [announcements]);
   const table = useTable({
     columns,
-    data: announcements,
+    data: announcementsSorted,
     manualFiltering: true,
   });
 
