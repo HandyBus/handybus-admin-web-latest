@@ -7,6 +7,7 @@ import { formatDateString } from '@/utils/date.util';
 import { ReservationViewEntity } from '@/types/reservation.type';
 import EditHandyStatusDialog from '@/components/dialog/EditHandyStatusDialog';
 import dayjs from 'dayjs';
+import RequestRefundDialog from './components/RequestRefundDialog';
 
 const columnHelper = createColumnHelper<ReservationViewEntity>();
 
@@ -90,6 +91,16 @@ export const columns = [
       props.row.original.handyStatus !== 'NOT_SUPPORTED' && (
         <EditHandyStatusDialog response={props.row.original} />
       ),
+  }),
+  columnHelper.display({
+    id: 'refundActions',
+    header: () => '환불처리',
+    cell: (info) => {
+      const paymentId = info.row.original.paymentId;
+      const cancelStatus = info.row.original.cancelStatus;
+      if (!paymentId || cancelStatus === 'CANCEL_COMPLETE') return null;
+      return <RequestRefundDialog reservation={info.row.original} />;
+    },
   }),
   columnHelper.display({
     id: 'actions',
