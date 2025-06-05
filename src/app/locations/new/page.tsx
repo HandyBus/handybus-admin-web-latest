@@ -15,7 +15,6 @@ import Form from '@/components/form/Form';
 import MapGuidesAtNewEditPage from '../components/MapGuidesAtNewEditPage';
 import Toggle from '@/components/button/Toggle';
 import { putShuttleStop } from '@/services/shuttleStops.service';
-import { getTags } from '../utils/getTags.util';
 import { TagStates } from '../location.type';
 
 interface Props {
@@ -24,10 +23,7 @@ interface Props {
 
 const NewHubPage = ({ searchParams }: Props) => {
   const router = useRouter();
-  const [tagStates, setTagStates] = useState<TagStates>({
-    isEventDestination: false,
-    isShuttleHub: false,
-  });
+  const [tagState, setTagState] = useState<TagStates>('SHUTTLE_HUB');
 
   const { data: regions } = useGetRegions();
   const { control, handleSubmit } = useForm<CreateHubFormType>({
@@ -72,7 +68,7 @@ const NewHubPage = ({ searchParams }: Props) => {
           });
           await putShuttleStop({
             regionHubId: res.regionHubId,
-            types: getTags(tagStates),
+            types: tagState ? [tagState] : [],
           });
           alert('장소가 추가되었습니다.');
           router.push('/locations');
@@ -82,14 +78,11 @@ const NewHubPage = ({ searchParams }: Props) => {
         }
       }
     },
-    [recommended, router, regions, tagStates],
+    [recommended, router, regions, tagState],
   );
 
-  const handleTagToggle = (key: keyof TagStates) => {
-    setTagStates((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+  const handleTagToggle = (key: TagStates) => {
+    setTagState(key);
   };
 
   return (
@@ -145,14 +138,19 @@ const NewHubPage = ({ searchParams }: Props) => {
           <Form.label>태그 선택</Form.label>
           <div className="flex flex-row gap-4">
             <Toggle
-              label="행사장소"
-              value={tagStates.isEventDestination}
-              setValue={() => handleTagToggle('isEventDestination')}
+              label="행사장"
+              value={tagState === 'EVENT_LOCATION'}
+              setValue={() => handleTagToggle('EVENT_LOCATION')}
+            />
+            <Toggle
+              label="주차장"
+              value={tagState === 'EVENT_PARKING_LOT'}
+              setValue={() => handleTagToggle('EVENT_PARKING_LOT')}
             />
             <Toggle
               label="정류장"
-              value={tagStates.isShuttleHub}
-              setValue={() => handleTagToggle('isShuttleHub')}
+              value={tagState === 'SHUTTLE_HUB'}
+              setValue={() => handleTagToggle('SHUTTLE_HUB')}
             />
           </div>
         </Form.section>

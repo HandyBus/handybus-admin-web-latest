@@ -9,6 +9,7 @@ import { CreateCouponRequest } from '@/types/coupon.type';
 import { Label, Radio } from '@headlessui/react';
 import { Field } from '@headlessui/react';
 import { RadioGroup } from '@headlessui/react';
+import dayjs from 'dayjs';
 import { CheckIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
@@ -46,7 +47,11 @@ const Page = () => {
 
   const router = useRouter();
   const onSubmit = async (data: CreateCouponRequest) => {
-    postCoupon(data);
+    postCoupon({
+      ...data,
+      validFrom: dayjs(data.validFrom).toISOString(),
+      validTo: dayjs(data.validTo).toISOString(),
+    });
   };
 
   return (

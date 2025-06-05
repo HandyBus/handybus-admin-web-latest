@@ -3,7 +3,7 @@
 import {
   CreateHubRequest,
   CreateHubRequestSchema,
-  RegionHubSchema,
+  RegionHubsViewEntitySchema,
 } from '@/types/hub.type';
 import { authInstance } from './config';
 import { silentParse } from '@/utils/parse.util';
@@ -51,7 +51,7 @@ export const getRegionHubsWithoutPagination = async (regionId: string) => {
   const res = await authInstance.get(
     `/v2/location/admin/regions/${regionId}/hubs`,
     {
-      shape: withPagination({ regionHubs: RegionHubSchema.array() }),
+      shape: withPagination({ regionHubs: RegionHubsViewEntitySchema.array() }),
     },
   );
   return res.regionHubs;
@@ -81,10 +81,16 @@ export const getRegionHubs = async (
     url = `/v2/location/admin/regions/all/hubs`;
   }
 
+  const {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    regionId,
+    ...restOptions
+  } = options || {};
+
   const res = await authInstance.get(
-    url + toSearchParamString({ ...options }, '?'),
+    url + toSearchParamString({ ...restOptions }, '?'),
     {
-      shape: withPagination({ regionHubs: RegionHubSchema.array() }),
+      shape: withPagination({ regionHubs: RegionHubsViewEntitySchema.array() }),
     },
   );
   return res;
@@ -114,7 +120,7 @@ export const useGetRegionHubs = ({
 export const getRegionHub = async (regionId: string, regionHubId: string) => {
   const res = await authInstance.get(
     `/v2/location/admin/regions/${regionId}/hubs/${regionHubId}`,
-    { shape: { regionHub: RegionHubSchema } },
+    { shape: { regionHub: RegionHubsViewEntitySchema } },
   );
   return res.regionHub;
 };
