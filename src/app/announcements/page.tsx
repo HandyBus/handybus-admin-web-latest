@@ -9,6 +9,7 @@ import { useGetAnnouncements } from '@/services/core.service';
 import AnnouncementFilter from './components/AnnouncementFilter';
 import { useAnnouncementFilter } from './hooks/useAnnouncementFilter';
 import { useMemo } from 'react';
+import dayjs from 'dayjs';
 
 const AnnouncementPage = () => {
   const [option, dispatch] = useAnnouncementFilter({
@@ -19,7 +20,7 @@ const AnnouncementPage = () => {
   });
   const announcementsSorted = useMemo(() => {
     return announcements?.sort((a, b) => {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      return dayjs(b.createdAt).diff(dayjs(a.createdAt));
     });
   }, [announcements]);
   const table = useTable({
