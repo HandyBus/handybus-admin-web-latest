@@ -23,8 +23,8 @@ export type HandyStatus = z.infer<typeof HandyStatusEnum>;
 
 export const CancelStatusEnum = z.enum([
   'NONE',
-  'CANCEL_REQUEST', // 환불 신청
-  'CANCEL_COMPLETE', // 환불 처리 완료
+  'CANCEL_REQUEST', // 예약 취소 요청
+  'CANCEL_COMPLETE', // 예약 취소 완료
 ]);
 export type CancelStatus = z.infer<typeof CancelStatusEnum>;
 

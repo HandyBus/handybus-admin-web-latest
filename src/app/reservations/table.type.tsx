@@ -39,7 +39,7 @@ export const columns = [
   }),
   columnHelper.accessor('cancelStatus', {
     id: 'cancelStatus',
-    header: () => '환불 상태',
+    header: () => '예약 취소 상태',
     cell: (info) => Stringifier.cancelStatus(info.getValue()),
   }),
   columnHelper.display({
