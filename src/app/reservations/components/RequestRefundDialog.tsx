@@ -5,13 +5,16 @@ import { Description, Dialog, DialogTitle } from '@headlessui/react';
 import { DialogPanel } from '@headlessui/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { AdminRequestRefundRequest } from '@/types/refund.type';
+import { AdminRequestRefundRequest } from '@/types/payment.type';
 import {
   usePostAdminRequestRefund,
   usePostCompleteRefundRequest,
-} from '@/services/refund.service';
-import { toast } from 'react-toastify';
+} from '@/services/payment.service';
 import { useQueryClient } from '@tanstack/react-query';
+import { RefundRequestTypeEnum } from '@/types/payment.type';
+import RefundTypeInput from './RefundTypeInput';
+import Stringifier from '@/utils/stringifier.util';
+import { formatDateString } from '@/utils/date.util';
 
 interface Props {
   reservation: ReservationViewEntity;
@@ -34,7 +37,8 @@ const RefundForm = ({ reservation }: Props) => {
   } = useForm<AdminRequestRefundRequest>({
     defaultValues: {
       refundReason: undefined,
-      refundAmount: reservation.paymentAmount ?? 0,
+      refundAmount: reservation.paymentAmount ?? undefined,
+      type: undefined,
     },
   });
 
@@ -43,7 +47,7 @@ const RefundForm = ({ reservation }: Props) => {
   const { mutateAsync: postCompleteRefundRequest } =
     usePostCompleteRefundRequest();
 
-  const onSubmit = async (data: { refundAmount: number }) => {
+  const onSubmit = async (data: AdminRequestRefundRequest) => {
     if (!reservation.paymentId) {
       alert('결제 정보가 없습니다.');
       return;
@@ -53,7 +57,8 @@ const RefundForm = ({ reservation }: Props) => {
         paymentId: reservation.paymentId,
         body: {
           refundAmount: data.refundAmount,
-          refundReason: '환불 처리',
+          refundReason: data.refundReason,
+          type: data.type,
         },
       });
       console.log(res);
@@ -70,14 +75,28 @@ const RefundForm = ({ reservation }: Props) => {
         refetchType: 'active',
       });
 
-      toast.success('환불 처리가 완료되었습니다.');
+      alert('환불 처리가 완료되었습니다.');
     } catch (error) {
       console.error(error);
-      toast.error('환불 처리가 실패했습니다.');
+      alert('환불 처리가 실패했습니다.\n사유: ' + error);
     } finally {
       setIsOpen(false);
     }
   };
+
+  const getFilteredRefundOptions = () => {
+    if (reservation.cancelStatus === 'CANCEL_COMPLETE') {
+      return RefundRequestTypeEnum.options.filter(
+        (type) => type !== 'CANCEL' && type !== 'PAYBACK',
+      );
+    }
+    return RefundRequestTypeEnum.options;
+  };
+
+  const ShuttleRouteDate = reservation.shuttleRoute.event?.dailyEvents.find(
+    (dailyEvent) =>
+      dailyEvent.dailyEventId === reservation.shuttleRoute.dailyEventId,
+  )?.date;
 
   return (
     <>
@@ -91,22 +110,52 @@ const RefundForm = ({ reservation }: Props) => {
         <DialogPanel className="space-y-8 rounded-xl bg-white p-24">
           <DialogTitle className="text-26 font-700">환불 처리하기</DialogTitle>
           <Description>
-            환불 처리 할 금액을 입력해주세요. 최대{' '}
+            환불 처리 할 금액을 입력해주세요. 예약 건당 누적 최대{' '}
             <strong className="text-red-500">
               {reservation.paymentAmount}원
             </strong>
             까지 환불 가능합니다.
           </Description>
           <Description>
-            환불 처리를 완료하면 예약이 취소되며, 환불 금액은 PG사를 통해서
-            입금됩니다.
+            환불 유형에 따라 처리되며, 환불 금액은 PG사를 통해서 입금됩니다.
           </Description>
-          <Description className="text-12 font-500 text-grey-400">
-            *참고 : 핸디 환급금 50%는 여기서 처리하시면 안됩니다. 예약이
-            취소되어버려요
+          <Description>
+            - 예약자명 : {reservation.userNickname}
+            <br />- 예약자 연락처 : {reservation.userPhoneNumber}
+            <br />- 예약 일시 :{' '}
+            {formatDateString(reservation.createdAt, 'datetime')}
+            <br />- 행사명 : {reservation.shuttleRoute.event?.eventName}
+            <br />- 노선명 : {reservation.shuttleRoute.name}
+            <br />- 노선일자 : {formatDateString(ShuttleRouteDate, 'date')}
+            <br />- 예약 상태 :{' '}
+            {Stringifier.reservationStatus(reservation.reservationStatus)}
+            <br />- 환불 상태 :{' '}
+            {Stringifier.cancelStatus(reservation.cancelStatus)}
+            <br />- 핸디 상태 :{' '}
+            {Stringifier.handyStatus(reservation.handyStatus)}
           </Description>
           <div className="h-16 w-full " />
           <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
+            <p className="text-14 font-500">환불 유형</p>
+            <Controller
+              control={control}
+              name="type"
+              rules={{
+                required: '환불 유형을 선택해주세요.',
+              }}
+              render={({ field: { onChange, value } }) => (
+                <RefundTypeInput
+                  value={value}
+                  onChange={onChange}
+                  options={getFilteredRefundOptions()}
+                />
+              )}
+            />
+            {errors.type && (
+              <p className="text-14 font-500 text-red-500">
+                {errors.type.message}
+              </p>
+            )}
             <p className="font-500\\ text-14">환불 금액</p>
             <div className="flex flex-row items-center justify-between rounded-lg border border-grey-100 bg-white p-8">
               <Controller

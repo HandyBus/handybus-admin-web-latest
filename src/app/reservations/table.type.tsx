@@ -97,8 +97,7 @@ export const columns = [
     header: () => '환불처리',
     cell: (info) => {
       const paymentId = info.row.original.paymentId;
-      const cancelStatus = info.row.original.cancelStatus;
-      if (!paymentId || cancelStatus === 'CANCEL_COMPLETE') return null;
+      if (!paymentId) return null;
       return <RequestRefundDialog reservation={info.row.original} />;
     },
   }),
