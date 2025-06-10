@@ -33,7 +33,7 @@ const RefundForm = ({ reservation }: Props) => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<AdminRequestRefundRequest>({
     defaultValues: {
       refundReason: undefined,
@@ -218,7 +218,12 @@ const RefundForm = ({ reservation }: Props) => {
               </button>
               <button
                 type="submit"
-                className="bg-blue-400 transition-all hover:scale-95 active:scale-90"
+                className={`bg-blue-400 transition-all disabled:bg-grey-400 ${
+                  isSubmitting
+                    ? 'cursor-not-allowed'
+                    : 'hover:scale-95 active:scale-90'
+                }`}
+                disabled={isSubmitting}
               >
                 환불
               </button>
