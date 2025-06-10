@@ -76,11 +76,10 @@ const RefundForm = ({ reservation }: Props) => {
       });
 
       alert('환불 처리가 완료되었습니다.');
+      setIsOpen(false);
     } catch (error) {
       console.error(error);
       alert('환불 처리가 실패했습니다.\n사유: ' + error);
-    } finally {
-      setIsOpen(false);
     }
   };
 
