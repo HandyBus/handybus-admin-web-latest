@@ -33,7 +33,7 @@ const RefundForm = ({ reservation }: Props) => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<AdminRequestRefundRequest>({
     defaultValues: {
       refundReason: undefined,
@@ -76,11 +76,10 @@ const RefundForm = ({ reservation }: Props) => {
       });
 
       alert('환불 처리가 완료되었습니다.');
+      setIsOpen(false);
     } catch (error) {
       console.error(error);
       alert('환불 처리가 실패했습니다.\n사유: ' + error);
-    } finally {
-      setIsOpen(false);
     }
   };
 
@@ -219,7 +218,12 @@ const RefundForm = ({ reservation }: Props) => {
               </button>
               <button
                 type="submit"
-                className="bg-blue-400 transition-all hover:scale-95 active:scale-90"
+                className={`bg-blue-400 transition-all disabled:bg-grey-400 ${
+                  isSubmitting
+                    ? 'cursor-not-allowed'
+                    : 'hover:scale-95 active:scale-90'
+                }`}
+                disabled={isSubmitting}
               >
                 환불
               </button>

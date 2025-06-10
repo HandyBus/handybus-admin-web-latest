@@ -115,9 +115,9 @@ const Stringifier = Object.freeze({
       case 'NONE':
         return 'X';
       case 'CANCEL_REQUEST':
-        return '환불 요청';
+        return '예약 취소 요청';
       case 'CANCEL_COMPLETE':
-        return '환불 완료';
+        return '예약 취소 완료';
     }
   },
   refundStatus(v: RefundStatus) {
