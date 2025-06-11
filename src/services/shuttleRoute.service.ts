@@ -137,6 +137,7 @@ interface PutShuttleRouteBody {
   name?: string;
   reservationDeadline?: string;
   maxPassengerCount?: number;
+  status?: ShuttleRouteStatus;
   shuttleRouteHubs?: {
     shuttleRouteHubId?: string;
     regionHubId?: string;
