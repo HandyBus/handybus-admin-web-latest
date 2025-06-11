@@ -9,6 +9,7 @@ import {
   removeShuttleRouteDemand,
   setShuttleRouteDemand,
 } from './routeDemand.util';
+import EditRouteStatusDialog from './EditRouteStatusDialog';
 
 const columnHelper = createColumnHelper<AdminShuttleRoutesViewEntity>();
 
@@ -131,6 +132,13 @@ export const columns = [
       >
         노선 상세보기
       </BlueLink>
+    ),
+  }),
+  columnHelper.display({
+    id: 'statusAction',
+    header: () => '노선 상태 변경',
+    cell: (props) => (
+      <EditRouteStatusDialog shuttleRoute={props.row.original} />
     ),
   }),
 ];

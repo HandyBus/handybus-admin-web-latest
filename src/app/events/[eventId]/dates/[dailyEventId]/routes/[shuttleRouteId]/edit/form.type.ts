@@ -1,3 +1,4 @@
+import { ShuttleRouteStatusEnum } from '@/types/shuttleRoute.type';
 import { z } from 'zod';
 
 export const EditFormValuesSchema = z.object({
@@ -6,6 +7,7 @@ export const EditFormValuesSchema = z.object({
   hasEarlybird: z.boolean(),
   earlybirdDeadline: z.string().optional(),
   maxPassengerCount: z.number().int(),
+  status: ShuttleRouteStatusEnum,
   shuttleRouteHubsFromDestination: z.array(
     z.object({
       shuttleRouteHubId: z.string().optional(),
