@@ -22,7 +22,6 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     eventId,
     dailyEventId,
     shuttleRouteId,
-    reservationStatus: 'COMPLETE_PAYMENT',
   });
 
   const baseArray = useMemo(() => [], []);
