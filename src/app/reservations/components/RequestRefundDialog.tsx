@@ -97,6 +97,7 @@ const RefundForm = ({
       alert('결제 정보가 없습니다.');
       return;
     }
+    if (!confirm('환불 처리하시겠습니까?')) return;
     try {
       const res = await postAdminRequestRefund({
         paymentId: reservation.paymentId,
