@@ -7,6 +7,7 @@ import { formatDateString } from '@/utils/date.util';
 import { ReservationViewEntity } from '@/types/reservation.type';
 import EditHandyStatusDialog from '@/components/dialog/EditHandyStatusDialog';
 import dayjs from 'dayjs';
+import RequestRefundDialog from './components/RequestRefundDialog';
 
 const columnHelper = createColumnHelper<ReservationViewEntity>();
 
@@ -38,7 +39,7 @@ export const columns = [
   }),
   columnHelper.accessor('cancelStatus', {
     id: 'cancelStatus',
-    header: () => '환불 상태',
+    header: () => '예약 취소 상태',
     cell: (info) => Stringifier.cancelStatus(info.getValue()),
   }),
   columnHelper.display({
@@ -90,6 +91,15 @@ export const columns = [
       props.row.original.handyStatus !== 'NOT_SUPPORTED' && (
         <EditHandyStatusDialog response={props.row.original} />
       ),
+  }),
+  columnHelper.display({
+    id: 'refundActions',
+    header: () => '환불처리',
+    cell: (info) => {
+      const paymentId = info.row.original.paymentId;
+      if (!paymentId) return null;
+      return <RequestRefundDialog reservation={info.row.original} />;
+    },
   }),
   columnHelper.display({
     id: 'actions',

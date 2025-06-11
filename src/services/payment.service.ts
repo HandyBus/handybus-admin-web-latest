@@ -1,4 +1,6 @@
 import {
+  AdminRequestRefundRequest,
+  CompleteRefundRequest,
   PaymentsViewEntitySchema,
   TossPaymentsEntitySchema,
 } from '@/types/payment.type';
@@ -10,6 +12,8 @@ import {
   TotalSalesCountsReadModelSchema,
 } from '@/types/dashboard.type';
 import { toSearchParamString } from '@/utils/searchParam.util';
+import { queryClient } from '@/components/Provider';
+import { z } from 'zod';
 
 // ----- GET -----
 
@@ -26,10 +30,17 @@ export const getUserPayment = async (userId: string, paymentId: string) => {
   return res;
 };
 
-export const useGetUserPayment = (userId: string, paymentId: string) => {
+export const useGetUserPayment = (
+  userId: string,
+  paymentId: string,
+  options?: {
+    enabled?: boolean;
+  },
+) => {
   return useQuery({
     queryKey: ['user', userId, 'payment', paymentId],
     queryFn: () => getUserPayment(userId, paymentId),
+    enabled: options?.enabled,
   });
 };
 
@@ -65,13 +76,37 @@ export const useGetTotalSalesCounts = (options?: Partial<DashboardOptions>) => {
 
 // ----- POST -----
 
-// body에 refundAmount를 제공할 경우 원본 refundRequest의 refundAmount를 덮어씁니다
+export const postAdminRequestRefund = async (
+  paymentId: string,
+  body: AdminRequestRefundRequest,
+) => {
+  return await authInstance.post(
+    `/v1/billing/admin/payments/${paymentId}/refunds`,
+    body,
+    {
+      shape: {
+        refundRequestId: z.string(),
+      },
+    },
+  );
+};
+
+export const usePostAdminRequestRefund = () => {
+  return useMutation({
+    mutationFn: ({
+      paymentId,
+      body,
+    }: {
+      paymentId: string;
+      body: AdminRequestRefundRequest;
+    }) => postAdminRequestRefund(paymentId, body),
+  });
+};
+
 export const postCompleteRefundRequest = async (
   paymentId: string,
   refundRequestId: string,
-  body?: {
-    refundAmount?: number;
-  },
+  body: CompleteRefundRequest,
 ) => {
   return await authInstance.post(
     `/v1/billing/admin/payments/${paymentId}/refunds/${refundRequestId}/complete`,
@@ -79,7 +114,7 @@ export const postCompleteRefundRequest = async (
   );
 };
 
-export const usePostCompleteRefundRequest = () => {
+export const usePostCompleteRefundRequest = (onSuccess?: () => void) => {
   return useMutation({
     mutationFn: ({
       paymentId,
@@ -88,7 +123,14 @@ export const usePostCompleteRefundRequest = () => {
     }: {
       paymentId: string;
       refundRequestId: string;
-      body?: { refundAmount?: number };
+      body: CompleteRefundRequest;
     }) => postCompleteRefundRequest(paymentId, refundRequestId, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['reservation'],
+        refetchType: 'active',
+      });
+      onSuccess?.();
+    },
   });
 };

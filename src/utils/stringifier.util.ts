@@ -9,6 +9,7 @@ import {
 import { BusType } from '@/types/shuttleBus.type';
 import { ShuttleRouteStatus, TripType } from '@/types/shuttleRoute.type';
 import { Gender } from '@/types/user.type';
+import { RefundRequestType } from '@/types/payment.type';
 
 const Stringifier = Object.freeze({
   gender(v: Gender) {
@@ -114,9 +115,9 @@ const Stringifier = Object.freeze({
       case 'NONE':
         return 'X';
       case 'CANCEL_REQUEST':
-        return '환불 요청';
+        return '예약 취소 요청';
       case 'CANCEL_COMPLETE':
-        return '환불 완료';
+        return '예약 취소 완료';
     }
   },
   refundStatus(v: RefundStatus) {
@@ -151,6 +152,18 @@ const Stringifier = Object.freeze({
         return '회수됨';
       case 'DELETED':
         return '삭제';
+    }
+  },
+  refundRequestType(v: RefundRequestType) {
+    switch (v) {
+      case 'CANCEL':
+        return 'CANCEL (행사 취소로 인한 환불)';
+      case 'ADMIN_ADJUSTMENT':
+        return 'ADMIN_ADJUSTMENT (관리자 조정으로 금액만 환불)';
+      case 'ADMIN_RETRIEVAL':
+        return 'ADMIN_RETRIEVAL (무산 등 관리자 회수로 인한 예약 취소 및 환불)';
+      case 'PAYBACK':
+        return 'PAYBACK (핸디 및 기타 환급)';
     }
   },
 });
