@@ -81,13 +81,7 @@ const RefundForm = ({
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<AdminRequestRefundRequest>({
-    defaultValues: {
-      refundReason: undefined,
-      refundAmount: payments.refundableAmount ?? undefined,
-      type: undefined,
-    },
-  });
+  } = useForm<AdminRequestRefundRequest>();
 
   const getFilteredRefundOptions = () => {
     if (reservation.cancelStatus === 'CANCEL_COMPLETE') {
@@ -112,7 +106,7 @@ const RefundForm = ({
           type: data.type,
         },
       });
-      console.log(res);
+
       await postCompleteRefundRequest({
         paymentId: reservation.paymentId,
         refundRequestId: res.refundRequestId,
@@ -148,7 +142,7 @@ const RefundForm = ({
         </Description>
         <RefundInfo reservation={reservation} />
         <RefundHistory payments={payments} />
-        <div className="h-16 w-full " />
+        <Spacer />
         <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
           <SectionTitle>환불 유형</SectionTitle>
           <Controller
@@ -173,7 +167,7 @@ const RefundForm = ({
           <SectionTitle>
             환불 금액 (환불 가능 금액{' '}
             <strong className="text-red-500">
-              {payments.refundableAmount}원 / {reservation.paymentAmount}원
+              {payments.refundableAmount?.toLocaleString()}원
             </strong>
             )
           </SectionTitle>
@@ -192,12 +186,20 @@ const RefundForm = ({
               },
               max: {
                 value: payments.refundableAmount,
-                message: `환불 금액은 최대 ${payments.refundableAmount}원 입니다.`,
+                message: `환불 금액은 최대 ${payments.refundableAmount?.toLocaleString()}원 입니다.`,
               },
             }}
             render={({ field: { onChange, value } }) => (
               <div className="flex flex-row items-center justify-between rounded-lg border border-grey-100 bg-white p-8">
-                <input value={value} onChange={onChange} className="w-full" />
+                <input
+                  value={value ? Number(value).toLocaleString() : ''}
+                  onChange={(e) => {
+                    const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                    onChange(numericValue ? Number(numericValue) : '');
+                  }}
+                  className="w-full"
+                  placeholder="0"
+                />
               </div>
             )}
           />
@@ -253,6 +255,10 @@ const RefundForm = ({
       </DialogPanel>
     </Dialog>
   );
+};
+
+const Spacer = () => {
+  return <div className="h-16 w-full" />;
 };
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => {
