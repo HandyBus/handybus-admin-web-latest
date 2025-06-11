@@ -30,10 +30,17 @@ export const getUserPayment = async (userId: string, paymentId: string) => {
   return res;
 };
 
-export const useGetUserPayment = (userId: string, paymentId: string) => {
+export const useGetUserPayment = (
+  userId: string,
+  paymentId: string,
+  options?: {
+    enabled?: boolean;
+  },
+) => {
   return useQuery({
     queryKey: ['user', userId, 'payment', paymentId],
     queryFn: () => getUserPayment(userId, paymentId),
+    enabled: options?.enabled,
   });
 };
 
