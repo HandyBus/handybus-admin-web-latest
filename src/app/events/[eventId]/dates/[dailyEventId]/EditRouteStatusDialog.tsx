@@ -67,6 +67,7 @@ const EditRouteStatusDialog = ({ shuttleRoute }: Props) => {
     onSuccess: () => {
       alert('노선 상태가 수정되었습니다.');
       setIsOpen(false);
+      window.location.reload();
     },
     onError: (error) => {
       alert(`노선 상태 수정에 실패했습니다.\n${error}`);
