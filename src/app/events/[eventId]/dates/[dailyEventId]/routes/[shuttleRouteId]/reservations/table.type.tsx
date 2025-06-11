@@ -59,6 +59,18 @@ export const reservationColumns = [
     header: () => '예약일',
     cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
+  reservationColumnHelper.accessor('reservationStatus', {
+    header: () => '예약 상태',
+    cell: (info) => {
+      const reservationStatus = Stringifier.reservationStatus(info.getValue());
+      const style = {
+        미결제: 'text-grey-500',
+        '결제 완료': 'text-green-500',
+        취소: 'text-red-500',
+      };
+      return <b className={style[reservationStatus]}>{reservationStatus}</b>;
+    },
+  }),
   reservationColumnHelper.accessor('passengerCount', {
     header: () => '예약 인원',
     cell: (info) => info.getValue() + '인',
