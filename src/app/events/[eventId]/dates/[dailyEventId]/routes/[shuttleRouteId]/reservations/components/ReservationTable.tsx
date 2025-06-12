@@ -1,7 +1,7 @@
 'use client';
 
 import useTable from '@/hooks/useTable';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import BaseTable from '@/components/table/BaseTable';
 import {
@@ -10,6 +10,7 @@ import {
 } from '@/services/reservation.service';
 import Heading from '@/components/text/Heading';
 import { reservationColumns } from '../table.type';
+import Toggle from '@/components/button/Toggle';
 
 interface Props {
   eventId: string;
@@ -18,6 +19,8 @@ interface Props {
 }
 
 const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
+  const [isHideCanceled, setIsHideCanceled] = useState(false);
+
   const { data, isLoading } = useGetReservationsWithPagination({
     eventId,
     dailyEventId,
@@ -34,9 +37,22 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     [data],
   );
 
+  const validReservations = useMemo(() => {
+    return reservations.filter(
+      (reservation) => reservation.reservationStatus !== 'CANCEL',
+    );
+  }, [reservations]);
+
+  const filteredReservations = useMemo(() => {
+    if (!isHideCanceled) {
+      return validReservations;
+    }
+    return reservations;
+  }, [validReservations, isHideCanceled]);
+
   const reservationTable = useTable({
     columns: reservationColumns,
-    data: reservations,
+    data: filteredReservations,
   });
 
   const { mutate: putReservation } = usePutReservation();
@@ -49,7 +65,7 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
       return;
     }
 
-    const reservationIds = reservations
+    const reservationIds = validReservations
       .filter((reservation) => reservation.handyStatus === 'SUPPORTED')
       .map((reservation) => reservation.reservationId);
 
@@ -76,11 +92,17 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
 
   return (
     <section className="flex flex-col pb-20 pt-12">
-      <Heading.h2 className="flex items-baseline gap-20">
+      <Heading.h2 className="flex items-center gap-12">
         배차되지 않은 예약{' '}
         <span className="text-14 font-400 text-grey-700">
-          현재 유효한 예약만 표시됩니다.
+          유효한 예약 {validReservations.length}건 / 합계 {reservations.length}
+          건
         </span>
+        <Toggle
+          label="취소된 예약 포함"
+          value={isHideCanceled}
+          setValue={() => setIsHideCanceled((prev) => !prev)}
+        />
         <button
           onClick={rejectAllSupportedHandy}
           className="rounded-[4px] border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
