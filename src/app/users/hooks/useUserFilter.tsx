@@ -1,11 +1,168 @@
 import { GetUsersOptions } from '@/services/user.service';
-import { useReducer } from 'react';
+import { useReducer, useEffect, useCallback } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 const useUserFilter = (partial: GetUsersOptions = {}) => {
-  return useReducer(reducer, {
-    ...EMPTY_USER_FILTER,
-    ...partial,
-  });
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const getInitialStateFromURL = useCallback((): GetUsersOptions => {
+    const urlState: GetUsersOptions = {};
+
+    if (searchParams.has('nickname')) {
+      urlState.nickname = searchParams.get('nickname') || undefined;
+    }
+
+    if (searchParams.has('phoneNumber')) {
+      urlState.phoneNumber = searchParams.get('phoneNumber') || undefined;
+    }
+
+    if (searchParams.has('gender')) {
+      urlState.gender =
+        (searchParams.get('gender') as GetUsersOptions['gender']) || undefined;
+    }
+
+    if (searchParams.has('ageRange')) {
+      urlState.ageRange =
+        (searchParams.get('ageRange') as GetUsersOptions['ageRange']) ||
+        undefined;
+    }
+
+    if (searchParams.has('regionId')) {
+      urlState.regionId = searchParams.get('regionId') || undefined;
+    }
+
+    if (searchParams.has('orderBy')) {
+      urlState.orderBy =
+        (searchParams.get('orderBy') as GetUsersOptions['orderBy']) ||
+        undefined;
+    }
+
+    if (searchParams.has('additionalOrderOptions')) {
+      urlState.additionalOrderOptions =
+        (searchParams.get(
+          'additionalOrderOptions',
+        ) as GetUsersOptions['additionalOrderOptions']) || undefined;
+    }
+
+    if (searchParams.has('status')) {
+      urlState.status =
+        (searchParams.get('status') as GetUsersOptions['status']) || undefined;
+    }
+
+    if (searchParams.has('lastLoginFrom')) {
+      urlState.lastLoginFrom = searchParams.get('lastLoginFrom') || undefined;
+    }
+
+    if (searchParams.has('lastLoginTo')) {
+      urlState.lastLoginTo = searchParams.get('lastLoginTo') || undefined;
+    }
+
+    if (searchParams.has('onboardingComplete')) {
+      const value = searchParams.get('onboardingComplete');
+      urlState.onboardingComplete =
+        value === 'true' ? true : value === 'false' ? false : undefined;
+    }
+
+    if (searchParams.has('marketingConsent')) {
+      const value = searchParams.get('marketingConsent');
+      urlState.marketingConsent =
+        value === 'true' ? true : value === 'false' ? false : undefined;
+    }
+
+    if (searchParams.has('isConnectedKakao')) {
+      const value = searchParams.get('isConnectedKakao');
+      urlState.isConnectedKakao =
+        value === 'true' ? true : value === 'false' ? false : undefined;
+    }
+
+    if (searchParams.has('isConnectedNaver')) {
+      const value = searchParams.get('isConnectedNaver');
+      urlState.isConnectedNaver =
+        value === 'true' ? true : value === 'false' ? false : undefined;
+    }
+
+    return {
+      ...EMPTY_USER_FILTER,
+      ...partial,
+      ...urlState,
+    };
+  }, [searchParams, partial]);
+
+  const [state, dispatch] = useReducer(reducer, getInitialStateFromURL());
+
+  const updateURL = useCallback(
+    (newState: GetUsersOptions) => {
+      const params = new URLSearchParams();
+
+      if (newState.nickname) {
+        params.set('nickname', newState.nickname);
+      }
+
+      if (newState.phoneNumber) {
+        params.set('phoneNumber', newState.phoneNumber);
+      }
+
+      if (newState.gender) {
+        params.set('gender', newState.gender);
+      }
+
+      if (newState.ageRange) {
+        params.set('ageRange', newState.ageRange);
+      }
+
+      if (newState.regionId) {
+        params.set('regionId', newState.regionId);
+      }
+
+      if (newState.orderBy) {
+        params.set('orderBy', newState.orderBy);
+      }
+
+      if (newState.additionalOrderOptions) {
+        params.set('additionalOrderOptions', newState.additionalOrderOptions);
+      }
+
+      if (newState.status) {
+        params.set('status', newState.status);
+      }
+
+      if (newState.lastLoginFrom) {
+        params.set('lastLoginFrom', newState.lastLoginFrom);
+      }
+
+      if (newState.lastLoginTo) {
+        params.set('lastLoginTo', newState.lastLoginTo);
+      }
+
+      if (newState.onboardingComplete !== undefined) {
+        params.set('onboardingComplete', String(newState.onboardingComplete));
+      }
+
+      if (newState.marketingConsent !== undefined) {
+        params.set('marketingConsent', String(newState.marketingConsent));
+      }
+
+      if (newState.isConnectedKakao !== undefined) {
+        params.set('isConnectedKakao', String(newState.isConnectedKakao));
+      }
+
+      if (newState.isConnectedNaver !== undefined) {
+        params.set('isConnectedNaver', String(newState.isConnectedNaver));
+      }
+
+      const paramString = params.toString();
+      const newURL = paramString ? `?${paramString}` : window.location.pathname;
+      router.replace(newURL, { scroll: false });
+    },
+    [router],
+  );
+
+  useEffect(() => {
+    updateURL(state);
+  }, [state, updateURL]);
+
+  return [state, dispatch] as const;
 };
 
 export default useUserFilter;

@@ -1,11 +1,66 @@
 import { GetRegionHubsOptions } from '@/services/hub.service';
-import { useReducer } from 'react';
+import { useReducer, useEffect, useCallback } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 const useRegionHubFilter = (partial: GetRegionHubsOptions = {}) => {
-  return useReducer(reducer, {
-    ...EMPTY_REGION_HUB_FILTER,
-    ...partial,
-  });
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const getInitialStateFromURL = useCallback((): GetRegionHubsOptions => {
+    const urlState: GetRegionHubsOptions = {};
+
+    if (searchParams.has('regionId')) {
+      urlState.regionId = searchParams.get('regionId') || undefined;
+    }
+
+    if (searchParams.has('name')) {
+      urlState.name = searchParams.get('name') || undefined;
+    }
+
+    if (searchParams.has('usageType')) {
+      const usageTypeString = searchParams.get('usageType');
+      urlState.usageType = usageTypeString
+        ? usageTypeString.split(',')
+        : undefined;
+    }
+
+    return {
+      ...EMPTY_REGION_HUB_FILTER,
+      ...partial,
+      ...urlState,
+    };
+  }, [searchParams, partial]);
+
+  const [state, dispatch] = useReducer(reducer, getInitialStateFromURL());
+
+  const updateURL = useCallback(
+    (newState: GetRegionHubsOptions) => {
+      const params = new URLSearchParams();
+
+      if (newState.regionId) {
+        params.set('regionId', newState.regionId);
+      }
+
+      if (newState.name) {
+        params.set('name', newState.name);
+      }
+
+      if (newState.usageType && newState.usageType.length > 0) {
+        params.set('usageType', newState.usageType.join(','));
+      }
+
+      const paramString = params.toString();
+      const newURL = paramString ? `?${paramString}` : window.location.pathname;
+      router.replace(newURL, { scroll: false });
+    },
+    [router],
+  );
+
+  useEffect(() => {
+    updateURL(state);
+  }, [state, updateURL]);
+
+  return [state, dispatch] as const;
 };
 
 export default useRegionHubFilter;
