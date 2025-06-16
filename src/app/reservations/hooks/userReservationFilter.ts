@@ -1,5 +1,6 @@
 import { GetReservationsOptions } from '@/services/reservation.service';
-import { useReducer } from 'react';
+import { useReducer, useEffect, useCallback } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 const empty: GetReservationsOptions = {
   eventId: undefined,
@@ -123,10 +124,120 @@ const reducer = (
 const useReservationFilter = (
   partial: Partial<GetReservationsOptions> = {},
 ) => {
-  return useReducer(reducer, {
-    ...empty,
-    ...partial,
-  });
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const getInitialStateFromURL = useCallback((): GetReservationsOptions => {
+    const urlState: GetReservationsOptions = {
+      ...empty,
+    };
+
+    if (searchParams.has('eventId')) {
+      urlState.eventId = searchParams.get('eventId') || undefined;
+    }
+
+    if (searchParams.has('dailyEventId')) {
+      urlState.dailyEventId = searchParams.get('dailyEventId') || undefined;
+    }
+
+    if (searchParams.has('shuttleRouteId')) {
+      urlState.shuttleRouteId = searchParams.get('shuttleRouteId') || undefined;
+    }
+
+    if (searchParams.has('shuttleBusId')) {
+      urlState.shuttleBusId = searchParams.get('shuttleBusId') || undefined;
+    }
+
+    if (searchParams.has('userNickname')) {
+      urlState.userNickname = searchParams.get('userNickname') || undefined;
+    }
+
+    if (searchParams.has('passengerName')) {
+      urlState.passengerName = searchParams.get('passengerName') || undefined;
+    }
+
+    if (searchParams.has('handyStatus')) {
+      urlState.handyStatus =
+        (searchParams.get(
+          'handyStatus',
+        ) as GetReservationsOptions['handyStatus']) || undefined;
+    }
+
+    if (searchParams.has('reservationStatus')) {
+      urlState.reservationStatus =
+        (searchParams.get(
+          'reservationStatus',
+        ) as GetReservationsOptions['reservationStatus']) || undefined;
+    }
+
+    if (searchParams.has('cancelStatus')) {
+      urlState.cancelStatus =
+        (searchParams.get(
+          'cancelStatus',
+        ) as GetReservationsOptions['cancelStatus']) || undefined;
+    }
+
+    return {
+      ...empty,
+      ...partial,
+      ...urlState,
+    };
+  }, [searchParams, partial]);
+
+  const [state, dispatch] = useReducer(reducer, getInitialStateFromURL());
+
+  const updateURL = useCallback(
+    (newState: GetReservationsOptions) => {
+      const params = new URLSearchParams();
+
+      if (newState.eventId) {
+        params.set('eventId', newState.eventId);
+      }
+
+      if (newState.dailyEventId) {
+        params.set('dailyEventId', newState.dailyEventId);
+      }
+
+      if (newState.shuttleRouteId) {
+        params.set('shuttleRouteId', newState.shuttleRouteId);
+      }
+
+      if (newState.shuttleBusId) {
+        params.set('shuttleBusId', newState.shuttleBusId);
+      }
+
+      if (newState.userNickname) {
+        params.set('userNickname', newState.userNickname);
+      }
+
+      if (newState.passengerName) {
+        params.set('passengerName', newState.passengerName);
+      }
+
+      if (newState.handyStatus) {
+        params.set('handyStatus', newState.handyStatus);
+      }
+
+      if (newState.reservationStatus) {
+        params.set('reservationStatus', newState.reservationStatus);
+      }
+
+      if (newState.cancelStatus) {
+        params.set('cancelStatus', newState.cancelStatus);
+      }
+
+      const paramString = params.toString();
+      const newURL = paramString ? `?${paramString}` : window.location.pathname;
+      router.replace(newURL, { scroll: false });
+    },
+    [router],
+  );
+
+  useEffect(() => {
+    updateURL(state);
+  }, [state, updateURL]);
+
+  return [state, dispatch] as const;
 };
 
 export default useReservationFilter;
