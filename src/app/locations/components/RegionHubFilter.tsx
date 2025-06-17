@@ -64,15 +64,34 @@ const RegionHubFilter = ({ option, dispatch }: Props) => {
             <div className="flex flex-row gap-4">
               <Toggle
                 label={'행사장'}
-                value={option.usageType?.includes('EVENT_DESTINATION') ?? false}
+                value={option.usageType?.includes('EVENT_LOCATION') ?? false}
                 setValue={() => {
                   const newUsageType = option.usageType?.includes(
-                    'EVENT_DESTINATION',
+                    'EVENT_LOCATION',
                   )
                     ? option.usageType?.filter(
-                        (type) => type !== 'EVENT_DESTINATION',
+                        (type) => type !== 'EVENT_LOCATION',
                       )
-                    : [...(option.usageType ?? []), 'EVENT_DESTINATION'];
+                    : [...(option.usageType ?? []), 'EVENT_LOCATION'];
+
+                  dispatch({
+                    type: 'SET_USAGE_TYPE',
+                    usageType:
+                      newUsageType.length > 0 ? newUsageType : undefined,
+                  });
+                }}
+              />
+              <Toggle
+                label={'주차장'}
+                value={option.usageType?.includes('EVENT_PARKING_LOT') ?? false}
+                setValue={() => {
+                  const newUsageType = option.usageType?.includes(
+                    'EVENT_PARKING_LOT',
+                  )
+                    ? option.usageType?.filter(
+                        (type) => type !== 'EVENT_PARKING_LOT',
+                      )
+                    : [...(option.usageType ?? []), 'EVENT_PARKING_LOT'];
 
                   dispatch({
                     type: 'SET_USAGE_TYPE',
