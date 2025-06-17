@@ -1,9 +1,15 @@
 'use client';
 
 import Heading from '@/components/text/Heading';
+import Callout from '@/components/text/Callout';
+import List from '@/components/text/List';
+import BlueLink from '@/components/link/BlueLink';
 import Map from './components/Map';
 import { useState } from 'react';
 import Table from './components/Table';
+import { formatDateString } from '@/utils/date.util';
+import { useGetEvent } from '@/services/event.service';
+import { notFound } from 'next/navigation';
 
 type Tab = 'map' | 'table';
 interface Props {
@@ -15,9 +21,14 @@ interface Props {
 
 const Page = ({ params }: Props) => {
   const { eventId, dailyEventId } = params;
+  const { data: event, isLoading: isEventLoading } = useGetEvent(eventId);
 
   const [tab, setTab] = useState<Tab>('map');
 
+  if (isEventLoading) {
+    return <div>Loading...</div>;
+  }
+  if (!event) return notFound();
   return (
     <main className="flex grow flex-col">
       <Heading className="flex items-baseline gap-12">
@@ -41,6 +52,20 @@ const Page = ({ params }: Props) => {
           </button>
         </div>
       </Heading>
+      <Callout className="mb-16">
+        <List>
+          <List.item title="행사명">
+            <BlueLink href={`/events/${eventId}`}>{event.eventName}</BlueLink>
+          </List.item>
+          <List.item title="날짜">
+            {formatDateString(
+              event.dailyEvents.find(
+                (dailyEvent) => dailyEvent.dailyEventId === dailyEventId,
+              )?.date,
+            )}
+          </List.item>
+        </List>
+      </Callout>
       <div className="flex grow gap-12">
         {tab === 'map' && <Map eventId={eventId} dailyEventId={dailyEventId} />}
         {tab === 'table' && (
