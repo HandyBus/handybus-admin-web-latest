@@ -1,22 +1,36 @@
 'use client';
 
 import Heading from '@/components/text/Heading';
+import Callout from '@/components/text/Callout';
+import List from '@/components/text/List';
+import BlueLink from '@/components/link/BlueLink';
 import Map from './components/Map';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Table from './components/Table';
+import { formatDateString } from '@/utils/date.util';
+import { useSuspenseGetEvent } from '@/services/event.service';
+import Loading from '@/components/loading/Loading';
+import { useParams } from 'next/navigation';
 
 type Tab = 'map' | 'table';
-interface Props {
-  params: {
+
+const Page = () => {
+  return (
+    <Suspense fallback={<Loading />}>
+      <DemandContent />
+    </Suspense>
+  );
+};
+
+export default Page;
+
+const DemandContent = () => {
+  const { eventId, dailyEventId } = useParams<{
     eventId: string;
     dailyEventId: string;
-  };
-}
-
-const Page = ({ params }: Props) => {
-  const { eventId, dailyEventId } = params;
-
+  }>();
   const [tab, setTab] = useState<Tab>('map');
+  const { data: event } = useSuspenseGetEvent(eventId);
 
   return (
     <main className="flex grow flex-col">
@@ -41,6 +55,20 @@ const Page = ({ params }: Props) => {
           </button>
         </div>
       </Heading>
+      <Callout className="mb-16">
+        <List>
+          <List.item title="행사명">
+            <BlueLink href={`/events/${eventId}`}>{event.eventName}</BlueLink>
+          </List.item>
+          <List.item title="날짜">
+            {formatDateString(
+              event.dailyEvents.find(
+                (dailyEvent) => dailyEvent.dailyEventId === dailyEventId,
+              )?.date,
+            )}
+          </List.item>
+        </List>
+      </Callout>
       <div className="flex grow gap-12">
         {tab === 'map' && <Map eventId={eventId} dailyEventId={dailyEventId} />}
         {tab === 'table' && (
@@ -50,5 +78,3 @@ const Page = ({ params }: Props) => {
     </main>
   );
 };
-
-export default Page;
