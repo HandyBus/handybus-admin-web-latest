@@ -5,30 +5,33 @@ import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
 import BlueLink from '@/components/link/BlueLink';
 import Map from './components/Map';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Table from './components/Table';
 import { formatDateString } from '@/utils/date.util';
-import { useGetEvent } from '@/services/event.service';
-import { notFound } from 'next/navigation';
+import { useSuspenseGetEvent } from '@/services/event.service';
+import Loading from '@/components/loading/Loading';
+import { useParams } from 'next/navigation';
 
 type Tab = 'map' | 'table';
-interface Props {
-  params: {
+
+const Page = () => {
+  return (
+    <Suspense fallback={<Loading />}>
+      <DemandContent />
+    </Suspense>
+  );
+};
+
+export default Page;
+
+const DemandContent = () => {
+  const { eventId, dailyEventId } = useParams<{
     eventId: string;
     dailyEventId: string;
-  };
-}
-
-const Page = ({ params }: Props) => {
-  const { eventId, dailyEventId } = params;
-  const { data: event, isLoading: isEventLoading } = useGetEvent(eventId);
-
+  }>();
   const [tab, setTab] = useState<Tab>('map');
+  const { data: event } = useSuspenseGetEvent(eventId);
 
-  if (isEventLoading) {
-    return <div>Loading...</div>;
-  }
-  if (!event) return notFound();
   return (
     <main className="flex grow flex-col">
       <Heading className="flex items-baseline gap-12">
@@ -75,5 +78,3 @@ const Page = ({ params }: Props) => {
     </main>
   );
 };
-
-export default Page;
