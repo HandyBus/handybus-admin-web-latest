@@ -22,6 +22,8 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
     shuttleRouteId,
   );
 
+  console.log(route);
+
   const { data: reservationsPages } = useGetReservationsWithPagination({
     eventId,
     dailyEventId,
