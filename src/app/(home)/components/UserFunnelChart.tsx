@@ -34,10 +34,6 @@ const UserFunnelChart = () => {
     () => [
       { name: '전체', value: totalUserCounts?.totalUserCounts ?? 0 },
       {
-        name: '온보딩 완료',
-        value: totalUserCounts?.onboardingCompleteUserCounts ?? 0,
-      },
-      {
         name: '수요조사 완료',
         value:
           totalDemandCounts?.[totalDemandCounts.length - 1]
