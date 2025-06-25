@@ -81,6 +81,8 @@ const ROUTES: RouteConfig[] = [
     name: '공지사항 상세 정보',
     parent: '/announcements',
   },
+  // 피드백 관리
+  { path: '/feedbacks', name: '피드백 대시보드' },
 ];
 
 const Breadcrumbs = () => {
