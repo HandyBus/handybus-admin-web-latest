@@ -86,6 +86,7 @@ export const CreateEventRequestSchema = z.object({
     .array(),
   type: EventTypeEnum,
   artistIds: z.string().array(),
+  isPinned: z.boolean(),
 });
 export type CreateEventRequest = z.infer<typeof CreateEventRequestSchema>;
 
@@ -106,6 +107,7 @@ export const UpdateEventRequestSchema = z
       .array(),
     type: EventTypeEnum,
     artistIds: z.string().array(),
+    isPinned: z.boolean(),
   })
   .partial();
 export type UpdateEventRequest = z.infer<typeof UpdateEventRequestSchema>;
