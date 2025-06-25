@@ -28,5 +28,6 @@ export const conform = (data: CreateEventFormData): CreateEventRequest => {
     ...data,
     artistIds: artistIds.map((artist) => artist.artistId),
     dailyEvents,
+    isPinned: false,
   } satisfies CreateEventRequest;
 };
