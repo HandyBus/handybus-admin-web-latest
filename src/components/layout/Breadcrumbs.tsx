@@ -48,6 +48,16 @@ const ROUTES: RouteConfig[] = [
     name: '노선 수정하기',
     parent: '/events/:id/dates/:id/routes/:id',
   },
+  {
+    path: '/events/pin',
+    name: '이달의 추천 행사 대시보드',
+    parent: '/events',
+  },
+  {
+    path: '/events/pin/edit',
+    name: '이달의 추천 행사 수정하기',
+    parent: '/events/pin',
+  },
   // 예약 관리
   { path: '/reservations', name: '예약 대시보드' },
   {

@@ -45,7 +45,7 @@ const BaseTable = <TData,>({
           <tr
             key={row.id}
             className={twMerge(
-              'border-spacing-y-40 border border-b border-grey-50 bg-white transition-colors',
+              'border-spacing-y-40 bg-white transition-colors',
               rowClassName,
             )}
           >

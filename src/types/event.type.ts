@@ -47,6 +47,7 @@ export const EventsViewEntitySchema = z
     endDate: z.string(),
     createdAt: z.string(),
     updatedAt: z.string(),
+    eventIsPinned: z.boolean(),
   })
   .strict();
 export type EventsViewEntity = z.infer<typeof EventsViewEntitySchema>;
@@ -64,10 +65,11 @@ export type DailyEventWithStatisticsViewEntity = z.infer<
   typeof DailyEventWithStatisticsViewEntitySchema
 >;
 
-export const EventWithStatisticsViewEntitySchema =
-  EventsViewEntitySchema.extend({
-    dailyEvents: DailyEventWithStatisticsViewEntitySchema.array(),
-  });
+export const EventWithStatisticsViewEntitySchema = EventsViewEntitySchema.omit({
+  eventIsPinned: true,
+}).extend({
+  dailyEvents: DailyEventWithStatisticsViewEntitySchema.array(),
+});
 export type EventWithStatisticsViewEntity = z.infer<
   typeof EventWithStatisticsViewEntitySchema
 >;
@@ -84,6 +86,7 @@ export const CreateEventRequestSchema = z.object({
     .array(),
   type: EventTypeEnum,
   artistIds: z.string().array(),
+  isPinned: z.boolean(),
 });
 export type CreateEventRequest = z.infer<typeof CreateEventRequestSchema>;
 
@@ -104,6 +107,7 @@ export const UpdateEventRequestSchema = z
       .array(),
     type: EventTypeEnum,
     artistIds: z.string().array(),
+    isPinned: z.boolean(),
   })
   .partial();
 export type UpdateEventRequest = z.infer<typeof UpdateEventRequestSchema>;

@@ -56,13 +56,19 @@ const Page = () => {
     <main>
       <Heading className="flex items-baseline gap-20">
         행사 대시보드
-        <BlueLink href="events/new" className="text-14">
+        <BlueLink href="/events/new" className="text-14">
           추가하기
+        </BlueLink>
+        <BlueLink href="/events/pin" className="text-14">
+          이달의 추천 행사 관리
         </BlueLink>
       </Heading>
       <EventFilter option={option} dispatch={dispatch} />
       <section className="flex flex-col">
-        <BaseTable table={table} cellClassName="min-h-120 p-0" />
+        <BaseTable
+          table={table}
+          cellClassName="min-h-120 p-0 border-b-grey-300"
+        />
         <InfiniteScrollTrigger />
       </section>
     </main>
