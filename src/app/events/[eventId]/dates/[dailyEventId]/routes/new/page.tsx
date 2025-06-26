@@ -162,8 +162,10 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
       !confirm(
         '추가하시겠습니까? 확인을 누르시면 가격은 더 이상 변경할 수 없습니다. ',
       )
-    )
+    ) {
       return;
+    }
+
     try {
       setIsSubmitting(true);
       const { forwardHubs, returnHubs } = extractHubs(data);
@@ -285,6 +287,16 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
           <Callout className="text-14">
             <b>주의: </b>얼리버드 적용 여부 및 얼리버드 마감일은 노선 추가 후{' '}
             <b className="text-red-500">변경이 불가</b>합니다.
+          </Callout>
+          <Callout className="text-14">
+            <span className="text-red-500">
+              가격을 0으로 설정할 경우 해당 방향은 개설되지 않습니다.
+            </span>
+            <br />
+            ex) 왕복과 가는편 가격을 0으로 설정 -{'>'} 오는편 편도 노선으로
+            개설됨
+            <br />
+            이때 왕복&가는편 또는 왕복&오는편 조합의 노선 개설은 불가합니다.
           </Callout>
           <article className="grid w-full grid-cols-2 gap-12">
             <div className="flex flex-col gap-8 rounded-[4px] p-8">

@@ -24,7 +24,6 @@ const NewPage = () => {
   const onSubmit = async (data: CreateAnnouncementFormData) => {
     if (confirm('작성하시겠습니까?')) {
       try {
-        console.log('작성', data);
         await postAnnouncement({
           title: data.title,
           content: data.content,
