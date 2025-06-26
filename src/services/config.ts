@@ -187,7 +187,7 @@ class AuthInstance {
   }
   async put<T extends z.ZodRawShape = EmptyShape>(
     url: string,
-    body: any,
+    body?: any,
     options?: RequestInitWithSchema<T>,
   ) {
     return this.authFetchWithConfig<T>(url, 'PUT', body, options);

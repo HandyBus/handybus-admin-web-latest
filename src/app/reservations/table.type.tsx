@@ -8,6 +8,7 @@ import { ReservationViewEntity } from '@/types/reservation.type';
 import EditHandyStatusDialog from '@/components/dialog/EditHandyStatusDialog';
 import dayjs from 'dayjs';
 import RequestRefundDialog from './components/RequestRefundDialog';
+import CancelReservationDialog from './components/CancelReservationDialog';
 
 const columnHelper = createColumnHelper<ReservationViewEntity>();
 
@@ -41,6 +42,19 @@ export const columns = [
     id: 'cancelStatus',
     header: () => '예약 취소 상태',
     cell: (info) => Stringifier.cancelStatus(info.getValue()),
+  }),
+  columnHelper.display({
+    id: 'cancelActions',
+    header: () => '예약 취소 상태 변경',
+    cell: (info) => {
+      const cancelStatus = info.row.original.cancelStatus;
+      if (cancelStatus === 'CANCEL_COMPLETE') return null;
+      return (
+        <CancelReservationDialog
+          reservationId={info.row.original.reservationId}
+        />
+      );
+    },
   }),
   columnHelper.display({
     id: 'shuttleRoute',
