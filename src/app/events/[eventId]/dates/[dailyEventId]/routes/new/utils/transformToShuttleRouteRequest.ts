@@ -14,9 +14,21 @@ export const transformToShuttleRouteRequest = (
     ...rest
   } = data;
 
+  const toDestinationExists =
+    data.regularPrice.toDestination !== 0 || data.regularPrice.roundTrip !== 0;
+  const fromDestinationExists =
+    data.regularPrice.fromDestination !== 0 ||
+    data.regularPrice.roundTrip !== 0;
+  const shuttleRouteHubs =
+    toDestinationExists && fromDestinationExists
+      ? returnHubs.concat(forwardHubs)
+      : toDestinationExists
+        ? forwardHubs
+        : returnHubs;
+
   return {
     ...rest,
-    shuttleRouteHubs: returnHubs.concat(forwardHubs),
+    shuttleRouteHubs,
     reservationDeadline: data.reservationDeadline,
     earlybirdDeadline: data.earlybirdDeadline
       ? data.earlybirdDeadline
