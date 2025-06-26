@@ -64,7 +64,7 @@ const Table = ({ eventId, dailyEventId }: Props) => {
         (demand) => demand.regionHubName === item.regionHubName,
       );
       if (isAdded) {
-        return item;
+        return isAdded;
       }
       return {
         ...item,
