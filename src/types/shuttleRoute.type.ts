@@ -97,9 +97,9 @@ export const CreateShuttleRouteRequestSchema = z
       })
       .optional(),
     regularPrice: z.object({
-      toDestination: z.number().optional(),
-      fromDestination: z.number().optional(),
-      roundTrip: z.number().optional(),
+      toDestination: z.number().nullable(),
+      fromDestination: z.number().nullable(),
+      roundTrip: z.number().nullable(),
     }),
     earlybirdDeadline: z.string().optional(),
     maxPassengerCount: z.number(),

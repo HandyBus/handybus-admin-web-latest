@@ -23,16 +23,14 @@ export const transformToShuttleRouteRequest = (
       : undefined,
     regularPrice: {
       roundTrip:
-        data.regularPrice.roundTrip === 0
-          ? undefined
-          : data.regularPrice.roundTrip,
+        data.regularPrice.roundTrip === 0 ? null : data.regularPrice.roundTrip,
       toDestination:
         data.regularPrice.toDestination === 0
-          ? undefined
+          ? null
           : data.regularPrice.toDestination,
       fromDestination:
         data.regularPrice.fromDestination === 0
-          ? undefined
+          ? null
           : data.regularPrice.fromDestination,
     },
   } satisfies CreateShuttleRouteRequest;
