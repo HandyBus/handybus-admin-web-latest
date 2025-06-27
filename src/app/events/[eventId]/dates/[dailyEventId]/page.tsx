@@ -20,10 +20,10 @@ interface Props {
 
 const Page = ({ params: { eventId, dailyEventId } }: Props) => {
   const {
-    data: shuttle,
-    isPending: isShuttlePending,
-    isError: isShuttleError,
-    error: shuttleError,
+    data: event,
+    isPending: isEventPending,
+    isError: isEventError,
+    error: eventError,
   } = useGetEvent(eventId);
 
   const {
@@ -35,46 +35,44 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
 
   const table = useTable({ data: routes, columns });
 
-  const thisDailyShuttle = shuttle
-    ? shuttle.dailyEvents.find((d) => d.dailyEventId === dailyEventId)
+  const dailyEvent = event
+    ? event.dailyEvents.find((d) => d.dailyEventId === dailyEventId)
     : null;
 
   useEffect(() => {
-    if (shuttle && !thisDailyShuttle) {
+    if (event && !dailyEvent) {
       notFound();
     }
-  }, [shuttle, thisDailyShuttle]);
+  }, [event, dailyEvent]);
 
-  if (isShuttleError || isRoutesError) {
+  if (isEventError || isRoutesError) {
     return (
       <div>
-        Error! shuttle error : {shuttleError?.message}, or routes error :{' '}
+        Error! event error : {eventError?.message}, or routes error :{' '}
         {routesError?.message}
       </div>
     );
   }
 
-  if (isShuttlePending || isRoutesPending) {
+  if (isEventPending || isRoutesPending) {
     return <div>Loading...</div>;
   }
 
   return (
     <main>
       <Heading>일자별 행사 상세 정보</Heading>
-      {thisDailyShuttle && (
+      {dailyEvent && (
         <Callout>
           <List>
             <List.item title="행사명">
-              <BlueLink href={`/events/${eventId}`}>
-                {shuttle.eventName}
-              </BlueLink>
+              <BlueLink href={`/events/${eventId}`}>{event.eventName}</BlueLink>
             </List.item>
-            <List.item title="장소">{shuttle.eventLocationName}</List.item>
+            <List.item title="장소">{event.eventLocationName}</List.item>
             <List.item title="날짜">
-              {formatDateString(thisDailyShuttle.date)}
+              {formatDateString(dailyEvent.date)}
             </List.item>
             <List.item title="상태">
-              {Stringifier.dailyEventStatus(thisDailyShuttle?.status)}
+              {Stringifier.dailyEventStatus(dailyEvent?.status)}
             </List.item>
           </List>
         </Callout>
