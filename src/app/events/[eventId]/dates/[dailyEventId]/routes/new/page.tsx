@@ -187,7 +187,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   const onSubmit = async (data: CreateFormValues) => {
     if (
       !confirm(
-        '추가하시겠습니까? 확인을 누르시면 가격은 더 이상 변경할 수 없습니다. ',
+        '추가하시겠습니까? 노선 생성 후 가격 변동은 최대한 자제해주세요. ',
       )
     ) {
       return;
