@@ -25,6 +25,10 @@ import { RouteHubData } from '../utils/calculateRoute';
 import { extractHubs } from './utils/extractHubs';
 import { transformToShuttleRouteRequest } from './utils/transformToShuttleRouteRequest';
 import { validateShuttleRouteData } from './utils/validateShuttleRouteData';
+import Stringifier from '@/utils/stringifier.util';
+import List from '@/components/text/List';
+import BlueLink from '@/components/link/BlueLink';
+import { formatDateString } from '@/utils/date.util';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -34,6 +38,10 @@ const Page = ({ params }: Props) => {
   const { eventId, dailyEventId } = params;
 
   const { data: event, isPending, isError, error } = useGetEvent(eventId);
+
+  const dailyEvent = event
+    ? event.dailyEvents.find((d) => d.dailyEventId === dailyEventId)
+    : null;
 
   const defaultDate = useMemo(() => {
     return event?.dailyEvents.find((de) => de.dailyEventId === dailyEventId)
@@ -97,12 +105,31 @@ const Page = ({ params }: Props) => {
   if (isError) return <div>Error! {error?.message}</div>;
 
   return (
-    <Form
-      event={event}
-      params={params}
-      defaultValues={defaultValues}
-      defaultDate={defaultDate ?? ''}
-    />
+    <main>
+      <Heading>노선 추가하기</Heading>
+      {dailyEvent && (
+        <Callout className="mb-20">
+          <List>
+            <List.item title="행사명">
+              <BlueLink href={`/events/${eventId}`}>{event.eventName}</BlueLink>
+            </List.item>
+            <List.item title="장소">{event.eventLocationName}</List.item>
+            <List.item title="날짜">
+              {formatDateString(dailyEvent.date)}
+            </List.item>
+            <List.item title="상태">
+              {Stringifier.dailyEventStatus(dailyEvent.status)}
+            </List.item>
+          </List>
+        </Callout>
+      )}
+      <Form
+        event={event}
+        params={params}
+        defaultValues={defaultValues}
+        defaultDate={defaultDate ?? ''}
+      />
+    </main>
   );
 };
 
@@ -160,7 +187,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
   const onSubmit = async (data: CreateFormValues) => {
     if (
       !confirm(
-        '추가하시겠습니까? 확인을 누르시면 가격은 더 이상 변경할 수 없습니다. ',
+        '추가하시겠습니까? 노선 생성 후 가격 변동은 최대한 자제해주세요. ',
       )
     ) {
       return;
@@ -250,7 +277,6 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
 
   return (
     <main>
-      <Heading>노선 추가하기</Heading>
       <FormContainer onSubmit={handleSubmit(onSubmit)}>
         <FormContainer.section>
           <FormContainer.label htmlFor="name" required>
