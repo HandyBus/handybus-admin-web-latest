@@ -99,21 +99,21 @@ class Instance {
   }
   async post<T extends z.ZodRawShape = EmptyShape>(
     url: string,
-    body: any,
+    body?: any,
     options?: RequestInitWithSchema<T>,
   ) {
     return await this.fetchWithConfig<T>(url, 'POST', body, options);
   }
   async put<T extends z.ZodRawShape = EmptyShape>(
     url: string,
-    body: any,
+    body?: any,
     options?: RequestInitWithSchema<T>,
   ) {
     return await this.fetchWithConfig<T>(url, 'PUT', body, options);
   }
   async patch<T extends z.ZodRawShape = EmptyShape>(
     url: string,
-    body: any,
+    body?: any,
     options?: RequestInitWithSchema<T>,
   ) {
     return await this.fetchWithConfig<T>(url, 'PATCH', body, options);
@@ -180,14 +180,14 @@ class AuthInstance {
 
   async post<T extends z.ZodRawShape = EmptyShape>(
     url: string,
-    body: any,
+    body?: any,
     options?: RequestInitWithSchema<T>,
   ) {
     return this.authFetchWithConfig<T>(url, 'POST', body, options);
   }
   async put<T extends z.ZodRawShape = EmptyShape>(
     url: string,
-    body: any,
+    body?: any,
     options?: RequestInitWithSchema<T>,
   ) {
     return this.authFetchWithConfig<T>(url, 'PUT', body, options);
@@ -195,7 +195,7 @@ class AuthInstance {
 
   async patch<T extends z.ZodRawShape = EmptyShape>(
     url: string,
-    body: any,
+    body?: any,
     options?: RequestInitWithSchema<T>,
   ) {
     return this.authFetchWithConfig<T>(url, 'PATCH', body, options);
