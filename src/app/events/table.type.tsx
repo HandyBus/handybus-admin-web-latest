@@ -57,7 +57,7 @@ export const columns = [
             {dates.map((date, index) => (
               <p
                 key={index}
-                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 last:border-b-0"
+                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-100 px-8 last:border-b-0"
               >
                 {formatDateString(date, 'date')}
               </p>
@@ -92,7 +92,7 @@ export const columns = [
             {eventStatuses.map((eventStatus, index) => (
               <div
                 key={index}
-                className={`group relative flex h-[58px] grow items-center justify-center whitespace-nowrap  break-keep border-b border-grey-200 px-8 last:border-b-0 ${style[eventStatus]}`}
+                className={`group relative flex h-[58px] grow items-center justify-center whitespace-nowrap  break-keep border-b border-grey-100 px-8 last:border-b-0 ${style[eventStatus]}`}
               >
                 {Stringifier.eventStatus(eventStatus)}
                 <div className="absolute right-112 hidden h-120 w-172 rounded-[4px] bg-black/65 p-12 text-white group-hover:block">
@@ -123,7 +123,7 @@ export const columns = [
             {dailyEventIds.map((dailyEventId, index) => (
               <p
                 key={dailyEventId}
-                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 last:border-b-0"
+                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-100 px-8 last:border-b-0"
               >
                 <BlueLink
                   href={`/events/${eventId}/dates/${dailyEventId}/demands`}
@@ -148,7 +148,7 @@ export const columns = [
             {expectedRouteCounts.map((expectedRouteCount, index) => (
               <p
                 key={index}
-                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 font-500 last:border-b-0"
+                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-100 px-8 font-500 last:border-b-0"
               >
                 {expectedRouteCount}
               </p>
@@ -173,7 +173,7 @@ export const columns = [
           {shuttleRouteCounts.map((shuttleRouteCount, index) => (
             <p
               key={index}
-              className={`flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-200 px-8 font-600 last:border-b-0 ${
+              className={`flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-100 px-8 font-600 last:border-b-0 ${
                 shuttleRouteCount < expectedRouteCounts[index]
                   ? 'text-red-500'
                   : 'text-green-600'
@@ -202,7 +202,7 @@ export const columns = [
             {dailyEventIds.map((dailyEventId, index) => (
               <p
                 key={dailyEventId}
-                className="flex h-[58px] grow items-center justify-center border-b border-grey-200 px-8 last:border-b-0"
+                className="flex h-[58px] grow items-center justify-center border-b border-grey-100 px-8 last:border-b-0"
               >
                 {shuttleRouteCount[index] > 0 ? (
                   <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>

@@ -17,11 +17,11 @@ export const paymentColumns = [
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('principalAmount', {
-    header: '총 금액',
+    header: '원금',
     cell: (info) => info.getValue()?.toLocaleString(),
   }),
   columnHelper.accessor('paymentAmount', {
-    header: '할인전 금액',
+    header: '결제 금액',
     cell: (info) => info.getValue()?.toLocaleString(),
   }),
   columnHelper.accessor('discountAmount', {
@@ -76,7 +76,7 @@ export const refundRequestColumns = [
     cell: (info) => info.getValue(),
   }),
   refundRequestColumnHelper.accessor('principalAmount', {
-    header: '총 금액',
+    header: '원금',
     cell: (info) => info.getValue()?.toLocaleString(),
   }),
   refundRequestColumnHelper.accessor('previousRefundableAmount', {

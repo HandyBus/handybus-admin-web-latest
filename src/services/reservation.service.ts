@@ -263,3 +263,19 @@ export const usePutReservation = ({
     onError,
   });
 };
+
+export const putCancelReservation = async (reservationId: string) => {
+  await authInstance.put(
+    `/v1/shuttle-operation/admin/reservations/${reservationId}/cancel`,
+  );
+};
+
+export const usePutCancelReservation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (reservationId: string) => putCancelReservation(reservationId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reservation'] });
+    },
+  });
+};

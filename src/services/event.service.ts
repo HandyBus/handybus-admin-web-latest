@@ -31,7 +31,20 @@ import { silentParse } from '@/utils/parse.util';
 
 // ----- GET -----
 
-export const getEvents = async (options?: { status?: EventStatus }) => {
+export interface GetEventsOptions {
+  eventName?: string;
+  eventLocationName?: string;
+  eventLocationAddress?: string;
+  eventType?: EventType;
+  eventIsPinned?: boolean;
+  status?: Combinations<EventStatus>;
+  orderBy?: 'eventName';
+  additionalOrderOptions?: 'ASC' | 'DESC';
+  page?: string;
+  limit?: number;
+}
+
+export const getEvents = async (options?: GetEventsOptions) => {
   const res = await authInstance.get(
     `/v2/shuttle-operation/admin/events${toSearchParamString({ ...options }, '?')}`,
     {
@@ -44,7 +57,7 @@ export const getEvents = async (options?: { status?: EventStatus }) => {
 };
 
 // TODO 추후에 pagination으로 변경
-export const useGetEvents = (options?: { status?: EventStatus }) => {
+export const useGetEvents = (options?: GetEventsOptions) => {
   return useQuery({
     queryKey: ['event', options],
     queryFn: () => getEvents(options),

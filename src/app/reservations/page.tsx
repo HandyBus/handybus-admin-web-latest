@@ -52,7 +52,7 @@ const AllReservations = () => {
   });
 
   return (
-    <section>
+    <section className="flex flex-col">
       <Heading.h2>모든 예약 조회</Heading.h2>
       <RowFilter option={option} dispatch={dispatch} />
       <ColumnFilter table={table} />

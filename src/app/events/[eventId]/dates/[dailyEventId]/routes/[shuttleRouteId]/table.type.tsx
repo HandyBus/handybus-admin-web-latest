@@ -51,21 +51,37 @@ export const shuttleRouteColumns = [
   }),
   shuttleRouteColumnHelper.accessor('regularPriceRoundTrip', {
     header: () => '왕복 가격',
-    cell: (info) => info.getValue().toLocaleString(),
+    cell: (info) => {
+      const value = info.getValue();
+      return value ? value.toLocaleString() : '-';
+    },
   }),
   shuttleRouteColumnHelper.accessor('regularPriceToDestination', {
     header: () => '가는 편 가격',
-    cell: (info) => info.getValue().toLocaleString(),
+    cell: (info) => {
+      const value = info.getValue();
+      return value ? value.toLocaleString() : '-';
+    },
   }),
   shuttleRouteColumnHelper.accessor('regularPriceFromDestination', {
     header: () => '오는 편 가격',
-    cell: (info) => info.getValue().toLocaleString(),
+    cell: (info) => {
+      const value = info.getValue();
+      return value ? value.toLocaleString() : '-';
+    },
   }),
   shuttleRouteColumnHelper.accessor('earlybirdDeadline', {
     header: () => '얼리버드 마감일',
     cell: (info) => {
       const value = info.getValue();
       return value ? formatDateString(value, 'datetime') : '-';
+    },
+  }),
+  shuttleRouteColumnHelper.accessor('earlybirdPriceRoundTrip', {
+    header: () => '얼리버드 왕복 가격',
+    cell: (info) => {
+      const value = info.getValue();
+      return value ? value.toLocaleString() : '-';
     },
   }),
   shuttleRouteColumnHelper.accessor('earlybirdPriceToDestination', {
