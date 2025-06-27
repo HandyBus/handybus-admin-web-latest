@@ -6,6 +6,11 @@ import Heading from '@/components/text/Heading';
 import EditForm from './components/EditForm';
 import { extractSortedShuttleHubs } from './utils/extractSortedShuttleHubs.util';
 import { EditFormValues } from './form.type';
+import Callout from '@/components/text/Callout';
+import List from '@/components/text/List';
+import BlueLink from '@/components/link/BlueLink';
+import { formatDateString } from '@/utils/date.util';
+import Stringifier from '@/utils/stringifier.util';
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
@@ -20,6 +25,10 @@ const Page = ({ params }: Props) => {
     isError: isRouteError,
     error: routeError,
   } = useGetShuttleRoute(eventId, dailyEventId, shuttleRouteId);
+
+  const dailyEvent = route?.event?.dailyEvents.find(
+    (de) => de.dailyEventId === dailyEventId,
+  );
 
   const defaultDate = useMemo(() => {
     return route?.event.dailyEvents.find(
@@ -64,6 +73,24 @@ const Page = ({ params }: Props) => {
   return (
     <main>
       <Heading>노선 수정하기</Heading>
+      {route && dailyEvent && (
+        <Callout className="mb-20">
+          <List>
+            <List.item title="행사명">
+              <BlueLink href={`/events/${eventId}`}>
+                {route.event.eventName}
+              </BlueLink>
+            </List.item>
+            <List.item title="장소">{route.event.eventLocationName}</List.item>
+            <List.item title="날짜">
+              {formatDateString(dailyEvent.date)}
+            </List.item>
+            <List.item title="상태">
+              {Stringifier.dailyEventStatus(dailyEvent.status)}
+            </List.item>
+          </List>
+        </Callout>
+      )}
       <EditForm
         params={params}
         defaultValues={defaultValues}
