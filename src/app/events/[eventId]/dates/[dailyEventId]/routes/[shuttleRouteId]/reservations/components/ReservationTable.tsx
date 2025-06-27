@@ -55,6 +55,12 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     data: filteredReservations,
   });
 
+  const totalNumberOfPeople = useMemo(() => {
+    return validReservations.reduce((acc, reservation) => {
+      return acc + reservation.passengerCount;
+    }, 0);
+  }, [validReservations]);
+
   const { mutate: putReservation } = usePutReservation();
 
   const rejectAllSupportedHandy = async () => {
@@ -95,8 +101,8 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
       <Heading.h2 className="flex items-center gap-12">
         배차되지 않은 예약{' '}
         <span className="text-14 font-400 text-grey-700">
-          유효한 예약 {validReservations.length}건 / 합계 {reservations.length}
-          건
+          유효한 예약 {validReservations.length}건 ({totalNumberOfPeople}인) /
+          합계 {reservations.length}건
         </span>
         <Toggle
           label="취소된 예약 포함"
