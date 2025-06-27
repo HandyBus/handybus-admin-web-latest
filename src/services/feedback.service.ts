@@ -3,7 +3,7 @@ import { authInstance } from './config';
 import { AdminFeedbackResponseModelSchema } from '@/types/feedback.type';
 
 const getFeedbacks = async () => {
-  const res = await authInstance.post('/v1/core/admin/feedbacks', undefined, {
+  const res = await authInstance.get('/v1/core/admin/feedbacks', {
     shape: {
       feedbacks: AdminFeedbackResponseModelSchema.array(),
     },
