@@ -77,6 +77,13 @@ export const shuttleRouteColumns = [
       return value ? formatDateString(value, 'datetime') : '-';
     },
   }),
+  shuttleRouteColumnHelper.accessor('earlybirdPriceRoundTrip', {
+    header: () => '얼리버드 왕복 가격',
+    cell: (info) => {
+      const value = info.getValue();
+      return value ? value.toLocaleString() : '-';
+    },
+  }),
   shuttleRouteColumnHelper.accessor('earlybirdPriceToDestination', {
     header: () => '얼리버드 가는 편 가격',
     cell: (info) => {
