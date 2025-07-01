@@ -12,6 +12,7 @@ import { RegionHubInputSelfContained } from '@/components/input/HubInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
 import NumberInput from '@/components/input/NumberInput';
 import Callout from '@/components/text/Callout';
+import { useRouter } from 'next/navigation';
 
 export interface FormValues {
   reservationDeadline: string;
@@ -31,6 +32,7 @@ interface Props {
 }
 
 const Content = ({ eventId, dailyEventId, event }: Props) => {
+  const router = useRouter();
   const defaultValues = useMemo(() => {
     const dailyEventDate = event?.dailyEvents.find(
       (de) => de.dailyEventId === dailyEventId,
@@ -69,7 +71,7 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
 
   const onSubmit = async (data: FormValues) => {
     const userConfirmed = confirm(
-      '핸디팟 노선들을 생성하시겠습니까? 이미 권역별로 생성된 핸디팟 노선이 있는 경우, 해당 권역은 노선이 생성되지 않습니다.',
+      '핸디팟 노선들을 생성하시겠습니까? 노선 생성에는 시간이 소요됩니다. 잠시 후 노선 생성 완료 메시지가 표시됩니다.',
     );
     if (!userConfirmed) {
       return;
@@ -77,6 +79,7 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
     try {
       await createMultipleHandyPartyRoutes(data);
       alert('핸디팟 노선들이 생성되었습니다.');
+      router.push(`/events/${eventId}/dates/${dailyEventId}`);
     } catch (error) {
       alert(
         '핸디팟 노선 생성 중 오류가 발생했습니다. 생성된 노선 목록들을 확인하고 다시 시도해주세요.',
@@ -88,8 +91,8 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Callout className="bg-grey-50">
-        권역별로 이미 생성된 핸디팟 노선이 있는 경우, 해당 권역은 노선이
-        생성되지 않습니다.
+        권역별로 이미 생성된 핸디팟 노선이 있는 경우, 이미 생성된 노선의 방향에
+        해당하는 노선은 생성되지 않습니다. (중복 노선 방지)
         <br />
         가격 수정이 필요한 경우 노선 수정하기 기능을 통해 수정해주세요.
       </Callout>

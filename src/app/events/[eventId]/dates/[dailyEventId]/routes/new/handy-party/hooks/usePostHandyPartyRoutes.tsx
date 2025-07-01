@@ -54,9 +54,7 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
     fromDestinationDepartureTime: string;
     destinationHubId: string;
   }) => {
-    const targetHub = handyPartyHubs.current.find((hub) =>
-      hub.name.includes(area),
-    );
+    const targetHub = handyPartyHubs.current.find((hub) => hub.name === area);
 
     if (!targetHub) {
       return;
@@ -86,7 +84,7 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
     const fromDestinationHubs = [
       {
         regionHubId: destinationHubId,
-        type: 'TO_DESTINATION' as const,
+        type: 'FROM_DESTINATION' as const,
         role: 'DESTINATION' as const,
         sequence: 1,
         arrivalTime: fromDestinationDepartureTime,
