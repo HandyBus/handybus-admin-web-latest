@@ -16,11 +16,10 @@ import {
 import { Region } from '@/types/region.type';
 import Heading from '@/components/text/Heading';
 import Form from '@/components/form/Form';
-import { RegionHubsViewEntity } from '@/types/hub.type';
+import { HubUsageType, RegionHubsViewEntity } from '@/types/hub.type';
 import MapGuidesAtNewEditPage from '@/app/locations/components/MapGuidesAtNewEditPage';
 import Toggle from '@/components/button/Toggle';
 import { putShuttleStop } from '@/services/shuttleStops.service';
-import { TagStates } from '@/app/locations/location.type';
 
 interface Props {
   params: { regionId: string; hubId: string };
@@ -62,7 +61,7 @@ interface EditFormProps {
 
 const EditForm = ({ regions, hub }: EditFormProps) => {
   const router = useRouter();
-  const [tagState, setTagState] = useState<TagStates>(
+  const [tagState, setTagState] = useState<HubUsageType | undefined>(
     hub.eventLocation
       ? 'EVENT_LOCATION'
       : hub.eventParkingLot
@@ -105,7 +104,7 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
     },
   });
 
-  const handleTagToggle = (key: TagStates) => {
+  const handleTagToggle = (key: HubUsageType) => {
     setTagState(key);
   };
 
