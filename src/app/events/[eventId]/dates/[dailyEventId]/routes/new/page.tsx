@@ -106,7 +106,15 @@ const Page = ({ params }: Props) => {
 
   return (
     <main>
-      <Heading>노선 추가하기</Heading>
+      <Heading>
+        노선 추가하기{' '}
+        <BlueLink
+          href={`/events/${eventId}/dates/${dailyEventId}/routes/new/handy-party`}
+          className="ml-8 text-14"
+        >
+          핸디팟 노선 생성하기
+        </BlueLink>
+      </Heading>
       {dailyEvent && (
         <Callout className="mb-20">
           <List>
