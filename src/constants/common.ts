@@ -6,3 +6,5 @@ export const DEFAULT_MIN_COUNT = 30;
 export const DEFAULT_MAX_NODES = 3;
 export const DEFAULT_MAX_DISTANCE = 20;
 export const DEFAULT_EPSILON = 0.009; // ~= 1km
+
+export const HANDY_PARTY_ROUTE_NAME_PREFIX = '핸디팟';

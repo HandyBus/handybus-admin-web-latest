@@ -1,7 +1,7 @@
 'use client';
 
 import Form from '@/components/form/Form';
-import { HANDY_PARTY_ROUTE_AREA } from '../taxiRouteArea.const';
+import { HANDY_PARTY_ROUTE_AREA } from '@/constants/taxiRouteArea.const';
 import { useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { EventsViewEntity } from '@/types/event.type';

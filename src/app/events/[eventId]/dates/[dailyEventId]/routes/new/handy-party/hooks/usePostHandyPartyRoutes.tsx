@@ -2,15 +2,14 @@ import {
   getShuttleRoutesOfDailyEvent,
   postShuttleRoute,
 } from '@/services/shuttleRoute.service';
-import { HANDY_PARTY_ROUTE_AREA } from '../taxiRouteArea.const';
+import { HANDY_PARTY_ROUTE_AREA } from '@/constants/taxiRouteArea.const';
 import { getRegionHubs } from '@/services/hub.service';
 import { useRef } from 'react';
 import { RegionHubsViewEntity } from '@/types/hub.type';
 import { CreateShuttleRouteRequest, TripType } from '@/types/shuttleRoute.type';
 import Stringifier from '@/utils/stringifier.util';
 import dayjs from 'dayjs';
-
-const HANDY_PARTY_ROUTE_NAME_PREFIX = '핸디팟';
+import { HANDY_PARTY_ROUTE_NAME_PREFIX } from '@/constants/common';
 
 type TripTypeWithoutRoundTrip = Exclude<TripType, 'ROUND_TRIP'>;
 
