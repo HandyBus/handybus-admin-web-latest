@@ -23,12 +23,14 @@ import {
 
 export interface FormValues {
   reservationDeadline: string;
+  earlybirdReservationDeadline: string;
   toDestinationArrivalTime: string;
   fromDestinationDepartureTime: string;
   destinationHubId: string;
   priceOfAreas: {
     area: HandyPartyRouteArea;
-    price: number;
+    regularPrice: number;
+    earlybirdPrice: number;
   }[];
 }
 
@@ -57,6 +59,7 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
 
     return {
       reservationDeadline,
+      earlybirdReservationDeadline: reservationDeadline, // 얼리버드 예약 마감일은 예약 마감일과 동일하게 적용
       toDestinationArrivalTime: dailyEventDate,
       fromDestinationDepartureTime: dailyEventDate,
       destinationHub: undefined,
@@ -96,12 +99,13 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
   };
 
   const handleApplyPriceTable = (priceTable: HandyPartyPriceTable) => {
-    priceTable.forEach(({ area, price }) => {
+    priceTable.forEach(({ area, regularPrice, earlybirdPrice }) => {
       const index = HANDY_PARTY_ROUTE_AREA.findIndex((a) => a === area);
       if (index !== -1) {
         setValue(`priceOfAreas.${index}`, {
           area,
-          price,
+          regularPrice,
+          earlybirdPrice,
         });
       }
     });
@@ -122,6 +126,18 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
         <Controller
           control={control}
           name="reservationDeadline"
+          render={({ field: { onChange, value } }) => (
+            <DateInput value={value} setValue={onChange} />
+          )}
+        />
+      </Form.section>
+      <Form.section>
+        <Form.label htmlFor="earlybirdReservationDeadline" required>
+          얼리버드 예약 마감일
+        </Form.label>
+        <Controller
+          control={control}
+          name="earlybirdReservationDeadline"
           render={({ field: { onChange, value } }) => (
             <DateInput value={value} setValue={onChange} />
           )}
@@ -171,7 +187,11 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
       </Form.section>
       <Form.section>
         <Form.label required>권역별 노선 가격</Form.label>
-        <Callout>가격이 0으로 설정된 권역은 노선이 생성되지 않습니다.</Callout>
+        <Callout>
+          일반 가격이 0으로 설정된 권역은 노선이 생성되지 않습니다.
+          <br />
+          얼리버드 가격이 0으로 설정된 권역은 얼리버드 노선이 생성되지 않습니다.
+        </Callout>
         <div className="flex flex-col gap-8 rounded-[6px] border border-grey-300 p-12">
           <h5 className="text-14 font-600">단가표 적용하기</h5>
           <PriceTableButton
@@ -181,6 +201,17 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
           </PriceTableButton>
         </div>
         <ul className="flex flex-col">
+          <div className="flex text-14 font-500 text-grey-500">
+            <div className="w-108 shrink-0 whitespace-nowrap break-keep">
+              권역
+            </div>
+            <div className="w-192 shrink-0 whitespace-nowrap break-keep">
+              일반 가격
+            </div>
+            <div className="w-100 shrink-0 whitespace-nowrap break-keep">
+              얼리버드 가격
+            </div>
+          </div>
           {HANDY_PARTY_ROUTE_AREA.map((area, index) => (
             <Controller
               key={area}
@@ -191,10 +222,20 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
                   <span className="w-100 shrink-0 whitespace-nowrap break-keep text-16 font-500">
                     {area}
                   </span>
-                  <NumberInput
-                    value={value?.price ?? 0}
-                    setValue={(price) => onChange({ ...value, price })}
-                  />
+                  <div className="flex gap-4">
+                    <NumberInput
+                      value={value?.regularPrice ?? 0}
+                      setValue={(regularPrice) =>
+                        onChange({ ...value, regularPrice })
+                      }
+                    />
+                    <NumberInput
+                      value={value?.earlybirdPrice ?? 0}
+                      setValue={(earlybirdPrice) =>
+                        onChange({ ...value, earlybirdPrice })
+                      }
+                    />
+                  </div>
                 </li>
               )}
             />

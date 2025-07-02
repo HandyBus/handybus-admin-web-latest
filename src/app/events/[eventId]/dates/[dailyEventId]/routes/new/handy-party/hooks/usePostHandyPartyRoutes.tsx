@@ -13,6 +13,7 @@ import { CreateShuttleRouteRequest, TripType } from '@/types/shuttleRoute.type';
 import Stringifier from '@/utils/stringifier.util';
 import dayjs from 'dayjs';
 import { HANDY_PARTY_ROUTE_NAME_PREFIX } from '@/constants/common';
+import { HandyPartyPriceTable } from '@/constants/handyPartyPriceTable.const';
 
 type TripTypeWithoutRoundTrip = Exclude<TripType, 'ROUND_TRIP'>;
 
@@ -41,17 +42,21 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
 
   const createSingleHandyPartyRoute = async ({
     area,
-    price,
+    regularPrice,
+    earlybirdPrice,
     tripType,
     reservationDeadline,
+    earlybirdReservationDeadline,
     toDestinationArrivalTime,
     fromDestinationDepartureTime,
     destinationHubId,
   }: {
     area: HandyPartyRouteArea;
-    price: number;
+    regularPrice: number;
+    earlybirdPrice: number;
     tripType: TripTypeWithoutRoundTrip;
     reservationDeadline: string;
+    earlybirdReservationDeadline: string;
     toDestinationArrivalTime: string;
     fromDestinationDepartureTime: string;
     destinationHubId: string;
@@ -102,15 +107,29 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
       },
     ];
 
+    const hasEarlybird = earlybirdPrice > 0; // 얼리버드 가격이 0원 이상인 경우에만 얼리버드 노선 생성
+
     const body: CreateShuttleRouteRequest = {
       name,
       reservationDeadline,
-      hasEarlybird: false,
+      earlybirdDeadline: hasEarlybird
+        ? earlybirdReservationDeadline
+        : undefined,
+      hasEarlybird,
       regularPrice: {
-        toDestination: tripType === 'TO_DESTINATION' ? price : null,
-        fromDestination: tripType === 'FROM_DESTINATION' ? price : null,
+        toDestination: tripType === 'TO_DESTINATION' ? regularPrice : null,
+        fromDestination: tripType === 'FROM_DESTINATION' ? regularPrice : null,
         roundTrip: null,
       },
+      earlybirdPrice: hasEarlybird
+        ? {
+            toDestination:
+              tripType === 'TO_DESTINATION' ? earlybirdPrice : null,
+            fromDestination:
+              tripType === 'FROM_DESTINATION' ? earlybirdPrice : null,
+            roundTrip: null,
+          }
+        : undefined,
       maxPassengerCount: 9999,
       shuttleRouteHubs:
         tripType === 'TO_DESTINATION' ? toDestinationHubs : fromDestinationHubs,
@@ -121,15 +140,14 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
   const createMultipleHandyPartyRoutes = async ({
     priceOfAreas,
     reservationDeadline,
+    earlybirdReservationDeadline,
     toDestinationArrivalTime,
     fromDestinationDepartureTime,
     destinationHubId,
   }: {
-    priceOfAreas: {
-      area: HandyPartyRouteArea;
-      price: number;
-    }[];
+    priceOfAreas: HandyPartyPriceTable;
     reservationDeadline: string;
+    earlybirdReservationDeadline: string;
     toDestinationArrivalTime: string;
     fromDestinationDepartureTime: string;
     destinationHubId: string;
@@ -143,11 +161,11 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
 
     const newRoutePromises: Promise<void>[] = HANDY_PARTY_ROUTE_AREA.reduce(
       (acc, area) => {
-        const priceOfArea = priceOfAreas.find((el) => el.area === area)?.price;
+        const priceOfArea = priceOfAreas.find((el) => el.area === area);
         if (
           priceOfArea === undefined ||
           priceOfArea === null ||
-          priceOfArea === 0
+          priceOfArea.regularPrice === 0
         ) {
           return acc;
         }
@@ -169,9 +187,11 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
           newRoutes.push(
             createSingleHandyPartyRoute({
               area,
-              price: priceOfArea,
+              regularPrice: priceOfArea.regularPrice,
+              earlybirdPrice: priceOfArea.earlybirdPrice,
               tripType: 'TO_DESTINATION',
               reservationDeadline,
+              earlybirdReservationDeadline,
               toDestinationArrivalTime,
               fromDestinationDepartureTime,
               destinationHubId,
@@ -182,9 +202,11 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
           newRoutes.push(
             createSingleHandyPartyRoute({
               area,
-              price: priceOfArea,
+              regularPrice: priceOfArea.regularPrice,
+              earlybirdPrice: priceOfArea.earlybirdPrice,
               tripType: 'FROM_DESTINATION',
               reservationDeadline,
+              earlybirdReservationDeadline,
               toDestinationArrivalTime,
               fromDestinationDepartureTime,
               destinationHubId,
