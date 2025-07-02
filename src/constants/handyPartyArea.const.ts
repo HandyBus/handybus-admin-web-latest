@@ -17,3 +17,4 @@ export const HANDY_PARTY_ROUTE_AREA = [
   '하남',
   '남양주',
 ] as const;
+export type HandyPartyRouteArea = (typeof HANDY_PARTY_ROUTE_AREA)[number];

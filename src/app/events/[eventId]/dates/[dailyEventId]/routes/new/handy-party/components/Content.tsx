@@ -1,8 +1,11 @@
 'use client';
 
 import Form from '@/components/form/Form';
-import { HANDY_PARTY_ROUTE_AREA } from '@/constants/taxiRouteArea.const';
-import { useMemo, useState } from 'react';
+import {
+  HANDY_PARTY_ROUTE_AREA,
+  HandyPartyRouteArea,
+} from '@/constants/handyPartyArea.const';
+import { ReactNode, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { EventsViewEntity } from '@/types/event.type';
 import { Controller, useForm } from 'react-hook-form';
@@ -13,6 +16,10 @@ import DateTimeInput from '@/components/input/DateTimeInput';
 import NumberInput from '@/components/input/NumberInput';
 import Callout from '@/components/text/Callout';
 import { useRouter } from 'next/navigation';
+import {
+  GOYANG_STADIUM_PRICE_TABLE,
+  HandyPartyPriceTable,
+} from '@/constants/handyPartyPriceTable.const';
 
 export interface FormValues {
   reservationDeadline: string;
@@ -20,7 +27,7 @@ export interface FormValues {
   fromDestinationDepartureTime: string;
   destinationHubId: string;
   priceOfAreas: {
-    area: (typeof HANDY_PARTY_ROUTE_AREA)[number];
+    area: HandyPartyRouteArea;
     price: number;
   }[];
 }
@@ -57,7 +64,7 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
     };
   }, [event, dailyEventId]);
 
-  const { control, handleSubmit } = useForm<FormValues>({
+  const { control, handleSubmit, setValue } = useForm<FormValues>({
     defaultValues,
   });
   const [regionIdForDestinationHub, setRegionIdForDestinationHub] = useState<
@@ -86,6 +93,18 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
       );
       console.error(error);
     }
+  };
+
+  const handleApplyPriceTable = (priceTable: HandyPartyPriceTable) => {
+    priceTable.forEach(({ area, price }) => {
+      const index = HANDY_PARTY_ROUTE_AREA.findIndex((a) => a === area);
+      if (index !== -1) {
+        setValue(`priceOfAreas.${index}`, {
+          area,
+          price,
+        });
+      }
+    });
   };
 
   return (
@@ -153,6 +172,14 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
       <Form.section>
         <Form.label required>권역별 노선 가격</Form.label>
         <Callout>가격이 0으로 설정된 권역은 노선이 생성되지 않습니다.</Callout>
+        <div className="flex flex-col gap-8 rounded-[6px] border border-grey-300 p-12">
+          <h5 className="text-14 font-600">단가표 적용하기</h5>
+          <PriceTableButton
+            onClick={() => handleApplyPriceTable(GOYANG_STADIUM_PRICE_TABLE)}
+          >
+            고양종합운동장 25.06
+          </PriceTableButton>
+        </div>
         <ul className="flex flex-col">
           {HANDY_PARTY_ROUTE_AREA.map((area, index) => (
             <Controller
@@ -180,3 +207,20 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
 };
 
 export default Content;
+
+interface PriceTableButtonProps {
+  onClick: () => void;
+  children: ReactNode;
+}
+
+const PriceTableButton = ({ onClick, children }: PriceTableButtonProps) => {
+  return (
+    <button
+      className="flex w-fit flex-row items-center justify-start rounded-xl border border-blue-100 px-8 py-4 text-14 font-500 transition-all hover:border-blue-600 active:scale-90 active:bg-blue-400 active:text-white disabled:cursor-not-allowed disabled:opacity-50"
+      type="button"
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};

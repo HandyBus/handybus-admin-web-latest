@@ -2,7 +2,10 @@ import {
   getShuttleRoutesOfDailyEvent,
   postShuttleRoute,
 } from '@/services/shuttleRoute.service';
-import { HANDY_PARTY_ROUTE_AREA } from '@/constants/taxiRouteArea.const';
+import {
+  HANDY_PARTY_ROUTE_AREA,
+  HandyPartyRouteArea,
+} from '@/constants/handyPartyArea.const';
 import { getRegionHubs } from '@/services/hub.service';
 import { useRef } from 'react';
 import { RegionHubsViewEntity } from '@/types/hub.type';
@@ -29,7 +32,7 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
   };
 
   const createHandyPartyRouteName = (
-    area: (typeof HANDY_PARTY_ROUTE_AREA)[number],
+    area: HandyPartyRouteArea,
     tripType: TripTypeWithoutRoundTrip,
   ) => {
     const tripTypeString = Stringifier.tripType(tripType);
@@ -45,7 +48,7 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
     fromDestinationDepartureTime,
     destinationHubId,
   }: {
-    area: (typeof HANDY_PARTY_ROUTE_AREA)[number];
+    area: HandyPartyRouteArea;
     price: number;
     tripType: TripTypeWithoutRoundTrip;
     reservationDeadline: string;
@@ -123,7 +126,7 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
     destinationHubId,
   }: {
     priceOfAreas: {
-      area: (typeof HANDY_PARTY_ROUTE_AREA)[number];
+      area: HandyPartyRouteArea;
       price: number;
     }[];
     reservationDeadline: string;

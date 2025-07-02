@@ -14,7 +14,7 @@ import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
 import { HANDY_PARTY_ROUTE_NAME_PREFIX } from '@/constants/common';
-import { HANDY_PARTY_ROUTE_AREA } from '@/constants/taxiRouteArea.const';
+import { HANDY_PARTY_ROUTE_AREA } from '@/constants/handyPartyArea.const';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
