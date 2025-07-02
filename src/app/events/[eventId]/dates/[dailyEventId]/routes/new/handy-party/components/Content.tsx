@@ -74,16 +74,18 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
     string | null
   >(null);
 
-  const { createMultipleHandyPartyRoutes } = usePostHandyPartyRoutes({
-    eventId,
-    dailyEventId,
-  });
+  const { createMultipleHandyPartyRoutes, isLoading } = usePostHandyPartyRoutes(
+    {
+      eventId,
+      dailyEventId,
+    },
+  );
 
   const onSubmit = async (data: FormValues) => {
-    const userConfirmed = confirm(
-      '핸디팟 노선들을 생성하시겠습니까? 노선 생성에는 시간이 소요됩니다. 잠시 후 노선 생성 완료 메시지가 표시됩니다.',
+    const confirmed = confirm(
+      '핸디팟 노선들을 생성하시겠습니까? 노선 생성에는 1분 정도 소요됩니다. 노선 생성 완료 메시지가 표시될 때까지 기다려주세요.',
     );
-    if (!userConfirmed) {
+    if (!confirmed) {
       return;
     }
     try {
@@ -242,7 +244,9 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
           ))}
         </ul>
       </Form.section>
-      <Form.submitButton>핸디팟 노선 생성하기</Form.submitButton>
+      <Form.submitButton disabled={isLoading}>
+        {isLoading ? '노선 생성 중...' : '핸디팟 노선 생성하기'}
+      </Form.submitButton>
     </Form>
   );
 };

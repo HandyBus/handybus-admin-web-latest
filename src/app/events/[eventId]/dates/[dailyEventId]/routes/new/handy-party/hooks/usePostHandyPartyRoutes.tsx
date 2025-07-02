@@ -7,7 +7,7 @@ import {
   HandyPartyRouteArea,
 } from '@/constants/handyPartyArea.const';
 import { getRegionHubs } from '@/services/hub.service';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { RegionHubsViewEntity } from '@/types/hub.type';
 import { CreateShuttleRouteRequest, TripType } from '@/types/shuttleRoute.type';
 import Stringifier from '@/utils/stringifier.util';
@@ -137,6 +137,8 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
     await postShuttleRoute(eventId, dailyEventId, body);
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const createMultipleHandyPartyRoutes = async ({
     priceOfAreas,
     reservationDeadline,
@@ -152,6 +154,7 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
     fromDestinationDepartureTime: string;
     destinationHubId: string;
   }) => {
+    setIsLoading(true);
     await fetchHandyPartyHubs();
     const routes = await getShuttleRoutesOfDailyEvent(eventId, dailyEventId);
 
@@ -159,69 +162,70 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
       route.name.startsWith(HANDY_PARTY_ROUTE_NAME_PREFIX),
     );
 
-    const newRoutePromises: Promise<void>[] = HANDY_PARTY_ROUTE_AREA.reduce(
-      (acc, area) => {
-        const priceOfArea = priceOfAreas.find((el) => el.area === area);
-        if (
-          priceOfArea === undefined ||
-          priceOfArea === null ||
-          priceOfArea.regularPrice === 0
-        ) {
-          return acc;
-        }
+    const routeTasks: {
+      area: HandyPartyRouteArea;
+      regularPrice: number;
+      earlybirdPrice: number;
+      tripType: TripTypeWithoutRoundTrip;
+    }[] = [];
 
-        const existingRoutesOfArea = existingHandyPartyRoutes.filter((route) =>
-          route.name.includes(area),
-        );
+    HANDY_PARTY_ROUTE_AREA.forEach((area) => {
+      const priceOfArea = priceOfAreas.find((el) => el.area === area);
+      if (
+        priceOfArea === undefined ||
+        priceOfArea === null ||
+        priceOfArea.regularPrice === 0
+      ) {
+        return;
+      }
 
-        const toDestinationRouteExists = existingRoutesOfArea.some((route) =>
-          route.name.includes('가는편'),
-        );
-        const fromDestinationRouteExists = existingRoutesOfArea.some((route) =>
-          route.name.includes('오는편'),
-        );
+      const existingRoutesOfArea = existingHandyPartyRoutes.filter((route) =>
+        route.name.includes(area),
+      );
+      const toDestinationRouteExists = existingRoutesOfArea.some((route) =>
+        route.name.includes('가는편'),
+      );
+      const fromDestinationRouteExists = existingRoutesOfArea.some((route) =>
+        route.name.includes('오는편'),
+      );
 
-        const newRoutes: Promise<void>[] = [];
+      if (!toDestinationRouteExists) {
+        routeTasks.push({
+          area,
+          regularPrice: priceOfArea.regularPrice,
+          earlybirdPrice: priceOfArea.earlybirdPrice,
+          tripType: 'TO_DESTINATION',
+        });
+      }
+      if (!fromDestinationRouteExists) {
+        routeTasks.push({
+          area,
+          regularPrice: priceOfArea.regularPrice,
+          earlybirdPrice: priceOfArea.earlybirdPrice,
+          tripType: 'FROM_DESTINATION',
+        });
+      }
+    });
 
-        if (!toDestinationRouteExists) {
-          newRoutes.push(
-            createSingleHandyPartyRoute({
-              area,
-              regularPrice: priceOfArea.regularPrice,
-              earlybirdPrice: priceOfArea.earlybirdPrice,
-              tripType: 'TO_DESTINATION',
-              reservationDeadline,
-              earlybirdReservationDeadline,
-              toDestinationArrivalTime,
-              fromDestinationDepartureTime,
-              destinationHubId,
-            }),
-          );
-        }
-        if (!fromDestinationRouteExists) {
-          newRoutes.push(
-            createSingleHandyPartyRoute({
-              area,
-              regularPrice: priceOfArea.regularPrice,
-              earlybirdPrice: priceOfArea.earlybirdPrice,
-              tripType: 'FROM_DESTINATION',
-              reservationDeadline,
-              earlybirdReservationDeadline,
-              toDestinationArrivalTime,
-              fromDestinationDepartureTime,
-              destinationHubId,
-            }),
-          );
-        }
-        return acc.concat(newRoutes);
-      },
-      [] as Promise<void>[],
-    );
-
-    await Promise.all(newRoutePromises);
+    // NOTE: Promise.all 사용 시 수요조사 한 사람들에게 알림톡 중복 발송됨. 각 노선 생성 사이 0.5초 딜레이 추가 (딜레이 없을 경우에도 중복 발송됨).
+    for (const task of routeTasks) {
+      await createSingleHandyPartyRoute({
+        area: task.area,
+        regularPrice: task.regularPrice,
+        earlybirdPrice: task.earlybirdPrice,
+        tripType: task.tripType,
+        reservationDeadline,
+        earlybirdReservationDeadline,
+        toDestinationArrivalTime,
+        fromDestinationDepartureTime,
+        destinationHubId,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    setIsLoading(false);
   };
 
-  return { createMultipleHandyPartyRoutes };
+  return { createMultipleHandyPartyRoutes, isLoading };
 };
 
 export default usePostHandyPartyRoutes;
