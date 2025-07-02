@@ -71,6 +71,7 @@ const NavItems = () => {
       <NavItem href="/banners">배너</NavItem>
       <NavItem href="/announcements">공지</NavItem>
       <NavItem href="/feedbacks">피드백</NavItem>
+      <NavItem href="/optimizer">최적 경로 계산기</NavItem>
     </>
   );
 };
