@@ -41,7 +41,7 @@ const Page = ({ params }: Props) => {
       name: route?.name ?? '',
       hasEarlybird: route?.hasEarlybird ?? false,
       status: route?.status ?? 'INACTIVE',
-      earlybirdDeadline: route?.earlybirdDeadline ?? '',
+      earlybirdDeadline: route?.earlybirdDeadline ?? undefined,
       earlybirdPrice: route?.hasEarlybird
         ? {
             roundTrip: route?.earlybirdPriceRoundTrip ?? 0,
