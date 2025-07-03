@@ -207,7 +207,7 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
       }
     });
 
-    // NOTE: Promise.all 사용 시 수요조사 한 사람들에게 알림톡 중복 발송됨. 각 노선 생성 사이 0.5초 딜레이 추가 (딜레이 없을 경우에도 중복 발송됨).
+    // NOTE: Promise.all 사용 시 수요조사 한 사람들에게 알림톡 중복 발송됨
     for (const task of routeTasks) {
       await createSingleHandyPartyRoute({
         area: task.area,
@@ -220,7 +220,6 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
         fromDestinationDepartureTime,
         destinationHubId,
       });
-      await new Promise((resolve) => setTimeout(resolve, 500));
     }
     setIsLoading(false);
   };
