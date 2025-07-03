@@ -5,7 +5,6 @@ import Callout from '@/components/text/Callout';
 import Heading from '@/components/text/Heading';
 import List from '@/components/text/List';
 import { useGetEvent } from '@/services/event.service';
-import { usePostShuttleRoute } from '@/services/shuttleRoute.service';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
 import Content from './components/Content';
@@ -21,8 +20,6 @@ const Page = ({ params }: Props) => {
   const dailyEvent = event
     ? event.dailyEvents.find((el) => el.dailyEventId === dailyEventId)
     : null;
-
-  const {} = usePostShuttleRoute();
 
   if (isPending) return <div>Loading...</div>;
   if (isError) return <div>Error! {error?.message}</div>;
