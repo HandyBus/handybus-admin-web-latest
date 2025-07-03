@@ -13,7 +13,7 @@ import { useGetEvent } from '@/services/event.service';
 import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
-import { HANDY_PARTY_ROUTE_NAME_PREFIX } from '@/constants/common';
+import { HANDY_PARTY_PREFIX } from '@/constants/common';
 import { HANDY_PARTY_ROUTE_AREA } from '@/constants/handyPartyArea.const';
 
 interface Props {
@@ -41,10 +41,10 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     }
 
     const handyPartyRoutes = routes.filter((r) =>
-      r.name.includes(HANDY_PARTY_ROUTE_NAME_PREFIX),
+      r.name.includes(HANDY_PARTY_PREFIX),
     );
     const shuttleRoutes = routes.filter(
-      (r) => !r.name.includes(HANDY_PARTY_ROUTE_NAME_PREFIX),
+      (r) => !r.name.includes(HANDY_PARTY_PREFIX),
     );
     const sortedHandyPartyRoutes = handyPartyRoutes.sort((a, b) => {
       const aArea = a.name.split('_')[1];

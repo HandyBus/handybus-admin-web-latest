@@ -68,7 +68,9 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
         ? 'EVENT_PARKING_LOT'
         : hub.shuttleHub
           ? 'SHUTTLE_HUB'
-          : undefined,
+          : hub.handyParty
+            ? 'HANDY_PARTY'
+            : undefined,
   );
   const defaultValues = {
     regionId: hub.regionId,
@@ -197,6 +199,11 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
               label="정류장"
               value={tagState === 'SHUTTLE_HUB'}
               setValue={() => handleTagToggle('SHUTTLE_HUB')}
+            />
+            <Toggle
+              label="핸디팟"
+              value={tagState === 'HANDY_PARTY'}
+              setValue={() => handleTagToggle('HANDY_PARTY')}
             />
           </div>
         </Form.section>

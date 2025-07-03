@@ -12,7 +12,7 @@ import { RegionHubsViewEntity } from '@/types/hub.type';
 import { CreateShuttleRouteRequest, TripType } from '@/types/shuttleRoute.type';
 import Stringifier from '@/utils/stringifier.util';
 import dayjs from 'dayjs';
-import { HANDY_PARTY_ROUTE_NAME_PREFIX } from '@/constants/common';
+import { HANDY_PARTY_PREFIX } from '@/constants/common';
 import { HandyPartyPriceTable } from '@/constants/handyPartyPriceTable.const';
 
 type TripTypeWithoutRoundTrip = Exclude<TripType, 'ROUND_TRIP'>;
@@ -37,7 +37,7 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
     tripType: TripTypeWithoutRoundTrip,
   ) => {
     const tripTypeString = Stringifier.tripType(tripType);
-    return `${HANDY_PARTY_ROUTE_NAME_PREFIX}_${area}_${tripTypeString}`;
+    return `${HANDY_PARTY_PREFIX}_${area}_${tripTypeString}`;
   };
 
   const createSingleHandyPartyRoute = async ({
@@ -61,7 +61,10 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
     fromDestinationDepartureTime: string;
     destinationHubId: string;
   }) => {
-    const targetHub = handyPartyHubs.current.find((hub) => hub.name === area);
+    const targetHub = handyPartyHubs.current.find((hub) => {
+      const hubArea = hub.name.split('_')?.[1];
+      return hubArea === area;
+    });
 
     if (!targetHub) {
       return;
@@ -159,7 +162,7 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
     const routes = await getShuttleRoutesOfDailyEvent(eventId, dailyEventId);
 
     const existingHandyPartyRoutes = routes.filter((route) =>
-      route.name.startsWith(HANDY_PARTY_ROUTE_NAME_PREFIX),
+      route.name.startsWith(HANDY_PARTY_PREFIX),
     );
 
     const routeTasks: {
