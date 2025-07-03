@@ -3,6 +3,7 @@
 import {
   CreateHubRequest,
   CreateHubRequestSchema,
+  HubUsageType,
   RegionHubsViewEntitySchema,
 } from '@/types/hub.type';
 import { authInstance } from './config';
@@ -33,20 +34,6 @@ export const useGetRegions = () => {
   });
 };
 
-export interface GetRegionHubsOptions {
-  regionId?: string;
-  name?: string;
-  usageType?: string[];
-  orderBy?: 'name' | 'address' | 'latitude' | 'longitude';
-  order?: 'ASC' | 'DESC';
-}
-
-export interface GetRegionHubsOptionsWithPagination
-  extends GetRegionHubsOptions {
-  page: string | undefined;
-  limit?: number;
-}
-
 export const getRegionHubsWithoutPagination = async (regionId: string) => {
   const res = await authInstance.get(
     `/v2/location/admin/regions/${regionId}/hubs`,
@@ -70,6 +57,20 @@ export const useGetRegionHubsWithoutPagination = ({
     enabled,
   });
 };
+
+export interface GetRegionHubsOptions {
+  regionId?: string;
+  name?: string;
+  usageType?: HubUsageType[];
+  orderBy?: 'name' | 'address' | 'latitude' | 'longitude';
+  order?: 'ASC' | 'DESC';
+}
+
+export interface GetRegionHubsOptionsWithPagination
+  extends GetRegionHubsOptions {
+  page?: string | undefined;
+  limit?: number;
+}
 
 export const getRegionHubs = async (
   options?: GetRegionHubsOptionsWithPagination,

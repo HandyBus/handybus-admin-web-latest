@@ -5,7 +5,7 @@ import useTable from '@/hooks/useTable';
 import BlueLink from '@/components/link/BlueLink';
 import { notFound } from 'next/navigation';
 import { columns } from './table.type';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
 import { useGetShuttleRoutesOfDailyEvent } from '@/services/shuttleRoute.service';
@@ -13,6 +13,8 @@ import { useGetEvent } from '@/services/event.service';
 import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
+import { HANDY_PARTY_PREFIX } from '@/constants/common';
+import { HANDY_PARTY_ROUTE_AREA } from '@/constants/handyPartyArea.const';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -33,7 +35,38 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     error: routesError,
   } = useGetShuttleRoutesOfDailyEvent(eventId, dailyEventId);
 
-  const table = useTable({ data: routes, columns });
+  const sortedRoutes = useMemo(() => {
+    if (!routes) {
+      return [];
+    }
+
+    const handyPartyRoutes = routes.filter((r) =>
+      r.name.includes(HANDY_PARTY_PREFIX),
+    );
+    const shuttleRoutes = routes.filter(
+      (r) => !r.name.includes(HANDY_PARTY_PREFIX),
+    );
+    const sortedHandyPartyRoutes = handyPartyRoutes.sort((a, b) => {
+      const aArea = a.name.split('_')[1];
+      const bArea = b.name.split('_')[1];
+      const aIndex = HANDY_PARTY_ROUTE_AREA.findIndex((area) => area === aArea);
+      const bIndex = HANDY_PARTY_ROUTE_AREA.findIndex((area) => area === bArea);
+      const aTripType = a.name.split('_')[2];
+      if (aIndex === -1) {
+        return 1;
+      }
+      if (bIndex === -1) {
+        return -1;
+      }
+      if (aIndex === bIndex) {
+        return aTripType === '가는편' ? -1 : 1;
+      }
+      return aIndex < bIndex ? -1 : 1;
+    });
+    return [...shuttleRoutes, ...sortedHandyPartyRoutes];
+  }, [routes]);
+
+  const table = useTable({ data: sortedRoutes, columns });
 
   const dailyEvent = event
     ? event.dailyEvents.find((d) => d.dailyEventId === dailyEventId)
