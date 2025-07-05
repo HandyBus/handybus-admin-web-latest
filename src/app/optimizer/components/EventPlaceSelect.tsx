@@ -27,7 +27,7 @@ const EventPlaceSelect = ({
         setEventPlace(value);
       }}
     >
-      <div className="group relative w-4/12">
+      <div className="group relative w-full">
         <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-grey-400 group-focus:text-blue-500">
           <ChevronDown />
         </ComboboxButton>

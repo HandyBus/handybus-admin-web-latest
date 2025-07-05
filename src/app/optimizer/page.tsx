@@ -74,7 +74,7 @@ const RouteOptimizer = () => {
         </div>
 
         <div className="flex gap-12 pb-16">
-          <Heading.h5>여정방향</Heading.h5>
+          <Heading.h5 className="whitespace-nowrap">여정방향</Heading.h5>
           <select
             className="border-gray-300 rounded-md border p-4"
             value={tripType as string}
@@ -83,7 +83,7 @@ const RouteOptimizer = () => {
             <option value="TO_DESTINATION">가는 편</option>
             <option value="FROM_DESTINATION">오는 편</option>
           </select>
-          <Heading.h5>행사장소</Heading.h5>
+          <Heading.h5 className="whitespace-nowrap">행사장소</Heading.h5>
           <EventPlaceSelect
             eventPlace={eventPlace}
             setEventPlace={setEventPlace}
