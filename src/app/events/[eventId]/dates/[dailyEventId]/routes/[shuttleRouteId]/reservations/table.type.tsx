@@ -40,10 +40,6 @@ export const busColumns = [
 const reservationColumnHelper = createColumnHelper<ReservationViewEntity>();
 
 export const reservationColumns = [
-  reservationColumnHelper.accessor('reservationId', {
-    header: () => 'ID',
-    cell: (info) => info.getValue(),
-  }),
   reservationColumnHelper.display({
     id: 'user',
     header: () => '고객 정보',
@@ -58,6 +54,10 @@ export const reservationColumns = [
   reservationColumnHelper.accessor('createdAt', {
     header: () => '예약일',
     cell: (info) => formatDateString(info.getValue(), 'datetime'),
+  }),
+  reservationColumnHelper.accessor('metadata.desiredHubAddress', {
+    header: () => '유저 입력 주소',
+    cell: (info) => info.getValue() ?? '-',
   }),
   reservationColumnHelper.accessor('reservationStatus', {
     header: () => '예약 상태',
