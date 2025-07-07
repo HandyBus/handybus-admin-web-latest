@@ -38,4 +38,16 @@ export const columns = [
     header: () => '수정일',
     cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
+  columnHelper.accessor('metadata.desiredHubAddress', {
+    header: () => '유저 입력 주소',
+    cell: (info) => info.getValue() ?? '-',
+  }),
+  columnHelper.accessor('metadata.desiredHubLatitude', {
+    header: () => '유저 입력 위도',
+    cell: (info) => info.getValue() ?? '-',
+  }),
+  columnHelper.accessor('metadata.desiredHubLongitude', {
+    header: () => '유저 입력 경도',
+    cell: (info) => info.getValue() ?? '-',
+  }),
 ];

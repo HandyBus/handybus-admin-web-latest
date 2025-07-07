@@ -58,6 +58,11 @@ export const ReservationViewEntitySchema = z
     createdAt: z.string(),
     updatedAt: z.string(),
     reviewId: z.string().nullable(),
+    metadata: z.object({
+      desiredHubAddress: z.string().nullable(),
+      desiredHubLatitude: z.number().nullable(),
+      desiredHubLongitude: z.number().nullable(),
+    }),
   })
   .strict();
 export type ReservationViewEntity = z.infer<typeof ReservationViewEntitySchema>;
