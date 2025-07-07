@@ -15,7 +15,7 @@ import Form from '@/components/form/Form';
 import MapGuidesAtNewEditPage from '../components/MapGuidesAtNewEditPage';
 import Toggle from '@/components/button/Toggle';
 import { putShuttleStop } from '@/services/shuttleStops.service';
-import { TagStates } from '../location.type';
+import { HubUsageType } from '@/types/hub.type';
 
 interface Props {
   searchParams: { latitude: string; longitude: string; address: string };
@@ -23,7 +23,9 @@ interface Props {
 
 const NewHubPage = ({ searchParams }: Props) => {
   const router = useRouter();
-  const [tagState, setTagState] = useState<TagStates>('SHUTTLE_HUB');
+  const [tagState, setTagState] = useState<HubUsageType | undefined>(
+    'SHUTTLE_HUB',
+  );
 
   const { data: regions } = useGetRegions();
   const { control, handleSubmit } = useForm<CreateHubFormType>({
@@ -81,7 +83,7 @@ const NewHubPage = ({ searchParams }: Props) => {
     [recommended, router, regions, tagState],
   );
 
-  const handleTagToggle = (key: TagStates) => {
+  const handleTagToggle = (key: HubUsageType) => {
     setTagState(key);
   };
 
@@ -151,6 +153,11 @@ const NewHubPage = ({ searchParams }: Props) => {
               label="정류장"
               value={tagState === 'SHUTTLE_HUB'}
               setValue={() => handleTagToggle('SHUTTLE_HUB')}
+            />
+            <Toggle
+              label="핸디팟"
+              value={tagState === 'HANDY_PARTY'}
+              setValue={() => handleTagToggle('HANDY_PARTY')}
             />
           </div>
         </Form.section>

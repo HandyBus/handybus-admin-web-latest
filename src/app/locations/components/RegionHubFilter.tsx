@@ -72,7 +72,7 @@ const RegionHubFilter = ({ option, dispatch }: Props) => {
                     ? option.usageType?.filter(
                         (type) => type !== 'EVENT_LOCATION',
                       )
-                    : [...(option.usageType ?? []), 'EVENT_LOCATION'];
+                    : [...(option.usageType ?? []), 'EVENT_LOCATION' as const];
 
                   dispatch({
                     type: 'SET_USAGE_TYPE',
@@ -91,7 +91,10 @@ const RegionHubFilter = ({ option, dispatch }: Props) => {
                     ? option.usageType?.filter(
                         (type) => type !== 'EVENT_PARKING_LOT',
                       )
-                    : [...(option.usageType ?? []), 'EVENT_PARKING_LOT'];
+                    : [
+                        ...(option.usageType ?? []),
+                        'EVENT_PARKING_LOT' as const,
+                      ];
 
                   dispatch({
                     type: 'SET_USAGE_TYPE',
@@ -106,7 +109,7 @@ const RegionHubFilter = ({ option, dispatch }: Props) => {
                 setValue={() => {
                   const newUsageType = option.usageType?.includes('SHUTTLE_HUB')
                     ? option.usageType?.filter((type) => type !== 'SHUTTLE_HUB')
-                    : [...(option.usageType ?? []), 'SHUTTLE_HUB'];
+                    : [...(option.usageType ?? []), 'SHUTTLE_HUB' as const];
 
                   dispatch({
                     type: 'SET_USAGE_TYPE',

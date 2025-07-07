@@ -1,0 +1,20 @@
+export const HANDY_PARTY_ROUTE_AREA = [
+  '동북권',
+  '서북권',
+  '중심권',
+  '성동.광진권',
+  '강서권',
+  '서남권',
+  '동남권',
+  '수원',
+  '성남',
+  '고양',
+  '부평',
+  '광명',
+  '동탄',
+  '안양',
+  '안산',
+  '하남',
+  '남양주',
+] as const;
+export type HandyPartyRouteArea = (typeof HANDY_PARTY_ROUTE_AREA)[number];

@@ -91,9 +91,9 @@ export const CreateShuttleRouteRequestSchema = z
     hasEarlybird: z.boolean(),
     earlybirdPrice: z
       .object({
-        toDestination: z.number(),
-        fromDestination: z.number(),
-        roundTrip: z.number(),
+        toDestination: z.number().nullable(),
+        fromDestination: z.number().nullable(),
+        roundTrip: z.number().nullable(),
       })
       .optional(),
     regularPrice: z.object({

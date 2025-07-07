@@ -1,5 +1,13 @@
 import { z } from 'zod';
 
+export const HubUsageTypeEnum = z.enum([
+  'SHUTTLE_HUB',
+  'EVENT_LOCATION',
+  'EVENT_PARKING_LOT',
+  'HANDY_PARTY',
+]);
+export type HubUsageType = z.infer<typeof HubUsageTypeEnum>;
+
 // ----- GET -----
 
 export const RouteHubSchema = z.object({
@@ -22,6 +30,7 @@ export const RegionHubsViewEntitySchema = z.object({
   eventLocation: z.boolean(),
   eventParkingLot: z.boolean(),
   shuttleHub: z.boolean(),
+  handyParty: z.boolean(),
 });
 export type RegionHubsViewEntity = z.infer<typeof RegionHubsViewEntitySchema>;
 

@@ -19,21 +19,27 @@ export const columns = [
       const eventLocation = info.row.original.eventLocation;
       const shuttleHub = info.row.original.shuttleHub;
       const eventParkingLot = info.row.original.eventParkingLot;
+      const handyParty = info.row.original.handyParty;
       return (
         <div className="flex flex-col gap-4">
           {eventLocation && (
-            <span className="py-2 rounded-xl bg-green-50 px-4 text-center text-14 font-500 text-green-500">
+            <span className="rounded-xl bg-green-50 px-4 py-[2px] text-center text-14 font-500 text-green-500">
               행사장
             </span>
           )}
           {shuttleHub && (
-            <span className="py-2 rounded-xl bg-blue-50 px-4 text-center text-14 font-500 text-blue-500">
+            <span className="rounded-xl bg-blue-50 px-4 py-[2px] text-center text-14 font-500 text-blue-500">
               정류장
             </span>
           )}
           {eventParkingLot && (
-            <span className="py-2 rounded-xl bg-red-50 px-4 text-center text-14 font-500 text-red-500">
+            <span className="rounded-xl bg-red-50 px-4 py-[2px] text-center text-14 font-500 text-red-500">
               주차장
+            </span>
+          )}
+          {handyParty && (
+            <span className="rounded-xl border border-grey-100 bg-grey-50 px-4 py-[2px] text-center text-14 font-500">
+              핸디팟
             </span>
           )}
         </div>

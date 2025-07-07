@@ -1,6 +1,7 @@
 import { GetRegionHubsOptions } from '@/services/hub.service';
 import { useReducer, useEffect, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { HubUsageType } from '@/types/hub.type';
 
 const useRegionHubFilter = (partial: GetRegionHubsOptions = {}) => {
   const searchParams = useSearchParams();
@@ -20,7 +21,7 @@ const useRegionHubFilter = (partial: GetRegionHubsOptions = {}) => {
     if (searchParams.has('usageType')) {
       const usageTypeString = searchParams.get('usageType');
       urlState.usageType = usageTypeString
-        ? usageTypeString.split(',')
+        ? (usageTypeString.split(',') as HubUsageType[])
         : undefined;
     }
 
