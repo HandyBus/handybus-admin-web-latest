@@ -107,7 +107,7 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
   });
 
   const handleTagToggle = (key: HubUsageType) => {
-    setTagState(key);
+    setTagState((prev) => (prev === key ? undefined : key));
   };
 
   const onSubmit = useCallback(
