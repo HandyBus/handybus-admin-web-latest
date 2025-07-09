@@ -76,7 +76,7 @@ const RouteOptimizer = () => {
         <div className="flex gap-12 pb-16">
           <Heading.h5 className="whitespace-nowrap">여정방향</Heading.h5>
           <select
-            className="border-gray-300 rounded-md border p-4"
+            className="rounded-md border border-grey-300 p-4"
             value={tripType as string}
             onChange={(e) => setTripType(e.target.value as SingleSideTripType)}
           >

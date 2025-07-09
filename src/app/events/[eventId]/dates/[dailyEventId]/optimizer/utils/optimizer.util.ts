@@ -8,7 +8,7 @@ import {
 import { RegionHubsViewEntity } from '@/types/hub.type';
 
 /**
- * OptimalPathCalculator 함수는 주소 데이터를 기반으로 최적 경로를 계산하는 함수입니다.
+ * calculateOptimalPath 함수는 주소 데이터를 기반으로 최적 경로를 계산하는 함수입니다.
  * 5k+1 순서 (1, 6, 11, 16, ...)는 콘서트장에서 API 기준 최소시간으로 선택하고
  * 나머지 순서는 현재 위치에서 거리 기준 최단거리로 선택합니다.
  */
@@ -17,7 +17,7 @@ interface Props {
   eventPlace: RegionHubsViewEntity;
   tripType: SingleSideTripType;
 }
-export const OptimalPathCalculator = async ({
+export const calculateOptimalPath = async ({
   addressData,
   eventPlace,
   tripType,

@@ -7,7 +7,7 @@ import {
 import { RegionHubsViewEntity } from '@/types/hub.type';
 import { parseInputData } from '../utils/parseInputData.util';
 import {
-  OptimalPathCalculator,
+  calculateOptimalPath,
   createMapDisplayData,
 } from '../utils/optimizer.util';
 
@@ -51,7 +51,7 @@ const useCalculateOptimizedRoute = ({
         return;
       }
 
-      const calculatedData = await OptimalPathCalculator({
+      const calculatedData = await calculateOptimalPath({
         addressData: parsed,
         eventPlace,
         tripType,
