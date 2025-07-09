@@ -93,4 +93,24 @@ export const GOYANG_STADIUM_PRICE_TABLE: HandyPartyPriceTable = [
     regularPrice: 37100,
     earlybirdPrice: 32500,
   },
+  {
+    area: '용인',
+    regularPrice: 0,
+    earlybirdPrice: 0,
+  },
+  {
+    area: '시흥',
+    regularPrice: 0,
+    earlybirdPrice: 0,
+  },
+  {
+    area: '파주',
+    regularPrice: 0,
+    earlybirdPrice: 0,
+  },
+  {
+    area: '평택',
+    regularPrice: 0,
+    earlybirdPrice: 0,
+  },
 ] as const;
