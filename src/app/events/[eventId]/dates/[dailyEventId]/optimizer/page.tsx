@@ -69,7 +69,7 @@ const RouteOptimizer = () => {
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder={PLACEHOLDER_TEXT}
-            className="p-3 border-gray-300 h-160 w-full resize-y rounded-md border "
+            className="h-160 w-full resize-y rounded-md border border-grey-300 p-8 "
           />
         </div>
 
