@@ -116,6 +116,9 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
           <BlueLink href={`${dailyEventId}/routes/new`} className="text-14">
             추가하기
           </BlueLink>
+          <BlueLink href={`${dailyEventId}/optimizer`} className="text-14">
+            핸디팟 최적 경로 계산기
+          </BlueLink>
         </Heading.h2>
         <BaseTable table={table} />
       </div>

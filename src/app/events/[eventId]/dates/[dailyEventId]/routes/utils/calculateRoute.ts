@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { getEstimatedRoute } from '@/services/kakaomoblility.service';
+import { getEstimatedRouteFuturePath } from '@/services/kakaomoblility.service';
 import {
   roundDownToNearestFiveMinutes,
   roundUpToNearestFiveMinutes,
@@ -48,7 +48,7 @@ export const calculateRouteTimes = async (
     .tz('Asia/Seoul')
     .format('YYYYMMDDHHmm'); // kakaomobility api 는 한국시간을 기준으로 받기에 한국시간으로 변환
 
-  const res = await getEstimatedRoute({
+  const res = await getEstimatedRouteFuturePath({
     origin,
     destination,
     waypoints,
@@ -125,7 +125,7 @@ export const calculateRouteBackwardTimes = async (
   // 임의의 출발 시간
   const tempDepartureTime = dayjs().format('YYYYMMDDHHmm'); // kakaomobility api 는 한국시간을 기준으로 받기에 한국시간으로 변환
 
-  const res = await getEstimatedRoute({
+  const res = await getEstimatedRouteFuturePath({
     origin,
     destination,
     waypoints,
