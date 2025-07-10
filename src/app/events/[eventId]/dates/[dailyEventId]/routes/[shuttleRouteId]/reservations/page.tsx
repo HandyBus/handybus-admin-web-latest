@@ -7,6 +7,10 @@ import { useGetShuttleRoute } from '@/services/shuttleRoute.service';
 import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
+import HandyPartyReservationTable from './components/HandyPartyReservationTable';
+import HandyPartyVehicleAssignment from './components/optimizer/HandyPartyVehicleAssignment';
+
+const HANDY_PARTY_PREFIX = '핸디팟';
 
 interface Props {
   params: {
@@ -33,6 +37,7 @@ const Page = ({ params }: Props) => {
   );
 
   const shuttleRouteName = shuttleRoute?.name;
+  const isHandyParty = shuttleRouteName?.includes(HANDY_PARTY_PREFIX);
 
   return (
     <main>
@@ -44,16 +49,33 @@ const Page = ({ params }: Props) => {
           <List.item title="노선명">{shuttleRouteName}</List.item>
         </List>
       </Callout>
-      <ReservationTable
-        eventId={eventId}
-        dailyEventId={dailyEventId}
-        shuttleRouteId={shuttleRouteId}
-      />
-      <BusTable
-        eventId={eventId}
-        dailyEventId={dailyEventId}
-        shuttleRouteId={shuttleRouteId}
-      />
+      {isHandyParty ? (
+        <>
+          <HandyPartyReservationTable
+            eventId={eventId}
+            dailyEventId={dailyEventId}
+            shuttleRouteId={shuttleRouteId}
+          />
+          <HandyPartyVehicleAssignment
+            eventId={eventId}
+            dailyEventId={dailyEventId}
+            shuttleRouteId={shuttleRouteId}
+          />
+        </>
+      ) : (
+        <>
+          <ReservationTable
+            eventId={eventId}
+            dailyEventId={dailyEventId}
+            shuttleRouteId={shuttleRouteId}
+          />
+          <BusTable
+            eventId={eventId}
+            dailyEventId={dailyEventId}
+            shuttleRouteId={shuttleRouteId}
+          />
+        </>
+      )}
     </main>
   );
 };

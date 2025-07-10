@@ -1,4 +1,6 @@
-export type SingleSideTripType = 'TO_DESTINATION' | 'FROM_DESTINATION';
+import { TripType } from '@/types/shuttleRoute.type';
+
+export type SingleSideTripType = Exclude<TripType, 'ROUND_TRIP'>;
 
 export interface AddressData {
   longitude: number;

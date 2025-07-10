@@ -58,6 +58,11 @@ export const ReservationViewEntitySchema = z
     createdAt: z.string(),
     updatedAt: z.string(),
     reviewId: z.string().nullable(),
+    metadata: z.object({ // NOTE: metadata type 을 z.object({any: z.any()}) 로 해두어야하나?
+      desiredHubAddress: z.string().nullable(),
+      desiredHubLatitude: z.number().nullable(),
+      desiredHubLongitude: z.number().nullable(),
+    }).nullable(),
   })
   .strict();
 export type ReservationViewEntity = z.infer<typeof ReservationViewEntitySchema>;

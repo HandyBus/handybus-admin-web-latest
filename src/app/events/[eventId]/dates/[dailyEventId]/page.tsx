@@ -13,6 +13,8 @@ import { useGetEvent } from '@/services/event.service';
 import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
+import BlueButton from '@/components/link/BlueButton';
+import extractHandyPartyBoardingList from './utils/extractHandyPartyBoardingList';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };

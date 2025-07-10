@@ -114,3 +114,59 @@ export const reservationColumns = [
     ),
   }),
 ];
+
+const handyPartyReservationColumnHelper = createColumnHelper<ReservationViewEntity>();
+
+export const handyPartyReservationColumns = [
+  handyPartyReservationColumnHelper.accessor('reservationId', {
+    header: () => 'ID',
+    cell: (info) => info.getValue(),
+  }),
+  handyPartyReservationColumnHelper.display({
+    id: 'user',
+    header: () => '고객 정보',
+    cell: (props) => (
+      <span>
+        <span>{props.row.original.userNickname}</span>
+        <br />
+        <span>({props.row.original.userPhoneNumber || '전화번호 없음'})</span>
+      </span>
+    ),
+  }),
+  handyPartyReservationColumnHelper.accessor('createdAt', {
+    header: () => '예약일',
+    cell: (info) => formatDateString(info.getValue(), 'datetime'),
+  }),
+  handyPartyReservationColumnHelper.accessor('reservationStatus', {
+    header: () => '예약 상태',
+    cell: (info) => {
+      const reservationStatus = Stringifier.reservationStatus(info.getValue());
+      const style = {
+        미결제: 'text-grey-500',
+        '결제 완료': 'text-green-500',
+        취소: 'text-red-500',
+      };
+      return <b className={style[reservationStatus]}>{reservationStatus}</b>;
+    },
+  }),
+  handyPartyReservationColumnHelper.accessor('passengerCount', {
+    header: () => '예약 인원',
+    cell: (info) => info.getValue() + '인',
+  }),
+  handyPartyReservationColumnHelper.accessor('type', {
+    id: 'type',
+    header: () => '예약 유형',
+    cell: (info) => Stringifier.tripType(info.getValue()),
+  }),
+  handyPartyReservationColumnHelper.display({
+    id: 'actions',
+    header: '상세',
+    cell: (props) => (
+      <>
+        <BlueLink href={`/reservations/${props.row.original.reservationId}`}>
+          상세보기
+        </BlueLink>
+      </>
+    ),
+  }),
+];
