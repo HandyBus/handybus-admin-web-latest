@@ -190,7 +190,7 @@ const CreateEventForm = () => {
                 aria-label="Server size"
               >
                 {EventTypeEnum.options.map((plan) => (
-                  <Field key={plan} className="gap-2 flex items-center">
+                  <Field key={plan} className="flex items-center gap-[2px]">
                     <Radio
                       value={plan}
                       className="group flex size-fit items-center justify-center rounded-lg bg-white p-4
