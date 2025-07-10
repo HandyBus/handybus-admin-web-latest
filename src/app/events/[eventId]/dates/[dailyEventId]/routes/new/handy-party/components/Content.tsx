@@ -50,12 +50,15 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
       .subtract(5, 'day')
       .toISOString();
 
-    const priceOfAreas = HANDY_PARTY_ROUTE_AREA.map((area) => {
-      return {
-        area,
-        price: 0,
-      };
-    });
+    const priceOfAreas: HandyPartyPriceTable = HANDY_PARTY_ROUTE_AREA.map(
+      (area) => {
+        return {
+          area,
+          regularPrice: 0,
+          earlybirdPrice: 0,
+        };
+      },
+    );
 
     return {
       reservationDeadline,
