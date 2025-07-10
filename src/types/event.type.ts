@@ -11,7 +11,7 @@ export const EventStatusEnum = z.enum([
 ]);
 export type EventStatus = z.infer<typeof EventStatusEnum>;
 
-export const EventTypeEnum = z.enum(['CONCERT', 'FESTIVAL']);
+export const EventTypeEnum = z.enum(['CONCERT', 'FESTIVAL', 'SPORTS']);
 export type EventType = z.infer<typeof EventTypeEnum>;
 
 // ----- GET -----
