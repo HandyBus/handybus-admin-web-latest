@@ -57,6 +57,11 @@ export const columns = [
     header: '결제 금액',
     cell: (info) => info.getValue() + '원',
   }),
+  columnHelper.accessor('cancelStatus', {
+    id: 'cancelStatus',
+    header: () => '예약 취소 상태',
+    cell: (info) => Stringifier.cancelStatus(info.getValue()),
+  }),
   columnHelper.accessor('handyStatus', {
     header: '핸디 지원 여부',
     cell: (info) => {
