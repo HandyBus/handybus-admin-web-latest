@@ -15,9 +15,15 @@ import Input from '@/components/input/Input';
 import dayjs from 'dayjs';
 import { useGetEvent, usePutEvent } from '@/services/event.service';
 import Form from '@/components/form/Form';
-import { EventsViewEntity, EventTypeEnum } from '@/types/event.type';
+import {
+  EventStatusEnum,
+  EventsViewEntity,
+  EventTypeEnum,
+} from '@/types/event.type';
 import Heading from '@/components/text/Heading';
 import NewArtistsModal from '@/components/modal/NewArtistsModal';
+import Stringifier from '@/utils/stringifier.util';
+import Callout from '@/components/text/Callout';
 
 interface Props {
   params: { eventId: string };
@@ -258,15 +264,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                   <Field key={plan} className="gap-2 flex items-center">
                     <Radio
                       value={plan}
-                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4
-                    transition-transform
-                    hover:outline
-                    hover:outline-blue-200
-                    focus:outline
-                    focus:outline-blue-200
-                    active:scale-[0.9]
-                    data-[checked]:bg-blue-400
-                    data-[checked]:text-white
+                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4 transition-transform hover:outline hover:outline-blue-200 focus:outline focus:outline-blue-200 active:scale-[0.9] data-[checked]:bg-blue-400 data-[checked]:text-white
                     "
                     >
                       <CheckIcon
@@ -274,6 +272,41 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                         size={18}
                       />
                       <Label>{plan}</Label>
+                    </Radio>
+                  </Field>
+                ))}
+              </RadioGroup>
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label>행사 상태</Form.label>
+          <Callout>
+            행사 상태는 수요조사 모집 중 → 수요조사 마감으로 밖에 변경할 수
+            없습니다.
+          </Callout>
+          <Controller
+            control={control}
+            name="status"
+            render={({ field: { onChange, value } }) => (
+              <RadioGroup
+                value={value}
+                className="flex flex-row gap-4"
+                onChange={(s) => onChange(s)}
+                aria-label="Server size"
+              >
+                {EventStatusEnum.options.slice(0, 2).map((status) => (
+                  <Field key={status} className="gap-2 flex items-center">
+                    <Radio
+                      value={status}
+                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4 transition-transform hover:outline hover:outline-blue-200 focus:outline focus:outline-blue-200 active:scale-[0.9] data-[checked]:bg-blue-400 data-[checked]:text-white
+                    "
+                    >
+                      <CheckIcon
+                        className="invisible group-data-[checked]:visible"
+                        size={18}
+                      />
+                      <Label>{Stringifier.eventStatus(status)}</Label>
                     </Radio>
                   </Field>
                 ))}
