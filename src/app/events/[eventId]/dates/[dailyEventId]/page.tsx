@@ -117,13 +117,13 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
             추가하기
           </BlueLink>
           <BlueLink href={`${dailyEventId}/optimizer`} className="text-14">
-            핸디팟 최적 경로 계산기 (엑셀시트입력)
+            핸디팟 최적 경로 계산기 (엑셀 복붙하기)
           </BlueLink>
           <BlueLink
             href={`${dailyEventId}/handy-party-optimizer`}
             className="text-14"
           >
-            일자별 행사 핸디팟 최적 경로 계산기 (엑셀추출하기)
+            일자별 행사 핸디팟 최적 경로 계산기 (엑셀 추출하기)
           </BlueLink>
         </Heading.h2>
         <BaseTable table={table} />
