@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 import Heading from '@/components/text/Heading';
-import { CalculatedOptimalRouteData } from '../types/handyPartyOptimizer.type';
+import {
+  CalculatedOptimalRouteData,
+  ClusteredRouteResult,
+} from '../types/handyPartyOptimizer.type';
 import HandyPartyMap from './HandyPartyMap';
-import { ClusteredRouteResult } from '../types/optimizer.type';
 
 const colorClasses = [
   'bg-blue-200',

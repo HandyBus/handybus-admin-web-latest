@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { twJoin } from 'tailwind-merge';
 import { BanIcon } from 'lucide-react';
 import KakaoMapScript from '@/components/script/KakaoMapScript';
-import { ClusteredRouteResult } from '../types/optimizer.type';
+import { ClusteredRouteResult } from '../types/handyPartyOptimizer.type';
 
 const MAP_CONSTANTS = {
   INITIAL_ZOOM_LEVEL: 9,

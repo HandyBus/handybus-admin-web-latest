@@ -1,8 +1,8 @@
 import { getEstimatedRoute } from '@/services/kakaomoblility.service';
-import { ClusteredRouteResult } from '../types/optimizer.type';
 import { RegionHubsViewEntity } from '@/types/hub.type';
 import {
   CalculatedOptimalRouteData,
+  ClusteredRouteResult,
   HandyPartyReservation,
   TripTypeWithoutRoundTrip,
 } from '../types/handyPartyOptimizer.type';

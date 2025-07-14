@@ -1,6 +1,8 @@
 import { createMapDisplayData } from '../utils/optimizer.util';
-import { ClusteredRouteResult } from '../types/optimizer.type';
-import { CalculatedOptimalRouteData } from '../types/handyPartyOptimizer.type';
+import {
+  CalculatedOptimalRouteData,
+  ClusteredRouteResult,
+} from '../types/handyPartyOptimizer.type';
 import { useState } from 'react';
 
 interface Props {

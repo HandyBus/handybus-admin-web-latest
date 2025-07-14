@@ -35,6 +35,17 @@ export interface CalculatedOptimalRouteData {
   isSpacer: boolean;
 }
 
+// 지도 표시용 클러스터링된 데이터 타입
+export interface ClusteredRouteResult {
+  orders: number[];
+  longitude: number;
+  latitude: number;
+  addresses: string[];
+  tripType: TripTypeWithoutRoundTrip;
+  isCluster: boolean;
+  displayText: string;
+}
+
 export interface HandyPartyReservationExcelData extends HandyPartyReservation {
   partyId: number;
   order: number;

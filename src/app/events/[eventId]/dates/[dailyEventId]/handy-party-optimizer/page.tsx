@@ -14,10 +14,10 @@ import useExcelDownload from './hooks/useExcelDownload';
 import { RegionHubsViewEntity } from '@/types/hub.type';
 import {
   CalculatedOptimalRouteData,
+  ClusteredRouteResult,
   HandyPartyReservationExcelData,
   HandyPartyRoute,
 } from './types/handyPartyOptimizer.type';
-import { ClusteredRouteResult } from './types/optimizer.type';
 import { toast } from 'react-toastify';
 
 interface Props {
