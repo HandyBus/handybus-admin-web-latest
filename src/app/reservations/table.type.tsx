@@ -14,53 +14,10 @@ const columnHelper = createColumnHelper<ReservationViewEntity>();
 
 export const columns = [
   columnHelper.display({
-    id: 'user',
-    header: () => '고객 정보',
-    cell: (props) => (
-      <span>
-        <span>{props.row.original.userNickname}</span>
-        <br />
-        <span>({props.row.original.userPhoneNumber || '전화번호 없음'})</span>
-      </span>
-    ),
-  }),
-  columnHelper.accessor('createdAt', {
-    header: () => '생성일',
-    cell: (info) => formatDateString(info.getValue(), 'datetime'),
-  }),
-  columnHelper.accessor('passengerCount', {
-    id: 'passengerCount',
-    header: () => '예약 인원',
-    cell: (info) => info.getValue() + '인',
-  }),
-  columnHelper.accessor('reservationStatus', {
-    id: 'reservationStatus',
-    header: () => '예약 상태',
-    cell: (info) => Stringifier.reservationStatus(info.getValue()),
-  }),
-  columnHelper.accessor('cancelStatus', {
-    id: 'cancelStatus',
-    header: () => '예약 취소 상태',
-    cell: (info) => Stringifier.cancelStatus(info.getValue()),
-  }),
-  columnHelper.display({
-    id: 'cancelActions',
-    header: () => '예약 취소 상태 변경',
-    cell: (info) => {
-      const cancelStatus = info.row.original.cancelStatus;
-      if (cancelStatus === 'CANCEL_COMPLETE') return null;
-      return (
-        <CancelReservationDialog
-          reservationId={info.row.original.reservationId}
-        />
-      );
-    },
-  }),
-  columnHelper.display({
     id: 'shuttleRoute',
     header: () => '이용 노선',
-    cell: (props) => {
-      const reservation = props.row.original;
+    cell: (info) => {
+      const reservation = info.row.original;
       const date = reservation.shuttleRoute.event?.dailyEvents.find(
         (dailyEvent) =>
           dailyEvent.dailyEventId === reservation.shuttleRoute.dailyEventId,
@@ -82,37 +39,94 @@ export const columns = [
       );
     },
   }),
+  columnHelper.display({
+    id: 'user',
+    header: () => '고객 정보',
+    cell: (info) => {
+      const userDesiredHubAddress =
+        info.row.original.metadata.desiredHubAddress;
+      const userNickname = info.row.original.userNickname;
+      const userPhoneNumber = info.row.original.userPhoneNumber;
+
+      return (
+        <p>
+          <span className="text-16 font-500">{userNickname}</span>
+          <br />
+          <span className="text-14 font-400 text-grey-600">
+            ({userPhoneNumber || '전화번호 없음'})
+          </span>
+          <br />
+          <span className="text-14 font-500 text-grey-700">
+            {userDesiredHubAddress &&
+              '핸디팟 입력 주소: ' + userDesiredHubAddress}
+          </span>
+        </p>
+      );
+    },
+  }),
+  columnHelper.accessor('createdAt', {
+    header: () => '예약일',
+    cell: (info) => formatDateString(info.getValue(), 'datetime'),
+  }),
+  columnHelper.accessor('passengerCount', {
+    id: 'passengerCount',
+    header: () => '예약 인원',
+    cell: (info) => info.getValue() + '인',
+  }),
+  columnHelper.accessor('reservationStatus', {
+    id: 'reservationStatus',
+    header: () => '예약 상태',
+    cell: (info) => {
+      const reservationStatus = Stringifier.reservationStatus(info.getValue());
+      const style = {
+        미결제: 'text-grey-500',
+        '결제 완료': 'text-green-500',
+        취소: 'text-red-500',
+      };
+      return <b className={style[reservationStatus]}>{reservationStatus}</b>;
+    },
+  }),
+  columnHelper.accessor('type', {
+    id: 'type',
+    header: () => '예약 유형',
+    cell: (info) => Stringifier.tripType(info.getValue()),
+  }),
   columnHelper.accessor('handyStatus', {
     id: 'handyStatus',
     header: '핸디 지원 여부',
     cell: (info) => {
-      switch (info.getValue()) {
-        case 'ACCEPTED':
-          return <b className="text-green-500">승인됨</b>;
-        case 'DECLINED':
-          return <b className="text-red-500">거절됨</b>;
-        case 'NOT_SUPPORTED':
-          return '지원하지 않음';
-        case 'SUPPORTED':
-          return <b>지원함</b>;
-      }
+      const handyStatus = Stringifier.handyStatus(info.getValue());
+      const style = {
+        승인됨: 'text-green-500',
+        거절됨: 'text-red-500',
+        미지원: 'text-grey-500',
+        지원함: 'text-grey-900',
+      };
+      return <b className={style[handyStatus]}>{handyStatus}</b>;
     },
   }),
   columnHelper.display({
-    id: 'handyActions',
-    header: '핸디 승인',
-    cell: (props) =>
-      props.row.original.handyStatus !== 'NOT_SUPPORTED' && (
-        <EditHandyStatusDialog response={props.row.original} />
-      ),
-  }),
-  columnHelper.display({
     id: 'refundActions',
-    header: () => '환불처리',
+    header: () => '처리',
     cell: (info) => {
       const paymentId = info.row.original.paymentId;
-      if (!paymentId) return null;
-      return <RequestRefundDialog reservation={info.row.original} />;
+      const showHandyActions =
+        info.row.original.handyStatus !== 'NOT_SUPPORTED';
+      if (!paymentId) {
+        return null;
+      }
+      return (
+        <div className="flex flex-col gap-4">
+          <CancelReservationDialog
+            reservationId={info.row.original.reservationId}
+          />
+          <RequestRefundDialog reservation={info.row.original} />
+          <EditHandyStatusDialog
+            response={info.row.original}
+            disabled={!showHandyActions}
+          />
+        </div>
+      );
     },
   }),
   columnHelper.display({

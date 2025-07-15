@@ -32,9 +32,14 @@ import {
 interface Props {
   response: ReservationViewEntity;
   defaultHandyStatus?: HandyStatus;
+  disabled?: boolean;
 }
 
-function EditHandyStatusDialog({ response, defaultHandyStatus }: Props) {
+function EditHandyStatusDialog({
+  response,
+  defaultHandyStatus,
+  disabled,
+}: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   const { control, handleSubmit } = useForm<{ handyStatus: HandyStatus }>({
@@ -80,7 +85,9 @@ function EditHandyStatusDialog({ response, defaultHandyStatus }: Props) {
 
   return (
     <>
-      <BlueButton onClick={() => setIsOpen(true)}>핸디 승인 및 거절</BlueButton>
+      <BlueButton onClick={() => setIsOpen(true)} disabled={disabled}>
+        핸디 승인 및 거절
+      </BlueButton>
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}

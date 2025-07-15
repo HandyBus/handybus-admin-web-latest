@@ -7,6 +7,8 @@ import { formatDateString } from '@/utils/date.util';
 import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
 import { ReservationViewEntity } from '@/types/reservation.type';
 import EditHandyStatusDialog from '@/components/dialog/EditHandyStatusDialog';
+import CancelReservationDialog from '@/app/reservations/components/CancelReservationDialog';
+import RequestRefundDialog from '@/app/reservations/components/RequestRefundDialog';
 
 const busColumnHelper = createColumnHelper<ShuttleBusesViewEntity>();
 
@@ -43,21 +45,35 @@ export const reservationColumns = [
   reservationColumnHelper.display({
     id: 'user',
     header: () => '고객 정보',
-    cell: (props) => (
-      <span>
-        <span>{props.row.original.userNickname}</span>
-        <br />
-        <span>({props.row.original.userPhoneNumber || '전화번호 없음'})</span>
-      </span>
-    ),
+    cell: (info) => {
+      const userDesiredHubAddress =
+        info.row.original.metadata.desiredHubAddress;
+      const userNickname = info.row.original.userNickname;
+      const userPhoneNumber = info.row.original.userPhoneNumber;
+
+      return (
+        <p>
+          <span className="text-16 font-500">{userNickname}</span>
+          <br />
+          <span className="text-14 font-400 text-grey-600">
+            ({userPhoneNumber || '전화번호 없음'})
+          </span>
+          <br />
+          <span className="text-14 font-500 text-grey-700">
+            {userDesiredHubAddress &&
+              '핸디팟 입력 주소: ' + userDesiredHubAddress}
+          </span>
+        </p>
+      );
+    },
   }),
   reservationColumnHelper.accessor('createdAt', {
     header: () => '예약일',
     cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
-  reservationColumnHelper.accessor('metadata.desiredHubAddress', {
-    header: () => '유저 입력 주소',
-    cell: (info) => info.getValue() ?? '-',
+  reservationColumnHelper.accessor('passengerCount', {
+    header: () => '예약 인원',
+    cell: (info) => info.getValue() + '인',
   }),
   reservationColumnHelper.accessor('reservationStatus', {
     header: () => '예약 상태',
@@ -71,10 +87,6 @@ export const reservationColumns = [
       return <b className={style[reservationStatus]}>{reservationStatus}</b>;
     },
   }),
-  reservationColumnHelper.accessor('passengerCount', {
-    header: () => '예약 인원',
-    cell: (info) => info.getValue() + '인',
-  }),
   reservationColumnHelper.accessor('type', {
     id: 'type',
     header: () => '예약 유형',
@@ -82,7 +94,7 @@ export const reservationColumns = [
   }),
   reservationColumnHelper.accessor('handyStatus', {
     id: 'handyStatus',
-    header: '핸디 지원 유무',
+    header: '핸디 지원 여부',
     cell: (info) => {
       const handyStatus = Stringifier.handyStatus(info.getValue());
       const style = {
@@ -95,12 +107,28 @@ export const reservationColumns = [
     },
   }),
   reservationColumnHelper.display({
-    id: 'handyActions',
-    header: '핸디 승인',
-    cell: (props) =>
-      props.row.original.handyStatus !== 'NOT_SUPPORTED' && (
-        <EditHandyStatusDialog response={props.row.original} />
-      ),
+    id: 'refundActions',
+    header: () => '처리',
+    cell: (info) => {
+      const paymentId = info.row.original.paymentId;
+      const showHandyActions =
+        info.row.original.handyStatus !== 'NOT_SUPPORTED';
+      if (!paymentId) {
+        return null;
+      }
+      return (
+        <div className="flex flex-col gap-4">
+          <CancelReservationDialog
+            reservationId={info.row.original.reservationId}
+          />
+          <RequestRefundDialog reservation={info.row.original} />
+          <EditHandyStatusDialog
+            response={info.row.original}
+            disabled={!showHandyActions}
+          />
+        </div>
+      );
+    },
   }),
   reservationColumnHelper.display({
     id: 'actions',
