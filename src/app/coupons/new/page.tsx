@@ -1,6 +1,7 @@
 'use client';
 
 import Form from '@/components/form/Form';
+import EventInput from '@/components/input/EventInput';
 import Input from '@/components/input/Input';
 import NumberInput from '@/components/input/NumberInput';
 import Heading from '@/components/text/Heading';
@@ -25,6 +26,7 @@ const defaultValues = {
   maxCouponUsage: 0,
   validFrom: '',
   validTo: '',
+  allowedEventId: null,
 } satisfies CreateCouponRequest;
 
 const Page = () => {
@@ -103,16 +105,7 @@ const Page = () => {
                   <Field key={type} className="gap-2 flex items-center">
                     <Radio
                       value={type}
-                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4
-                    transition-transform
-                    hover:outline
-                    hover:outline-blue-200
-                    focus:outline
-                    focus:outline-blue-200
-                    active:scale-[0.9]
-                    data-[checked]:bg-blue-400
-                    data-[checked]:text-white
-                    "
+                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4 transition-transform hover:outline hover:outline-blue-200 focus:outline focus:outline-blue-200 active:scale-[0.9] data-[checked]:bg-blue-400 data-[checked]:text-white"
                     >
                       <CheckIcon
                         className="invisible group-data-[checked]:visible"
@@ -213,6 +206,19 @@ const Page = () => {
               )}
             />
           </div>
+        </Form.section>
+        <Form.section>
+          <Form.label>사용 가능 행사 제한</Form.label>
+          <Controller
+            control={control}
+            name="allowedEventId"
+            render={({ field: { onChange, value } }) => (
+              <EventInput
+                value={value ?? null}
+                setValue={(n) => onChange(n ?? null)}
+              />
+            )}
+          />
         </Form.section>
         <Form.submitButton>생성하기</Form.submitButton>
       </Form>

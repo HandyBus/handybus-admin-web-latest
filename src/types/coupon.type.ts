@@ -71,6 +71,6 @@ export const CreateCouponRequestSchema = z.object({
   maxCouponUsage: z.number().int(),
   validFrom: z.string(),
   validTo: z.string(),
-  allowedEventId: z.string().optional(),
+  allowedEventId: z.string().nullable(),
 });
 export type CreateCouponRequest = z.infer<typeof CreateCouponRequestSchema>;
