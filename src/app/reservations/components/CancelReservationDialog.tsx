@@ -20,7 +20,7 @@ const CancelReservationDialog = ({ reservationId }: Props) => {
 
   return (
     <BlueButton onClick={handleCancel} type="button">
-      예약 취소처리
+      예약 취소하기
     </BlueButton>
   );
 };

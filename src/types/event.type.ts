@@ -22,6 +22,7 @@ export const EventDailyShuttlesInEventsViewEntitySchema = z
     date: z.string(),
     status: EventStatusEnum,
     closeDeadline: z.string(),
+    metadata: z.record(z.string(), z.any()).nullable(),
   })
   .strict();
 export type EventDailyShuttlesInEventsViewEntity = z.infer<
@@ -47,7 +48,8 @@ export const EventsViewEntitySchema = z
     endDate: z.string(),
     createdAt: z.string(),
     updatedAt: z.string(),
-    eventIsPinned: z.boolean(),
+    eventIsPinned: z.number(), // TODO: 백엔드 타입 오류
+    eventMetadata: z.record(z.string(), z.any()).nullable(),
   })
   .strict();
 export type EventsViewEntity = z.infer<typeof EventsViewEntitySchema>;
