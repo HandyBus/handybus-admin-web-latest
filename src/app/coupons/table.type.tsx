@@ -1,5 +1,6 @@
 'use client';
 
+import BlueLink from '@/components/link/BlueLink';
 import { AdminCouponsResponseModel } from '@/types/coupon.type';
 import { formatDateString } from '@/utils/date.util';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -107,5 +108,19 @@ export const columns = [
         {formatDateString(info.getValue(), 'datetime')}
       </span>
     ),
+  }),
+  columnHelper.accessor('allowedEventId', {
+    header: () => '사용 가능 행사 제한',
+    cell: (info) => {
+      const allowedEventId = info.getValue();
+      if (!allowedEventId) {
+        return <span className="text-grey-600">제한 없음</span>;
+      }
+      return (
+        <BlueLink href={`/events/${allowedEventId}`}>
+          사용 가능한 행사 보기
+        </BlueLink>
+      );
+    },
   }),
 ];
