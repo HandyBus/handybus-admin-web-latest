@@ -7,12 +7,15 @@ import {
 import { authInstance } from './config';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { silentParse } from '@/utils/parse.util';
+import { withPagination } from '@/types/common.type';
 
 // ----- GET -----
 
 export const getCoupons = async () => {
   const res = await authInstance.get('/v1/billing/admin/coupons', {
-    shape: { coupons: AdminCouponsResponseModelSchema.array() },
+    shape: withPagination({
+      coupons: AdminCouponsResponseModelSchema.array(),
+    }),
   });
   return res.coupons;
 };
