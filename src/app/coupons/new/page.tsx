@@ -15,7 +15,7 @@ import { CheckIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 
-const defaultValues = {
+const DEFAULT_VALUES = {
   code: '',
   name: '',
   discountType: 'RATE',
@@ -31,15 +31,13 @@ const defaultValues = {
 
 const Page = () => {
   const { control, handleSubmit } = useForm<CreateCouponRequest>({
-    defaultValues,
+    defaultValues: DEFAULT_VALUES,
   });
 
-  const { mutate: postCoupon } = usePostCoupon({
+  const { mutate: postCoupon, isPending } = usePostCoupon({
     onSuccess: () => {
       alert('쿠폰이 생성되었습니다.');
-      if (confirm('쿠폰이 생성되었습니다. 목록으로 돌아가시겠습니까?')) {
-        router.push('/coupons');
-      }
+      router.push('/coupons');
     },
     onError: (error) => {
       console.error(error);
@@ -177,7 +175,7 @@ const Page = () => {
         </Form.section>
         <Form.section>
           <Form.label required>
-            최대 허용 가능 인원
+            한 예약 당 쿠폰 최대 적용 가능 인원
             <span className="text-12 text-red-500">0일 경우 무한대</span>
           </Form.label>
           <Controller
@@ -213,14 +211,25 @@ const Page = () => {
             control={control}
             name="allowedEventId"
             render={({ field: { onChange, value } }) => (
-              <EventInput
-                value={value ?? null}
-                setValue={(n) => onChange(n ?? null)}
-              />
+              <div className="flex w-full flex-col gap-8">
+                <button
+                  onClick={() => onChange(null)}
+                  type="button"
+                  className="w-fit rounded-md border border-grey-500 px-4 py-[2px] text-12 text-grey-700"
+                >
+                  사용 가능 행사 제한 해제하기
+                </button>
+                <EventInput
+                  value={value ?? null}
+                  setValue={(n) => onChange(n ?? null)}
+                />
+              </div>
             )}
           />
         </Form.section>
-        <Form.submitButton>생성하기</Form.submitButton>
+        <Form.submitButton disabled={isPending}>
+          {isPending ? '생성중...' : '생성하기'}
+        </Form.submitButton>
       </Form>
     </main>
   );

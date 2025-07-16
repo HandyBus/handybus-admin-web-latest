@@ -3,6 +3,8 @@ import {
   CreateCouponRequest,
   CreateCouponRequestSchema,
   IssuedCouponsViewEntity,
+  UpdateCouponRequest,
+  UpdateCouponRequestSchema,
 } from '@/types/coupon.type';
 import { authInstance } from './config';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -25,6 +27,22 @@ export const useGetCoupons = () => {
     queryKey: ['coupon'],
     queryFn: getCoupons,
     initialData: [],
+  });
+};
+
+export const getCoupon = async (couponId: string) => {
+  const res = await authInstance.get(`/v1/billing/admin/coupons/${couponId}`, {
+    shape: {
+      coupon: AdminCouponsResponseModelSchema,
+    },
+  });
+  return res.coupon;
+};
+
+export const useGetCoupon = (couponId: string) => {
+  return useQuery({
+    queryKey: ['coupon', couponId],
+    queryFn: () => getCoupon(couponId),
   });
 };
 
@@ -65,6 +83,36 @@ export const usePostCoupon = ({
 }) => {
   return useMutation({
     mutationFn: postCoupon,
+    onSuccess,
+    onError,
+  });
+};
+
+export const putCoupon = async (
+  couponId: string,
+  body: UpdateCouponRequest,
+) => {
+  return await authInstance.put(
+    `/v1/billing/admin/coupons/${couponId}`,
+    silentParse(UpdateCouponRequestSchema, body),
+  );
+};
+
+export const usePutCoupon = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess?: () => void;
+  onError?: (error: unknown) => void;
+}) => {
+  return useMutation({
+    mutationFn: ({
+      couponId,
+      body,
+    }: {
+      couponId: string;
+      body: UpdateCouponRequest;
+    }) => putCoupon(couponId, body),
     onSuccess,
     onError,
   });
