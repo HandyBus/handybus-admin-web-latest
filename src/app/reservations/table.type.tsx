@@ -44,7 +44,7 @@ export const columns = [
     header: () => '고객 정보',
     cell: (info) => {
       const userDesiredHubAddress =
-        info.row.original.metadata.desiredHubAddress;
+        info.row.original.metadata?.desiredHubAddress;
       const userNickname = info.row.original.userNickname;
       const userPhoneNumber = info.row.original.userPhoneNumber;
 
