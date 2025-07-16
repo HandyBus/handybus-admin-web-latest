@@ -51,7 +51,7 @@ const EditForm = ({ coupon }: FormProps) => {
     defaultValues,
   });
 
-  const { mutate: putCoupon } = usePutCoupon({
+  const { mutate: putCoupon, isPending } = usePutCoupon({
     onSuccess: () => {
       alert('쿠폰이 수정되었습니다.');
       router.push('/coupons');
@@ -144,7 +144,7 @@ const EditForm = ({ coupon }: FormProps) => {
               <button
                 onClick={() => onChange(null)}
                 type="button"
-                className="w-fit rounded-md border border-grey-500 px-4 py-[2px] text-12 text-grey-600"
+                className="w-fit rounded-md border border-grey-500 px-4 py-[2px] text-12 text-grey-700"
               >
                 사용 가능 행사 제한 해제하기
               </button>
@@ -156,7 +156,9 @@ const EditForm = ({ coupon }: FormProps) => {
           )}
         />
       </Form.section>
-      <Form.submitButton>수정하기</Form.submitButton>
+      <Form.submitButton disabled={isPending}>
+        {isPending ? '수정중...' : '수정하기'}
+      </Form.submitButton>
     </Form>
   );
 };
