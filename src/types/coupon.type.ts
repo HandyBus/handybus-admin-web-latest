@@ -48,6 +48,7 @@ export const AdminCouponsResponseModelSchema = z.object({
   maxCouponUsage: z.number().int(),
   validFrom: z.string(),
   validTo: z.string(),
+  allowedEventId: z.string().nullable(),
   isActive: z.boolean(),
   status: ActiveStatusEnum,
   createdAt: z.string(),
@@ -70,5 +71,15 @@ export const CreateCouponRequestSchema = z.object({
   maxCouponUsage: z.number().int(),
   validFrom: z.string(),
   validTo: z.string(),
+  allowedEventId: z.string().nullable(),
 });
 export type CreateCouponRequest = z.infer<typeof CreateCouponRequestSchema>;
+
+export const UpdateCouponRequestSchema = z.object({
+  name: z.string().optional(),
+  maxApplicablePeople: z.number().int().optional(),
+  maxCouponUsage: z.number().int().optional(),
+  isActive: z.boolean().optional(),
+  allowedEventId: z.string().nullable().optional(),
+});
+export type UpdateCouponRequest = z.infer<typeof UpdateCouponRequestSchema>;

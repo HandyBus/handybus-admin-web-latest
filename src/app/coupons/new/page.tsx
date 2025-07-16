@@ -1,6 +1,7 @@
 'use client';
 
 import Form from '@/components/form/Form';
+import EventInput from '@/components/input/EventInput';
 import Input from '@/components/input/Input';
 import NumberInput from '@/components/input/NumberInput';
 import Heading from '@/components/text/Heading';
@@ -14,7 +15,7 @@ import { CheckIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 
-const defaultValues = {
+const DEFAULT_VALUES = {
   code: '',
   name: '',
   discountType: 'RATE',
@@ -25,19 +26,18 @@ const defaultValues = {
   maxCouponUsage: 0,
   validFrom: '',
   validTo: '',
+  allowedEventId: null,
 } satisfies CreateCouponRequest;
 
 const Page = () => {
   const { control, handleSubmit } = useForm<CreateCouponRequest>({
-    defaultValues,
+    defaultValues: DEFAULT_VALUES,
   });
 
-  const { mutate: postCoupon } = usePostCoupon({
+  const { mutate: postCoupon, isPending } = usePostCoupon({
     onSuccess: () => {
       alert('쿠폰이 생성되었습니다.');
-      if (confirm('쿠폰이 생성되었습니다. 목록으로 돌아가시겠습니까?')) {
-        router.push('/coupons');
-      }
+      router.push('/coupons');
     },
     onError: (error) => {
       console.error(error);
@@ -103,16 +103,7 @@ const Page = () => {
                   <Field key={type} className="gap-2 flex items-center">
                     <Radio
                       value={type}
-                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4
-                    transition-transform
-                    hover:outline
-                    hover:outline-blue-200
-                    focus:outline
-                    focus:outline-blue-200
-                    active:scale-[0.9]
-                    data-[checked]:bg-blue-400
-                    data-[checked]:text-white
-                    "
+                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4 transition-transform hover:outline hover:outline-blue-200 focus:outline focus:outline-blue-200 active:scale-[0.9] data-[checked]:bg-blue-400 data-[checked]:text-white"
                     >
                       <CheckIcon
                         className="invisible group-data-[checked]:visible"
@@ -184,7 +175,7 @@ const Page = () => {
         </Form.section>
         <Form.section>
           <Form.label required>
-            최대 허용 가능 인원
+            한 예약 당 쿠폰 최대 적용 가능 인원
             <span className="text-12 text-red-500">0일 경우 무한대</span>
           </Form.label>
           <Controller
@@ -214,7 +205,31 @@ const Page = () => {
             />
           </div>
         </Form.section>
-        <Form.submitButton>생성하기</Form.submitButton>
+        <Form.section>
+          <Form.label>사용 가능 행사 제한</Form.label>
+          <Controller
+            control={control}
+            name="allowedEventId"
+            render={({ field: { onChange, value } }) => (
+              <div className="flex w-full flex-col gap-8">
+                <button
+                  onClick={() => onChange(null)}
+                  type="button"
+                  className="w-fit rounded-md border border-grey-500 px-4 py-[2px] text-12 text-grey-700"
+                >
+                  사용 가능 행사 제한 해제하기
+                </button>
+                <EventInput
+                  value={value ?? null}
+                  setValue={(n) => onChange(n ?? null)}
+                />
+              </div>
+            )}
+          />
+        </Form.section>
+        <Form.submitButton disabled={isPending}>
+          {isPending ? '생성중...' : '생성하기'}
+        </Form.submitButton>
       </Form>
     </main>
   );

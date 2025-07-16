@@ -1,5 +1,6 @@
 'use client';
 
+import BlueLink from '@/components/link/BlueLink';
 import { AdminCouponsResponseModel } from '@/types/coupon.type';
 import { formatDateString } from '@/utils/date.util';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -22,14 +23,16 @@ export const columns = [
       cell: (info) => {
         const { name, type, rate, amount, maxDiscount } = info.getValue();
         return (
-          <span>
-            {name}
+          <div>
+            <span className="text-16 font-500">{name}</span>
             <br />
-            {type === 'AMOUNT'
-              ? `${amount?.toLocaleString()}원 할인`
-              : `${rate}% 할인`}{' '}
-            {`(최대 ${maxDiscount?.toLocaleString()}원)`}
-          </span>
+            <span className="text-14 font-400 text-grey-700">
+              {type === 'AMOUNT'
+                ? `${amount?.toLocaleString()}원 할인`
+                : `${rate}% 할인`}{' '}
+              {`(최대 ${maxDiscount?.toLocaleString()}원)`}
+            </span>
+          </div>
         );
       },
     },
@@ -75,7 +78,7 @@ export const columns = [
     },
   ),
   columnHelper.accessor('maxApplicablePeople', {
-    header: () => '최대 인원 수',
+    header: () => '한 예약 당 최대 적용 가능 인원',
     cell: (info) => (info.getValue() === 0 ? '∞' : info.getValue()),
   }),
   columnHelper.accessor((row) => ({ from: row.validFrom, to: row.validTo }), {
@@ -107,5 +110,30 @@ export const columns = [
         {formatDateString(info.getValue(), 'datetime')}
       </span>
     ),
+  }),
+  columnHelper.accessor('allowedEventId', {
+    header: () => '사용 가능 행사 제한',
+    cell: (info) => {
+      const allowedEventId = info.getValue();
+      if (!allowedEventId) {
+        return <span className="text-grey-600">제한 없음</span>;
+      }
+      return (
+        <BlueLink href={`/events/${allowedEventId}`}>
+          사용 가능한 행사 보기
+        </BlueLink>
+      );
+    },
+  }),
+  columnHelper.display({
+    id: 'action',
+    header: () => '수정하기 ',
+    cell: (info) => {
+      return (
+        <BlueLink href={`/coupons/${info.row.original.couponId}/edit`}>
+          수정하기
+        </BlueLink>
+      );
+    },
   }),
 ];
