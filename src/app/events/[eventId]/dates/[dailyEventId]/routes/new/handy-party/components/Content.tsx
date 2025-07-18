@@ -47,7 +47,7 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
       (de) => de.dailyEventId === dailyEventId,
     )?.date;
     const reservationDeadline = dayjs(dailyEventDate)
-      .subtract(5, 'day')
+      .subtract(4, 'day')
       .toISOString();
 
     const priceOfAreas: HandyPartyPriceTable = HANDY_PARTY_ROUTE_AREA.map(
