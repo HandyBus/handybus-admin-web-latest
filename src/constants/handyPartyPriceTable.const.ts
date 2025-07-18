@@ -113,4 +113,113 @@ export const GOYANG_STADIUM_PRICE_TABLE: HandyPartyPriceTable = [
     regularPrice: 0,
     earlybirdPrice: 0,
   },
-] as const;
+];
+
+// KSPO DOME 25.07
+export const KSPO_DOME_PRICE_TABLE: HandyPartyPriceTable = [
+  {
+    area: '동북권',
+    regularPrice: 20800,
+    earlybirdPrice: 19200,
+  },
+  {
+    area: '서북권',
+    regularPrice: 24700,
+    earlybirdPrice: 22800,
+  },
+  {
+    area: '중심권',
+    regularPrice: 20800,
+    earlybirdPrice: 19200,
+  },
+  {
+    area: '성동.광진권',
+    regularPrice: 16900,
+    earlybirdPrice: 15600,
+  },
+  {
+    area: '강서권',
+    regularPrice: 24700,
+    earlybirdPrice: 22800,
+  },
+  {
+    area: '서남권',
+    regularPrice: 20800,
+    earlybirdPrice: 19200,
+  },
+  {
+    area: '동남권',
+    regularPrice: 16900,
+    earlybirdPrice: 15600,
+  },
+  {
+    area: '수원',
+    regularPrice: 28600,
+    earlybirdPrice: 26400,
+  },
+  {
+    area: '성남',
+    regularPrice: 20800,
+    earlybirdPrice: 19200,
+  },
+  {
+    area: '고양',
+    regularPrice: 28600,
+    earlybirdPrice: 26400,
+  },
+  {
+    area: '부평',
+    regularPrice: 36400,
+    earlybirdPrice: 33600,
+  },
+  {
+    area: '광명',
+    regularPrice: 24700,
+    earlybirdPrice: 22800,
+  },
+  {
+    area: '동탄',
+    regularPrice: 28600,
+    earlybirdPrice: 26400,
+  },
+  {
+    area: '안양',
+    regularPrice: 24700,
+    earlybirdPrice: 22800,
+  },
+  {
+    area: '안산',
+    regularPrice: 32500,
+    earlybirdPrice: 30000,
+  },
+  {
+    area: '하남',
+    regularPrice: 13000,
+    earlybirdPrice: 12000,
+  },
+  {
+    area: '남양주',
+    regularPrice: 24700,
+    earlybirdPrice: 22800,
+  },
+  {
+    area: '용인',
+    regularPrice: 40300,
+    earlybirdPrice: 37200,
+  },
+  {
+    area: '시흥',
+    regularPrice: 36400,
+    earlybirdPrice: 33600,
+  },
+  {
+    area: '파주',
+    regularPrice: 36400,
+    earlybirdPrice: 33600,
+  },
+  {
+    area: '평택',
+    regularPrice: 44200,
+    earlybirdPrice: 40800,
+  },
+];

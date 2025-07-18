@@ -19,6 +19,7 @@ import { useRouter } from 'next/navigation';
 import {
   GOYANG_STADIUM_PRICE_TABLE,
   HandyPartyPriceTable,
+  KSPO_DOME_PRICE_TABLE,
 } from '@/constants/handyPartyPriceTable.const';
 
 export interface FormValues {
@@ -203,6 +204,11 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
             onClick={() => handleApplyPriceTable(GOYANG_STADIUM_PRICE_TABLE)}
           >
             고양종합운동장 25.06
+          </PriceTableButton>
+          <PriceTableButton
+            onClick={() => handleApplyPriceTable(KSPO_DOME_PRICE_TABLE)}
+          >
+            KSPO DOME 25.07
           </PriceTableButton>
         </div>
         <ul className="flex flex-col">
