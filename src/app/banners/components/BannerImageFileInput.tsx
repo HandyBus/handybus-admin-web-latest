@@ -4,10 +4,10 @@ import { CheckIcon, ImagePlusIcon, Loader2Icon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { twJoin } from 'tailwind-merge';
 import Image from 'next/image';
-import { Extension, getPresignedUrl } from '@/services/core.service';
+import { ImageKey, getImageUrl } from '@/services/core.service';
 
 interface Props {
-  type: 'concerts' | 'users/profiles' | 'reviews';
+  type: ImageKey;
   value: string | undefined;
   setValue: (value: string | undefined) => void;
   id: string;
@@ -22,7 +22,7 @@ const BannerImageFileInput = ({ type, value, setValue, id }: Props) => {
 
   useEffect(() => {
     if (file) {
-      addImageFile(type, file).then((newUrl) => {
+      getImageUrl({ key: type, file }).then((newUrl) => {
         setFile(null);
         setValue(newUrl);
       });
@@ -75,41 +75,3 @@ const BannerImageFileInput = ({ type, value, setValue, id }: Props) => {
 };
 
 export default BannerImageFileInput;
-
-const addImageFile = async (
-  key: 'concerts' | 'users/profiles' | 'reviews',
-  image: File,
-) => {
-  // check if the content type is image
-  if (!image.type.startsWith(`image`)) {
-    throw new Error(`Invalid file type : ${image.type}`);
-  }
-
-  const extension =
-    image.type === 'image/svg+xml'
-      ? 'svg'
-      : (image.type.split('/').at(1) as Extension);
-
-  const presigned = await getPresignedUrl(key, extension);
-  const presignedUrl = presigned.presignedUrl;
-  const cdnUrl = presigned.cdnUrl;
-
-  const buffer = await image.arrayBuffer();
-
-  // check if the content type is image
-  if (!image.type.startsWith(`image`)) {
-    throw new Error(`Invalid file type : ${image.type}`);
-  }
-
-  // base url을 사용해선 안되므로 fetch 사용
-  await fetch(presignedUrl, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': image.type,
-      'Content-Length': buffer.byteLength.toString(),
-    },
-    body: buffer,
-  });
-
-  return cdnUrl;
-};
