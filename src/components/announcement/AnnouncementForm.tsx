@@ -4,7 +4,8 @@ import 'react-markdown-editor-lite/lib/index.css';
 import ReactMarkdown from 'react-markdown';
 import Form from '@/components/form/Form';
 import Input from '@/components/input/Input';
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
+import { getImageUrl } from '@/services/core.service';
 
 export type AnnouncementFormData = {
   title: string;
@@ -24,7 +25,27 @@ const AnnouncementForm: FC<AnnouncementFormProps> = ({
   onSubmit,
   submitButtonText,
 }) => {
-  const plugins = ['font-bold', 'link'];
+  const plugins = ['font-bold', 'link', 'image'];
+
+  const handleImageUpload = useCallback(
+    async (file: File, callback: (url: string) => void) => {
+      try {
+        const imageUrl = await getImageUrl({
+          key: 'concerts', // 임시로 concerts 키를 사용
+          file: file,
+        });
+
+        if (imageUrl) {
+          callback(imageUrl);
+        }
+      } catch (error) {
+        console.error('이미지 업로드 실패:', error);
+        alert('이미지 업로드에 실패했습니다.');
+      }
+    },
+    [],
+  );
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Form.section>
@@ -49,6 +70,14 @@ const AnnouncementForm: FC<AnnouncementFormProps> = ({
               renderHTML={(text) => <ReactMarkdown>{text}</ReactMarkdown>}
               onChange={({ text }) => onChange(text)}
               plugins={plugins}
+              onImageUpload={handleImageUpload}
+              config={{
+                image: {
+                  uploadCallback: handleImageUpload,
+                  accept: 'image/*',
+                  maxSize: 5 * 1024 * 1024, // 5MB 제한
+                },
+              }}
             />
           )}
         />
