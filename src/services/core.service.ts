@@ -16,12 +16,10 @@ import {
 } from '@/types/announcement.type';
 import { silentParse } from '@/utils/parse.util';
 
-export type Extension = 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'svg';
+export type ImageKey = 'concerts' | 'users/profiles' | 'reviews';
+export type ImageExtension = 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'svg';
 
-export const getPresignedUrl = async (
-  key: 'concerts' | 'users/profiles' | 'reviews',
-  extension: Extension,
-) => {
+const getPresignedUrl = async (key: ImageKey, extension: ImageExtension) => {
   return await authInstance.get(
     `/v1/core/admin/image/presigned-url?key=${key}&extension=${extension}`,
     {
@@ -31,6 +29,42 @@ export const getPresignedUrl = async (
       },
     },
   );
+};
+
+const uploadImageToS3 = async (url: string, file: File) => {
+  const imageFormData = new FormData();
+  imageFormData.append('file', file);
+  const buffer = await file.arrayBuffer();
+
+  await fetch(url, {
+    method: 'PUT',
+    cache: 'no-store',
+    body: file,
+    headers: {
+      'Content-Type': file.type,
+      'Content-Length': String(buffer.byteLength),
+    },
+  });
+};
+
+export const getImageUrl = async ({
+  key,
+  file,
+}: {
+  key: ImageKey;
+  file: File | null;
+}) => {
+  if (!file) {
+    return;
+  }
+  let extension = file.type.split('/').pop();
+  if (extension === 'svg+xml') {
+    extension = 'svg';
+  }
+
+  const urls = await getPresignedUrl(key, extension as ImageExtension);
+  await uploadImageToS3(urls.presignedUrl, file);
+  return urls.cdnUrl;
 };
 
 // ----- BANNER -----
