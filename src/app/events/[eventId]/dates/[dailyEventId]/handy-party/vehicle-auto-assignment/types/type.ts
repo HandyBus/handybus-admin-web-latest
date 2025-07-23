@@ -7,7 +7,7 @@ export interface HandyPartySheetData {
   partyId: string;
   vehicleNumber: string;
   driverPhoneNumber: string;
-  count?: number;
+  count: number;
 }
 
 export interface VehicleAssignment {
@@ -22,13 +22,16 @@ export interface VehicleAssignment {
   shuttleBusId?: string;
 }
 
-export interface ParsedItemTracker {
-  parsedItem: HandyPartySheetData;
-  shuttleRouteId: string;
-  shuttleName: string;
-}
-
 export interface ReservationBusMap {
   reservationId: string;
   shuttleBusId: string | null;
+}
+
+export interface CreatedShuttleBusInfo {
+  shuttleRouteId: string;
+  shuttleBuses: {
+    shuttleBusId: string;
+    shuttleRouteId: string;
+    busName: string;
+  }[];
 }

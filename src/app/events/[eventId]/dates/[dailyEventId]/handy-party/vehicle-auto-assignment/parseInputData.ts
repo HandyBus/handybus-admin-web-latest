@@ -50,6 +50,7 @@ export const parseInputData = ({
         partyId: cols[8] ?? '',
         vehicleNumber: cols[17] ?? '',
         driverPhoneNumber: convertPhoneNumberToInternational(cols[18] ?? ''),
+        count: 1,
       };
     });
 
