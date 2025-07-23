@@ -69,32 +69,32 @@ export const useVehicleAutoAssignment = ({
     createCurrentTimeLog('=== 시작하기 버튼 클릭 ===');
 
     try {
-      const parsedData = await parseInputDataWithValidation(
+      const parsedData = await parseInputDataWithValidation({
         inputText,
         dailyEventDate,
         createCurrentTimeLog,
-      );
-      const vehicleAssignmentMap = createVehicleAssignmentMap(
-        parsedData,
+      });
+      const vehicleAssignmentMap = createVehicleAssignmentMap({
+        parsedItems: parsedData,
         handyPartyShuttleRoutesMap,
         createCurrentTimeLog,
-      );
+      });
 
-      await processBusCreation(
+      await processBusCreation({
         eventId,
         dailyEventId,
         createCurrentTimeLog,
         vehicleAssignmentMap,
-      );
-      await processPassengerAssignment(
+      });
+      await processPassengerAssignment({
         eventId,
         dailyEventId,
         createCurrentTimeLog,
-        parsedData,
+        parsedItems: parsedData,
         vehicleAssignmentMap,
         handyPartyReservations,
         handyPartyShuttleRoutesMap,
-      );
+      });
     } catch (error) {
       createCurrentTimeLog(`[오류] 자동 배차 처리 중 오류 발생: ${error}`);
     } finally {
@@ -111,11 +111,26 @@ export const useVehicleAutoAssignment = ({
   };
 };
 
-const parseInputDataWithValidation = async (
-  inputText: string,
-  dailyEventDate: string,
-  createCurrentTimeLog: (message: string) => void,
-): Promise<HandyPartySheetData[]> => {
+/**
+ * parseInputDataWithValidation
+ *
+ * 타다 시트 데이터를 파싱하고 유효성 검사를 수행합니다.
+ * @param inputText - 타다 시트 데이터
+ * @param dailyEventDate - 이벤트 날짜
+ * @param createCurrentTimeLog - 현재 시간 로그 생성 함수
+ * @returns 파싱된 데이터
+ */
+
+interface ParseInputDataWithValidationProps {
+  inputText: string;
+  dailyEventDate: string;
+  createCurrentTimeLog: (message: string) => void;
+}
+const parseInputDataWithValidation = async ({
+  inputText,
+  dailyEventDate,
+  createCurrentTimeLog,
+}: ParseInputDataWithValidationProps): Promise<HandyPartySheetData[]> => {
   createCurrentTimeLog('=== 타다 시트 데이터 불러오는 중 ===');
 
   const parsed: HandyPartySheetData[] = parseInputData({
@@ -136,11 +151,29 @@ const parseInputDataWithValidation = async (
   return parsed;
 };
 
-const createVehicleAssignmentMap = (
-  parsedItems: HandyPartySheetData[],
-  handyPartyShuttleRoutesMap: Map<string, AdminShuttleRoutesViewEntity>,
-  createCurrentTimeLog: (message: string) => void,
-): Map<string, VehicleAssignment[]> => {
+/**
+ * createVehicleAssignmentMap
+ *
+ * 타다 시트 데이터를 기반으로 노선당 차량 정보 데이터를 생성합니다.
+ * @param parsedItems - 파싱된 데이터
+ * @param handyPartyShuttleRoutesMap - 파싱된 데이터와 매칭되는 노선 정보
+ * @param createCurrentTimeLog - 현재 시간 로그 생성 함수
+ * @returns 노선당 차량 정보 데이터
+ *
+ * 하위 함수
+ * - addVehicleAssignmentToMap
+ */
+
+interface CreateVehicleAssignmentMapProps {
+  parsedItems: HandyPartySheetData[];
+  handyPartyShuttleRoutesMap: Map<string, AdminShuttleRoutesViewEntity>;
+  createCurrentTimeLog: (message: string) => void;
+}
+const createVehicleAssignmentMap = ({
+  parsedItems,
+  handyPartyShuttleRoutesMap,
+  createCurrentTimeLog,
+}: CreateVehicleAssignmentMapProps): Map<string, VehicleAssignment[]> => {
   createCurrentTimeLog('=== 노선당 차량 정보 데이터 생성 중 ===');
 
   const vehicleAssignmentMap = new Map<string, VehicleAssignment[]>();
@@ -203,35 +236,61 @@ const addVehicleAssignmentToMap = (
   }
 };
 
-// Bus creation functions
-const processBusCreation = async (
-  eventId: string,
-  dailyEventId: string,
-  createCurrentTimeLog: (message: string) => void,
-  vehicleAssignmentMap: Map<string, VehicleAssignment[]>,
-) => {
+/**
+ * processBusCreation
+ *
+ * 노선별 필요한 버스를 생성합니다.
+ * @param eventId - 이벤트 ID
+ * @param dailyEventId - 일자별 이벤트 ID
+ * @param createCurrentTimeLog - 현재 시간 로그 생성 함수
+ * @param vehicleAssignmentMap - 노선당 차량 정보 데이터
+ *
+ * 하위 함수
+ * - processBusCreationForRoute
+ *   - createBusesForRoute
+ */
+
+interface ProcessBusCreationProps {
+  eventId: string;
+  dailyEventId: string;
+  createCurrentTimeLog: (message: string) => void;
+  vehicleAssignmentMap: Map<string, VehicleAssignment[]>;
+}
+const processBusCreation = async ({
+  eventId,
+  dailyEventId,
+  createCurrentTimeLog,
+  vehicleAssignmentMap,
+}: ProcessBusCreationProps) => {
   createCurrentTimeLog('=== 버스 생성 단계 시작 ===');
 
   for (const [shuttleRouteId, vehicleAssignments] of vehicleAssignmentMap) {
-    await processBusCreationForRoute(
+    await processBusCreationForRoute({
       eventId,
       dailyEventId,
       shuttleRouteId,
       vehicleAssignments,
       createCurrentTimeLog,
-    );
+    });
   }
 
   createCurrentTimeLog('=== 버스 생성 단계 완료 ===');
 };
 
-const processBusCreationForRoute = async (
-  eventId: string,
-  dailyEventId: string,
-  shuttleRouteId: string,
-  vehicleAssignments: VehicleAssignment[],
-  createCurrentTimeLog: (message: string) => void,
-) => {
+interface ProcessBusCreationForRouteProps {
+  eventId: string;
+  dailyEventId: string;
+  shuttleRouteId: string;
+  vehicleAssignments: VehicleAssignment[];
+  createCurrentTimeLog: (message: string) => void;
+}
+const processBusCreationForRoute = async ({
+  eventId,
+  dailyEventId,
+  shuttleRouteId,
+  vehicleAssignments,
+  createCurrentTimeLog,
+}: ProcessBusCreationForRouteProps) => {
   const shuttleBuses = await getShuttleBuses(
     eventId,
     dailyEventId,
@@ -246,14 +305,14 @@ const processBusCreationForRoute = async (
   );
 
   if (shuttleBusesToCreate.length > 0) {
-    await createBusesForRoute(
+    await createBusesForRoute({
       eventId,
       dailyEventId,
       shuttleRouteId,
       shuttleBusesToCreate,
-      vehicleAssignments[0]?.shuttleName,
+      shuttleName: vehicleAssignments[0]?.shuttleName,
       createCurrentTimeLog,
-    );
+    });
   } else {
     createCurrentTimeLog(
       `[경고] ${vehicleAssignments[0]?.shuttleName}(${shuttleRouteId}) 노선에서 버스를 생성하지 않고 넘어갑니다. (버스 생성 데이터가 이미 존재합니다.)`,
@@ -261,14 +320,22 @@ const processBusCreationForRoute = async (
   }
 };
 
-const createBusesForRoute = async (
-  eventId: string,
-  dailyEventId: string,
-  shuttleRouteId: string,
-  shuttleBusesToCreate: VehicleAssignment[],
-  shuttleName: string,
-  createCurrentTimeLog: (message: string) => void,
-) => {
+interface CreateBusesForRouteProps {
+  eventId: string;
+  dailyEventId: string;
+  shuttleRouteId: string;
+  shuttleBusesToCreate: VehicleAssignment[];
+  shuttleName: string;
+  createCurrentTimeLog: (message: string) => void;
+}
+const createBusesForRoute = async ({
+  eventId,
+  dailyEventId,
+  shuttleRouteId,
+  shuttleBusesToCreate,
+  shuttleName,
+  createCurrentTimeLog,
+}: CreateBusesForRouteProps) => {
   await Promise.allSettled(
     shuttleBusesToCreate.map(async (vehicleAssignment) => {
       try {
@@ -292,55 +359,93 @@ const createBusesForRoute = async (
   );
 };
 
-// Passenger assignment functions
-const processPassengerAssignment = async (
-  eventId: string,
-  dailyEventId: string,
-  createCurrentTimeLog: (message: string) => void,
-  parsedItems: HandyPartySheetData[],
-  vehicleAssignmentMap: Map<string, VehicleAssignment[]>,
-  handyPartyReservations: ReservationViewEntity[],
-  handyPartyShuttleRoutesMap: Map<string, AdminShuttleRoutesViewEntity>,
-) => {
+/**
+ * processPassengerAssignment
+ *
+ * 노선별 승객을 배차합니다.
+ * @param eventId - 이벤트 ID
+ * @param dailyEventId - 일자별 이벤트 ID
+ * @param createCurrentTimeLog - 현재 시간 로그 생성 함수
+ * @param parsedItems - 파싱된 데이터
+ * @param vehicleAssignmentMap - 노선당 차량 정보 데이터
+ * @param handyPartyReservations - 핸디팟 예약 데이터
+ * @param handyPartyShuttleRoutesMap - 핸디팟 노선 정보 데이터
+ *
+ * 하위 함수
+ * - fetchCreatedShuttleBuses
+ * - createAssignmentMaps
+ * - assignPassengersToBuses
+ *   - assignPassengersForItem
+ *     - findMatchingReservation
+ *     - findShuttleBusId
+ *     - addReservationToBusMap
+ *     - removeReservationFromList
+ * - executeBulkAssignments
+ */
+
+interface ProcessPassengerAssignmentProps {
+  eventId: string;
+  dailyEventId: string;
+  createCurrentTimeLog: (message: string) => void;
+  parsedItems: HandyPartySheetData[];
+  vehicleAssignmentMap: Map<string, VehicleAssignment[]>;
+  handyPartyReservations: ReservationViewEntity[];
+  handyPartyShuttleRoutesMap: Map<string, AdminShuttleRoutesViewEntity>;
+}
+const processPassengerAssignment = async ({
+  eventId,
+  dailyEventId,
+  createCurrentTimeLog,
+  parsedItems,
+  vehicleAssignmentMap,
+  handyPartyReservations,
+  handyPartyShuttleRoutesMap,
+}: ProcessPassengerAssignmentProps) => {
   createCurrentTimeLog('=== 승객 배차 단계 시작 ===');
 
-  const createdShuttleBusList = await fetchCreatedShuttleBuses(
+  const createdShuttleBusList = await fetchCreatedShuttleBuses({
     eventId,
     dailyEventId,
     vehicleAssignmentMap,
     createCurrentTimeLog,
-  );
+  });
 
   const { reservationBusMap, totalReservationsCountMap, shuttleRouteNameMap } =
     createAssignmentMaps(vehicleAssignmentMap, handyPartyReservations);
 
-  await assignPassengersToBuses(
+  await assignPassengersToBuses({
     parsedItems,
     handyPartyReservations,
     handyPartyShuttleRoutesMap,
     createdShuttleBusList,
     reservationBusMap,
     createCurrentTimeLog,
-  );
+  });
 
-  await executeBulkAssignments(
+  await executeBulkAssignments({
     eventId,
     dailyEventId,
     reservationBusMap,
     totalReservationsCountMap,
     shuttleRouteNameMap,
     createCurrentTimeLog,
-  );
+  });
 
   createCurrentTimeLog('=== 승객 배차 단계 완료 ===');
 };
 
-const fetchCreatedShuttleBuses = async (
-  eventId: string,
-  dailyEventId: string,
-  vehicleAssignmentMap: Map<string, VehicleAssignment[]>,
-  createCurrentTimeLog: (message: string) => void,
-): Promise<CreatedShuttleBusInfo[]> => {
+interface FetchCreatedShuttleBusesProps {
+  eventId: string;
+  dailyEventId: string;
+  vehicleAssignmentMap: Map<string, VehicleAssignment[]>;
+  createCurrentTimeLog: (message: string) => void;
+}
+const fetchCreatedShuttleBuses = async ({
+  eventId,
+  dailyEventId,
+  vehicleAssignmentMap,
+  createCurrentTimeLog,
+}: FetchCreatedShuttleBusesProps): Promise<CreatedShuttleBusInfo[]> => {
   const shuttleRouteIds = Array.from(vehicleAssignmentMap.keys());
 
   return await Promise.all(
@@ -398,14 +503,22 @@ const createAssignmentMaps = (
   };
 };
 
-const assignPassengersToBuses = (
-  parsedItems: HandyPartySheetData[],
-  handyPartyReservations: ReservationViewEntity[],
-  handyPartyShuttleRoutesMap: Map<string, AdminShuttleRoutesViewEntity>,
-  createdShuttleBusList: CreatedShuttleBusInfo[],
-  reservationBusMap: Map<string, ReservationBusMap[]>,
-  createCurrentTimeLog: (message: string) => void,
-) => {
+interface AssignPassengersToBusesProps {
+  parsedItems: HandyPartySheetData[];
+  handyPartyReservations: ReservationViewEntity[];
+  handyPartyShuttleRoutesMap: Map<string, AdminShuttleRoutesViewEntity>;
+  createdShuttleBusList: CreatedShuttleBusInfo[];
+  reservationBusMap: Map<string, ReservationBusMap[]>;
+  createCurrentTimeLog: (message: string) => void;
+}
+const assignPassengersToBuses = ({
+  parsedItems,
+  handyPartyReservations,
+  handyPartyShuttleRoutesMap,
+  createdShuttleBusList,
+  reservationBusMap,
+  createCurrentTimeLog,
+}: AssignPassengersToBusesProps) => {
   parsedItems.forEach((parsedItem) => {
     const { region, tripType, partyId } = parsedItem;
     const expectedShuttleName = `${HANDY_PARTY_PREFIX}_${region}_${tripType}`;
@@ -421,7 +534,7 @@ const assignPassengersToBuses = (
       return;
     }
 
-    assignPassengersForItem(
+    assignPassengersForItem({
       parsedItem,
       matchingShuttleRoute,
       expectedShuttleBusName,
@@ -429,19 +542,28 @@ const assignPassengersToBuses = (
       reservationBusMap,
       handyPartyReservations,
       createCurrentTimeLog,
-    );
+    });
   });
 };
 
-const assignPassengersForItem = (
-  parsedItem: HandyPartySheetData,
-  matchingShuttleRoute: AdminShuttleRoutesViewEntity,
-  expectedShuttleBusName: string,
-  createdShuttleBusList: CreatedShuttleBusInfo[],
-  reservationBusMap: Map<string, ReservationBusMap[]>,
-  handyPartyReservations: ReservationViewEntity[],
-  createCurrentTimeLog: (message: string) => void,
-) => {
+interface AssignPassengersForItemProps {
+  parsedItem: HandyPartySheetData;
+  matchingShuttleRoute: AdminShuttleRoutesViewEntity;
+  expectedShuttleBusName: string;
+  createdShuttleBusList: CreatedShuttleBusInfo[];
+  reservationBusMap: Map<string, ReservationBusMap[]>;
+  handyPartyReservations: ReservationViewEntity[];
+  createCurrentTimeLog: (message: string) => void;
+}
+const assignPassengersForItem = ({
+  parsedItem,
+  matchingShuttleRoute,
+  expectedShuttleBusName,
+  createdShuttleBusList,
+  reservationBusMap,
+  handyPartyReservations,
+  createCurrentTimeLog,
+}: AssignPassengersForItemProps) => {
   const { shuttleRouteId, name: shuttleName } = matchingShuttleRoute;
   const { passengerPhoneNumber, address } = parsedItem;
 
@@ -543,14 +665,22 @@ const removeReservationFromList = (
   }
 };
 
-const executeBulkAssignments = async (
-  eventId: string,
-  dailyEventId: string,
-  reservationBusMap: Map<string, ReservationBusMap[]>,
-  totalReservationsCountMap: Map<string, number>,
-  shuttleRouteNameMap: Map<string, string>,
-  createCurrentTimeLog: (message: string) => void,
-) => {
+interface ExecuteBulkAssignmentsProps {
+  eventId: string;
+  dailyEventId: string;
+  reservationBusMap: Map<string, ReservationBusMap[]>;
+  totalReservationsCountMap: Map<string, number>;
+  shuttleRouteNameMap: Map<string, string>;
+  createCurrentTimeLog: (message: string) => void;
+}
+const executeBulkAssignments = async ({
+  eventId,
+  dailyEventId,
+  reservationBusMap,
+  totalReservationsCountMap,
+  shuttleRouteNameMap,
+  createCurrentTimeLog,
+}: ExecuteBulkAssignmentsProps) => {
   await Promise.allSettled(
     Array.from(reservationBusMap.entries()).map(
       async ([shuttleRouteId, reservationBusList]) => {
