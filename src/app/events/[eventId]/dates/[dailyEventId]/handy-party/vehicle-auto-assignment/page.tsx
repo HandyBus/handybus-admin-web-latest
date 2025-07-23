@@ -3,7 +3,7 @@
 import Loading from '@/components/loading/Loading';
 import Callout from '@/components/text/Callout';
 import Heading from '@/components/text/Heading';
-import useCreateCurrentTimeLog from './hooks/createCurrentTimeLog';
+import useCreateCurrentTimeLog from './hooks/useCreateCurrentTimeLog';
 import { useVehicleAutoAssignment } from './hooks/useVehicleAutoAssignment';
 import { useEventInfo } from './hooks/useEventInfo';
 import { useInputText } from './hooks/useInputText';

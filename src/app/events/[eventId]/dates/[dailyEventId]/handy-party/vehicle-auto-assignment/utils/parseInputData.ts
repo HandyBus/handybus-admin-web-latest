@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { HandyPartySheetData } from './types/type';
+import { HandyPartySheetData } from '../types/vehicleAutoAssignment.type';
 
 // 사용되는 타다 시트 데이터 예시
 // 강서권	고양종합운동장	오는편	2025-06-13 23:00	010-9303-0639	서울 구로구 신도림역 1번 출구	37.5094707	126.891882	4	4	37.9 	86.0 	23:00				14,000	경기32바9544	010-9303-0639

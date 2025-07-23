@@ -6,13 +6,13 @@ import {
   postShuttleBus,
 } from '@/services/shuttleBus.service';
 import { HANDY_PARTY_PREFIX } from '@/constants/common';
-import { parseInputData } from '../parseInputData';
+import { parseInputData } from '../utils/parseInputData';
 import {
   HandyPartySheetData,
   ReservationBusMap,
   VehicleAssignment,
   CreatedShuttleBusInfo,
-} from '../types/type';
+} from '../types/vehicleAutoAssignment.type';
 import { AdminShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 import { ReservationViewEntity } from '@/types/reservation.type';
 
