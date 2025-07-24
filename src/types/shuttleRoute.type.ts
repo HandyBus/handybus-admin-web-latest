@@ -131,20 +131,22 @@ export type UpdateShuttleRouteHubProps = z.infer<
 >;
 
 export const UpdateShuttleRouteRequestSchema = z.object({
-  name: z.string(),
-  reservationDeadline: z.string(),
-  maxPassengerCount: z.number().int(),
-  shuttleRouteHubs: UpdateShuttleRouteHubPropsSchema.array(),
-  regularPrice: z.object({
-    roundTrip: z.number().int(),
-    toDestination: z.number().int(),
-    fromDestination: z.number().int(),
-  }),
+  name: z.string().optional(),
+  reservationDeadline: z.string().optional(),
+  maxPassengerCount: z.number().int().optional(),
+  shuttleRouteHubs: UpdateShuttleRouteHubPropsSchema.array().optional(),
+  regularPrice: z
+    .object({
+      roundTrip: z.number().int().optional(),
+      toDestination: z.number().int().optional(),
+      fromDestination: z.number().int().optional(),
+    })
+    .optional(),
   earlybirdPrice: z
     .object({
-      roundTrip: z.number().int(),
-      toDestination: z.number().int(),
-      fromDestination: z.number().int(),
+      roundTrip: z.number().int().optional(),
+      toDestination: z.number().int().optional(),
+      fromDestination: z.number().int().optional(),
     })
     .optional(),
 });
