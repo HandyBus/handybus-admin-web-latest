@@ -1,7 +1,9 @@
 import { UpdateShuttleRouteRequest } from '@/types/shuttleRoute.type';
 import { EditFormValues } from '../form.type';
+import { FieldNamesMarkedBoolean } from 'react-hook-form';
 
 export const transformToShuttleRouteRequest = (
+  dirtyFields: Partial<Readonly<FieldNamesMarkedBoolean<EditFormValues>>>,
   data: EditFormValues,
   forwardHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
   returnHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
@@ -14,14 +16,24 @@ export const transformToShuttleRouteRequest = (
     ...rest
   } = data;
 
-  const x = {
+  const request = {
     ...rest,
-    name: data.name,
-    maxPassengerCount: data.maxPassengerCount,
-    reservationDeadline: data.reservationDeadline,
-    shuttleRouteHubs: returnHubs.concat(forwardHubs),
-    regularPrice: data.regularPrice,
-    earlybirdPrice: data.earlybirdPrice,
+    name: dirtyFields?.name ? data.name : undefined,
+    maxPassengerCount: dirtyFields?.maxPassengerCount
+      ? data.maxPassengerCount
+      : undefined,
+    reservationDeadline: dirtyFields?.reservationDeadline
+      ? data.reservationDeadline
+      : undefined,
+    shuttleRouteHubs:
+      dirtyFields?.shuttleRouteHubsToDestination ||
+      dirtyFields?.shuttleRouteHubsFromDestination
+        ? (returnHubs ?? []).concat(forwardHubs ?? [])
+        : undefined,
+    regularPrice: dirtyFields?.regularPrice ? data.regularPrice : undefined,
+    earlybirdPrice: dirtyFields?.earlybirdPrice
+      ? data.earlybirdPrice
+      : undefined,
   } satisfies UpdateShuttleRouteRequest;
-  return x;
+  return request;
 };

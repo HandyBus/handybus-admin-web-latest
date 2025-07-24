@@ -26,7 +26,7 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
     register,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useForm<EditFormValues>({
     defaultValues,
   });
@@ -44,6 +44,7 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
       const { forwardHubs, returnHubs } = extractHubs(data);
       validateShuttleRouteData(forwardHubs, returnHubs);
       const shuttleRouteRequest = transformToShuttleRouteRequest(
+        dirtyFields,
         data,
         forwardHubs,
         returnHubs,

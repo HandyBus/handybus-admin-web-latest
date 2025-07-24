@@ -1,9 +1,9 @@
-import { UpdateShuttleRouteRequest } from '@/types/shuttleRoute.type';
+import { UpdateShuttleRouteHubProps } from '@/types/shuttleRoute.type';
 import dayjs from 'dayjs';
 
 export const validateShuttleRouteData = (
-  forwardHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
-  returnHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
+  forwardHubs: Array<UpdateShuttleRouteHubProps>,
+  returnHubs: Array<UpdateShuttleRouteHubProps>,
 ): void => {
   const tripType = checkTripType(forwardHubs, returnHubs);
   switch (true) {
@@ -22,8 +22,8 @@ export const validateShuttleRouteData = (
 };
 
 const checkTripType = (
-  forwardHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
-  returnHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
+  forwardHubs: Array<UpdateShuttleRouteHubProps>,
+  returnHubs: Array<UpdateShuttleRouteHubProps>,
 ): 'roundTrip' | 'oneWay' | 'none' => {
   switch (true) {
     case forwardHubs.length > 0 && returnHubs.length > 0:
@@ -37,9 +37,7 @@ const checkTripType = (
   }
 };
 
-const validateEachSequenceOrder = (
-  hubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
-) => {
+const validateEachSequenceOrder = (hubs: Array<UpdateShuttleRouteHubProps>) => {
   const arrivalTimes = hubs.map((hub) => dayjs(hub.arrivalTime).valueOf());
   const hasDuplicateArrivalTimes =
     new Set(arrivalTimes).size !== arrivalTimes.length;
@@ -61,8 +59,8 @@ const validateEachSequenceOrder = (
 };
 
 const validateFromToOrder = (
-  forwardHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
-  returnHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
+  forwardHubs: Array<UpdateShuttleRouteHubProps>,
+  returnHubs: Array<UpdateShuttleRouteHubProps>,
 ) => {
   const forwardLastArrivalTime = Math.max(
     ...forwardHubs.map((hub) => dayjs(hub.arrivalTime).valueOf()),
@@ -79,8 +77,8 @@ const validateFromToOrder = (
 };
 
 const validateHubsMatch = (
-  forwardHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
-  returnHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
+  forwardHubs: Array<UpdateShuttleRouteHubProps>,
+  returnHubs: Array<UpdateShuttleRouteHubProps>,
 ) => {
   const forwardHubIds = forwardHubs.map((hub) => hub.regionHubId);
   const returnHubIds = returnHubs.map((hub) => hub.regionHubId);
