@@ -27,6 +27,10 @@ const DEFAULT_VALUES = {
   validFrom: '',
   validTo: '',
   allowedEventId: null,
+  issueType: 'CODE_INPUT',
+  processingStrategy: 'ONCE_PER_ACCOUNT',
+  validityStartStrategy: 'FIXED_DATE',
+  validityEndStrategy: 'FIXED_DATE',
 } satisfies CreateCouponRequest;
 
 const Page = () => {

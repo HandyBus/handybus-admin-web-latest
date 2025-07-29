@@ -15,6 +15,26 @@ export type IssuedCouponStatus = z.infer<typeof IssuedCouponStatusEnum>;
 export const DiscountTypeEnum = z.enum(['RATE', 'AMOUNT']);
 export type DiscountType = z.infer<typeof DiscountTypeEnum>;
 
+export const CouponIssueTypeEnum = z.enum(['CODE_INPUT', 'EVENT_TRIGGER']);
+export type CouponIssueType = z.infer<typeof CouponIssueTypeEnum>;
+
+export const CouponTriggerEventEnum = z.enum([
+  'FIRST_SIGNUP',
+  'FIRST_DEMAND_COMPLETION',
+]);
+export type CouponTriggerEvent = z.infer<typeof CouponTriggerEventEnum>;
+
+export const CouponProcessingStrategyEnum = z.enum([
+  'ONCE_PER_ACCOUNT',
+  'ONCE_PER_PHONE_NUMBER',
+]);
+export type CouponProcessingStrategy = z.infer<
+  typeof CouponProcessingStrategyEnum
+>;
+
+export const CouponValidityEnum = z.enum(['FIXED_DATE', 'RELATIVE_DAYS']);
+export type CouponValidity = z.infer<typeof CouponValidityEnum>;
+
 // ----- GET -----
 
 export const IssuedCouponsViewEntity = z.object({
@@ -71,6 +91,13 @@ export const CreateCouponRequestSchema = z.object({
   maxCouponUsage: z.number().int(),
   validFrom: z.string(),
   validTo: z.string(),
+  validFromDays: z.number().int().optional(),
+  validToDays: z.number().int().optional(),
+  issueType: CouponIssueTypeEnum,
+  triggerEvent: CouponTriggerEventEnum.optional(),
+  processingStrategy: CouponProcessingStrategyEnum,
+  validityStartStrategy: CouponValidityEnum,
+  validityEndStrategy: CouponValidityEnum,
   allowedEventId: z.string().nullable(),
 });
 export type CreateCouponRequest = z.infer<typeof CreateCouponRequestSchema>;
