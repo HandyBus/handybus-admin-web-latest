@@ -12,7 +12,7 @@ import { filterByFuzzy } from '@/utils/fuzzy.util';
 
 interface Props {
   value: string | null;
-  setValue: (value: string | null) => void;
+  setValue: (value: string | null, event: EventsViewEntity | null) => void;
 }
 
 import { ChevronDown } from 'lucide-react';
@@ -26,8 +26,8 @@ const EventInput = ({ value, setValue }: Props) => {
   const { data, isLoading, error } = useGetEvents();
 
   const setSelectedShuttle = useCallback(
-    (shuttle: EventsViewEntity | null) => {
-      setValue(shuttle?.eventId ?? null);
+    (event: EventsViewEntity | null) => {
+      setValue(event?.eventId ?? null, event);
     },
     [setValue],
   );

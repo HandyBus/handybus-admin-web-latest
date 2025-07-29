@@ -7,12 +7,14 @@ import NumberInput from '@/components/input/NumberInput';
 import Heading from '@/components/text/Heading';
 import { usePostCoupon } from '@/services/coupon.service';
 import { CreateCouponRequest } from '@/types/coupon.type';
+import { EventsViewEntity } from '@/types/event.type';
 import { Label, Radio } from '@headlessui/react';
 import { Field } from '@headlessui/react';
 import { RadioGroup } from '@headlessui/react';
 import dayjs from 'dayjs';
 import { CheckIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 const DEFAULT_VALUES = {
@@ -33,8 +35,10 @@ const DEFAULT_VALUES = {
   validityEndStrategy: 'FIXED_DATE',
 } satisfies CreateCouponRequest;
 
+const SHUTTLE_DEMAND_COUPON_CODE_PREFIX = 'DEMAND';
+
 const Page = () => {
-  const { control, handleSubmit } = useForm<CreateCouponRequest>({
+  const { control, handleSubmit, setValue } = useForm<CreateCouponRequest>({
     defaultValues: DEFAULT_VALUES,
   });
 
@@ -56,6 +60,29 @@ const Page = () => {
       validFrom: dayjs(data.validFrom).toISOString(),
       validTo: dayjs(data.validTo).toISOString(),
     });
+  };
+
+  const [selectedEvent, setSelectedEvent] = useState<EventsViewEntity | null>(
+    null,
+  );
+  const setSurveyCoupon = () => {
+    if (!selectedEvent) {
+      alert('먼저 행사를 선택해주세요.');
+      return;
+    }
+
+    const code = `${SHUTTLE_DEMAND_COUPON_CODE_PREFIX}-${selectedEvent.eventId}`;
+    const name = `수요조사리워드`;
+    const validTo = dayjs(selectedEvent.endDate).format('YYYY-MM-DD');
+
+    setValue('code', code);
+    setValue('name', name);
+    setValue('discountType', 'AMOUNT');
+    setValue('discountAmount', 1000);
+    setValue('maxCouponUsage', 0);
+    setValue('maxApplicablePeople', 1);
+    setValue('validFrom', dayjs().format('YYYY-MM-DD'));
+    setValue('validTo', validTo);
   };
 
   return (
@@ -216,16 +243,28 @@ const Page = () => {
             name="allowedEventId"
             render={({ field: { onChange, value } }) => (
               <div className="flex w-full flex-col gap-8">
-                <button
-                  onClick={() => onChange(null)}
-                  type="button"
-                  className="w-fit rounded-md border border-grey-500 px-4 py-[2px] text-12 text-grey-700"
-                >
-                  사용 가능 행사 제한 해제하기
-                </button>
+                <div className="flex flex-row gap-8">
+                  <button
+                    type="button"
+                    onClick={() => onChange(null)}
+                    className="rounded-[8px] border border-grey-200 bg-grey-50 px-8 py-4 text-14 font-500 text-grey-700"
+                  >
+                    사용 가능 행사 제한 해제하기
+                  </button>
+                  <button
+                    type="button"
+                    onClick={setSurveyCoupon}
+                    className="rounded-[8px] border border-grey-200 bg-grey-50 px-8 py-4 text-14 font-500 text-grey-700"
+                  >
+                    수요조사 전용 쿠폰 설정
+                  </button>
+                </div>
                 <EventInput
                   value={value ?? null}
-                  setValue={(n) => onChange(n ?? null)}
+                  setValue={(n, e) => {
+                    onChange(n ?? null);
+                    setSelectedEvent(e ?? null);
+                  }}
                 />
               </div>
             )}
