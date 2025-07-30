@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useForm, useFieldArray, useWatch } from 'react-hook-form';
 import { type CreateEventFormData, conform } from './form.type';
 import { useRouter } from 'next/navigation';
@@ -12,11 +12,13 @@ import { Button, Field, Label, RadioGroup, Radio } from '@headlessui/react';
 import ImageFileInput from '@/components/input/ImageFileInput';
 import RegionHubInput from '@/components/input/HubInput';
 import Input from '@/components/input/Input';
-import { usePostEvent } from '@/services/event.service';
+import { getEvent, usePostEvent } from '@/services/event.service';
 import Form from '@/components/form/Form';
 import { EventTypeEnum } from '@/types/event.type';
 import NewArtistsModal from '@/components/modal/NewArtistsModal';
 import dayjs from 'dayjs';
+import Toggle from '@/components/button/Toggle';
+import { postShuttleDemandCoupon } from '@/utils/coupon.util';
 
 const defaultValues = {
   name: '',
@@ -59,30 +61,33 @@ const CreateEventForm = () => {
     name: 'artistIds',
   });
 
-  const { mutate: postEvent } = usePostEvent({
-    onSuccess: () => {
+  const { mutateAsync: postEvent } = usePostEvent();
+
+  const [isDemandCoupon, setIsDemandCoupon] = useState(true);
+
+  const onSubmit = async (data: CreateEventFormData) => {
+    if (!confirm('행사를 추가하시겠습니까?')) {
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const eventId = await postEvent(conform(data));
+      const event = await getEvent(eventId);
+      if (isDemandCoupon) {
+        await postShuttleDemandCoupon(event);
+      }
       alert('행사가 추가되었습니다.');
       router.push('/events');
-    },
-    onError: (error) => {
+    } catch (error) {
       console.error('Error creating events:', error);
       alert(
         '행사 추가에 실패했습니다, ' +
           (error instanceof Error && error.message),
       );
+    } finally {
       setIsSubmitting(false);
-    },
-  });
-
-  const onSubmit = useCallback(
-    (data: CreateEventFormData) => {
-      if (confirm('행사를 추가하시겠습니까?')) {
-        setIsSubmitting(true);
-        postEvent(conform(data));
-      }
-    },
-    [postEvent],
-  );
+    }
+  };
 
   const [isArtistModalOpen, setIsArtistModalOpen] = useState(false);
 
@@ -267,6 +272,16 @@ const CreateEventForm = () => {
                 </Button>
               </div>
             ))}
+          </div>
+        </Form.section>
+        <Form.section>
+          <Form.label>수요조사 리워드 쿠폰</Form.label>
+          <div>
+            <Toggle
+              value={isDemandCoupon}
+              label="수요조사 리워드 쿠폰 생성하기"
+              setValue={(v) => setIsDemandCoupon(v)}
+            />
           </div>
         </Form.section>
         <Form.submitButton disabled={isSubmitting}>

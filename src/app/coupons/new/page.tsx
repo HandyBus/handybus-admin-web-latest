@@ -6,6 +6,7 @@ import Input from '@/components/input/Input';
 import NumberInput from '@/components/input/NumberInput';
 import Heading from '@/components/text/Heading';
 import { usePostCoupon } from '@/services/coupon.service';
+import { createShuttleDemandCouponCode } from '@/utils/coupon.util';
 import { CreateCouponRequest } from '@/types/coupon.type';
 import { EventsViewEntity } from '@/types/event.type';
 import { Label, Radio } from '@headlessui/react';
@@ -34,8 +35,6 @@ const DEFAULT_VALUES = {
   validityStartStrategy: 'FIXED_DATE',
   validityEndStrategy: 'FIXED_DATE',
 } satisfies CreateCouponRequest;
-
-const SHUTTLE_DEMAND_COUPON_CODE_PREFIX = 'DEMAND';
 
 const Page = () => {
   const { control, handleSubmit, setValue } = useForm<CreateCouponRequest>({
@@ -71,7 +70,7 @@ const Page = () => {
       return;
     }
 
-    const code = `${SHUTTLE_DEMAND_COUPON_CODE_PREFIX}-${selectedEvent.eventId}`;
+    const code = createShuttleDemandCouponCode(selectedEvent.eventId);
     const name = `수요조사리워드`;
     const validTo = dayjs(selectedEvent.endDate).format('YYYY-MM-DD');
 
