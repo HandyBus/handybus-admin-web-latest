@@ -28,6 +28,7 @@ import {
   useSuspenseQuery,
 } from '@tanstack/react-query';
 import { silentParse } from '@/utils/parse.util';
+import { z } from 'zod';
 
 // ----- GET -----
 
@@ -149,10 +150,16 @@ export const useGetEventsStatsWithPagination = (
 // ----- POST -----
 
 export const postEvent = async (body: CreateEventRequest) => {
-  await authInstance.post(
+  const res = await authInstance.post(
     '/v2/shuttle-operation/admin/events',
     silentParse(CreateEventRequestSchema, body),
+    {
+      shape: {
+        eventId: z.string(),
+      },
+    },
   );
+  return res.eventId;
 };
 
 export const usePostEvent = ({

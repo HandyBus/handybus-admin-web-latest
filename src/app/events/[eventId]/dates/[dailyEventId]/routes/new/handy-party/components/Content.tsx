@@ -200,16 +200,18 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
         </Callout>
         <div className="flex flex-col gap-8 rounded-[6px] border border-grey-300 p-12">
           <h5 className="text-14 font-600">단가표 적용하기</h5>
-          <PriceTableButton
-            onClick={() => handleApplyPriceTable(GOYANG_STADIUM_PRICE_TABLE)}
-          >
-            고양종합운동장 25.06
-          </PriceTableButton>
-          <PriceTableButton
-            onClick={() => handleApplyPriceTable(KSPO_DOME_PRICE_TABLE)}
-          >
-            KSPO DOME 25.07
-          </PriceTableButton>
+          <div className="flex gap-8">
+            <PriceTableButton
+              onClick={() => handleApplyPriceTable(GOYANG_STADIUM_PRICE_TABLE)}
+            >
+              고양종합운동장 25.06
+            </PriceTableButton>
+            <PriceTableButton
+              onClick={() => handleApplyPriceTable(KSPO_DOME_PRICE_TABLE)}
+            >
+              KSPO DOME 25.07
+            </PriceTableButton>
+          </div>
         </div>
         <ul className="flex flex-col">
           <div className="flex text-14 font-500 text-grey-500">
