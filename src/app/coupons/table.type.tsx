@@ -29,8 +29,7 @@ export const columns = [
             <span className="text-14 font-400 text-grey-700">
               {type === 'AMOUNT'
                 ? `${amount?.toLocaleString()}원 할인`
-                : `${rate}% 할인`}{' '}
-              {`(최대 ${maxDiscount?.toLocaleString()}원)`}
+                : `${rate}% 할인 (최대 ${maxDiscount?.toLocaleString()}원)`}
             </span>
           </div>
         );
