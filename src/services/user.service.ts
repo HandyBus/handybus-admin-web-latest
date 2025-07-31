@@ -23,6 +23,7 @@ import {
 // ----- GET -----
 
 export interface GetUsersOptions {
+  name?: string;
   nickname?: string;
   phoneNumber?: string;
   gender?: Gender;

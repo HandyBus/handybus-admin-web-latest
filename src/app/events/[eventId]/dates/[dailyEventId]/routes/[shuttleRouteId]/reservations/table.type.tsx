@@ -48,12 +48,17 @@ export const reservationColumns = [
     cell: (info) => {
       const userDesiredHubAddress =
         info.row.original.metadata?.desiredHubAddress;
+      const userName = info.row.original.userName;
       const userNickname = info.row.original.userNickname;
       const userPhoneNumber = info.row.original.userPhoneNumber;
 
       return (
         <p>
-          <span className="text-16 font-500">{userNickname}</span>
+          <span className="text-16 font-500">{userName ?? '-'}</span>
+          <br />
+          <span className="text-14 font-400  text-grey-600">
+            {userNickname ? `(${userNickname})` : '탈퇴한 유저'}
+          </span>
           <br />
           <span className="text-14 font-400 text-grey-600">
             ({userPhoneNumber || '전화번호 없음'})

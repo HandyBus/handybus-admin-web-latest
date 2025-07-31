@@ -38,6 +38,7 @@ export const UsersViewEntitySchema = z
   .object({
     userId: z.string(),
     nickname: z.string().nullable(),
+    name: z.string().nullable(),
     profileImage: z.string().nullable(),
     phoneNumber: z.string().nullable(),
     gender: GenderEnum,

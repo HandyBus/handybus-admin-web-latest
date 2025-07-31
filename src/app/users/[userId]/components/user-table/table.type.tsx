@@ -13,6 +13,10 @@ export const columns = [
     header: () => '유저 ID',
     cell: (info) => info.getValue(),
   }),
+  columnHelper.accessor('name', {
+    header: () => '이름',
+    cell: (info) => info.getValue(),
+  }),
   columnHelper.accessor('nickname', {
     header: () => '닉네임',
     cell: (info) => info.getValue(),
