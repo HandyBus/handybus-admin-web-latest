@@ -7,6 +7,7 @@ const empty: GetReservationsOptions = {
   dailyEventId: undefined,
   shuttleRouteId: undefined,
   shuttleBusId: undefined,
+  userName: undefined,
   userNickname: undefined,
   passengerName: undefined,
   handyStatus: undefined,
@@ -30,6 +31,10 @@ export type ReservationFilterAction =
   | {
       type: 'SET_SHUTTLE_BUS_ID';
       shuttleBusId: GetReservationsOptions['shuttleBusId'];
+    }
+  | {
+      type: 'SET_USER_NAME';
+      userName: GetReservationsOptions['userName'];
     }
   | {
       type: 'SET_USER_NICKNAME';
@@ -85,6 +90,11 @@ const reducer = (
       return {
         ...prevState,
         shuttleBusId: action.shuttleBusId,
+      };
+    case 'SET_USER_NAME':
+      return {
+        ...prevState,
+        userName: action.userName,
       };
     case 'SET_USER_NICKNAME':
       return {
@@ -152,6 +162,10 @@ const useReservationFilter = (
       urlState.userNickname = searchParams.get('userNickname') || undefined;
     }
 
+    if (searchParams.has('userName')) {
+      urlState.userName = searchParams.get('userName') || undefined;
+    }
+
     if (searchParams.has('passengerName')) {
       urlState.passengerName = searchParams.get('passengerName') || undefined;
     }
@@ -204,6 +218,10 @@ const useReservationFilter = (
 
       if (newState.shuttleBusId) {
         params.set('shuttleBusId', newState.shuttleBusId);
+      }
+
+      if (newState.userName) {
+        params.set('userName', newState.userName);
       }
 
       if (newState.userNickname) {

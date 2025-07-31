@@ -8,6 +8,10 @@ export const accountColumns = [
     header: '사용자 ID',
     cell: (info) => info.getValue(),
   }),
+  columnHelper.accessor('userName', {
+    header: '이름',
+    cell: (info) => info.getValue() ?? '-',
+  }),
   columnHelper.accessor('userNickname', {
     header: '닉네임',
     cell: (info) => info.getValue() ?? '-',

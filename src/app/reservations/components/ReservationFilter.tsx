@@ -127,6 +127,13 @@ function ReservationFilter({ option, dispatch }: Props) {
             />
           </>
         )}
+        <label>유저 이름 (fuzzy)</label>
+        <DebouncedInput
+          value={option.userName ?? ''}
+          setValue={(n) =>
+            dispatch({ type: 'SET_USER_NAME', userName: n || undefined })
+          }
+        />
         <label>유저 닉네임 (fuzzy)</label>
         <DebouncedInput
           value={option.userNickname ?? ''}
@@ -137,7 +144,9 @@ function ReservationFilter({ option, dispatch }: Props) {
             })
           }
         />
-        <label>탑승자 이름 (fuzzy)</label>
+        <label>
+          (구) 탑승자 이름 (fuzzy) (옛날 예약에서 탑승객 이름 받을떄 사용)
+        </label>
         <DebouncedInput
           value={option.passengerName ?? ''}
           setValue={(n) =>
