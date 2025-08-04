@@ -5,6 +5,8 @@ import BlueLink from '@/components/link/BlueLink';
 import { AdminShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 import Stringifier from '@/utils/stringifier.util';
 import EditRouteStatusDialog from './EditRouteStatusDialog';
+import BlueButton from '@/components/link/BlueButton';
+import { sendShuttleInformation } from '@/services/shuttleRoute.service';
 
 const columnHelper = createColumnHelper<AdminShuttleRoutesViewEntity>();
 
@@ -80,18 +82,49 @@ export const columns = [
     id: 'route-detail',
     header: () => '노선 상세',
     cell: (props) => (
-      <BlueLink
-        href={`/events/${props.row.original.eventId}/dates/${props.row.original.dailyEventId}/routes/${props.row.original.shuttleRouteId}`}
-      >
-        노선 상세보기
-      </BlueLink>
+      <div className="flex flex-col items-center">
+        <BlueLink
+          href={`/events/${props.row.original.eventId}/dates/${props.row.original.dailyEventId}/routes/${props.row.original.shuttleRouteId}`}
+        >
+          노선 상세보기
+        </BlueLink>
+        <BlueLink
+          href={`/events/${props.row.original.eventId}/dates/${props.row.original.dailyEventId}/routes/${props.row.original.shuttleRouteId}/edit`}
+        >
+          노선 수정하기
+        </BlueLink>
+        <EditRouteStatusDialog shuttleRoute={props.row.original} />
+      </div>
     ),
   }),
   columnHelper.display({
     id: 'statusAction',
     header: () => '노선 상태 변경',
     cell: (props) => (
-      <EditRouteStatusDialog shuttleRoute={props.row.original} />
+      <BlueButton
+        onClick={async () => {
+          try {
+            const isConfirmed = confirm(
+              `${props.row.original.name} 노선에 대해 알림톡을 발송하시겠습니까?`,
+            );
+            if (!isConfirmed) {
+              return;
+            }
+
+            await sendShuttleInformation(
+              props.row.original.eventId,
+              props.row.original.dailyEventId,
+              props.row.original.shuttleRouteId,
+            );
+            alert('알림톡 발송 완료');
+          } catch (error) {
+            console.error(error);
+            alert('알림톡 발송 실패');
+          }
+        }}
+      >
+        알림톡 발송하기
+      </BlueButton>
     ),
   }),
 ];
