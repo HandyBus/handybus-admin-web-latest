@@ -485,10 +485,14 @@ const PassengerItem = ({
   handleChangeBus,
 }: PassengerItemProps) => {
   const { reservation, bus } = busAndReservation;
+
+  const userName = reservation.userName ?? '-';
+  const userNickname = reservation.userNickname ?? '탈퇴한 유저';
+
   return (
     <li className="flex items-center gap-20 border-b border-grey-300 px-12 py-4">
       <p className="text-14 font-500 text-grey-900">
-        {reservation.userNickname}
+        {`${userName} (${userNickname})`}
       </p>
       <p className="text-14 font-400 text-grey-700">
         {reservation.userPhoneNumber}
