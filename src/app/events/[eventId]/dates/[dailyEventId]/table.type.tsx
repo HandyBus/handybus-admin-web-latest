@@ -7,6 +7,7 @@ import Stringifier from '@/utils/stringifier.util';
 import EditRouteStatusDialog from './EditRouteStatusDialog';
 import BlueButton from '@/components/link/BlueButton';
 import { sendShuttleInformation } from '@/services/shuttleRoute.service';
+import { HANDY_PARTY_PREFIX } from '@/constants/common';
 
 const columnHelper = createColumnHelper<AdminShuttleRoutesViewEntity>();
 
@@ -122,6 +123,7 @@ export const columns = [
             alert('알림톡 발송 실패');
           }
         }}
+        disabled={props.row.original.name.includes(HANDY_PARTY_PREFIX)}
       >
         알림톡 발송하기
       </BlueButton>

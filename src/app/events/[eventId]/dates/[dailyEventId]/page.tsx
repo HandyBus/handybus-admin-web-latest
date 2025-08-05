@@ -81,15 +81,20 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     : null;
 
   const handleSendShuttleInformationAllDailyEventRoutes = async () => {
+    // 핸디팟 노선들은 알림톡을 발송하지 않음.
+    const shuttleRoutes = routes.filter(
+      (route) => !route.name.includes(HANDY_PARTY_PREFIX),
+    );
+
     const isConfirmed = confirm(
-      '일자별 노선 전체에 대해 알림톡을 발송하시겠습니까?',
+      `핸디팟을 제외한 일자별 노선 전체(${shuttleRoutes.length}개)에 대해 알림톡을 발송하시겠습니까?`,
     );
     if (!isConfirmed) {
       return;
     }
 
     const results = await Promise.allSettled(
-      routes.map((route) =>
+      shuttleRoutes.map((route) =>
         sendShuttleInformation({
           eventId,
           dailyEventId,
@@ -97,14 +102,16 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
         }),
       ),
     );
+
     const successCount = results.filter(
       (result) => result.status === 'fulfilled',
     ).length;
     const failedCount = results.filter(
       (result) => result.status === 'rejected',
     ).length;
+
     alert(
-      `알림톡 발송 완료 (${successCount} / ${routes.length}) ${failedCount ? `\n 실패한 노선 : ${failedCount}` : ''}`,
+      `알림톡 발송 완료 (${successCount} / ${shuttleRoutes.length}) ${failedCount ? `\n 실패한 노선 : ${failedCount}` : ''}`,
     );
   };
 
