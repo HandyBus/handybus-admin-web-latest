@@ -8,7 +8,10 @@ import { columns } from './table.type';
 import { useEffect, useMemo } from 'react';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
-import { useGetShuttleRoutesOfDailyEvent } from '@/services/shuttleRoute.service';
+import {
+  useGetShuttleRoutesOfDailyEvent,
+  useSendShuttleInformation,
+} from '@/services/shuttleRoute.service';
 import { useGetEvent } from '@/services/event.service';
 import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
@@ -34,6 +37,11 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     isError: isRoutesError,
     error: routesError,
   } = useGetShuttleRoutesOfDailyEvent(eventId, dailyEventId);
+
+  const {
+    mutateAsync: sendShuttleInformation,
+    isPending: isSendShuttleInformationPending,
+  } = useSendShuttleInformation();
 
   const sortedRoutes = useMemo(() => {
     if (!routes) {
@@ -71,6 +79,41 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
   const dailyEvent = event
     ? event.dailyEvents.find((d) => d.dailyEventId === dailyEventId)
     : null;
+
+  const handleSendShuttleInformationAllDailyEventRoutes = async () => {
+    // 핸디팟 노선들은 알림톡을 발송하지 않음.
+    const shuttleRoutes = routes.filter(
+      (route) => !route.name.includes(HANDY_PARTY_PREFIX),
+    );
+
+    const isConfirmed = confirm(
+      `핸디팟을 제외한 일자별 노선 전체(${shuttleRoutes.length}개)에 대해 탑승 정보 알림톡을 발송하시겠습니까?`,
+    );
+    if (!isConfirmed) {
+      return;
+    }
+
+    const results = await Promise.allSettled(
+      shuttleRoutes.map((route) =>
+        sendShuttleInformation({
+          eventId,
+          dailyEventId,
+          shuttleRouteId: route.shuttleRouteId,
+        }),
+      ),
+    );
+
+    const successCount = results.filter(
+      (result) => result.status === 'fulfilled',
+    ).length;
+    const failedCount = results.filter(
+      (result) => result.status === 'rejected',
+    ).length;
+
+    alert(
+      `알림톡 발송 완료 (${successCount} / ${shuttleRoutes.length}) ${failedCount ? `\n 실패한 노선 : ${failedCount}` : ''}`,
+    );
+  };
 
   useEffect(() => {
     if (event && !dailyEvent) {
@@ -116,25 +159,35 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
           <BlueLink href={`${dailyEventId}/routes/new`} className="text-14">
             추가하기
           </BlueLink>
+          <button
+            className="text-14 text-blue-500 underline underline-offset-[3px]"
+            onClick={handleSendShuttleInformationAllDailyEventRoutes}
+            disabled={isSendShuttleInformationPending}
+          >
+            알림톡 발송하기 (일자별 노선 전체)
+          </button>
+        </Heading.h2>
+        <div className="mb-12 flex justify-start gap-20 bg-notion-grey px-20 py-12">
+          <h5 className="whitespace-nowrap text-14">핸디팟 기능 :</h5>
           <BlueLink
             href={`${dailyEventId}/handy-party/optimizer-paste`}
             className="text-14"
           >
-            핸디팟 최적 경로 계산기 (엑셀 복붙하기)
+            핸디팟 경로 계산 (엑셀 복붙)
           </BlueLink>
           <BlueLink
             href={`${dailyEventId}/handy-party/optimizer`}
             className="text-14"
           >
-            일자별 행사 핸디팟 최적 경로 계산기 (엑셀 추출하기)
+            일자별 행사 핸디팟 경로 계산 (엑셀 추출)
           </BlueLink>
           <BlueLink
             href={`${dailyEventId}/handy-party/vehicle-auto-assignment`}
             className="text-14"
           >
-            일자별 행사 핸디팟 자동 배차하기
+            일자별 행사 핸디팟 자동 배차
           </BlueLink>
-        </Heading.h2>
+        </div>
         <BaseTable table={table} />
       </div>
     </main>

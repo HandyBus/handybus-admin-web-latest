@@ -9,6 +9,10 @@ const useUserFilter = (partial: GetUsersOptions = {}) => {
   const getInitialStateFromURL = useCallback((): GetUsersOptions => {
     const urlState: GetUsersOptions = {};
 
+    if (searchParams.has('name')) {
+      urlState.name = searchParams.get('name') || undefined;
+    }
+
     if (searchParams.has('nickname')) {
       urlState.nickname = searchParams.get('nickname') || undefined;
     }
@@ -95,6 +99,10 @@ const useUserFilter = (partial: GetUsersOptions = {}) => {
     (newState: GetUsersOptions) => {
       const params = new URLSearchParams();
 
+      if (newState.name) {
+        params.set('name', newState.name);
+      }
+
       if (newState.nickname) {
         params.set('nickname', newState.nickname);
       }
@@ -168,6 +176,7 @@ const useUserFilter = (partial: GetUsersOptions = {}) => {
 export default useUserFilter;
 
 const EMPTY_USER_FILTER: GetUsersOptions = {
+  name: undefined,
   nickname: undefined,
   phoneNumber: undefined,
   gender: undefined,
@@ -185,6 +194,10 @@ const EMPTY_USER_FILTER: GetUsersOptions = {
 };
 
 export type UserFilterAction =
+  | {
+      type: 'SET_NAME';
+      name: GetUsersOptions['name'];
+    }
   | {
       type: 'SET_NICKNAME';
       nickname: GetUsersOptions['nickname'];
@@ -250,6 +263,11 @@ const reducer = (
   action: UserFilterAction,
 ): GetUsersOptions => {
   switch (action.type) {
+    case 'SET_NAME':
+      return {
+        ...prevState,
+        name: action.name,
+      };
     case 'SET_NICKNAME':
       return {
         ...prevState,

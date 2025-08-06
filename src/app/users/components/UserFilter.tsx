@@ -29,6 +29,15 @@ const UserFilter = ({ option, dispatch }: Props) => {
       <DisclosurePanel className="mb-8 flex flex-col gap-4 rounded-[4px] bg-notion-green/50 p-16">
         <div className="grid grid-cols-2 gap-12">
           <article>
+            <Label>이름</Label>
+            <DebouncedInput
+              value={option.name ?? ''}
+              setValue={(value) =>
+                dispatch({ type: 'SET_NAME', name: value || undefined })
+              }
+            />
+          </article>
+          <article>
             <Label>닉네임</Label>
             <DebouncedInput
               value={option.nickname ?? ''}

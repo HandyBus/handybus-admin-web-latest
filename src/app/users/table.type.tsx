@@ -28,6 +28,10 @@ export const columns = [
     minSize: 20,
     maxSize: 20,
   }),
+  columnHelper.accessor('name', {
+    header: () => '이름',
+    cell: (info) => info.getValue(),
+  }),
   columnHelper.accessor('nickname', {
     header: () => '닉네임',
     cell: (info) => info.getValue(),

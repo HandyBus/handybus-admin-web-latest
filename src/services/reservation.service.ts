@@ -33,6 +33,7 @@ export interface GetReservationsOptions {
   dailyEventId: string | undefined;
   shuttleRouteId: string | undefined;
   shuttleBusId: string | undefined;
+  userName: string | undefined;
   userNickname: string | undefined;
   passengerName: string | undefined;
   handyStatus: HandyStatus | undefined;
