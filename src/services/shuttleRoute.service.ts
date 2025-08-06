@@ -244,3 +244,27 @@ export const useDeleteShuttleRoutes = () => {
     }) => deleteShuttleRoutes(eventId, dailyEventId, body),
   });
 };
+
+export const sendShuttleInformation = async (
+  eventId: string,
+  dailyEventId: string,
+  shuttleRouteId: string,
+) => {
+  await authInstance.post(
+    `/v1/shuttle-operation/admin/events/${eventId}/dates/${dailyEventId}/routes/${shuttleRouteId}/send-shuttle-information`,
+  );
+};
+
+export const useSendShuttleInformation = () => {
+  return useMutation({
+    mutationFn: ({
+      eventId,
+      dailyEventId,
+      shuttleRouteId,
+    }: {
+      eventId: string;
+      dailyEventId: string;
+      shuttleRouteId: string;
+    }) => sendShuttleInformation(eventId, dailyEventId, shuttleRouteId),
+  });
+};
