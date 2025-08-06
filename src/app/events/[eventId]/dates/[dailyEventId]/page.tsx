@@ -87,7 +87,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     );
 
     const isConfirmed = confirm(
-      `핸디팟을 제외한 일자별 노선 전체(${shuttleRoutes.length}개)에 대해 알림톡을 발송하시겠습니까?`,
+      `핸디팟을 제외한 일자별 노선 전체(${shuttleRoutes.length}개)에 대해 탑승 정보 알림톡을 발송하시겠습니까?`,
     );
     if (!isConfirmed) {
       return;

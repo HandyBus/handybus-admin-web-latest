@@ -100,13 +100,13 @@ export const columns = [
   }),
   columnHelper.display({
     id: 'statusAction',
-    header: () => '노선 상태 변경',
+    header: () => '알림톡 발송',
     cell: (props) => (
       <BlueButton
         onClick={async () => {
           try {
             const isConfirmed = confirm(
-              `${props.row.original.name} 노선에 대해 알림톡을 발송하시겠습니까?`,
+              `${props.row.original.name} 노선에 대해 탑승정보 알림톡을 발송하시겠습니까?`,
             );
             if (!isConfirmed) {
               return;
