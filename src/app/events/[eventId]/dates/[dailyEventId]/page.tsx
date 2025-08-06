@@ -18,6 +18,7 @@ import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
 import { HANDY_PARTY_PREFIX } from '@/constants/common';
 import { HANDY_PARTY_ROUTE_AREA } from '@/constants/handyPartyArea.const';
+import EditDailyEventOpenChatUrl from './EditDailyEventOpenChatUrl';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -73,6 +74,11 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     });
     return [...shuttleRoutes, ...sortedHandyPartyRoutes];
   }, [routes]);
+
+  const hasOpenChatUrl = useMemo(() => {
+    return event?.dailyEvents.find((d) => d.dailyEventId === dailyEventId)
+      ?.metadata?.openChatUrl;
+  }, [event, dailyEventId]);
 
   const table = useTable({ data: sortedRoutes, columns });
 
@@ -150,6 +156,21 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
             <List.item title="상태">
               {Stringifier.dailyEventStatus(dailyEvent?.status)}
             </List.item>
+            <List.item title="공지방링크">
+              {hasOpenChatUrl ? (
+                <a
+                  href={hasOpenChatUrl}
+                  target="_blank"
+                  className="text-blue-500 underline underline-offset-[3px]"
+                >
+                  {hasOpenChatUrl}
+                </a>
+              ) : (
+                <span className="text-red-500">
+                  없음, 노선을 추가하기 전에 링크를 꼭 추가해주세요.
+                </span>
+              )}
+            </List.item>
           </List>
         </Callout>
       )}
@@ -166,6 +187,11 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
           >
             알림톡 발송하기 (일자별 노선 전체)
           </button>
+          <EditDailyEventOpenChatUrl
+            eventId={eventId}
+            dailyEventId={dailyEventId}
+            openChatUrl={hasOpenChatUrl}
+          />
         </Heading.h2>
         <div className="mb-12 flex justify-start gap-20 bg-notion-grey px-20 py-12">
           <h5 className="whitespace-nowrap text-14">핸디팟 기능 :</h5>
