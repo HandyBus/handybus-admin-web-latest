@@ -193,28 +193,17 @@ export const columns = [
       cell: (info) => {
         const dailyEventIds = info.getValue();
         const eventId = info.row.original.eventId;
-        const shuttleRouteCount = info.row.original.dailyEvents.map(
-          (dailyEvent) => dailyEvent.shuttleRouteCount,
-        );
 
         return (
           <div className="flex h-full flex-col justify-between">
-            {dailyEventIds.map((dailyEventId, index) => (
+            {dailyEventIds.map((dailyEventId) => (
               <p
                 key={dailyEventId}
                 className="flex h-[58px] grow items-center justify-center border-b border-grey-100 px-8 last:border-b-0"
               >
-                {shuttleRouteCount[index] > 0 ? (
-                  <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>
-                    노선 보기
-                  </BlueLink>
-                ) : (
-                  <BlueLink
-                    href={`/events/${eventId}/dates/${dailyEventId}/routes/new`}
-                  >
-                    추가하기
-                  </BlueLink>
-                )}
+                <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>
+                  노선 보기
+                </BlueLink>
               </p>
             ))}
           </div>
