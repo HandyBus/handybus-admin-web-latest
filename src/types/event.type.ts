@@ -105,7 +105,9 @@ export const UpdateEventRequestSchema = z
         dailyEventId: z.string().optional(),
         date: z.string(),
         closeDeadline: z.string(),
+        metadata: z.record(z.string(), z.any()).optional(),
       })
+      .partial()
       .array(),
     type: EventTypeEnum,
     artistIds: z.string().array(),
