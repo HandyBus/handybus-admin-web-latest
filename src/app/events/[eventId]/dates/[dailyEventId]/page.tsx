@@ -177,7 +177,11 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
       <div className="flex flex-col">
         <Heading.h2 className="flex items-baseline gap-20">
           노선 목록
-          <BlueLink href={`${dailyEventId}/routes/new`} className="text-14">
+          <BlueLink
+            href={`${dailyEventId}/routes/new`}
+            className="text-14"
+            disabled={!hasOpenChatUrl}
+          >
             추가하기
           </BlueLink>
           <button

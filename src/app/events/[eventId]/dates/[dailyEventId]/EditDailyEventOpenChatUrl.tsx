@@ -48,6 +48,8 @@ const EditDailyEventOpenChatUrl = ({
       });
 
       alert('공지방 링크가 수정되었습니다.');
+
+      window.location.reload();
     } catch (error) {
       console.error(error);
       alert('공지방 링크 수정에 실패했습니다.');
