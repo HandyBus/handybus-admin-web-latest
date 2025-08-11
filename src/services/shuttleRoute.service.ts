@@ -4,6 +4,7 @@ import {
   ShuttleRouteStatus,
   AdminShuttleRoutesViewEntitySchema,
   TripType,
+  ShuttleRouteAlertRequestsViewEntitySchema,
 } from '@/types/shuttleRoute.type';
 import { authInstance } from './config';
 import { toSearchParamString } from '@/utils/searchParam.util';
@@ -95,6 +96,27 @@ export const useGetShuttleRoute = (
   return useQuery({
     queryKey: ['shuttleRoute', eventId, dailyEventId, shuttleRouteId],
     queryFn: () => getShuttleRoute(eventId, dailyEventId, shuttleRouteId),
+  });
+};
+
+// TODO 추후에 pagination으로 변경
+export const getAlertRequests = async (shuttleRouteId: string) => {
+  const res = await authInstance.get(
+    `/v1/shuttle-operation/admin/alert-requests?shuttleRouteId=${shuttleRouteId}`,
+    {
+      shape: {
+        shuttleRouteAlertRequests:
+          ShuttleRouteAlertRequestsViewEntitySchema.array(),
+      },
+    },
+  );
+  return res.shuttleRouteAlertRequests;
+};
+
+export const useGetAlertRequests = (shuttleRouteId: string) => {
+  return useQuery({
+    queryKey: ['alertRequests', shuttleRouteId],
+    queryFn: () => getAlertRequests(shuttleRouteId),
   });
 };
 
