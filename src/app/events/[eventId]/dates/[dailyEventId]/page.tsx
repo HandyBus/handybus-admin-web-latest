@@ -49,11 +49,15 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
       return [];
     }
 
-    const handyPartyRoutes = routes.filter((r) =>
-      r.name.includes(HANDY_PARTY_PREFIX),
-    );
     const shuttleRoutes = routes.filter(
       (r) => !r.name.includes(HANDY_PARTY_PREFIX),
+    );
+    const sortedShuttleRoutes = shuttleRoutes.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
+
+    const handyPartyRoutes = routes.filter((r) =>
+      r.name.includes(HANDY_PARTY_PREFIX),
     );
     const sortedHandyPartyRoutes = handyPartyRoutes.sort((a, b) => {
       const aArea = a.name.split('_')[1];
@@ -72,7 +76,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
       }
       return aIndex < bIndex ? -1 : 1;
     });
-    return [...shuttleRoutes, ...sortedHandyPartyRoutes];
+    return [...sortedShuttleRoutes, ...sortedHandyPartyRoutes];
   }, [routes]);
 
   const hasOpenChatUrl = useMemo(() => {
@@ -117,7 +121,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     ).length;
 
     alert(
-      `알림톡 발송 완료 (${successCount} / ${shuttleRoutes.length}) ${failedCount ? `\n 실패한 노선 : ${failedCount}` : ''}`,
+      `탑승정보 알림톡 발송 완료 (${successCount} / ${shuttleRoutes.length}) ${failedCount ? `\n 실패한 노선 : ${failedCount}` : ''}`,
     );
   };
 
@@ -189,7 +193,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
             onClick={handleSendShuttleInformationAllDailyEventRoutes}
             disabled={isSendShuttleInformationPending}
           >
-            알림톡 발송하기 (일자별 노선 전체)
+            탑승정보 알림톡 발송하기 (일자별 노선 전체)
           </button>
           <EditDailyEventOpenChatUrl
             eventId={eventId}
