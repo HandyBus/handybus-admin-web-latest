@@ -100,7 +100,7 @@ export const columns = [
   }),
   columnHelper.display({
     id: 'statusAction',
-    header: () => '알림톡 발송',
+    header: () => '탑승정보 알림톡 발송',
     cell: (props) => (
       <BlueButton
         onClick={async () => {
@@ -117,10 +117,10 @@ export const columns = [
               props.row.original.dailyEventId,
               props.row.original.shuttleRouteId,
             );
-            alert('알림톡 발송 완료');
+            alert('탑승정보 알림톡 발송 완료');
           } catch (error) {
             console.error(error);
-            alert('알림톡 발송 실패');
+            alert('탑승정보 알림톡 발송 실패');
           }
         }}
         disabled={props.row.original.name.includes(HANDY_PARTY_PREFIX)}

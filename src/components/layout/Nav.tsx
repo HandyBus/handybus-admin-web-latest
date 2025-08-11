@@ -71,6 +71,7 @@ const NavItems = () => {
       <NavItem href="/banners">배너</NavItem>
       <NavItem href="/announcements">공지</NavItem>
       <NavItem href="/feedbacks">피드백</NavItem>
+      <NavItem href="/cancel-reasons">예약 취소 사유</NavItem>
     </>
   );
 };
