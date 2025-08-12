@@ -2,7 +2,7 @@
 
 import { Loader2Icon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { twJoin } from 'tailwind-merge';
+import { customTwMerge } from 'tailwind.config';
 import Image from 'next/image';
 import { ImageKey, getImageUrl } from '@/services/core.service';
 
@@ -45,12 +45,11 @@ const ImageFileInput = ({ type, value, setValue }: Props) => {
       {!isLoading && (
         <label
           htmlFor="image_upload"
-          className={twJoin(
+          className={customTwMerge(
             `flex h-[50px] w-full cursor-pointer items-center justify-center gap-4 rounded-[8px] font-600`,
             isPending
-              ? 'bg-[#E6FFF7] text-[#00C896]'
-              : 'bg-[#F3F3F3] text-[#4D4D4D]',
-            'transition-transform active:scale-90',
+              ? 'bg-brand-primary-50 text-brand-primary-400 active:[&:not([disabled])]:bg-brand-primary-100'
+              : 'bg-basic-grey-100 text-basic-grey-700 active:[&:not([disabled])]:bg-basic-grey-200',
           )}
         >
           {isPending ? ' 이미지 업로드' : ' 이미지 변경'}

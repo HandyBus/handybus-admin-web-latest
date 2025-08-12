@@ -1,5 +1,5 @@
 import { IssuedCouponStatus } from '@/types/coupon.type';
-import { EventStatus } from '@/types/event.type';
+import { EventStatus, EventType } from '@/types/event.type';
 import { RefundStatus } from '@/types/payment.type';
 import {
   CancelStatus,
@@ -164,6 +164,16 @@ const Stringifier = Object.freeze({
         return 'ADMIN_RETRIEVAL (무산 등 관리자 회수로 인한 예약 취소 및 환불)';
       case 'PAYBACK':
         return 'PAYBACK (핸디 및 기타 환급)';
+    }
+  },
+  eventType(v: EventType) {
+    switch (v) {
+      case 'CONCERT':
+        return '콘서트';
+      case 'FESTIVAL':
+        return '페스티벌';
+      case 'SPORTS':
+        return '스포츠';
     }
   },
 });
