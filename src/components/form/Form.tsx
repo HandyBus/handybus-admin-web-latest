@@ -19,7 +19,7 @@ const Form = ({ children, className, ...props }: Props) => {
     <form
       {...props}
       className={twMerge(
-        'mx-auto flex w-full max-w-920 flex-col gap-16 rounded-[4px] bg-notion-green px-76 py-32',
+        'mx-auto flex w-full max-w-[600px] flex-col gap-16 py-32',
         className,
       )}
     >
@@ -34,7 +34,7 @@ const Section = ({ children, className }: Form) => {
   return (
     <section
       className={twMerge(
-        'flex w-full flex-col gap-12 rounded-[6px] border border-grey-100 bg-white p-24 shadow-sm',
+        'flex w-full flex-col gap-16 rounded-[16px] bg-white p-24 shadow-[0_2px_8px_0_rgba(0,0,0,0.08)]',
         className,
       )}
     >
@@ -59,7 +59,7 @@ const Label = ({
     <label
       {...props}
       className={twMerge(
-        'flex items-baseline gap-[6px] text-18 font-500',
+        'flex items-baseline gap-[6px] text-18 font-600',
         className,
       )}
     >

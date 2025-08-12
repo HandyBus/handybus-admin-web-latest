@@ -4,18 +4,16 @@ import { useState } from 'react';
 import { useForm, useFieldArray, useWatch } from 'react-hook-form';
 import { type CreateEventFormData, conform } from './form.type';
 import { useRouter } from 'next/navigation';
-import ArtistInput from '@/components/input/ArtistInput';
 import { Controller } from 'react-hook-form';
 import RegionInput from '@/components/input/RegionInput';
 import { CheckIcon, PlusIcon, XIcon } from 'lucide-react';
-import { Button, Field, Label, RadioGroup, Radio } from '@headlessui/react';
+import { Field, Label, RadioGroup, Radio } from '@headlessui/react';
 import ImageFileInput from '@/components/input/ImageFileInput';
 import RegionHubInput from '@/components/input/HubInput';
 import Input from '@/components/input/Input';
 import { getEvent, usePostEvent } from '@/services/event.service';
 import Form from '@/components/form/Form';
 import { EventTypeEnum } from '@/types/event.type';
-import NewArtistsModal from '@/components/modal/NewArtistsModal';
 import dayjs from 'dayjs';
 import Toggle from '@/components/button/Toggle';
 import { postShuttleDemandCoupon } from '@/utils/coupon.util';
@@ -52,15 +50,6 @@ const CreateEventForm = () => {
     name: 'dailyEvents',
   });
 
-  const {
-    fields: concertArtistFields,
-    append: appendArtist,
-    remove: removeArtist,
-  } = useFieldArray<CreateEventFormData>({
-    control,
-    name: 'artistIds',
-  });
-
   const { mutateAsync: postEvent } = usePostEvent();
 
   const [isDemandCoupon, setIsDemandCoupon] = useState(true);
@@ -89,13 +78,25 @@ const CreateEventForm = () => {
     }
   };
 
-  const [isArtistModalOpen, setIsArtistModalOpen] = useState(false);
-
   return (
     <>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.section>
-          <Form.label>행사 이름</Form.label>
+          <Form.label>행사 이미지</Form.label>
+          <Controller
+            control={control}
+            name="imageUrl"
+            render={({ field: { onChange, value } }) => (
+              <ImageFileInput
+                type="concerts"
+                value={value}
+                setValue={(url) => onChange(url || null)}
+              />
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label>행사명</Form.label>
           <Controller
             control={control}
             name="name"
@@ -103,14 +104,14 @@ const CreateEventForm = () => {
               <Input
                 type="text"
                 value={value}
-                placeholder="행사 이름"
+                placeholder="IP 문제로 공식 명칭을 지양해 주세요. (e.g. 2025 SVT 9th 캐럿랜드 → 세븐틴 팬미팅)"
                 setValue={onChange}
               />
             )}
           />
         </Form.section>
         <Form.section>
-          <Form.label>장소</Form.label>
+          <Form.label>행사장</Form.label>
           <Controller
             control={control}
             name="regionId"
@@ -198,16 +199,7 @@ const CreateEventForm = () => {
                   <Field key={plan} className="flex items-center gap-[2px]">
                     <Radio
                       value={plan}
-                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4
-                    transition-transform
-                    hover:outline
-                    hover:outline-blue-200
-                    focus:outline
-                    focus:outline-blue-200
-                    active:scale-[0.9]
-                    data-[checked]:bg-blue-400
-                    data-[checked]:text-white
-                    "
+                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4 transition-transform hover:outline hover:outline-blue-200 focus:outline focus:outline-blue-200 active:scale-[0.9] data-[checked]:bg-blue-400 data-[checked]:text-white"
                     >
                       <CheckIcon
                         className="invisible group-data-[checked]:visible"
@@ -222,59 +214,6 @@ const CreateEventForm = () => {
           />
         </Form.section>
         <Form.section>
-          <Form.label>행사 이미지</Form.label>
-          <Controller
-            control={control}
-            name="imageUrl"
-            render={({ field: { onChange, value } }) => (
-              <ImageFileInput
-                type="concerts"
-                value={value}
-                setValue={(url) => onChange(url || null)}
-              />
-            )}
-          />
-        </Form.section>
-        <Form.section>
-          <Form.label>
-            아티스트{' '}
-            <button
-              type="button"
-              onClick={() => appendArtist({ artistId: null })}
-              className="w-fit text-blue-500"
-            >
-              <PlusIcon />
-            </button>
-          </Form.label>
-          <div className="flex flex-col gap-4">
-            {concertArtistFields.map((field, index) => (
-              <div key={field.id} className="flex gap-4">
-                <Controller
-                  control={control}
-                  name={`artistIds.${index}.artistId`}
-                  render={({ field: { onChange, value } }) => (
-                    <ArtistInput
-                      value={value}
-                      setValue={(id) => onChange(id || null)}
-                      modalState={{
-                        isOpen: isArtistModalOpen,
-                        setIsOpen: setIsArtistModalOpen,
-                      }}
-                    />
-                  )}
-                />
-                <Button
-                  className="transition-colors hover:text-red-500"
-                  type="button"
-                  onClick={() => removeArtist(index)}
-                >
-                  <XIcon />
-                </Button>
-              </div>
-            ))}
-          </div>
-        </Form.section>
-        <Form.section>
           <Form.label>수요조사 리워드 쿠폰</Form.label>
           <div>
             <Toggle
@@ -285,13 +224,9 @@ const CreateEventForm = () => {
           </div>
         </Form.section>
         <Form.submitButton disabled={isSubmitting}>
-          {isSubmitting ? '처리 중...' : '추가하기'}
+          {isSubmitting ? '생성 중...' : '추가하기'}
         </Form.submitButton>
       </Form>
-      <NewArtistsModal
-        isOpen={isArtistModalOpen}
-        setIsOpen={setIsArtistModalOpen}
-      />
     </>
   );
 };
