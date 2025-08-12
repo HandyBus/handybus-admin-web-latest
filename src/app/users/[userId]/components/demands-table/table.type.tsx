@@ -25,7 +25,7 @@ export const columns = [
         <p>
           <span className="text-16 font-500">{event?.eventName}</span>
           <br />
-          <span className="text-14 font-400 text-grey-600">
+          <span className="text-14 font-400 text-basic-grey-600">
             {date && dayjs(date).tz('Asia/Seoul').format('YYYY.MM.DD')}
           </span>
         </p>
@@ -58,7 +58,7 @@ export const columns = [
             <p>
               {toDestinationRegionHub?.name}
               <br />
-              <span className="text-14 font-400 text-grey-600">
+              <span className="text-14 font-400 text-basic-grey-600">
                 {toDestinationRegionHub?.address}
               </span>
             </p>
@@ -66,7 +66,7 @@ export const columns = [
             <p>
               기타
               <br />
-              <span className="text-14 font-400 text-grey-600">
+              <span className="text-14 font-400 text-basic-grey-600">
                 {desiredToDestinationRegionHub}
               </span>
             </p>
@@ -90,7 +90,7 @@ export const columns = [
             <p>
               {fromDestinationRegionHub?.name}
               <br />
-              <span className="text-14 font-400 text-grey-600">
+              <span className="text-14 font-400 text-basic-grey-600">
                 {fromDestinationRegionHub?.address}
               </span>
             </p>
@@ -98,7 +98,7 @@ export const columns = [
             <p>
               기타
               <br />
-              <span className="text-14 font-400 text-grey-600">
+              <span className="text-14 font-400 text-basic-grey-600">
                 {desiredFromDestinationRegionHub}
               </span>
             </p>

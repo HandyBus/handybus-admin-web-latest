@@ -11,19 +11,19 @@ const Nav = () => {
 
   return (
     <>
-      <nav className="sticky top-0 flex h-64 shrink-0 items-center gap-28 border-b border-grey-200 bg-grey-800 px-28 max-[500px]:hidden">
+      <nav className="sticky top-0 flex h-64 shrink-0 items-center gap-28 border-b border-basic-grey-100 bg-[#181F29] px-28 shadow-[0_0_3px_rgba(0,0,0,0.02)] max-[500px]:hidden">
         <Link href="/">
           <LogoIcon width={40} height={40} viewBox="0 0 145 144" />
         </Link>
         <NavItems />
         <Link
           href="/login"
-          className="ml-auto text-14 font-500 text-grey-200 underline underline-offset-2"
+          className="ml-auto text-14 font-500 text-basic-grey-200 underline underline-offset-2"
         >
           로그인
         </Link>
       </nav>
-      <nav className="sticky top-0 hidden h-40 shrink-0 items-center justify-between border-b border-grey-200 bg-grey-800 px-8 max-[500px]:flex ">
+      <nav className="sticky top-0 hidden h-40 shrink-0 items-center justify-between border-b border-basic-grey-200 bg-[#181F29] px-8 max-[500px]:flex">
         <Link href="/">
           <LogoIcon width={24} height={24} viewBox="0 0 145 144" />
         </Link>
@@ -35,19 +35,19 @@ const Nav = () => {
       </nav>
       <div
         onClick={() => setIsOpen(false)}
-        className={`fixed bottom-0 left-0 right-0 top-0 z-[100] flex items-center justify-end bg-black/50 transition-opacity duration-300 ${
+        className={`fixed bottom-0 left-0 right-0 top-0 z-[100] flex items-center justify-end bg-basic-black/50 transition-opacity duration-300 ${
           isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >
         <div
-          className={`flex h-full w-100 flex-col gap-28 bg-grey-800 p-24 transition-transform duration-300 ${
+          className={`flex h-full w-100 flex-col gap-16 bg-[#181F29] p-24 transition-transform duration-300 ${
             isOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
           <NavItems />
           <Link
             href="/login"
-            className="text-14 font-500 text-grey-200 underline underline-offset-2"
+            className="text-14 font-500 text-basic-grey-200 underline underline-offset-2"
           >
             로그인
           </Link>
@@ -71,7 +71,7 @@ const NavItems = () => {
       <NavItem href="/banners">배너</NavItem>
       <NavItem href="/announcements">공지</NavItem>
       <NavItem href="/feedbacks">피드백</NavItem>
-      <NavItem href="/cancel-reasons">예약 취소 사유</NavItem>
+      <NavItem href="/cancel-reasons">취소사유</NavItem>
     </>
   );
 };

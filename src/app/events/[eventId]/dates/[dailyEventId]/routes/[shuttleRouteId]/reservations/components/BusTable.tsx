@@ -337,21 +337,21 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
           <div className="flex items-center gap-4">
             <button
               type="button"
-              className="rounded-md border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
+              className="bg-notion-basic-grey/20 rounded-6 border border-basic-grey-300 px-12 py-[2px] text-14 font-500"
               onClick={handleAssignBus}
             >
               확인
             </button>
             <button
               type="button"
-              className="rounded-md border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
+              className="bg-notion-basic-grey/20 rounded-6 border border-basic-grey-300 px-12 py-[2px] text-14 font-500"
               onClick={() => setIsEditMode(false)}
             >
               취소
             </button>
             <button
               type="button"
-              className="ml-16 rounded-md border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
+              className="bg-notion-basic-grey/20 ml-16 rounded-6 border border-basic-grey-300 px-12 py-[2px] text-14 font-500"
               onClick={handleFillUnassignedReservation}
             >
               배차되지 않은 승객 채우기
@@ -360,7 +360,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
         ) : (
           <button
             type="button"
-            className="rounded-md border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
+            className="bg-notion-basic-grey/20 rounded-6 border border-basic-grey-300 px-12 py-[2px] text-14 font-500"
             onClick={() => {
               setIsEditMode(true);
               initEditing();
@@ -383,10 +383,10 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
                 className="flex items-center gap-12"
               >
                 <span>{busWithSeat.bus.busName}</span>
-                <span className="text-14 font-500 text-grey-600">
+                <span className="text-14 font-500 text-basic-grey-600">
                   {Stringifier.busType(busWithSeat.bus.busType)}
                 </span>
-                <span className="text-14 font-500 text-grey-500">
+                <span className="text-14 font-500 text-basic-grey-500">
                   {busWithSeat.bus.busNumber}
                 </span>
               </Heading.h4>
@@ -398,7 +398,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
                     className="flex items-center gap-12"
                   >
                     <span>콘서트행</span>
-                    <span className="ml-12 text-14 font-500 text-grey-500">
+                    <span className="ml-12 text-14 font-500 text-basic-grey-500">
                       {`(${busWithSeat.toDestinationFilledSeat}/${busWithSeat.maxSeat})`}
                     </span>
                   </Heading.h5>
@@ -431,7 +431,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
                     className="flex items-center gap-12"
                   >
                     <span> 오는편</span>
-                    <span className="ml-12 text-14 font-500 text-grey-500">
+                    <span className="ml-12 text-14 font-500 text-basic-grey-500">
                       {`(${busWithSeat.fromDestinationFilledSeat}/${busWithSeat.maxSeat})`}
                     </span>
                   </Heading.h5>
@@ -490,33 +490,33 @@ const PassengerItem = ({
   const userNickname = reservation.userNickname ?? '탈퇴한 유저';
 
   return (
-    <li className="flex items-center gap-20 border-b border-grey-300 px-12 py-4">
-      <p className="text-14 font-500 text-grey-900">
+    <li className="flex items-center gap-20 border-b border-basic-grey-300 px-12 py-4">
+      <p className="text-basic-grey-900 text-14 font-500">
         {`${userName} (${userNickname})`}
       </p>
-      <p className="text-14 font-400 text-grey-700">
+      <p className="text-14 font-400 text-basic-grey-700">
         {reservation.userPhoneNumber}
       </p>
-      <p className="text-14 font-400 text-grey-700">
+      <p className="text-14 font-400 text-basic-grey-700">
         {reservation.passengerCount}인
       </p>
-      <p className="text-14 font-400 text-grey-700">
+      <p className="text-14 font-400 text-basic-grey-700">
         {Stringifier.tripType(reservation.type)}
       </p>
       <p
         className={`text-14 font-400 ${
           reservation.handyStatus === 'ACCEPTED'
-            ? 'text-primary-main'
+            ? 'text-brand-primary-400'
             : reservation.handyStatus === 'SUPPORTED'
-              ? 'text-grey-700'
-              : 'text-grey-400'
+              ? 'text-basic-grey-700'
+              : 'text-basic-grey-400'
         }`}
       >
         {Stringifier.handyStatus(reservation.handyStatus)}
       </p>
       {isEditMode && (
         <select
-          className="text-14 font-400 text-grey-700"
+          className="text-14 font-400 text-basic-grey-700"
           value={bus.shuttleBusId ?? ''}
           onChange={(e) => {
             const shuttleBusId = e.target.value;

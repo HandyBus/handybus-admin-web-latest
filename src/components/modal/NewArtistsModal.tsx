@@ -17,7 +17,7 @@ const NewArtistsModal = ({ isOpen, setIsOpen }: Props) => {
     <CustomModal
       isOpen={isOpen}
       onClosed={() => setIsOpen(false)}
-      styles="flex h-[auto] w-[432px] flex-col items-center rounded-lg border-[1px] border-grey-200 bg-white p-28"
+      styles="flex h-[auto] w-[432px] flex-col items-center rounded-8 border-[1px] border-basic-grey-200 bg-basic-white p-28"
     >
       <NewArtistsModalContent setIsOpen={setIsOpen} />
     </CustomModal>
@@ -47,7 +47,7 @@ const NewArtistsModalContent = ({
   };
 
   const linkToast = (
-    <div className="bg-primary-800">
+    <div className="bg-brand-primary-600">
       <p className="text-14 font-400 leading-[22.4px]">추가되었습니다.</p>
       <Link
         href={'/artists'}
@@ -111,21 +111,21 @@ const NewArtistsModalContent = ({
             onKeyDown={handleKeyDown}
             autoFocus={true}
           />
-          {error && <p className="text-red-500">{error}</p>}
+          {error && <p className="text-basic-red-500">{error}</p>}
         </div>
       </div>
       <div className="flex w-full gap-12">
         <button
           type="button"
           onClick={handleClose}
-          className="h-[46px] w-[210px] rounded-lg border-[1px] border-grey-200 bg-white px-[18px] py-[10px] text-16 font-600 leading-[22.4px]"
+          className="h-[46px] w-[210px] rounded-8 border-[1px] border-basic-grey-200 bg-basic-white px-[18px] py-[10px] text-16 font-600 leading-[22.4px]"
         >
           닫기
         </button>
         <button
           type="button"
           onClick={onSubmit}
-          className="h-[46px] w-[210px] rounded-lg bg-blue-500 px-[18px] py-[10px] text-16 font-600 leading-[22.4px] text-white"
+          className="h-[46px] w-[210px] rounded-8 bg-basic-blue-400 px-[18px] py-[10px] text-16 font-600 leading-[22.4px] text-basic-white"
         >
           추가하기
         </button>

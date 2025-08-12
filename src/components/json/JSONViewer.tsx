@@ -29,15 +29,15 @@ const JSONViewer = ({ value }: Props) => {
         open={isOpen}
         onClose={() => setIsOpen(false)}
         transition
-        className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 transition duration-75 ease-out data-[closed]:opacity-0"
+        className="fixed inset-0 flex w-screen items-center justify-center bg-basic-black/30 p-4 transition duration-75 ease-out data-[closed]:opacity-0"
       >
-        <DialogPanel className="flex flex-col max-w-full max-h-full space-y-8 bg-white p-24 rounded-xl">
-          <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
+        <DialogPanel className="flex max-h-full max-w-full flex-col space-y-8 rounded-16 bg-basic-white p-24">
+          <div className="flex flex-row flex-wrap gap-4 rounded-8 border border-basic-grey-100 p-8 text-14">
             <BlueButton onClick={handleCopy}>클립보드에 복사</BlueButton>
             <BlueButton onClick={() => setIsOpen(false)}>닫기</BlueButton>
           </div>
-          <div className="flex flex-col relative overflow-auto h-auto">
-            <pre className="bg-grey-50 p-8 rounded-lg ">{json}</pre>
+          <div className="relative flex h-auto flex-col overflow-auto">
+            <pre className="rounded-8 bg-basic-grey-50 p-8 ">{json}</pre>
           </div>
         </DialogPanel>
       </Dialog>

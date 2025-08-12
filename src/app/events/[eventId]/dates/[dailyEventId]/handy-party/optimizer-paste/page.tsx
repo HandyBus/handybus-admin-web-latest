@@ -62,21 +62,21 @@ const RouteOptimizer = () => {
   return (
     <div className="p-4">
       <Heading>핸디팟 최적 경로 계산기</Heading>
-      <div className="bg-gray-50 mb-8 rounded-lg p-4">
+      <div className="bg-gray-50 mb-8 rounded-8 p-4">
         <div className="mb-8">
           <Heading.h4> 주소 데이터 (Excel 복사 붙여넣기 지원)</Heading.h4>
           <textarea
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder={PLACEHOLDER_TEXT}
-            className="p-3 border-gray-300 h-160 w-full resize-y rounded-md border "
+            className="p-3 border-gray-300 h-160 w-full resize-y rounded-6 border "
           />
         </div>
 
         <div className="flex gap-12 pb-16">
           <Heading.h5 className="whitespace-nowrap">여정방향</Heading.h5>
           <select
-            className="rounded-md border border-grey-300 p-4"
+            className="rounded-6 border border-basic-grey-300 p-4"
             value={tripType as string}
             onChange={(e) => setTripType(e.target.value as SingleSideTripType)}
           >
@@ -94,7 +94,7 @@ const RouteOptimizer = () => {
         <div className="flex gap-12">
           <button
             onClick={handleCalculateOptimizedRoute}
-            className="rounded-lg bg-red-500 p-4 text-white transition-colors disabled:cursor-not-allowed disabled:bg-grey-200"
+            className="rounded-8 bg-basic-red-500 p-4 text-basic-white transition-colors disabled:cursor-not-allowed disabled:bg-basic-grey-200"
             disabled={!eventPlace || !inputText || isLoading}
           >
             최적 경로 계산하기

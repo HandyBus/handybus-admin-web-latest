@@ -7,7 +7,7 @@ import {
 } from '@headlessui/react';
 import { ChevronDownIcon, FilterIcon } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { twMerge } from 'tailwind-merge';
+import { customTwMerge } from 'tailwind.config';
 import Toggle from '@/components/button/Toggle';
 import Stringifier from '@/utils/stringifier.util';
 import { useSearchParams } from 'next/navigation';
@@ -23,9 +23,9 @@ function Filter({ eventStatus, setEventStatus }: Props) {
   return (
     <Disclosure>
       <DisclosureButton
-        className={twMerge(
-          'gap-2 group flex w-fit items-center justify-start gap-4 rounded-lg p-4 transition-all hover:bg-grey-50 active:scale-90 active:bg-grey-100',
-          eventStatus === undefined ? '' : 'text-green-500',
+        className={customTwMerge(
+          'gap-2 group flex w-fit items-center justify-start gap-4 rounded-8 p-4 transition-all hover:bg-basic-grey-50 active:scale-90 active:bg-basic-grey-100',
+          eventStatus === undefined ? '' : 'text-brand-primary-400',
         )}
       >
         <FilterIcon size={16} />
@@ -34,7 +34,7 @@ function Filter({ eventStatus, setEventStatus }: Props) {
           : `필터`}
         <ChevronDownIcon className="w-5 group-data-[open]:rotate-180" />
       </DisclosureButton>
-      <DisclosurePanel className="flex flex-row gap-4 rounded-xl bg-grey-50 p-8">
+      <DisclosurePanel className="flex flex-row gap-4 rounded-16 bg-basic-grey-50 p-8">
         {EventStatusEnum.options.map((status) => (
           <Toggle
             key={status}

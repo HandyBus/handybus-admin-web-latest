@@ -19,11 +19,11 @@ export const columns = [
         <p>
           <span className="text-16 font-500">{eventName}</span>
           <br />
-          <span className="text-14 font-400 text-grey-600">
+          <span className="text-14 font-400 text-basic-grey-600">
             {eventArtists?.map((artist) => artist.artistName).join(', ')}
           </span>
           <br />
-          <span className="text-14 font-500 text-grey-700">
+          <span className="text-14 font-500 text-basic-grey-700">
             {eventLocationName}
           </span>
         </p>

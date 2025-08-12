@@ -15,15 +15,15 @@ interface Props<TData> {
  */
 const VerticalTable = <TData,>({ table }: Props<TData>) => {
   return (
-    <table className="text-16 border-separate border-spacing-y-4 text-left text-grey-900 rtl:text-right">
+    <table className="text-basic-grey-900 border-separate border-spacing-y-4 text-left text-16 rtl:text-right">
       <tbody>
         {table.getHeaderGroups().map((headerGroup) =>
           headerGroup.headers.map((header, headerIndex) => (
             <tr
               key={`${header.id}-${headerIndex}`}
-              className="rounded-lg bg-white"
+              className="rounded-8 bg-basic-white"
             >
-              <th className="border-y border-l border-grey-100 p-8 rounded-l-lg bg-grey-50 text-grey-700 uppercase text-14 w-1/3">
+              <th className="rounded-l-lg w-1/3 border-y border-l border-basic-grey-100 bg-basic-grey-50 p-8 text-14 uppercase text-basic-grey-700">
                 {header.isPlaceholder
                   ? null
                   : flexRender(
@@ -31,7 +31,7 @@ const VerticalTable = <TData,>({ table }: Props<TData>) => {
                       header.getContext(),
                     )}
               </th>
-              <td className="border-y border-r border-grey-100 p-8 rounded-r-lg">
+              <td className="rounded-r-lg border-y border-r border-basic-grey-100 p-8">
                 {flexRender(
                   table.getRowModel().rows[0].getVisibleCells()[header.index]
                     .column.columnDef.cell,

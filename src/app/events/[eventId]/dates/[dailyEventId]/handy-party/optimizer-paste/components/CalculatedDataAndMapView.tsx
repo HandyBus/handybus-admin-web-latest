@@ -32,7 +32,7 @@ const CalculatedDataAndMapView = ({
             key={`${item.address}-${index}`}
             className={`p-3 border-gray-200 flex cursor-pointer items-center justify-between border-b transition-all duration-200 ${
               draggedIndex === index
-                ? 'scale-95 bg-blue-50 opacity-50'
+                ? 'bg-basic-blue-50 scale-95 opacity-50'
                 : 'hover:bg-gray-50'
             }`}
             draggable
@@ -42,7 +42,9 @@ const CalculatedDataAndMapView = ({
             onDragEnd={handleDragEnd}
           >
             <div className="flex-1">
-              <span className="font-semibold text-blue-600">{item.order}.</span>
+              <span className="font-semibold text-basic-blue-600">
+                {item.order}.
+              </span>
               <span className="ml-2">{item.address}</span>
             </div>
           </div>

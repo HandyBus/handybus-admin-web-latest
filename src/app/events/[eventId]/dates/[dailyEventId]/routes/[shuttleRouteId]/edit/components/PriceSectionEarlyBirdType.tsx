@@ -20,7 +20,7 @@ const PriceSectionEarlybirdType = ({
 }: Props) => {
   return (
     <div
-      className={`flex flex-col gap-8 rounded-[4px] p-8 ${hasEarlybird ? '' : 'bg-notion-grey'}`}
+      className={`flex flex-col gap-8 rounded-[4px] p-8 ${hasEarlybird ? '' : 'bg-notion-basic-grey'}`}
     >
       <Heading.h5 backgroundColor="blue">얼리버드 가격</Heading.h5>
       <label className="block text-16 font-500">예약 마감일</label>
@@ -61,7 +61,7 @@ const TripPriceInputEarlybird = ({
       <div className="flex flex-col items-start gap-8">
         <label className="block break-keep text-16 font-500">
           왕복
-          <span className="ml-4 text-14 text-blue-500">
+          <span className="ml-4 text-14 text-basic-blue-400">
             {watchEarlybirdPrice &&
               discountPercent(
                 watchRegularPrice.roundTrip,
@@ -84,7 +84,7 @@ const TripPriceInputEarlybird = ({
       <div className="flex flex-col items-start gap-8">
         <label className="block break-keep text-16 font-500">
           가는편
-          <span className="ml-4 text-14 text-blue-500">
+          <span className="ml-4 text-14 text-basic-blue-400">
             {watchEarlybirdPrice &&
               discountPercent(
                 watchRegularPrice.toDestination,
@@ -108,7 +108,7 @@ const TripPriceInputEarlybird = ({
       <div className="flex flex-col items-start gap-8">
         <label className="block break-keep text-16 font-500">
           오는편
-          <span className="ml-4 text-14 text-blue-500">
+          <span className="ml-4 text-14 text-basic-blue-400">
             {watchEarlybirdPrice &&
               discountPercent(
                 watchRegularPrice.fromDestination,

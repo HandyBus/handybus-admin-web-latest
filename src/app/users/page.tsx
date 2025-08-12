@@ -54,7 +54,7 @@ const Page = () => {
     <main className="flex grow flex-col">
       <Heading>유저 대시보드</Heading>
       <UserFilter option={option} dispatch={dispatch} />
-      <p className="text-14 text-grey-800">
+      <p className="text-14 text-basic-grey-700">
         {currentUserCount}건의 검색 결과가 있습니다.
       </p>
       <BaseTable table={table} />

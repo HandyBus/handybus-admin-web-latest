@@ -26,7 +26,7 @@ export const columns = [
           <div>
             <span className="text-16 font-500">{name}</span>
             <br />
-            <span className="text-14 font-400 text-grey-700">
+            <span className="text-14 font-400 text-basic-grey-700">
               {type === 'AMOUNT'
                 ? `${amount?.toLocaleString()}원 할인`
                 : `${rate}% 할인 (최대 ${maxDiscount?.toLocaleString()}원)`}
@@ -52,11 +52,11 @@ export const columns = [
         const { isActive, validFrom } = info.getValue();
         const now = dayjs();
         return isActive ? (
-          <span className="text-primary-600">진행중</span>
+          <span className="text-brand-primary-600">진행중</span>
         ) : now.isBefore(dayjs(validFrom)) ? (
-          <span className="text-grey-700">대기</span>
+          <span className="text-basic-grey-700">대기</span>
         ) : (
-          <span className="text-red-600">만료</span>
+          <span className="text-basic-red-600">만료</span>
         );
       },
     },
@@ -115,7 +115,7 @@ export const columns = [
     cell: (info) => {
       const allowedEventId = info.getValue();
       if (!allowedEventId) {
-        return <span className="text-grey-600">제한 없음</span>;
+        return <span className="text-basic-grey-600">제한 없음</span>;
       }
       return (
         <BlueLink href={`/events/${allowedEventId}`}>

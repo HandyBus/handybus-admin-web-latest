@@ -92,19 +92,19 @@ function EditHandyStatusDialog({
         open={isOpen}
         onClose={() => setIsOpen(false)}
         transition
-        className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 transition duration-75 ease-out data-[closed]:opacity-0"
+        className="fixed inset-0 flex w-screen items-center justify-center bg-basic-black/30 p-4 transition duration-75 ease-out data-[closed]:opacity-0"
       >
-        <DialogPanel className="max-w-lg space-y-8 rounded-xl bg-white p-24">
+        <DialogPanel className="max-w-lg space-y-8 rounded-16 bg-basic-white p-24">
           <DialogTitle className="text-26 font-700">
             핸디 지원 상태 수정
           </DialogTitle>
           <Description>핸디 지원 상태를 수정합니다.</Description>
           <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex w-256 flex-row items-center justify-between rounded-lg border border-grey-100 bg-white p-8">
+            <div className="flex w-256 flex-row items-center justify-between rounded-8 border border-basic-grey-100 bg-basic-white p-8">
               {Stringifier.handyStatus(response.handyStatus)}
             </div>
             {isAdvancedFrom && (
-              <p className="text-12 font-600 text-red-500">
+              <p className="text-12 font-600 text-basic-red-500">
                 <MessageSquareWarningIcon className="inline" /> 주의: 변경 전
                 상태가 &#39;{Stringifier.handyStatus(response.handyStatus)}
                 &#39;인 작업은 일반적이지 않습니다.
@@ -124,7 +124,7 @@ function EditHandyStatusDialog({
                     values={HandyStatusEnum.options}
                   />
                   {isAdvancedTo && (
-                    <p className="text-12 font-600 text-red-500">
+                    <p className="text-12 font-600 text-basic-red-500">
                       <MessageSquareWarningIcon className="inline" /> 주의: 변경
                       후 상태가 &#39;{Stringifier.handyStatus(value)}&#39;인
                       작업은 일반적이지 않습니다.
@@ -133,17 +133,17 @@ function EditHandyStatusDialog({
                 </>
               )}
             />
-            <div className="flex justify-end gap-4 text-white [&>button]:rounded-lg [&>button]:px-16 [&>button]:py-4">
+            <div className="flex justify-end gap-4 text-basic-white [&>button]:rounded-8 [&>button]:px-16 [&>button]:py-4">
               <button
                 type="button"
-                className="bg-grey-400 transition-all hover:scale-95 active:scale-90"
+                className="bg-basic-grey-400 transition-all hover:scale-95 active:scale-90"
                 onClick={closeDialog}
               >
                 이 창 닫기
               </button>
               <button
                 type="submit"
-                className="bg-blue-400 transition-all hover:scale-95 active:scale-90"
+                className="bg-basic-blue-400 transition-all hover:scale-95 active:scale-90"
               >
                 수정
               </button>
@@ -168,19 +168,19 @@ interface ListProps<T> {
 const List = <T,>({ value, values, setValue, toLabel, toId }: ListProps<T>) => {
   return (
     <Listbox value={value} onChange={setValue}>
-      <ListboxButton className="flex w-256 flex-row items-center justify-between rounded-lg border border-grey-100 bg-white p-8">
+      <ListboxButton className="flex w-256 flex-row items-center justify-between rounded-8 border border-basic-grey-100 bg-basic-white p-8">
         {toLabel(value)}
         <ChevronDownIcon />
       </ListboxButton>
       <ListboxOptions
-        className="w-[var(--button-width)] origin-top rounded-lg border border-grey-100 bg-white"
+        className="w-[var(--button-width)] origin-top rounded-8 border border-basic-grey-100 bg-basic-white"
         anchor="bottom"
       >
         {values.map((v) => (
           <ListboxOption
             key={toId(v)}
             value={v}
-            className="p-8 data-[focus]:bg-blue-100"
+            className="p-8 data-[focus]:bg-basic-blue-100"
           >
             {toLabel(v)}
           </ListboxOption>

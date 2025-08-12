@@ -91,7 +91,7 @@ const Page = () => {
         <Form.section>
           <Form.label required>
             쿠폰 코드
-            <span className="text-12 text-red-500">
+            <span className="text-12 text-basic-red-500">
               쿠폰 코드는 중복될 수 없습니다.
             </span>
           </Form.label>
@@ -116,7 +116,7 @@ const Page = () => {
         <Form.section>
           <Form.label required>
             타입 선택
-            <span className="text-12 text-red-500">
+            <span className="text-12 text-basic-red-500">
               선택한 타입에 따라 아래 필드를 알맞게 채워주세요.
             </span>
           </Form.label>
@@ -133,7 +133,7 @@ const Page = () => {
                   <Field key={type} className="gap-2 flex items-center">
                     <Radio
                       value={type}
-                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4 transition-transform hover:outline hover:outline-blue-200 focus:outline focus:outline-blue-200 active:scale-[0.9] data-[checked]:bg-blue-400 data-[checked]:text-white"
+                      className="group flex size-fit items-center justify-center rounded-8 bg-basic-white p-4 transition-transform hover:outline hover:outline-basic-blue-200 focus:outline focus:outline-basic-blue-200 active:scale-[0.9] data-[checked]:bg-basic-blue-400 data-[checked]:text-basic-white"
                     >
                       <CheckIcon
                         className="invisible group-data-[checked]:visible"
@@ -150,9 +150,9 @@ const Page = () => {
         <Form.section>
           <Form.label>
             <span>
-              <span className="text-blue-600">[비율]</span> 할인 비율
+              <span className="text-basic-blue-600">[비율]</span> 할인 비율
             </span>
-            <span className="text-12 text-red-500">
+            <span className="text-12 text-basic-red-500">
               할인 비율은 0 이상 100 이하의 값이어야 합니다.
             </span>
           </Form.label>
@@ -166,8 +166,11 @@ const Page = () => {
         </Form.section>
         <Form.section>
           <Form.label>
-            <span className="text-blue-600">[비율]</span> 최대 정량적 할인 값
-            <span className="text-12 text-red-500">비율 선택 시 필수 입력</span>
+            <span className="text-basic-blue-600">[비율]</span> 최대 정량적 할인
+            값
+            <span className="text-12 text-basic-red-500">
+              비율 선택 시 필수 입력
+            </span>
           </Form.label>
           <Controller
             control={control}
@@ -179,8 +182,10 @@ const Page = () => {
         </Form.section>
         <Form.section>
           <Form.label>
-            <span className="text-primary-700">[정량]</span> 할인 값
-            <span className="text-12 text-red-500">정량 선택 시 필수 입력</span>
+            <span className="text-brand-primary-600">[정량]</span> 할인 값
+            <span className="text-12 text-basic-red-500">
+              정량 선택 시 필수 입력
+            </span>
           </Form.label>
           <Controller
             control={control}
@@ -193,7 +198,7 @@ const Page = () => {
         <Form.section>
           <Form.label required>
             발행 개수
-            <span className="text-12 text-red-500">0일 경우 무한대</span>
+            <span className="text-12 text-basic-red-500">0일 경우 무한대</span>
           </Form.label>
           <Controller
             control={control}
@@ -206,7 +211,7 @@ const Page = () => {
         <Form.section>
           <Form.label required>
             한 예약 당 쿠폰 최대 적용 가능 인원
-            <span className="text-12 text-red-500">0일 경우 무한대</span>
+            <span className="text-12 text-basic-red-500">0일 경우 무한대</span>
           </Form.label>
           <Controller
             control={control}
@@ -246,14 +251,14 @@ const Page = () => {
                   <button
                     type="button"
                     onClick={() => onChange(null)}
-                    className="rounded-[8px] border border-grey-200 bg-grey-50 px-8 py-4 text-14 font-500 text-grey-700"
+                    className="rounded-[8px] border border-basic-grey-200 bg-basic-grey-50 px-8 py-4 text-14 font-500 text-basic-grey-700"
                   >
                     사용 가능 행사 제한 해제하기
                   </button>
                   <button
                     type="button"
                     onClick={setSurveyCoupon}
-                    className="rounded-[8px] border border-grey-200 bg-grey-50 px-8 py-4 text-14 font-500 text-grey-700"
+                    className="rounded-[8px] border border-basic-grey-200 bg-basic-grey-50 px-8 py-4 text-14 font-500 text-basic-grey-700"
                   >
                     수요조사 전용 쿠폰 설정
                   </button>

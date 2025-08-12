@@ -1,12 +1,12 @@
 import { ButtonHTMLAttributes } from 'react';
-import { twMerge } from 'tailwind-merge';
+import { customTwMerge } from 'tailwind.config';
 
 const BlueButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
     <button
       {...props}
-      className={twMerge(
-        'text-blue-500 after:content-["↗"] hover:underline disabled:cursor-not-allowed disabled:text-grey-500',
+      className={customTwMerge(
+        'text-basic-blue-400 after:content-["↗"] hover:underline disabled:cursor-not-allowed disabled:text-basic-grey-500',
         props.className,
       )}
     >

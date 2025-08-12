@@ -27,7 +27,7 @@ const PriceSectionRegularType = ({
             </label>
             <DateInput value={value} setValue={onChange} />
             {errors.reservationDeadline && (
-              <p className="text-red-500">
+              <p className="text-basic-red-500">
                 {errors.reservationDeadline.message}
               </p>
             )}

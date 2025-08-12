@@ -10,7 +10,7 @@ import {
 import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import { filterByFuzzy } from '@/utils/fuzzy.util';
 import { ChevronDown, FileWarningIcon } from 'lucide-react';
-import { twMerge } from 'tailwind-merge';
+import { customTwMerge } from 'tailwind.config';
 import { getRegions } from '@/services/hub.service';
 import { Region } from '@/types/region.type';
 
@@ -79,11 +79,11 @@ const PartialRegionInput = ({ value, setValue }: Props<PartialRegion>) => {
       >
         <div className="group relative size-full">
           <ComboboxInput
-            className={twMerge(
-              `size-full 
-           rounded-t-lg border border-grey-200 p-8
-           focus:outline-blue-400`,
-              isValid ? '' : 'text-red-500',
+            className={customTwMerge(
+              `rounded-t-lg 
+           size-full border border-basic-grey-200 p-8
+           focus:outline-basic-blue-400`,
+              isValid ? '' : 'text-basic-red-500',
             )}
             aria-label="Assignee"
             placeholder={'도/광역시 선택'}
@@ -91,16 +91,16 @@ const PartialRegionInput = ({ value, setValue }: Props<PartialRegion>) => {
             displayValue={(value) => (value === null ? '' : value)}
             onChange={(event) => setQueryBig(event.target.value)}
           />
-          <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-grey-400 group-focus:text-blue-500">
+          <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-basic-grey-400 group-focus:text-basic-blue-400">
             <ChevronDown />
           </ComboboxButton>
           <ComboboxOptions
             anchor="bottom"
-            className="mt-4 w-[var(--input-width)] rounded-lg bg-white shadow-md empty:invisible"
+            className="mt-4 w-[var(--input-width)] rounded-8 bg-basic-white shadow-md empty:invisible"
           >
             <ComboboxOption
               value={null}
-              className="p-8 data-[focus]:bg-blue-100"
+              className="p-8 data-[focus]:bg-basic-blue-100"
             >
               전체
             </ComboboxOption>
@@ -109,7 +109,7 @@ const PartialRegionInput = ({ value, setValue }: Props<PartialRegion>) => {
               <ComboboxOption
                 key={province}
                 value={province}
-                className="p-8 data-[focus]:bg-blue-100"
+                className="p-8 data-[focus]:bg-basic-blue-100"
               >
                 {province}
               </ComboboxOption>
@@ -130,13 +130,13 @@ const PartialRegionInput = ({ value, setValue }: Props<PartialRegion>) => {
         onClose={() => setQuerySmall('')}
       >
         <div className="group relative size-full">
-          <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-grey-400 group-focus:text-blue-500">
+          <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-basic-grey-400 group-focus:text-basic-blue-400">
             <ChevronDown />
           </ComboboxButton>
           <ComboboxInput
-            className="size-full rounded-b-lg
-            border border-grey-200 border-t-transparent p-8
-            focus:outline-blue-400"
+            className="rounded-b-lg size-full
+            border border-basic-grey-200 border-t-transparent p-8
+            focus:outline-basic-blue-400"
             aria-label="Assignee"
             placeholder={'시/군/구 선택'}
             defaultValue={null}
@@ -147,11 +147,11 @@ const PartialRegionInput = ({ value, setValue }: Props<PartialRegion>) => {
           />
           <ComboboxOptions
             anchor="bottom"
-            className="mt-4 w-[var(--input-width)] rounded-lg bg-white shadow-md empty:invisible"
+            className="mt-4 w-[var(--input-width)] rounded-8 bg-basic-white shadow-md empty:invisible"
           >
             <ComboboxOption
               value={null}
-              className="p-8 data-[focus]:bg-blue-100"
+              className="p-8 data-[focus]:bg-basic-blue-100"
             >
               전체
             </ComboboxOption>
@@ -159,7 +159,7 @@ const PartialRegionInput = ({ value, setValue }: Props<PartialRegion>) => {
               <ComboboxOption
                 key={city.regionId}
                 value={city}
-                className="p-8 data-[focus]:bg-blue-100"
+                className="p-8 data-[focus]:bg-basic-blue-100"
               >
                 {city.cityFullName}
               </ComboboxOption>
@@ -168,7 +168,7 @@ const PartialRegionInput = ({ value, setValue }: Props<PartialRegion>) => {
         </div>
       </Combobox>
       {!isValid && (
-        <div className="flex flex-row items-center gap-4 text-red-500">
+        <div className="flex flex-row items-center gap-4 text-basic-red-500">
           <FileWarningIcon size={16} /> 필터 오류, 이 지역 정보는 잘못된 것
           같습니다.
         </div>

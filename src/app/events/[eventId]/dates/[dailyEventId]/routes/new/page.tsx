@@ -291,7 +291,9 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
             노선 이름
           </FormContainer.label>
           <Input {...register('name')} placeholder="노선 이름을 입력해주세요" />
-          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+          {errors.name && (
+            <p className="text-basic-red-500">{errors.name.message}</p>
+          )}
         </FormContainer.section>
         <FormContainer.section>
           <FormContainer.label htmlFor="maxPassengerCount" required>
@@ -302,14 +304,16 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
             {...register('maxPassengerCount', { valueAsNumber: true })}
           />
           {errors.maxPassengerCount && (
-            <p className="text-red-500">{errors.maxPassengerCount.message}</p>
+            <p className="text-basic-red-500">
+              {errors.maxPassengerCount.message}
+            </p>
           )}
         </FormContainer.section>
         <FormContainer.section>
           <div className="flex items-baseline gap-20">
             <FormContainer.label required>가격</FormContainer.label>
             <div className="flex gap-8">
-              <span className="text-14 text-blue-600">얼리버드 적용</span>
+              <span className="text-basic-blue-600 text-14">얼리버드 적용</span>
               <Input
                 id="hasEarlybird"
                 type="checkbox"
@@ -320,10 +324,10 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
           </div>
           <Callout className="text-14">
             <b>주의: </b>얼리버드 적용 여부 및 얼리버드 마감일은 노선 추가 후{' '}
-            <b className="text-red-500">변경이 불가</b>합니다.
+            <b className="text-basic-red-500">변경이 불가</b>합니다.
           </Callout>
           <Callout className="text-14">
-            <span className="text-red-500">
+            <span className="text-basic-red-500">
               가격을 0으로 설정할 경우 해당 방향은 개설되지 않습니다.
             </span>
             <br />
@@ -348,7 +352,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                     </label>
                     <DateInput value={value} setValue={onChange} />
                     {errors.reservationDeadline && (
-                      <p className="text-red-500">
+                      <p className="text-basic-red-500">
                         {errors.reservationDeadline.message}
                       </p>
                     )}
@@ -396,7 +400,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
               </div>
             </div>
             <div
-              className={`flex flex-col gap-8 rounded-[4px] p-8 ${watchHasEarlybird ? '' : 'bg-notion-grey'}`}
+              className={`flex flex-col gap-8 rounded-[4px] p-8 ${watchHasEarlybird ? '' : 'bg-notion-basic-grey'}`}
             >
               <Heading.h5 backgroundColor="blue">얼리버드 가격</Heading.h5>
               <label className="block text-16 font-500">예약 마감일</label>
@@ -411,7 +415,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                       setValue={onChange}
                     />
                     {errors.reservationDeadline && (
-                      <p className="text-red-500">
+                      <p className="text-basic-red-500">
                         {errors.reservationDeadline.message}
                       </p>
                     )}
@@ -422,7 +426,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                 <div className="flex flex-col items-start gap-8">
                   <label className="block break-keep text-16 font-500">
                     왕복
-                    <span className="ml-4 text-14 text-blue-500">
+                    <span className="ml-4 text-14 text-basic-blue-400">
                       {discountPercent(
                         watchRegularPrice.roundTrip,
                         watchEarlybirdPrice.roundTrip,
@@ -440,7 +444,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                 <div className="flex flex-col items-start gap-8">
                   <label className="block break-keep text-16 font-500">
                     가는편
-                    <span className="ml-4 text-14 text-blue-500">
+                    <span className="ml-4 text-14 text-basic-blue-400">
                       {discountPercent(
                         watchRegularPrice.toDestination,
                         watchEarlybirdPrice.toDestination,
@@ -458,7 +462,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                 <div className="flex flex-col items-start gap-8">
                   <label className="block break-keep text-16 font-500">
                     오는편
-                    <span className="ml-4 text-14 text-blue-500">
+                    <span className="ml-4 text-14 text-basic-blue-400">
                       {discountPercent(
                         watchRegularPrice.fromDestination,
                         watchEarlybirdPrice.fromDestination,
@@ -513,7 +517,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                     longitude: null,
                   })
                 }
-                className="ml-8 text-14 text-blue-500"
+                className="ml-8 text-14 text-basic-blue-400"
               >
                 추가
               </button>
@@ -524,7 +528,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                     getValues('shuttleRouteHubsToDestination'),
                   )
                 }
-                className="ml-auto block text-14 text-green-500 underline underline-offset-2"
+                className="ml-auto block text-14 text-brand-primary-400 underline underline-offset-2"
               >
                 경로 소요 시간 계산하기
               </button>
@@ -534,10 +538,10 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                 return (
                   <li
                     key={field.id}
-                    className={`flex justify-between rounded-[6px] p-12 ${index === toDestHubFields.length - 1 ? 'bg-notion-blue' : 'bg-notion-grey/50'}`}
+                    className={`flex justify-between rounded-[6px] p-12 ${index === toDestHubFields.length - 1 ? 'bg-notion-basic-blue' : 'bg--basic-greyn-basic-grey/50'}`}
                   >
                     <h5 className="my-auto text-16 font-500">{index + 1}</h5>
-                    <div className="w-[1px] rounded-full bg-grey-100" />
+                    <div className="w-[1px] rounded-full bg-basic-grey-100" />
                     <div className="flex flex-col">
                       <label className="text-16 font-500">정류장</label>
                       <Controller
@@ -571,7 +575,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         )}
                       />
                     </div>
-                    <div className="w-[1px] rounded-full bg-grey-100" />
+                    <div className="w-[1px] rounded-full bg-basic-grey-100" />
                     <div className="flex flex-col gap-12">
                       <label className="text-16 font-500">시간</label>
                       <Controller
@@ -584,7 +588,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         )}
                       />
                     </div>
-                    <div className="w-[1px] rounded-full bg-grey-100" />
+                    <div className="w-[1px] rounded-full bg-basic-grey-100" />
                     <div className="flex items-center gap-8">
                       <button
                         type="button"
@@ -594,7 +598,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         disabled={
                           index === 0 || index === toDestHubFields.length - 1
                         }
-                        className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
+                        className="text-basic-grey-500 hover:text-basic-grey-700 disabled:opacity-30"
                       >
                         위로
                       </button>
@@ -608,14 +612,14 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                           index === toDestHubFields.length - 1 ||
                           index === toDestHubFields.length - 2
                         }
-                        className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
+                        className="text-basic-grey-500 hover:text-basic-grey-700 disabled:opacity-30"
                       >
                         아래로
                       </button>
                       <button
                         type="button"
                         onClick={() => removeToDestHub(index)}
-                        className="text-red-500 disabled:opacity-30"
+                        className="text-basic-red-500 disabled:opacity-30"
                         disabled={index === toDestHubFields.length - 1}
                       >
                         삭제
@@ -640,7 +644,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                     longitude: null,
                   })
                 }
-                className="ml-8 text-14 text-blue-500"
+                className="ml-8 text-14 text-basic-blue-400"
               >
                 추가
               </button>
@@ -651,14 +655,14 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                     getValues('shuttleRouteHubsFromDestination'),
                   )
                 }
-                className="ml-auto block text-14 text-green-500 underline underline-offset-2"
+                className="ml-auto block text-14 text-brand-primary-400 underline underline-offset-2"
               >
                 경로 소요 시간 계산하기
               </button>
               <button
                 type="button"
                 onClick={handleMirrorHub}
-                className="ml-4 block text-14 text-blue-500 underline underline-offset-2"
+                className="ml-4 block text-14 text-basic-blue-400 underline underline-offset-2"
               >
                 목적지행을 미러링하기
               </button>
@@ -668,10 +672,10 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                 return (
                   <li
                     key={field.id}
-                    className={`flex justify-between rounded-[6px] p-12 ${index === 0 ? 'bg-notion-blue' : 'bg-notion-grey/50'}`}
+                    className={`flex justify-between rounded-[6px] p-12 ${index === 0 ? 'bg-notion-basic-blue' : 'bg--basic-greyn-basic-grey/50'}`}
                   >
                     <h5 className="my-auto text-16 font-500">{index + 1}</h5>
-                    <div className="w-[1px] rounded-full bg-grey-100" />
+                    <div className="w-[1px] rounded-full bg-basic-grey-100" />
                     <div className="flex flex-col">
                       <label className="text-16 font-500">정류장</label>
                       <Controller
@@ -705,7 +709,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         )}
                       />
                     </div>
-                    <div className="w-[1px] rounded-full bg-grey-100" />
+                    <div className="w-[1px] rounded-full bg-basic-grey-100" />
                     <div className="flex flex-col gap-12">
                       <label className="text-16 font-500">시간</label>
                       <Controller
@@ -718,7 +722,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         )}
                       />
                     </div>
-                    <div className="w-[1px] rounded-full bg-grey-100" />
+                    <div className="w-[1px] rounded-full bg-basic-grey-100" />
                     <div className="flex items-center gap-8">
                       <button
                         type="button"
@@ -726,7 +730,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                           index > 0 && swapFromDestHub(index, index - 1)
                         }
                         disabled={index === 0 || index === 1}
-                        className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
+                        className="text-basic-grey-500 hover:text-basic-grey-700 disabled:opacity-30"
                       >
                         위로
                       </button>
@@ -739,14 +743,14 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                         disabled={
                           index === fromDestHubFields.length - 1 || index === 0
                         }
-                        className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
+                        className="text-basic-grey-500 hover:text-basic-grey-700 disabled:opacity-30"
                       >
                         아래로
                       </button>
                       <button
                         type="button"
                         onClick={() => removeFromDestHub(index)}
-                        className="text-red-500 disabled:opacity-30"
+                        className="text-basic-red-500 disabled:opacity-30"
                         disabled={index === 0}
                       >
                         삭제

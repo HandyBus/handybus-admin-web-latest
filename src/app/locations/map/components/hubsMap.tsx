@@ -312,7 +312,7 @@ const HubsMap = () => {
               (error || loading) && 'opacity-50',
             )}
           />
-          <div className="absolute left-20 top-20 z-10 h-40 w-240 overflow-hidden rounded-[8px] border border-grey-200">
+          <div className="absolute left-20 top-20 z-10 h-40 w-240 overflow-hidden rounded-[8px] border border-basic-grey-200">
             <input
               id="search-input"
               type="text"
@@ -333,7 +333,7 @@ const HubsMap = () => {
           <div
             className={
               error
-                ? 'absolute left-0 top-0 z-10 flex size-full touch-none items-center justify-center bg-white bg-opacity-75 text-red-500'
+                ? 'absolute left-0 top-0 z-10 flex size-full touch-none items-center justify-center bg-basic-white bg-opacity-75 text-basic-red-500'
                 : 'hidden'
             }
           >

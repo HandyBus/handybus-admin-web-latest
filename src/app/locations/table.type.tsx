@@ -23,22 +23,22 @@ export const columns = [
       return (
         <div className="flex flex-col gap-4">
           {eventLocation && (
-            <span className="rounded-xl bg-green-50 px-4 py-[2px] text-center text-14 font-500 text-green-500">
+            <span className="rounded-16 bg-brand-primary-50 px-4 py-[2px] text-center text-14 font-500 text-brand-primary-400">
               행사장
             </span>
           )}
           {shuttleHub && (
-            <span className="rounded-xl bg-blue-50 px-4 py-[2px] text-center text-14 font-500 text-blue-500">
+            <span className="rounded-16 bg-basic-blue-100 px-4 py-[2px] text-center text-14 font-500 text-basic-blue-400">
               정류장
             </span>
           )}
           {eventParkingLot && (
-            <span className="rounded-xl bg-red-50 px-4 py-[2px] text-center text-14 font-500 text-red-500">
+            <span className="rounded-16 bg-basic-red-100 px-4 py-[2px] text-center text-14 font-500 text-basic-red-400">
               주차장
             </span>
           )}
           {handyParty && (
-            <span className="rounded-xl border border-grey-100 bg-grey-50 px-4 py-[2px] text-center text-14 font-500">
+            <span className="rounded-16 border border-basic-grey-100 bg-basic-grey-50 px-4 py-[2px] text-center text-14 font-500">
               핸디팟
             </span>
           )}

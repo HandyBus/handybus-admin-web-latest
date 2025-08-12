@@ -50,7 +50,7 @@ export const ShuttleRouteHubItems = ({
         <button
           type="button"
           onClick={addItem}
-          className="ml-8 text-14 text-blue-500"
+          className="ml-8 text-14 text-basic-blue-400"
         >
           추가
         </button>
@@ -105,11 +105,11 @@ const ShuttleRouteHubItem = ({
 }: ShuttleRouteHubItemProps) => (
   <li
     className={`flex justify-between rounded-[6px] p-12 ${
-      isVenue ? 'bg-notion-blue' : 'bg-notion-grey/50'
+      isVenue ? 'bg-notion-basic-blue' : 'bg-notion-basic-grey/50'
     }`}
   >
     <h5 className="my-auto text-16 font-500">{index + 1}</h5>
-    <div className="w-[1px] rounded-full bg-grey-100" />
+    <div className="w-[1px] rounded-full bg-basic-grey-100" />
     <div className="flex flex-col">
       <label className="text-16 font-500">정류장</label>
       <Controller
@@ -128,7 +128,7 @@ const ShuttleRouteHubItem = ({
         )}
       />
     </div>
-    <div className="w-[1px] rounded-full bg-grey-100" />
+    <div className="w-[1px] rounded-full bg-basic-grey-100" />
     <div className="flex flex-col gap-12">
       <label className="text-16 font-500">시간</label>
       <Controller
@@ -139,13 +139,13 @@ const ShuttleRouteHubItem = ({
         )}
       />
     </div>
-    <div className="w-[1px] rounded-full bg-grey-100" />
+    <div className="w-[1px] rounded-full bg-basic-grey-100" />
     <div className="flex items-center gap-8">
       <button
         type="button"
         onClick={() => canMoveUp && onMoveUp()}
         disabled={!canMoveUp}
-        className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
+        className="text-basic-grey-500 hover:text-basic-grey-700 disabled:opacity-30"
       >
         위로
       </button>
@@ -153,14 +153,14 @@ const ShuttleRouteHubItem = ({
         type="button"
         onClick={() => canMoveDown && onMoveDown()}
         disabled={!canMoveDown}
-        className="text-grey-500 hover:text-grey-700 disabled:opacity-30"
+        className="text-basic-grey-500 hover:text-basic-grey-700 disabled:opacity-30"
       >
         아래로
       </button>
       <button
         type="button"
         onClick={() => canDelete && onDelete()}
-        className="text-red-500 disabled:opacity-30"
+        className="text-basic-red-500 disabled:opacity-30"
         disabled={!canDelete}
       >
         삭제

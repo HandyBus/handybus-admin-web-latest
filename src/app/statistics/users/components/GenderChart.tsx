@@ -26,10 +26,10 @@ const GenderChart = ({ data, isLoading }: Props) => {
         isLoading={isLoading}
         colors={['#3980fa', '#ed4e4e']}
         renderTooltip={(data) => (
-          <div className="min-w-100 rounded-[4px] border border-grey-200 bg-white p-4 shadow-[0_0_10px_0_rgba(0,0,0,0.1)]">
+          <div className="min-w-100 rounded-[4px] border border-basic-grey-200 bg-basic-white p-4 shadow-[0_0_10px_0_rgba(0,0,0,0.1)]">
             <h5 className="text-14 font-500">{data.name}</h5>
             {data.additionalData.map((item) => (
-              <p key={item.ageRange} className="text-12 text-grey-700">
+              <p key={item.ageRange} className="text-12 text-basic-grey-700">
                 {item.ageRange} ({item.totalCount}건)
               </p>
             ))}

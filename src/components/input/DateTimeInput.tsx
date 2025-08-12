@@ -20,7 +20,7 @@ const DateTimeInput = ({ disabled, value, setValue }: Props) => {
       showIcon
       showTimeSelect
       dateFormat="yyyy. MM. dd HH:mm"
-      className="rounded-[4px] border border-grey-200"
+      className="rounded-[4px] border border-basic-grey-200"
     />
   );
 };

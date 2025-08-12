@@ -50,7 +50,7 @@ const AnnouncementDetailPage = ({
         <button
           onClick={onDelete}
           type="button"
-          className="whitespace-nowrap break-keep text-14 text-blue-500 underline underline-offset-[3px]"
+          className="whitespace-nowrap break-keep text-14 text-basic-blue-400 underline underline-offset-[3px]"
         >
           삭제하기
         </button>
@@ -75,7 +75,7 @@ const AnnouncementDetailPage = ({
         </List>
       </Callout>
       <Heading.h2>내용</Heading.h2>
-      <section className="prose w-dvw max-w-full bg-notion-grey p-20">
+      <section className="bg-notion-basic-grey prose w-dvw max-w-full p-20">
         <ReactMarkdown>{announcement?.content}</ReactMarkdown>
       </section>
     </main>

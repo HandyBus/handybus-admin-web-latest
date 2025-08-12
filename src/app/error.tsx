@@ -14,14 +14,14 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="size-full bg-white p-32">
+    <div className="size-full bg-basic-white p-32">
       <h2>예상하지 못한 오류가 발생했습니다.</h2>
       <h3>오류 메시지</h3>
-      <code className="block rounded-lg bg-grey-800 p-32 text-white">
+      <code className="block rounded-8 bg-basic-grey-700 p-32 text-basic-white">
         {error.message}
       </code>
       <h3>스택</h3>
-      <code className="block rounded-lg bg-grey-800 p-32 text-white">
+      <code className="block rounded-8 bg-basic-grey-700 p-32 text-basic-white">
         {error.stack}
       </code>
       <button

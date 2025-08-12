@@ -20,7 +20,7 @@ const Page = () => {
     <main className="flex grow flex-col">
       <Heading>
         수요조사 통계
-        <span className="ml-12 text-12 text-grey-500">
+        <span className="ml-12 text-12 text-basic-grey-500">
           지도 내의 시군구 영역은 정확하지 않을 수 있습니다.
         </span>
       </Heading>

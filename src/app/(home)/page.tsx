@@ -27,12 +27,12 @@ const Page = () => {
       <Heading>통계 대시보드</Heading>
       <div className="flex flex-col gap-12">
         <section className="flex gap-20">
-          <article className="relative flex h-188 w-188 flex-col justify-center gap-4 rounded-[8px] border border-grey-200 bg-white pl-28">
+          <article className="relative flex h-188 w-188 flex-col justify-center gap-4 rounded-[8px] border border-basic-grey-200 bg-basic-white pl-28">
             <Link
               href={GA_LINK}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-14 font-600 text-blue-500 underline underline-offset-2"
+              className="text-14 font-600 text-basic-blue-400 underline underline-offset-2"
             >
               구글 애널리틱스
             </Link>
@@ -40,7 +40,7 @@ const Page = () => {
               href={GOOGLE_SEARCH_CONSOLE_LINK}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-14 font-600 text-blue-500 underline underline-offset-2"
+              className="text-14 font-600 text-basic-blue-400 underline underline-offset-2"
             >
               구글 서치 콘솔
             </Link>
@@ -48,12 +48,12 @@ const Page = () => {
               href={NAVER_SEARCH_ADVISOR_LINK}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-14 font-600 text-blue-500 underline underline-offset-2"
+              className="text-14 font-600 text-basic-blue-400 underline underline-offset-2"
             >
               네이버 서치어드바이저
             </Link>
             <ArrowRight
-              className="absolute bottom-4 right-4 text-grey-400"
+              className="absolute bottom-4 right-4 text-basic-grey-400"
               width={20}
               height={20}
             />
@@ -96,11 +96,11 @@ const DashboardCard = ({ title, href }: DashboardCardProps) => {
   return (
     <Link
       href={href}
-      className="relative flex h-188 w-188 items-center justify-center rounded-[8px] border border-grey-200 bg-white transition-all hover:bg-grey-50"
+      className="relative flex h-188 w-188 items-center justify-center rounded-[8px] border border-basic-grey-200 bg-basic-white transition-all hover:bg-basic-grey-50"
     >
       <span className="font-600">{title}</span>
       <ArrowRight
-        className="absolute bottom-4 right-4 text-grey-400"
+        className="absolute bottom-4 right-4 text-basic-grey-400"
         width={20}
         height={20}
       />
