@@ -102,13 +102,13 @@ const displayArea = ({
   // 지역 오버레이 생성
   const content = document.createElement('div');
   content.className =
-    'absolute left-full ml-16 mb-16 top-1/2 -translate-y-1/2 bg-black/80 text-white p-12 rounded-md min-w-100 z-50 text-center';
+    'absolute left-full ml-16 mb-16 top-1/2 -translate-y-1/2 bg-basic-black/80 text-basic-white p-12 rounded-6 min-w-100 z-50 text-center';
   content.innerHTML = `
       <h6 class="text-14 font-500">${area.name}</h6>
-      <p class="text-14 text-grey-200">총 수요: ${area.totalCount}개</p>
-      <p class="text-14 text-grey-200">왕복 수요: ${area.roundTripCount}개</p>
-      <p class="text-14 text-grey-200">가는 편 수요: ${area.toDestinationCount}개</p>
-      <p class="text-14 text-grey-200">오는 편 수요: ${area.fromDestinationCount}개</p>
+      <p class="text-14 text-basic-grey-200">총 수요: ${area.totalCount}개</p>
+      <p class="text-14 text-basic-grey-200">왕복 수요: ${area.roundTripCount}개</p>
+      <p class="text-14 text-basic-grey-200">가는 편 수요: ${area.toDestinationCount}개</p>
+      <p class="text-14 text-basic-grey-200">오는 편 수요: ${area.fromDestinationCount}개</p>
     `;
 
   const customOverlay = new kakao.maps.CustomOverlay({

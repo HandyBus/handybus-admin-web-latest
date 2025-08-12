@@ -120,10 +120,12 @@ const Page = () => {
                 />
               </div>
               <h4 className="text-22 font-600">{event.eventName}</h4>
-              <h4 className="text-14 font-500 text-grey-500">{dateRange}</h4>
+              <h4 className="text-14 font-500 text-basic-grey-500">
+                {dateRange}
+              </h4>
               <button
                 type="button"
-                className="ml-auto flex items-center justify-center rounded-full bg-grey-100 p-12 hover:text-grey-700"
+                className="ml-auto flex items-center justify-center rounded-full bg-basic-grey-100 p-12 hover:text-basic-grey-700"
                 onClick={() => removeStagedEvent(event.eventId)}
               >
                 <TrashIcon />
@@ -140,11 +142,11 @@ const Page = () => {
             }}
           >
             <div className="group relative size-full">
-              <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-grey-400 group-focus:text-blue-500">
+              <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-basic-grey-400 group-focus:text-basic-blue-400">
                 <ChevronDown />
               </ComboboxButton>
               <ComboboxInput
-                className="size-full rounded-lg border border-grey-200 p-8 focus:outline-blue-400"
+                className="size-full rounded-8 border border-basic-grey-200 p-8 focus:outline-basic-blue-400"
                 placeholder={'행사 선택'}
                 defaultValue={null}
                 displayValue={(event: EventsViewEntity | null) =>
@@ -155,13 +157,13 @@ const Page = () => {
               />
               <ComboboxOptions
                 anchor="bottom"
-                className="mt-4 w-[var(--input-width)] rounded-lg bg-white shadow-md empty:invisible"
+                className="mt-4 w-[var(--input-width)] rounded-8 bg-basic-white shadow-md empty:invisible"
               >
                 {allNotPinnedEvents?.map((event) => (
                   <ComboboxOption
                     key={event.eventId}
                     value={event}
-                    className="p-8 data-[focus]:bg-blue-100"
+                    className="p-8 data-[focus]:bg-basic-blue-100"
                   >
                     {event.eventName}
                   </ComboboxOption>
@@ -171,7 +173,7 @@ const Page = () => {
           </Combobox>
           <button
             type="button"
-            className="flex w-full items-center justify-center gap-8 rounded-[8px] bg-primary-700 p-12 text-white disabled:bg-grey-200"
+            className="flex w-full items-center justify-center gap-8 rounded-[8px] bg-brand-primary-600 p-12 text-basic-white disabled:bg-basic-grey-200"
             disabled={!selectedNewEvent}
             onClick={() => {
               if (selectedNewEvent) {

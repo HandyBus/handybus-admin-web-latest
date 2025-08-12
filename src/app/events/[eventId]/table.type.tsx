@@ -35,9 +35,9 @@ export const columns = [
       return (
         <div className="flex flex-col p-8 text-16">
           <p className="font-700">{eventName}</p>
-          <p className="font-400 text-grey-700">{artists}</p>
-          <p className="font-400 text-grey-700">{eventType}</p>
-          <p className="font-500 text-grey-800">{eventLocationName}</p>
+          <p className="font-400 text-basic-grey-700">{artists}</p>
+          <p className="font-400 text-basic-grey-700">{eventType}</p>
+          <p className="font-500 text-basic-grey-700">{eventLocationName}</p>
           <BlueLink href={`/events/${eventId}/edit`} className="text-12">
             수정하기
           </BlueLink>
@@ -56,7 +56,7 @@ export const columns = [
             {dates.map((date, index) => (
               <p
                 key={index}
-                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-100 px-8 last:border-b-0"
+                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-basic-grey-100 px-8 last:border-b-0"
               >
                 {formatDateString(date, 'date')}
               </p>

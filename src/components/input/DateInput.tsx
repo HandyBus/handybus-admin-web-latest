@@ -25,7 +25,7 @@ const DateInput = ({ disabled, value, setValue }: Props) => {
       showIcon
       placeholderText=" 날짜를 선택해주세요"
       dateFormat=" yyyy-MM-dd"
-      className="rounded-[4px] border border-grey-200"
+      className="rounded-[4px] border border-basic-grey-200"
     />
   );
 };

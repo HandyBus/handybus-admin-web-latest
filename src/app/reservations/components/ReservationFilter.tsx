@@ -7,7 +7,7 @@ import {
 } from '@headlessui/react';
 import { ChevronDownIcon, FilterIcon, FilterXIcon } from 'lucide-react';
 import { Dispatch, useMemo } from 'react';
-import { twMerge } from 'tailwind-merge';
+import { customTwMerge } from 'tailwind.config';
 import EventInput from '@/components/input/EventInput';
 import DailyEventInput from '@/components/input/DailyEventInput';
 import { useQuery } from '@tanstack/react-query';
@@ -49,10 +49,10 @@ function ReservationFilter({ option, dispatch }: Props) {
   return (
     <Disclosure>
       <DisclosureButton
-        className={twMerge(
-          'gap-2 group flex w-fit items-center justify-start gap-4 rounded-lg p-4 transition-all hover:bg-grey-50 active:scale-90 active:bg-grey-100',
+        className={customTwMerge(
+          'gap-2 group flex w-fit items-center justify-start gap-4 rounded-8 p-4 transition-all hover:bg-basic-grey-50 active:scale-90 active:bg-basic-grey-100',
           filterCount === 0 ? '' : 'text-green-500',
-          validity === false ? 'text-red-500' : '',
+          validity === false ? 'text-basic-red-500' : '',
         )}
       >
         <FilterIcon size={16} />
@@ -62,7 +62,7 @@ function ReservationFilter({ option, dispatch }: Props) {
       </DisclosureButton>
       {filterCount > 0 && (
         <button
-          className="gap-2 group flex w-fit flex-row items-center justify-start gap-4 rounded-lg p-4 transition-all hover:bg-grey-50 active:scale-90 active:bg-grey-100"
+          className="gap-2 group flex w-fit flex-row items-center justify-start gap-4 rounded-8 p-4 transition-all hover:bg-basic-grey-50 active:scale-90 active:bg-basic-grey-100"
           onClick={() => {
             dispatch({ type: 'RESET' });
           }}
@@ -71,7 +71,7 @@ function ReservationFilter({ option, dispatch }: Props) {
           <span>필터 초기화</span>
         </button>
       )}
-      <DisclosurePanel className="flex flex-col gap-4 rounded-xl bg-grey-50 p-8">
+      <DisclosurePanel className="flex flex-col gap-4 rounded-16 bg-basic-grey-50 p-8">
         <label>셔틀</label>
         <EventInput
           value={option.eventId ?? null}

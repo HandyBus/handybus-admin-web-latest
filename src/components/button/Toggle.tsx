@@ -19,9 +19,9 @@ const Toggle = ({ disabled, value, setValue, label, onClick }: Props) => {
   return (
     <button
       className={twJoin(
-        'flex flex-row items-center justify-start rounded-xl border border-blue-100 px-8 py-4 text-14 font-500 transition-all hover:border-blue-600 active:scale-90',
+        'hover:border-basic-blue-600 flex flex-row items-center justify-start rounded-16 border border-basic-blue-100 px-8 py-4 text-14 font-500 transition-all active:scale-90',
         'disabled:cursor-not-allowed disabled:opacity-50',
-        value ? 'bg-blue-400 text-white' : 'bg-neutral-50',
+        value ? 'bg-basic-blue-400 text-basic-white' : 'bg-neutral-50',
       )}
       onClick={onClick ?? (setValue && (() => setValue((prev) => !prev)))}
       disabled={disabled}

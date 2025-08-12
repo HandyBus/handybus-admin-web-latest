@@ -88,7 +88,7 @@ const VehicleAutoAssignmentPage = ({
             타다 시트 데이터 입력창 (Excel 시트를 복붙하세요)
           </Heading.h4>
           <button
-            className="disabled:text-gray-500 rounded-lg bg-blue-500 px-8 text-white active:bg-blue-400 disabled:cursor-not-allowed disabled:bg-grey-300"
+            className="disabled:text-gray-500 rounded-8 bg-basic-blue-400 px-8 text-basic-white active:bg-basic-blue-400 disabled:cursor-not-allowed disabled:bg-basic-grey-300"
             disabled={inputText.length === 0 || isProcessing}
             onClick={() => handleAutoAssignment(inputText)}
           >
@@ -99,13 +99,13 @@ const VehicleAutoAssignmentPage = ({
           value={inputText}
           onChange={handleInputChange}
           placeholder={PLACEHOLDER_TEXT}
-          className="border-gray-300 h-320 w-full resize-y rounded-md border p-8 "
+          className="border-gray-300 h-320 w-full resize-y rounded-6 border p-8 "
         />
       </section>
 
       <section>
         <Heading.h4>결과</Heading.h4>
-        <div className="h-320 resize-y overflow-y-auto rounded-md border p-8">
+        <div className="h-320 resize-y overflow-y-auto rounded-6 border p-8">
           {logText?.length > 0 ? (
             logText.map((log, index) => (
               <p

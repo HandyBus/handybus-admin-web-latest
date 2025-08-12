@@ -6,7 +6,7 @@ import {
   type DetailedHTMLProps,
   type InputHTMLAttributes,
 } from 'react';
-import { twMerge } from 'tailwind-merge';
+import { customTwMerge } from 'tailwind.config';
 
 interface Props
   extends DetailedHTMLProps<
@@ -30,8 +30,8 @@ const Input = (
       onWheel={(event) => (event.target as HTMLElement).blur()}
       onChange={setValue && ((e) => setValue(e.target.value))}
       {...props}
-      className={twMerge(
-        'text-500 w-full rounded-lg border border-grey-200 p-8 text-16 focus:outline-blue-400',
+      className={customTwMerge(
+        'w-full rounded-8 border border-basic-grey-200 p-8 text-16 text-basic-grey-500 focus:outline-basic-blue-400',
         className,
       )}
     />

@@ -45,12 +45,14 @@ const RegionPieChart = ({ sidoStats, gunguStats }: Props) => {
 
   const renderTooltip = (data: (typeof parsedSidoStats)[0]) => {
     return (
-      <div className="min-w-100 rounded-[4px] border border-grey-200 bg-white p-4 shadow-[0_0_10px_0_rgba(0,0,0,0.1)]">
+      <div className="min-w-100 rounded-[4px] border border-basic-grey-200 bg-basic-white p-4 shadow-[0_0_10px_0_rgba(0,0,0,0.1)]">
         <h5 className="text-14 font-500">{data.name}</h5>
-        <p className="text-12 text-grey-700">총 수요: {data.totalCount}건</p>
+        <p className="text-12 text-basic-grey-700">
+          총 수요: {data.totalCount}건
+        </p>
         <ul className="flex flex-col">
           {data.gunguStats.map((gunguStat) => (
-            <li key={gunguStat.name} className="text-12 text-grey-700">
+            <li key={gunguStat.name} className="text-12 text-basic-grey-700">
               {gunguStat.name}: {gunguStat.totalCount}건{' '}
               {Math.round((gunguStat.totalCount / data.totalCount) * 100)}%
             </li>
@@ -61,7 +63,7 @@ const RegionPieChart = ({ sidoStats, gunguStats }: Props) => {
   };
 
   return (
-    <section className="grow rounded-[6px] border border-grey-200 bg-white p-12">
+    <section className="grow rounded-[6px] border border-basic-grey-200 bg-basic-white p-12">
       <Heading.h4>지역별 수요조사</Heading.h4>
       {parsedSidoStats.length > 0 && (
         <CustomPieChart

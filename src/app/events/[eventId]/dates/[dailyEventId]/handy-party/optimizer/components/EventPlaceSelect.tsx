@@ -49,11 +49,11 @@ const EventPlaceSelect = ({
       }}
     >
       <div className="group relative w-full">
-        <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-grey-400 group-focus:text-blue-500">
+        <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-basic-grey-400 group-focus:text-basic-blue-400">
           <ChevronDown />
         </ComboboxButton>
         <ComboboxInput
-          className="size-full rounded-lg border border-grey-200 bg-white p-8 focus:outline-blue-400"
+          className="size-full rounded-8 border border-basic-grey-200 bg-basic-white p-8 focus:outline-basic-blue-400"
           placeholder={placeholder}
           defaultValue={eventLocationHubs[0] ?? null}
           displayValue={(hub: RegionHubsViewEntity | null) => hub?.name ?? ''}
@@ -62,13 +62,13 @@ const EventPlaceSelect = ({
         />
         <ComboboxOptions
           anchor="bottom"
-          className="mt-4 w-[var(--input-width)] rounded-lg bg-white shadow-md empty:invisible"
+          className="mt-4 w-[var(--input-width)] rounded-8 bg-basic-white shadow-md empty:invisible"
         >
           {eventLocationHubs?.map((hub) => (
             <ComboboxOption
               key={hub.regionHubId}
               value={hub}
-              className="p-8 data-[focus]:bg-blue-100"
+              className="p-8 data-[focus]:bg-basic-blue-100"
             >
               {hub.name} ({hub.address})
             </ComboboxOption>

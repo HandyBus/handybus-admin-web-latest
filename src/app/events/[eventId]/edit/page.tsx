@@ -181,7 +181,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                   date: dayjs().startOf('day').toISOString(),
                 })
               }
-              className="w-fit text-blue-500"
+              className="w-fit text-basic-blue-400"
             >
               <PlusIcon />
             </button>
@@ -264,7 +264,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                   <Field key={plan} className="gap-2 flex items-center">
                     <Radio
                       value={plan}
-                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4 transition-transform hover:outline hover:outline-blue-200 focus:outline focus:outline-blue-200 active:scale-[0.9] data-[checked]:bg-blue-400 data-[checked]:text-white
+                      className="group flex size-fit items-center justify-center rounded-8 bg-basic-white p-4 transition-transform hover:outline hover:outline-basic-blue-200 focus:outline focus:outline-basic-blue-200 active:scale-[0.9] data-[checked]:bg-basic-blue-400 data-[checked]:text-basic-white
                     "
                     >
                       <CheckIcon
@@ -299,7 +299,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                   <Field key={status} className="gap-2 flex items-center">
                     <Radio
                       value={status}
-                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4 transition-transform hover:outline hover:outline-blue-200 focus:outline focus:outline-blue-200 active:scale-[0.9] data-[checked]:bg-blue-400 data-[checked]:text-white
+                      className="group flex size-fit items-center justify-center rounded-8 bg-basic-white p-4 transition-transform hover:outline hover:outline-basic-blue-200 focus:outline focus:outline-basic-blue-200 active:scale-[0.9] data-[checked]:bg-basic-blue-400 data-[checked]:text-basic-white
                     "
                     >
                       <CheckIcon
@@ -334,7 +334,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
             <button
               type="button"
               onClick={() => appendArtist({ artistId: null })}
-              className="w-fit text-blue-500"
+              className="w-fit text-basic-blue-400"
             >
               <PlusIcon />
             </button>
@@ -357,7 +357,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                   )}
                 />
                 <Button
-                  className="transition-colors hover:text-red-500"
+                  className="transition-colors hover:text-basic-red-500"
                   type="button"
                   onClick={() => removeArtist(index)}
                 >

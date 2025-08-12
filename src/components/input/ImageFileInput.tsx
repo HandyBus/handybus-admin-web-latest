@@ -31,7 +31,7 @@ const ImageFileInput = ({ type, value, setValue }: Props) => {
   return (
     <div className="flex flex-col items-center">
       {!isPending && (
-        <div className="mb-24 h-[166px] w-[117px] bg-grey-200">
+        <div className="mb-24 h-[166px] w-[117px] bg-basic-grey-200">
           <Image
             src={value}
             alt="새로 등록할 포스터 이미지"

@@ -5,7 +5,7 @@ import {
   PropsWithChildren,
   ReactNode,
 } from 'react';
-import { twMerge } from 'tailwind-merge';
+import { customTwMerge } from 'tailwind.config';
 
 interface Form {
   children: ReactNode;
@@ -18,8 +18,8 @@ const Form = ({ children, className, ...props }: Props) => {
   return (
     <form
       {...props}
-      className={twMerge(
-        'mx-auto flex w-full max-w-[600px] flex-col gap-16 py-32',
+      className={customTwMerge(
+        'mx-auto flex w-full max-w-[640px] flex-col gap-16 py-32',
         className,
       )}
     >
@@ -33,8 +33,8 @@ export default Form;
 const Section = ({ children, className }: Form) => {
   return (
     <section
-      className={twMerge(
-        'flex w-full flex-col gap-16 rounded-[16px] bg-white p-24 shadow-[0_2px_8px_0_rgba(0,0,0,0.08)]',
+      className={customTwMerge(
+        'flex w-full flex-col gap-16 rounded-[16px] bg-basic-white p-24 shadow-[0_2px_8px_0_rgba(0,0,0,0.08)]',
         className,
       )}
     >
@@ -58,13 +58,13 @@ const Label = ({
   return (
     <label
       {...props}
-      className={twMerge(
+      className={customTwMerge(
         'flex items-baseline gap-[6px] text-18 font-600',
         className,
       )}
     >
       {children}
-      {required && <span className="text-red-500">*</span>}
+      {required && <span className="text-basic-red-500">*</span>}
     </label>
   );
 };
@@ -82,7 +82,7 @@ const SubmitButton = ({
   return (
     <button
       type="submit"
-      className="flex items-center justify-center gap-8 rounded-lg bg-blue-500 p-8 font-500 text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-grey-100 disabled:text-grey-500"
+      className="hover:bg-basic-blue-600 flex items-center justify-center gap-8 rounded-8 bg-basic-blue-400 p-8 font-500 text-basic-white disabled:cursor-not-allowed disabled:bg-basic-grey-100 disabled:text-basic-grey-500"
       {...props}
     >
       {children}

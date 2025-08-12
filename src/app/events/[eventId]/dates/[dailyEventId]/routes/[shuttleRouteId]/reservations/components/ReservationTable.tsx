@@ -100,7 +100,7 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     <section className="flex flex-col pb-20 pt-12">
       <Heading.h2 className="flex items-center gap-12">
         배차되지 않은 예약{' '}
-        <span className="text-14 font-400 text-grey-700">
+        <span className="text-14 font-400 text-basic-grey-700">
           유효한 예약 {validReservations.length}건 ({totalNumberOfPeople}인) /
           합계 {reservations.length}건
         </span>
@@ -111,7 +111,7 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
         />
         <button
           onClick={rejectAllSupportedHandy}
-          className="rounded-[4px] border border-grey-300 bg-notion-grey/20 px-12 py-[2px] text-14 font-500"
+          className="bg-notion-basic-grey/20 rounded-[4px] border border-basic-grey-300 px-12 py-[2px] text-14 font-500"
         >
           핸디 지원 일괄 거절
         </button>

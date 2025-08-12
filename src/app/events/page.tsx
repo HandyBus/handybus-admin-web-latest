@@ -67,7 +67,7 @@ const Page = () => {
       <section className="flex flex-col">
         <BaseTable
           table={table}
-          cellClassName="min-h-120 p-0 border-b-grey-300"
+          cellClassName="min-h-120 p-0 border-b-basic-grey-300"
         />
         <InfiniteScrollTrigger />
       </section>

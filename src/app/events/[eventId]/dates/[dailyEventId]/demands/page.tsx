@@ -39,16 +39,16 @@ const DemandContent = () => {
         <div className="flex gap-12 pl-20 text-18 font-600">
           <button
             onClick={() => setTab('map')}
-            className={`transition-colors hover:text-grey-900 ${
-              tab === 'map' ? 'text-grey-900' : 'text-grey-300'
+            className={`hover:text-basic-grey-900 transition-colors ${
+              tab === 'map' ? 'text-basic-grey-900' : 'text-basic-grey-300'
             }`}
           >
             지도
           </button>
           <button
             onClick={() => setTab('table')}
-            className={`transition-colors hover:text-grey-900 ${
-              tab === 'table' ? 'text-grey-900' : 'text-grey-300'
+            className={`hover:text-basic-grey-900 transition-colors ${
+              tab === 'table' ? 'text-basic-grey-900' : 'text-basic-grey-300'
             }`}
           >
             목록

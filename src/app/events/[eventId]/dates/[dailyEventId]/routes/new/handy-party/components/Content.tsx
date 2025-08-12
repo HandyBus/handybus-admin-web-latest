@@ -119,7 +119,7 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <Callout className="bg-grey-50">
+      <Callout className="bg-basic-grey-50">
         권역별로 이미 생성된 핸디팟 노선이 있는 경우, 이미 생성된 노선의 방향에
         해당하는 노선은 생성되지 않습니다. (중복 노선 방지)
         <br />
@@ -198,7 +198,7 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
           <br />
           얼리버드 가격이 0으로 설정된 권역은 얼리버드 노선이 생성되지 않습니다.
         </Callout>
-        <div className="flex flex-col gap-8 rounded-[6px] border border-grey-300 p-12">
+        <div className="flex flex-col gap-8 rounded-[6px] border border-basic-grey-300 p-12">
           <h5 className="text-14 font-600">단가표 적용하기</h5>
           <div className="flex gap-8">
             <PriceTableButton
@@ -214,7 +214,7 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
           </div>
         </div>
         <ul className="flex flex-col">
-          <div className="flex text-14 font-500 text-grey-500">
+          <div className="flex text-14 font-500 text-basic-grey-500">
             <div className="w-108 shrink-0 whitespace-nowrap break-keep">
               권역
             </div>
@@ -231,7 +231,7 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
               control={control}
               name={`priceOfAreas.${index}`}
               render={({ field: { onChange, value } }) => (
-                <li className="flex items-center gap-8 border-b border-grey-100 py-8">
+                <li className="flex items-center gap-8 border-b border-basic-grey-100 py-8">
                   <span className="w-100 shrink-0 whitespace-nowrap break-keep text-16 font-500">
                     {area}
                   </span>
@@ -272,7 +272,7 @@ interface PriceTableButtonProps {
 const PriceTableButton = ({ onClick, children }: PriceTableButtonProps) => {
   return (
     <button
-      className="flex w-fit flex-row items-center justify-start rounded-xl border border-blue-100 px-8 py-4 text-14 font-500 transition-all hover:border-blue-600 active:scale-90 active:bg-blue-400 active:text-white disabled:cursor-not-allowed disabled:opacity-50"
+      className="hover:border-basic-blue-600 flex w-fit flex-row items-center justify-start rounded-16 border border-basic-blue-100 px-8 py-4 text-14 font-500 transition-all active:scale-90 active:bg-basic-blue-400 active:text-basic-white disabled:cursor-not-allowed disabled:opacity-50"
       type="button"
       onClick={onClick}
     >

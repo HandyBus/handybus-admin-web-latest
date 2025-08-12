@@ -1,7 +1,7 @@
 'use client';
 
 import { InputHTMLAttributes } from 'react';
-import { twMerge } from 'tailwind-merge';
+import { customTwMerge } from 'tailwind.config';
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   value: number;
@@ -31,8 +31,8 @@ const NumberInput = ({
         setValue(numericValue);
       }}
       placeholder={placeholder}
-      className={twMerge(
-        'w-full rounded-lg border border-grey-200 p-8 focus:outline-blue-400',
+      className={customTwMerge(
+        'w-full rounded-8 border border-basic-grey-200 p-8 focus:outline-basic-blue-400',
         className,
       )}
       {...props}

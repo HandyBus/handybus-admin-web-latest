@@ -36,9 +36,9 @@ export const columns = [
       return (
         <div className="flex flex-col p-8 text-16">
           <p className="font-700">{eventName}</p>
-          <p className="font-400 text-grey-700">{artists}</p>
-          <p className="font-400 text-grey-700">{eventType}</p>
-          <p className="font-500 text-grey-800">{eventLocationName}</p>
+          <p className="font-400 text-basic-grey-700">{artists}</p>
+          <p className="font-400 text-basic-grey-700">{eventType}</p>
+          <p className="font-500 text-basic-grey-700">{eventLocationName}</p>
           <BlueLink href={`/events/${eventId}/edit`} className="text-12">
             수정하기
           </BlueLink>
@@ -57,7 +57,7 @@ export const columns = [
             {dates.map((date, index) => (
               <p
                 key={index}
-                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-100 px-8 last:border-b-0"
+                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-basic-grey-100 px-8 last:border-b-0"
               >
                 {formatDateString(date, 'date')}
               </p>
@@ -83,19 +83,19 @@ export const columns = [
         });
         const style = {
           OPEN: 'text-green-600',
-          CLOSED: 'text-grey-700',
-          ENDED: 'text-grey-600',
-          INACTIVE: 'text-grey-600',
+          CLOSED: 'text-basic-grey-700',
+          ENDED: 'text-basic-grey-600',
+          INACTIVE: 'text-basic-grey-600',
         };
         return (
           <div className="flex h-full flex-col justify-between">
             {eventStatuses.map((eventStatus, index) => (
               <div
                 key={index}
-                className={`group relative flex h-[58px] grow items-center justify-center whitespace-nowrap  break-keep border-b border-grey-100 px-8 last:border-b-0 ${style[eventStatus]}`}
+                className={`group relative flex h-[58px] grow items-center justify-center whitespace-nowrap  break-keep border-b border-basic-grey-100 px-8 last:border-b-0 ${style[eventStatus]}`}
               >
                 {Stringifier.eventStatus(eventStatus)}
-                <div className="absolute right-112 hidden h-120 w-172 rounded-[4px] bg-black/65 p-12 text-white group-hover:block">
+                <div className="absolute right-112 hidden h-120 w-172 rounded-[4px] bg-basic-black/65 p-12 text-basic-white group-hover:block">
                   <p>총 수요조사 수: {statistics[index].totalCount}</p>
                   <p>왕복: {statistics[index].roundTripCount}</p>
                   <p>가는 편: {statistics[index].toDestinationCount}</p>
@@ -123,7 +123,7 @@ export const columns = [
             {dailyEventIds.map((dailyEventId, index) => (
               <p
                 key={dailyEventId}
-                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-100 px-8 last:border-b-0"
+                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-basic-grey-100 px-8 last:border-b-0"
               >
                 <BlueLink
                   href={`/events/${eventId}/dates/${dailyEventId}/demands`}
@@ -148,7 +148,7 @@ export const columns = [
             {expectedRouteCounts.map((expectedRouteCount, index) => (
               <p
                 key={index}
-                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-100 px-8 font-500 last:border-b-0"
+                className="flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-basic-grey-100 px-8 font-500 last:border-b-0"
               >
                 {expectedRouteCount}
               </p>
@@ -173,9 +173,9 @@ export const columns = [
           {shuttleRouteCounts.map((shuttleRouteCount, index) => (
             <p
               key={index}
-              className={`flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-grey-100 px-8 font-600 last:border-b-0 ${
+              className={`flex h-[58px] grow items-center justify-center whitespace-nowrap break-keep border-b border-basic-grey-100 px-8 font-600 last:border-b-0 ${
                 shuttleRouteCount < expectedRouteCounts[index]
-                  ? 'text-red-500'
+                  ? 'text-basic-red-500'
                   : 'text-green-600'
               }`}
             >
@@ -199,7 +199,7 @@ export const columns = [
             {dailyEventIds.map((dailyEventId) => (
               <p
                 key={dailyEventId}
-                className="flex h-[58px] grow items-center justify-center border-b border-grey-100 px-8 last:border-b-0"
+                className="flex h-[58px] grow items-center justify-center border-b border-basic-grey-100 px-8 last:border-b-0"
               >
                 <BlueLink href={`/events/${eventId}/dates/${dailyEventId}`}>
                   노선 보기

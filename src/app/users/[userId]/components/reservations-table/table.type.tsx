@@ -26,11 +26,11 @@ export const columns = [
             {reservation.shuttleRoute?.event?.eventName}
           </span>
           <br />
-          <span className="text-14 font-400 text-grey-600">
+          <span className="text-14 font-400 text-basic-grey-600">
             {date && dayjs(date).tz('Asia/Seoul').format('YYYY.MM.DD')}
           </span>
           <br />
-          <span className="text-14 font-500 text-grey-700">
+          <span className="text-14 font-500 text-basic-grey-700">
             {reservation.shuttleRoute?.name}
           </span>
         </p>
@@ -51,15 +51,15 @@ export const columns = [
         <p>
           <span className="text-16 font-500">{userName ?? '-'}</span>
           <br />
-          <span className="text-14 font-400 text-grey-600">
+          <span className="text-14 font-400 text-basic-grey-600">
             {userNickname ? `(${userNickname})` : '탈퇴한 유저'}
           </span>
           <br />
-          <span className="text-14 font-400 text-grey-600">
+          <span className="text-14 font-400 text-basic-grey-600">
             ({userPhoneNumber || '전화번호 없음'})
           </span>
           <br />
-          <span className="text-14 font-500 text-grey-700">
+          <span className="text-14 font-500 text-basic-grey-700">
             {userDesiredHubAddress &&
               '핸디팟 입력 주소: ' + userDesiredHubAddress}
           </span>
@@ -82,9 +82,9 @@ export const columns = [
     cell: (info) => {
       const reservationStatus = Stringifier.reservationStatus(info.getValue());
       const style = {
-        미결제: 'text-grey-500',
+        미결제: 'text-basic-grey-500',
         '결제 완료': 'text-green-500',
-        취소: 'text-red-500',
+        취소: 'text-basic-red-500',
       };
       return <b className={style[reservationStatus]}>{reservationStatus}</b>;
     },
@@ -101,9 +101,9 @@ export const columns = [
       const handyStatus = Stringifier.handyStatus(info.getValue());
       const style = {
         승인됨: 'text-green-500',
-        거절됨: 'text-red-500',
-        미지원: 'text-grey-500',
-        지원함: 'text-grey-900',
+        거절됨: 'text-basic-red-500',
+        미지원: 'text-basic-grey-500',
+        지원함: 'text-basic-grey-900',
       };
       return <b className={style[handyStatus]}>{handyStatus}</b>;
     },

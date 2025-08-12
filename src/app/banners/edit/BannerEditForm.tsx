@@ -92,7 +92,7 @@ const BannerEditForm = ({ banners }: Props) => {
         <div className="flex justify-end gap-4">
           <button
             type="button"
-            className="w-[150px] self-center rounded-full bg-primary-700 p-12 text-white"
+            className="w-[150px] self-center rounded-full bg-brand-primary-600 p-12 text-basic-white"
             onClick={() => {
               appendBanner({
                 title: '',
@@ -145,7 +145,7 @@ const BannerEditForm = ({ banners }: Props) => {
                     }}
                   />
                   {errors.banners?.[index]?.title && (
-                    <p className="text-red-500">
+                    <p className="text-basic-red-500">
                       {errors.banners?.[index]?.title?.message}
                     </p>
                   )}
@@ -171,7 +171,7 @@ const BannerEditForm = ({ banners }: Props) => {
                     }}
                   />
                   {errors.banners?.[index]?.linkUrl && (
-                    <p className="text-red-500">
+                    <p className="text-basic-red-500">
                       {errors.banners?.[index]?.linkUrl?.message}
                     </p>
                   )}
@@ -181,7 +181,7 @@ const BannerEditForm = ({ banners }: Props) => {
               <div className="flex flex-col gap-20">
                 <button
                   type="button"
-                  className="flex items-center justify-center rounded-full bg-grey-100 p-12 hover:text-grey-700  disabled:opacity-30"
+                  className="flex items-center justify-center rounded-full bg-basic-grey-100 p-12 hover:text-basic-grey-700  disabled:opacity-30"
                   onClick={() => handleOnSwap(index, 'up')}
                   disabled={index === 0}
                 >
@@ -189,7 +189,7 @@ const BannerEditForm = ({ banners }: Props) => {
                 </button>
                 <button
                   type="button"
-                  className="flex items-center justify-center rounded-full bg-grey-100 p-12 hover:text-grey-700  disabled:opacity-30"
+                  className="flex items-center justify-center rounded-full bg-basic-grey-100 p-12 hover:text-basic-grey-700  disabled:opacity-30"
                   onClick={() => handleOnSwap(index, 'down')}
                   disabled={index === bannerFields.length - 1}
                 >
@@ -197,7 +197,7 @@ const BannerEditForm = ({ banners }: Props) => {
                 </button>
                 <button
                   type="button"
-                  className="flex items-center justify-center rounded-full bg-grey-100 p-12 hover:text-grey-700  disabled:opacity-30"
+                  className="flex items-center justify-center rounded-full bg-basic-grey-100 p-12 hover:text-basic-grey-700  disabled:opacity-30"
                   onClick={() => removeBanner(index)}
                 >
                   <TrashIcon />

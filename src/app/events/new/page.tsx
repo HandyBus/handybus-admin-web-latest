@@ -145,7 +145,7 @@ const CreateEventForm = () => {
                   date: dayjs().startOf('day').toISOString(),
                 })
               }
-              className="w-fit text-blue-500"
+              className="w-fit text-basic-blue-400"
             >
               <PlusIcon />
             </button>
@@ -199,7 +199,7 @@ const CreateEventForm = () => {
                   <Field key={plan} className="flex items-center gap-[2px]">
                     <Radio
                       value={plan}
-                      className="group flex size-fit items-center justify-center rounded-lg bg-white p-4 transition-transform hover:outline hover:outline-blue-200 focus:outline focus:outline-blue-200 active:scale-[0.9] data-[checked]:bg-blue-400 data-[checked]:text-white"
+                      className="group flex size-fit items-center justify-center rounded-8 bg-basic-white p-4 transition-transform hover:outline hover:outline-basic-blue-200 focus:outline focus:outline-basic-blue-200 active:scale-[0.9] data-[checked]:bg-basic-blue-400 data-[checked]:text-basic-white"
                     >
                       <CheckIcon
                         className="invisible group-data-[checked]:visible"

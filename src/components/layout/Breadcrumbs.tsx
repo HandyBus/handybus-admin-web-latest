@@ -152,7 +152,7 @@ const Breadcrumbs = () => {
   const breadcrumbs = getBreadcrumbs(pathname);
 
   return (
-    <div className="flex shrink-0 items-center gap-4 text-12 text-grey-600">
+    <div className="flex shrink-0 items-center gap-4 text-12 text-basic-grey-600">
       {breadcrumbs.map((route, index) => (
         <Fragment key={index}>
           <span>
@@ -164,7 +164,7 @@ const Breadcrumbs = () => {
             </Link>
           </span>
           {index !== breadcrumbs.length - 1 && (
-            <span className="text-grey-600">&gt;</span>
+            <span className="text-basic-grey-600">&gt;</span>
           )}
         </Fragment>
       ))}

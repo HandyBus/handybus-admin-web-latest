@@ -134,9 +134,9 @@ const RefundForm = ({
       open={isOpen}
       onClose={() => setIsOpen(false)}
       transition
-      className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 transition duration-75 ease-out data-[closed]:opacity-0"
+      className="fixed inset-0 flex w-screen items-center justify-center bg-basic-black/30 p-4 transition duration-75 ease-out data-[closed]:opacity-0"
     >
-      <DialogPanel className="space-y-8 rounded-xl bg-white p-24">
+      <DialogPanel className="space-y-8 rounded-16 bg-basic-white p-24">
         <DialogTitle className="text-26 font-700">환불 처리하기</DialogTitle>
         <Description>
           환불 유형에 따라 처리되며, 환불 금액은 PG사를 통해서 입금됩니다.
@@ -161,13 +161,13 @@ const RefundForm = ({
             )}
           />
           {errors.type && (
-            <p className="text-14 font-500 text-red-500">
+            <p className="text-14 font-500 text-basic-red-500">
               {errors.type.message}
             </p>
           )}
           <SectionTitle>
             환불 금액 (환불 가능 금액{' '}
-            <strong className="text-red-500">
+            <strong className="text-basic-red-500">
               {payments.refundableAmount?.toLocaleString()}원
             </strong>
             )
@@ -191,7 +191,7 @@ const RefundForm = ({
               },
             }}
             render={({ field: { onChange, value } }) => (
-              <div className="flex flex-row items-center justify-between rounded-lg border border-grey-100 bg-white p-8">
+              <div className="flex flex-row items-center justify-between rounded-8 border border-basic-grey-100 bg-basic-white p-8">
                 <input
                   value={value ? Number(value).toLocaleString() : ''}
                   onChange={(e) => {
@@ -205,7 +205,7 @@ const RefundForm = ({
             )}
           />
           {errors.refundAmount && (
-            <p className="text-14 font-500 text-red-500">
+            <p className="text-14 font-500 text-basic-red-500">
               {errors.refundAmount.message}
             </p>
           )}
@@ -217,7 +217,7 @@ const RefundForm = ({
               required: '환불 사유를 입력해주세요.',
             }}
             render={({ field: { onChange, value } }) => (
-              <div className="flex flex-row items-center justify-between rounded-lg border border-grey-100 bg-white p-8">
+              <div className="flex flex-row items-center justify-between rounded-8 border border-basic-grey-100 bg-basic-white p-8">
                 <textarea
                   value={value}
                   onChange={onChange}
@@ -228,21 +228,21 @@ const RefundForm = ({
             )}
           />
           {errors.refundReason && (
-            <p className="text-14 font-500 text-red-500">
+            <p className="text-14 font-500 text-basic-red-500">
               {errors.refundReason.message}
             </p>
           )}
-          <div className="flex justify-end gap-4 text-white [&>button]:rounded-lg [&>button]:px-16 [&>button]:py-4">
+          <div className="flex justify-end gap-4 text-basic-white [&>button]:rounded-8 [&>button]:px-16 [&>button]:py-4">
             <button
               type="button"
-              className="bg-grey-400 transition-all hover:scale-95 active:scale-90"
+              className="bg-basic-grey-400 transition-all hover:scale-95 active:scale-90"
               onClick={() => setIsOpen(false)}
             >
               이 창 닫기
             </button>
             <button
               type="submit"
-              className={`bg-blue-400 transition-all disabled:bg-grey-400 ${
+              className={`disab-basic-greyg-basic-grey-400 bg-basic-blue-400 transition-all ${
                 isSubmitting
                   ? 'cursor-not-allowed'
                   : 'hover:scale-95 active:scale-90'
@@ -282,7 +282,7 @@ const RefundInfo = ({ reservation }: RefundInfoProps) => {
       case 'COMPLETE_PAYMENT':
         return 'text-green-500';
       case 'CANCEL':
-        return 'text-red-500';
+        return 'text-basic-red-500';
     }
   };
 
@@ -291,9 +291,9 @@ const RefundInfo = ({ reservation }: RefundInfoProps) => {
       case 'NONE':
         return;
       case 'CANCEL_REQUEST':
-        return 'text-blue-500';
+        return 'text-basic-blue-400';
       case 'CANCEL_COMPLETE':
-        return 'text-red-500';
+        return 'text-basic-red-500';
     }
   };
 
@@ -302,16 +302,16 @@ const RefundInfo = ({ reservation }: RefundInfoProps) => {
       case 'NOT_SUPPORTED':
         return;
       case 'SUPPORTED':
-        return 'text-blue-500';
+        return 'text-basic-blue-400';
       case 'ACCEPTED':
         return 'text-green-500';
       case 'DECLINED':
-        return 'text-red-500';
+        return 'text-basic-red-500';
     }
   };
 
   return (
-    <div className="w-full rounded-lg border  border-grey-100 bg-white p-8 text-12 font-500 text-grey-600 ">
+    <div className="w-full rounded-8 border  border-basic-grey-100 bg-basic-white p-8 text-12 font-500 text-basic-grey-600 ">
       - 예약자명 : {reservation.userNickname}
       <br />- 예약자 연락처 : {reservation.userPhoneNumber}
       <br />- 예약 일시 : {formatDateString(reservation.createdAt, 'datetime')}
@@ -342,11 +342,11 @@ const RefundHistory = ({ payments }: RefundHistoryProps) => {
   const refundStatusColor = (status: RefundStatus) => {
     switch (status) {
       case 'REQUESTED':
-        return 'text-blue-500';
+        return 'text-basic-blue-400';
       case 'COMPLETED':
         return 'text-green-500';
       case 'FAILED':
-        return 'text-red-500';
+        return 'text-basic-red-500';
     }
   };
 
@@ -355,7 +355,7 @@ const RefundHistory = ({ payments }: RefundHistoryProps) => {
       <p className="text-14 font-500">
         환불 내역 {payments.refundRequests?.length}건
       </p>
-      <div className="h-60 w-full resize-y overflow-y-auto rounded-lg border border-grey-100 bg-white p-8 text-12 font-500 text-grey-700">
+      <div className="h-60 w-full resize-y overflow-y-auto rounded-8 border border-basic-grey-100 bg-basic-white p-8 text-12 font-500 text-basic-grey-700">
         {payments.refundRequests && payments.refundRequests.length > 0
           ? payments.refundRequests.map((refundRequest, index) => {
               return (
@@ -368,7 +368,7 @@ const RefundHistory = ({ payments }: RefundHistoryProps) => {
                   {formatDateString(refundRequest.refundAt, 'date')}
                   <br />
                   환불요청금액 :{' '}
-                  <span className="text-red-500">
+                  <span className="text-basic-red-500">
                     {refundRequest.refundAmount.toLocaleString()}원
                   </span>
                   <br />
