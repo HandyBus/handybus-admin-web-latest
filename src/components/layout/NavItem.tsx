@@ -15,8 +15,8 @@ const NavItem = ({ href, children }: Props) => {
   return (
     <Link
       href={href}
-      className={`block cursor-pointer whitespace-nowrap break-keep text-20 transition-opacity hover:opacity-30
-          ${firstPath === firstHref ? 'font-700 text-basic-white' : 'font-400 text-basic-grey-100'}`}
+      className={`block cursor-pointer whitespace-nowrap break-keep text-20 transition-opacity hover:opacity-30 max-[500px]:text-16
+          ${firstPath === firstHref ? 'font-700 text-basic-white' : 'font-600 text-basic-grey-500'}`}
     >
       {children}
     </Link>

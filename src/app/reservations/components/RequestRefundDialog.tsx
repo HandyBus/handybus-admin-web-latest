@@ -280,7 +280,7 @@ const RefundInfo = ({ reservation }: RefundInfoProps) => {
       case 'NOT_PAYMENT':
         return;
       case 'COMPLETE_PAYMENT':
-        return 'text-green-500';
+        return 'text-brand-primary-400';
       case 'CANCEL':
         return 'text-basic-red-500';
     }
@@ -304,7 +304,7 @@ const RefundInfo = ({ reservation }: RefundInfoProps) => {
       case 'SUPPORTED':
         return 'text-basic-blue-400';
       case 'ACCEPTED':
-        return 'text-green-500';
+        return 'text-brand-primary-400';
       case 'DECLINED':
         return 'text-basic-red-500';
     }
@@ -344,7 +344,7 @@ const RefundHistory = ({ payments }: RefundHistoryProps) => {
       case 'REQUESTED':
         return 'text-basic-blue-400';
       case 'COMPLETED':
-        return 'text-green-500';
+        return 'text-brand-primary-400';
       case 'FAILED':
         return 'text-basic-red-500';
     }

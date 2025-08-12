@@ -86,7 +86,7 @@ export const reservationColumns = [
       const reservationStatus = Stringifier.reservationStatus(info.getValue());
       const style = {
         미결제: 'text-basic-grey-500',
-        '결제 완료': 'text-green-500',
+        '결제 완료': 'text-brand-primary-400',
         취소: 'text-basic-red-500',
       };
       return <b className={style[reservationStatus]}>{reservationStatus}</b>;
@@ -103,7 +103,7 @@ export const reservationColumns = [
     cell: (info) => {
       const handyStatus = Stringifier.handyStatus(info.getValue());
       const style = {
-        승인됨: 'text-green-500',
+        승인됨: 'text-brand-primary-400',
         거절됨: 'text-basic-red-500',
         미지원: 'text-basic-grey-500',
         지원함: 'text-basic-grey-900',

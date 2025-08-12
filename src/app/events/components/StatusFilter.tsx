@@ -25,7 +25,7 @@ function Filter({ eventStatus, setEventStatus }: Props) {
       <DisclosureButton
         className={customTwMerge(
           'gap-2 group flex w-fit items-center justify-start gap-4 rounded-8 p-4 transition-all hover:bg-basic-grey-50 active:scale-90 active:bg-basic-grey-100',
-          eventStatus === undefined ? '' : 'text-green-500',
+          eventStatus === undefined ? '' : 'text-brand-primary-400',
         )}
       >
         <FilterIcon size={16} />

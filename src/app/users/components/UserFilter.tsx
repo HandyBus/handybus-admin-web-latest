@@ -26,7 +26,7 @@ const UserFilter = ({ option, dispatch }: Props) => {
         <FilterIcon size={16} />
         <ChevronDownIcon className="w-5 group-data-[open]:rotate-180" />
       </DisclosureButton>
-      <DisclosurePanel className="bg-notion-green/50 mb-8 flex flex-col gap-4 rounded-[4px] p-16">
+      <DisclosurePanel className="bg-notion-brand-primary/50 mb-8 flex flex-col gap-4 rounded-[4px] p-16">
         <div className="grid grid-cols-2 gap-12">
           <article>
             <Label>이름</Label>

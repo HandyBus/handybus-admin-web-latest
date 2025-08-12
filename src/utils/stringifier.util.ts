@@ -67,7 +67,7 @@ const Stringifier = Object.freeze({
       case 'INACTIVE':
         return '비활성';
       case 'OPEN':
-        return '수요조사 진행 중';
+        return '수요조사 중';
       case 'CLOSED':
         return '수요조사 마감';
       case 'ENDED':

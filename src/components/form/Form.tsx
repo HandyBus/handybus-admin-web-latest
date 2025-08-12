@@ -6,6 +6,7 @@ import {
   ReactNode,
 } from 'react';
 import { customTwMerge } from 'tailwind.config';
+import Button from '../button/Button';
 
 interface Form {
   children: ReactNode;
@@ -80,13 +81,9 @@ const SubmitButton = ({
   ...props
 }: PropsWithChildren<SubmitButtonProps>) => {
   return (
-    <button
-      type="submit"
-      className="hover:bg-basic-blue-600 flex items-center justify-center gap-8 rounded-8 bg-basic-blue-400 p-8 font-500 text-basic-white disabled:cursor-not-allowed disabled:bg-basic-grey-100 disabled:text-basic-grey-500"
-      {...props}
-    >
+    <Button type="submit" size="large" variant="primary" {...props}>
       {children}
-    </button>
+    </Button>
   );
 };
 

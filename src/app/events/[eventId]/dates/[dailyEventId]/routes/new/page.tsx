@@ -528,7 +528,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                     getValues('shuttleRouteHubsToDestination'),
                   )
                 }
-                className="text-green-500 ml-auto block text-14 underline underline-offset-2"
+                className="ml-auto block text-14 text-brand-primary-400 underline underline-offset-2"
               >
                 경로 소요 시간 계산하기
               </button>
@@ -655,7 +655,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                     getValues('shuttleRouteHubsFromDestination'),
                   )
                 }
-                className="text-green-500 ml-auto block text-14 underline underline-offset-2"
+                className="ml-auto block text-14 text-brand-primary-400 underline underline-offset-2"
               >
                 경로 소요 시간 계산하기
               </button>

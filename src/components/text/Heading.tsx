@@ -12,7 +12,7 @@ const H1 = ({ children, backgroundColor, className }: HeadingProps) => {
   return (
     <h1
       className={customTwMerge(
-        'my-4 h-56 p-4 text-[32px] font-600',
+        'my-4 h-56 p-4 text-28 font-700',
         backgroundColor && BACKGROUND_COLOR_MAP[backgroundColor],
         className,
       )}
@@ -26,7 +26,7 @@ const H2 = ({ children, backgroundColor, className }: HeadingProps) => {
   return (
     <h2
       className={customTwMerge(
-        'my-4 h-[50px] p-4 text-28 font-500',
+        'my-4 h-[50px] p-4 text-24 font-700',
         backgroundColor && BACKGROUND_COLOR_MAP[backgroundColor],
         className,
       )}
@@ -40,7 +40,7 @@ const H3 = ({ children, backgroundColor, className }: HeadingProps) => {
   return (
     <h3
       className={customTwMerge(
-        'my-4 h-44 p-4 text-24 font-500',
+        'my-4 h-44 p-4 text-22 font-600',
         backgroundColor && BACKGROUND_COLOR_MAP[backgroundColor],
         className,
       )}

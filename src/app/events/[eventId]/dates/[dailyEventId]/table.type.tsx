@@ -36,7 +36,7 @@ export const columns = [
               ? 'text-basic-grey-600'
               : diff <= 5
                 ? 'text-basic-red-600'
-                : 'text-green-500'
+                : 'text-brand-primary-400'
           }`}
         >
           ({count} / {maxCount})
@@ -60,7 +60,7 @@ export const columns = [
               ? 'text-basic-grey-600'
               : diff <= 5
                 ? 'text-basic-red-600'
-                : 'text-green-500'
+                : 'text-brand-primary-400'
           }`}
         >
           ({count} / {maxCount})

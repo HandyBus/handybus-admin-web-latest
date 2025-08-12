@@ -9,15 +9,15 @@ import HandyPartyMap from './HandyPartyMap';
 const colorClasses = [
   'bg-basic-blue-200',
   'bg-basic-red-200',
-  'bg-green-200',
+  'bg-brand-primary-200',
   'bg-brand-primary-200',
   'bg-basic-blue-400',
   'bg-basic-red-400',
-  'bg-green-400',
+  'bg-brand-primary-400',
   'bg-brand-primary-400',
   'bg-basic-blue-600',
   'bg-basic-red-600',
-  'bg-green-600',
+  'bg-brand-primary-400',
   'bg-basic-grey-600',
 ];
 interface Props {

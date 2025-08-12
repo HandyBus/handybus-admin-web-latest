@@ -51,7 +51,7 @@ function ReservationFilter({ option, dispatch }: Props) {
       <DisclosureButton
         className={customTwMerge(
           'gap-2 group flex w-fit items-center justify-start gap-4 rounded-8 p-4 transition-all hover:bg-basic-grey-50 active:scale-90 active:bg-basic-grey-100',
-          filterCount === 0 ? '' : 'text-green-500',
+          filterCount === 0 ? '' : 'text-brand-primary-400',
           validity === false ? 'text-basic-red-500' : '',
         )}
       >

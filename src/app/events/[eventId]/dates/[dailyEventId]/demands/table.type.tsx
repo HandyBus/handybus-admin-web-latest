@@ -10,7 +10,7 @@ export const columns = [
       const isCustom = Boolean(!info.row.original?.regionHubId);
       const name = info.getValue();
       return (
-        <p className={`flex gap-12 ${isCustom && 'text-green-500'}`}>
+        <p className={`flex gap-12 ${isCustom && 'text-brand-primary-400'}`}>
           {isCustom && <span className="opacity-70">기타</span>}
           {name}
         </p>

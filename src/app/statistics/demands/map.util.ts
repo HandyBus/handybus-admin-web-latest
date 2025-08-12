@@ -82,9 +82,9 @@ const displayArea = ({
     const intensity = Math.min(count / maxCount, 1);
 
     const red = 255;
-    const green = Math.round(255 * (1 - intensity));
+    const brandPrimary = Math.round(255 * (1 - intensity));
     const blue = Math.round(255 * (1 - intensity));
-    return `rgb(${red},${green},${blue})`;
+    return `rgb(${red},${brandPrimary},${blue})`;
   };
 
   // 지역 폴리곤 생성
