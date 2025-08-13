@@ -13,6 +13,7 @@ import Button from '@/components/button/Button';
 import Stringifier from '@/utils/stringifier.util';
 import { formatDateString } from '@/utils/date.util';
 import { DEFAULT_EVENT_IMAGE } from '@/constants/common';
+import { useRouter } from 'next/navigation';
 
 const EVENT_PAGINATION_LIMIT = 7;
 
@@ -49,6 +50,8 @@ const Page = () => {
     hasNextPage,
   });
 
+  const router = useRouter();
+
   return (
     <main>
       <Heading className="flex items-baseline gap-20">
@@ -62,16 +65,12 @@ const Page = () => {
       </Heading>
       <EventFilter option={option} dispatch={dispatch} />
       <section className="flex flex-col gap-32">
-        {/* <BaseTable
-          table={table}
-          cellClassName="min-h-120 p-0 border-b-basic-grey-300"
-        /> */}
         {flattenedEventsStats?.map((event) => (
           <div
             key={event.eventId}
             className="rounded-16 bg-basic-white shadow-[0_2px_8px_0_rgba(0,0,0,0.08)]"
           >
-            <div className="grid grid-cols-[60px_1fr_1fr_1fr_58px] items-center px-28 py-20">
+            <div className="grid grid-cols-[60px_2fr_1fr_1fr_1fr] items-center px-28 py-20">
               <div className="relative h-88 w-60 overflow-hidden rounded-8 bg-basic-grey-700">
                 <Image
                   src={event.eventImageUrl || DEFAULT_EVENT_IMAGE}
@@ -87,9 +86,22 @@ const Page = () => {
               <p className="text-16 font-500">
                 {Stringifier.eventType(event.eventType)}
               </p>
-              <Button size="small" variant="tertiary">
-                수정
-              </Button>
+              <div className="flex items-center justify-end gap-8">
+                <Button
+                  size="small"
+                  variant="tertiary"
+                  onClick={() => router.push(`/events/${event.eventId}/sales`)}
+                >
+                  매출 확인
+                </Button>
+                <Button
+                  size="small"
+                  variant="tertiary"
+                  onClick={() => router.push(`/events/${event.eventId}/edit`)}
+                >
+                  수정
+                </Button>
+              </div>
             </div>
             <div className="grid h-[32px] grid-cols-6 items-center bg-basic-grey-100">
               <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
