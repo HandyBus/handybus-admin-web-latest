@@ -76,6 +76,7 @@ export const AdminShuttleRoutesViewEntitySchema = z
     event: z.lazy(() => EventsViewEntitySchema),
     createdAt: z.string(),
     updatedAt: z.string(),
+    shuttleRouteMetadata: z.record(z.string(), z.any()).nullable().optional(),
   })
   .strict();
 export type AdminShuttleRoutesViewEntity = z.infer<
