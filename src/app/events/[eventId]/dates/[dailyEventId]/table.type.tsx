@@ -6,15 +6,12 @@ import { AdminShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 import Stringifier from '@/utils/stringifier.util';
 import EditRouteStatusDialog from './EditRouteStatusDialog';
 import BlueButton from '@/components/link/BlueButton';
-import {
-  getAlertRequests,
-  sendShuttleInformation,
-} from '@/services/shuttleRoute.service';
+import { sendShuttleInformation } from '@/services/shuttleRoute.service';
 import { HANDY_PARTY_PREFIX } from '@/constants/common';
 
 const columnHelper = createColumnHelper<AdminShuttleRoutesViewEntity>();
 
-export const columns = [
+export const getColumns = (alertRequestCounts: Record<string, number>) => [
   columnHelper.accessor('name', {
     header: () => '이름',
     cell: (info) => info.getValue(),
@@ -86,30 +83,9 @@ export const columns = [
     id: 'empty-seat-request-count',
     header: () => '빈자리 알림 요청수',
     cell: (props) => {
-      const shuttleRoute = props.row.original;
-
-      const handleCheckAlertRequests = async () => {
-        const shuttleName = shuttleRoute.name;
-        const shuttleRouteId = shuttleRoute.shuttleRouteId;
-
-        const alertRequests = await getAlertRequests(shuttleRouteId);
-        const alertRequestCount = alertRequests.filter(
-          (request) => request.shuttleRouteId === shuttleRouteId,
-        ).length;
-
-        alert(
-          `${shuttleName}노선의 빈자리 알림 요청 갯수는 ${alertRequestCount}개 입니다.`,
-        );
-      };
-
-      return (
-        <button
-          className="font-500 text-blue-500 underline underline-offset-[3px]"
-          onClick={handleCheckAlertRequests}
-        >
-          확인하기
-        </button>
-      );
+      const id = props.row.original.shuttleRouteId;
+      const count = alertRequestCounts[id] ?? 0;
+      return <span>{count}</span>;
     },
   }),
   columnHelper.display({

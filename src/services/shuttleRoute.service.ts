@@ -99,10 +99,14 @@ export const useGetShuttleRoute = (
   });
 };
 
-// TODO 추후에 pagination으로 변경
-export const getAlertRequests = async (shuttleRouteId: string) => {
+export const getAlertRequests = async (shuttleRouteIds: string[]) => {
+  if (!Array.isArray(shuttleRouteIds) || shuttleRouteIds.length === 0) {
+    return [];
+  }
+
+  const idsParam = encodeURIComponent(shuttleRouteIds.join(','));
   const res = await authInstance.get(
-    `/v1/shuttle-operation/admin/alert-requests?shuttleRouteId=${shuttleRouteId}`,
+    `/v1/shuttle-operation/admin/alert-requests?shuttleRouteIds=${idsParam}`,
     {
       shape: {
         shuttleRouteAlertRequests:
@@ -113,10 +117,12 @@ export const getAlertRequests = async (shuttleRouteId: string) => {
   return res.shuttleRouteAlertRequests;
 };
 
-export const useGetAlertRequests = (shuttleRouteId: string) => {
+export const useGetAlertRequests = (shuttleRouteIds: string[]) => {
   return useQuery({
-    queryKey: ['alertRequests', shuttleRouteId],
-    queryFn: () => getAlertRequests(shuttleRouteId),
+    queryKey: ['alertRequests', shuttleRouteIds],
+    queryFn: () => getAlertRequests(shuttleRouteIds),
+    enabled: Array.isArray(shuttleRouteIds) && shuttleRouteIds.length > 0,
+    initialData: [],
   });
 };
 
