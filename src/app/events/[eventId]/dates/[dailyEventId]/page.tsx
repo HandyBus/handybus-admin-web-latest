@@ -4,13 +4,14 @@ import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';
 import BlueLink from '@/components/link/BlueLink';
 import { notFound } from 'next/navigation';
-import { columns } from './table.type';
+import { getColumns } from './table.type';
 import { useEffect, useMemo } from 'react';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
 import {
   useGetShuttleRoutesOfDailyEvent,
   useSendShuttleInformation,
+  useGetAlertRequests,
 } from '@/services/shuttleRoute.service';
 import { useGetEvent } from '@/services/event.service';
 import Heading from '@/components/text/Heading';
@@ -84,7 +85,25 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
       ?.metadata?.openChatUrl;
   }, [event, dailyEventId]);
 
-  const table = useTable({ data: sortedRoutes, columns });
+  const shuttleRouteIdList = useMemo(
+    () => sortedRoutes.map((r) => r.shuttleRouteId),
+    [sortedRoutes],
+  );
+
+  const { data: alertRequests } = useGetAlertRequests(shuttleRouteIdList);
+
+  const alertRequestCountMap = useMemo(() => {
+    return alertRequests.reduce<Record<string, number>>((acc, curr) => {
+      const id = curr.shuttleRouteId;
+      acc[id] = (acc[id] ?? 0) + 1;
+      return acc;
+    }, {});
+  }, [alertRequests]);
+
+  const table = useTable({
+    data: sortedRoutes,
+    columns: getColumns(alertRequestCountMap),
+  });
 
   const dailyEvent = event
     ? event.dailyEvents.find((d) => d.dailyEventId === dailyEventId)

@@ -11,7 +11,7 @@ import { HANDY_PARTY_PREFIX } from '@/constants/common';
 
 const columnHelper = createColumnHelper<AdminShuttleRoutesViewEntity>();
 
-export const columns = [
+export const getColumns = (alertRequestCounts: Record<string, number>) => [
   columnHelper.accessor('name', {
     header: () => '이름',
     cell: (info) => info.getValue(),
@@ -78,6 +78,15 @@ export const columns = [
         예약 상세보기
       </BlueLink>
     ),
+  }),
+  columnHelper.display({
+    id: 'empty-seat-request-count',
+    header: () => '빈자리 알림 요청수',
+    cell: (props) => {
+      const id = props.row.original.shuttleRouteId;
+      const count = alertRequestCounts[id] ?? 0;
+      return <span>{count}</span>;
+    },
   }),
   columnHelper.display({
     id: 'route-detail',

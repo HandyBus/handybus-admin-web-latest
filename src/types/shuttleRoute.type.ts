@@ -82,6 +82,27 @@ export type AdminShuttleRoutesViewEntity = z.infer<
   typeof AdminShuttleRoutesViewEntitySchema
 >;
 
+export const ShuttleRouteAlertRequestsViewEntitySchema = z.object({
+  shuttleRouteAlertRequestId: z.string(),
+  shuttleRouteId: z.string(),
+  userId: z.string(),
+  userNickname: z.string(),
+  userName: z.string(),
+  userPhoneNumber: z.string(),
+  userProfileImage: z.string(),
+  shuttleRouteHubId: z.string().nullable(),
+  notifiedAt: z.string().nullable(),
+  notificationRequestedAt: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  deletedAt: z.string().nullable(),
+  queueIndex: z.number(),
+  shuttleRoute: AdminShuttleRoutesViewEntitySchema,
+});
+export type ShuttleRouteAlertRequestsViewEntity = z.infer<
+  typeof ShuttleRouteAlertRequestsViewEntitySchema
+>;
+
 // ----- POST -----
 
 export const CreateShuttleRouteRequestSchema = z

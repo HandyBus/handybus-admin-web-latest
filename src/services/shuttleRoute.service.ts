@@ -4,6 +4,7 @@ import {
   ShuttleRouteStatus,
   AdminShuttleRoutesViewEntitySchema,
   TripType,
+  ShuttleRouteAlertRequestsViewEntitySchema,
 } from '@/types/shuttleRoute.type';
 import { authInstance } from './config';
 import { toSearchParamString } from '@/utils/searchParam.util';
@@ -95,6 +96,33 @@ export const useGetShuttleRoute = (
   return useQuery({
     queryKey: ['shuttleRoute', eventId, dailyEventId, shuttleRouteId],
     queryFn: () => getShuttleRoute(eventId, dailyEventId, shuttleRouteId),
+  });
+};
+
+export const getAlertRequests = async (shuttleRouteIds: string[]) => {
+  if (!Array.isArray(shuttleRouteIds) || shuttleRouteIds.length === 0) {
+    return [];
+  }
+
+  const idsParam = encodeURIComponent(shuttleRouteIds.join(','));
+  const res = await authInstance.get(
+    `/v1/shuttle-operation/admin/alert-requests?shuttleRouteIds=${idsParam}`,
+    {
+      shape: {
+        shuttleRouteAlertRequests:
+          ShuttleRouteAlertRequestsViewEntitySchema.array(),
+      },
+    },
+  );
+  return res.shuttleRouteAlertRequests;
+};
+
+export const useGetAlertRequests = (shuttleRouteIds: string[]) => {
+  return useQuery({
+    queryKey: ['alertRequests', shuttleRouteIds],
+    queryFn: () => getAlertRequests(shuttleRouteIds),
+    enabled: Array.isArray(shuttleRouteIds) && shuttleRouteIds.length > 0,
+    initialData: [],
   });
 };
 
