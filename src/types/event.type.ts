@@ -48,7 +48,10 @@ export const EventsViewEntitySchema = z
     endDate: z.string(),
     createdAt: z.string(),
     updatedAt: z.string(),
-    eventIsPinned: z.number(), // TODO: 백엔드 타입 오류
+    eventIsPinned: z.boolean(),
+    eventMinRoutePrice: z.number(),
+    eventHasOpenRoute: z.boolean(),
+    eventRecommendationScore: z.number(),
     eventMetadata: z.record(z.string(), z.any()).nullable(),
   })
   .strict();

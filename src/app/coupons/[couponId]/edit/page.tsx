@@ -84,7 +84,7 @@ const EditForm = ({ coupon }: FormProps) => {
       <Form.section>
         <Form.label required>
           발행 개수
-          <span className="text-12 text-red-500">0일 경우 무한대</span>
+          <span className="text-12 text-basic-red-500">0일 경우 무한대</span>
         </Form.label>
         <Controller
           control={control}
@@ -97,7 +97,7 @@ const EditForm = ({ coupon }: FormProps) => {
       <Form.section>
         <Form.label required>
           한 예약 당 쿠폰 최대 적용 가능 인원
-          <span className="text-12 text-red-500">0일 경우 무한대</span>
+          <span className="text-12 text-basic-red-500">0일 경우 무한대</span>
         </Form.label>
         <Controller
           control={control}
@@ -120,13 +120,13 @@ const EditForm = ({ coupon }: FormProps) => {
             >
               <Radio
                 value={true}
-                className="group flex size-fit items-center justify-center rounded-lg bg-white p-4 transition-transform hover:outline hover:outline-blue-200 focus:outline focus:outline-blue-200 active:scale-[0.9] data-[checked]:bg-blue-400 data-[checked]:text-white"
+                className="group flex size-fit items-center justify-center rounded-lg bg-basic-white p-4 transition-transform hover:outline hover:outline-basic-blue-200 focus:outline focus:outline-basic-blue-200 active:scale-[0.9] data-[checked]:bg-basic-blue-400 data-[checked]:text-basic-white"
               >
                 활성화
               </Radio>
               <Radio
                 value={false}
-                className="group flex size-fit items-center justify-center rounded-lg bg-white p-4 transition-transform hover:outline hover:outline-blue-200 focus:outline focus:outline-blue-200 active:scale-[0.9] data-[checked]:bg-blue-400 data-[checked]:text-white"
+                className="group flex size-fit items-center justify-center rounded-lg bg-basic-white p-4 transition-transform hover:outline hover:outline-basic-blue-200 focus:outline focus:outline-basic-blue-200 active:scale-[0.9] data-[checked]:bg-basic-blue-400 data-[checked]:text-basic-white"
               >
                 비활성화
               </Radio>
@@ -144,7 +144,7 @@ const EditForm = ({ coupon }: FormProps) => {
               <button
                 onClick={() => onChange(null)}
                 type="button"
-                className="w-fit rounded-md border border-grey-500 px-4 py-[2px] text-12 text-grey-700"
+                className="w-fit rounded-md border border-basic-grey-500 px-4 py-[2px] text-12 text-basic-grey-700"
               >
                 사용 가능 행사 제한 해제하기
               </button>

@@ -4,13 +4,14 @@ import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';
 import BlueLink from '@/components/link/BlueLink';
 import { notFound } from 'next/navigation';
-import { columns } from './table.type';
+import { getColumns } from './table.type';
 import { useEffect, useMemo } from 'react';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
 import {
   useGetShuttleRoutesOfDailyEvent,
   useSendShuttleInformation,
+  useGetAlertRequests,
 } from '@/services/shuttleRoute.service';
 import { useGetEvent } from '@/services/event.service';
 import Heading from '@/components/text/Heading';
@@ -84,7 +85,25 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
       ?.metadata?.openChatUrl;
   }, [event, dailyEventId]);
 
-  const table = useTable({ data: sortedRoutes, columns });
+  const shuttleRouteIdList = useMemo(
+    () => sortedRoutes.map((r) => r.shuttleRouteId),
+    [sortedRoutes],
+  );
+
+  const { data: alertRequests } = useGetAlertRequests(shuttleRouteIdList);
+
+  const alertRequestCountMap = useMemo(() => {
+    return alertRequests.reduce<Record<string, number>>((acc, curr) => {
+      const id = curr.shuttleRouteId;
+      acc[id] = (acc[id] ?? 0) + 1;
+      return acc;
+    }, {});
+  }, [alertRequests]);
+
+  const table = useTable({
+    data: sortedRoutes,
+    columns: getColumns(alertRequestCountMap),
+  });
 
   const dailyEvent = event
     ? event.dailyEvents.find((d) => d.dailyEventId === dailyEventId)
@@ -165,12 +184,12 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
                 <a
                   href={hasOpenChatUrl}
                   target="_blank"
-                  className="text-blue-500 underline underline-offset-[3px]"
+                  className="text-basic-blue-400 underline underline-offset-[3px]"
                 >
                   {hasOpenChatUrl}
                 </a>
               ) : (
-                <span className="text-red-500">
+                <span className="text-basic-red-500">
                   없음, 노선을 추가하기 전에 링크를 꼭 추가해주세요.
                 </span>
               )}
@@ -189,7 +208,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
             추가하기
           </BlueLink>
           <button
-            className="text-14 text-blue-500 underline underline-offset-[3px]"
+            className="text-14 text-basic-blue-400 underline underline-offset-[3px]"
             onClick={handleSendShuttleInformationAllDailyEventRoutes}
             disabled={isSendShuttleInformationPending}
           >
@@ -201,7 +220,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
             openChatUrl={hasOpenChatUrl}
           />
         </Heading.h2>
-        <div className="mb-12 flex justify-start gap-20 bg-notion-grey px-20 py-12">
+        <div className="bg-notion-basic-grey mb-12 flex justify-start gap-20 px-20 py-12">
           <h5 className="whitespace-nowrap text-14">핸디팟 기능 :</h5>
           <BlueLink
             href={`${dailyEventId}/handy-party/optimizer-paste`}

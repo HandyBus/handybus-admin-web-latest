@@ -51,20 +51,20 @@ const LoginPage = () => {
           type="text"
           placeholder="아이디"
           {...register('identifier')}
-          className="w-full rounded-[4px] border border-grey-100 p-12"
+          className="w-full rounded-[4px] border border-basic-grey-100 p-12"
         />
         <input
           type="password"
           placeholder="비밀번호"
           {...register('password')}
-          className="w-full rounded-[4px] border border-grey-100 p-12"
+          className="w-full rounded-[4px] border border-basic-grey-100 p-12"
         />
-        <button className="h-40 w-full rounded-[4px] bg-blue-500 text-white">
+        <button className="h-40 w-full rounded-[4px] bg-basic-blue-400 text-basic-white">
           로그인
         </button>
         <button
           type="button"
-          className="text-14 font-500 text-grey-700 underline underline-offset-2"
+          className="text-14 font-500 text-basic-grey-700 underline underline-offset-2"
           onClick={() => handleLogout()}
         >
           로그아웃

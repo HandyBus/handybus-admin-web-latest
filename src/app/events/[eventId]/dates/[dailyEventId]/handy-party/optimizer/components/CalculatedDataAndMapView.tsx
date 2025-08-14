@@ -7,18 +7,18 @@ import {
 import HandyPartyMap from './HandyPartyMap';
 
 const colorClasses = [
-  'bg-blue-200',
-  'bg-red-200',
-  'bg-green-200',
-  'bg-primary-200',
-  'bg-blue-400',
-  'bg-red-400',
-  'bg-green-400',
-  'bg-primary-400',
-  'bg-blue-600',
-  'bg-red-600',
-  'bg-green-600',
-  'bg-grey-600',
+  'bg-basic-blue-200',
+  'bg-basic-red-200',
+  'bg-brand-primary-200',
+  'bg-brand-primary-200',
+  'bg-basic-blue-400',
+  'bg-basic-red-400',
+  'bg-brand-primary-400',
+  'bg-brand-primary-400',
+  'bg-basic-blue-600',
+  'bg-basic-red-600',
+  'bg-brand-primary-400',
+  'bg-basic-grey-600',
 ];
 interface Props {
   calculatedData: CalculatedOptimalRouteData[];
@@ -82,13 +82,13 @@ const CalculatedDataAndMapView = ({
                 key={`${item.address}-${index}`}
                 className={`border-gray-200 flex cursor-pointer items-center justify-between border-b py-4 transition-all duration-200 ${
                   draggedIndex === index
-                    ? 'scale-95 bg-blue-50 opacity-50'
+                    ? 'bg-basic-blue-50 scale-95 opacity-50'
                     : 'hover:bg-gray-50'
                 } ${
                   draggedIndex !== null &&
                   dropIndex === index &&
                   draggedIndex !== dropIndex
-                    ? 'bg-blue-100 opacity-50'
+                    ? 'bg-basic-blue-100 opacity-50'
                     : ''
                 }`}
                 draggable
@@ -99,12 +99,12 @@ const CalculatedDataAndMapView = ({
               >
                 <div className="flex-1">
                   {item.isSpacer ? (
-                    <span className="flex w-full items-center justify-center font-500 text-blue-600">
+                    <span className="text-basic-blue-600 flex w-full items-center justify-center font-500">
                       호차구분 (호차별 5인 이하)
                     </span>
                   ) : (
                     <>
-                      <span className={`font-500 text-blue-600`}>
+                      <span className={`text-basic-blue-600 font-500`}>
                         {item.order}.
                       </span>
                       <span className={`pl-4 text-14 font-600 ${textColor}`}>

@@ -44,7 +44,7 @@ const NewArtistPage = () => {
   );
 
   return (
-    <main className="flex h-full w-full flex-col gap-16 bg-white">
+    <main className="flex h-full w-full flex-col gap-16 bg-basic-white">
       <Heading>아티스트 추가</Heading>
       <Form onSubmit={handleSubmit(onSubmit)} method="post">
         <Form.section>
@@ -67,7 +67,7 @@ const NewArtistPage = () => {
                   placeholder="아티스트 이름을 입력해주세요."
                 />
                 {errors?.name && (
-                  <p className="text-red-500">{errors.name.message}</p>
+                  <p className="text-basic-red-500">{errors.name.message}</p>
                 )}
               </>
             )}

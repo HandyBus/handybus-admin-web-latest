@@ -30,8 +30,8 @@ const BannerImageFileInput = ({ type, value, setValue, id }: Props) => {
   }, [file, setValue, type]);
 
   return (
-    <div className="flex size-full flex-col items-center justify-between gap-16 rounded-lg border border-grey-300 bg-white p-8">
-      <div className="h-[160px] w-[375px] overflow-hidden rounded-lg bg-grey-200">
+    <div className="flex size-full flex-col items-center justify-between gap-16 rounded-8 border border-basic-grey-300 bg-basic-white p-8">
+      <div className="h-[160px] w-[375px] overflow-hidden rounded-8 bg-basic-grey-200">
         {!isPending && value && (
           <Image
             src={value}
@@ -47,8 +47,8 @@ const BannerImageFileInput = ({ type, value, setValue, id }: Props) => {
         <label
           htmlFor={`image_upload_${id}`}
           className={twJoin(
-            `gap-2 flex cursor-pointer items-center rounded-lg p-4 text-white`,
-            isPending ? 'bg-blue-400' : 'bg-grey-600',
+            `gap-2 flex cursor-pointer items-center rounded-8 p-4 text-basic-white`,
+            isPending ? 'bg-basic-blue-400' : 'bg-basic-grey-600',
             'transition-transform active:scale-90',
           )}
         >

@@ -60,7 +60,7 @@ const EditDailyEventOpenChatUrl = ({
   return (
     <>
       <button
-        className="text-14 text-blue-500 underline underline-offset-[3px]"
+        className="text-14 text-basic-blue-400 underline underline-offset-[3px]"
         onClick={() => setIsOpen(true)}
       >
         공지방 링크 추가/수정하기
@@ -69,14 +69,14 @@ const EditDailyEventOpenChatUrl = ({
         open={isOpen}
         onClose={() => setIsOpen(false)}
         transition
-        className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 transition duration-75 ease-out data-[closed]:opacity-0"
+        className="fixed inset-0 flex w-screen items-center justify-center bg-basic-black/30 p-4 transition duration-75 ease-out data-[closed]:opacity-0"
       >
-        <DialogPanel className="max-w-lg space-y-8 rounded-xl bg-white p-24">
+        <DialogPanel className="max-w-lg space-y-8 rounded-16 bg-basic-white p-24">
           <DialogTitle className="text-26 font-700">
             공지방 링크 추가/수정하기
           </DialogTitle>
           {openChatUrl && (
-            <p className="text-14 text-grey-700">
+            <p className="text-14 text-basic-grey-700">
               반영된 공지방 링크: {openChatUrl}
             </p>
           )}
@@ -96,27 +96,27 @@ const EditDailyEventOpenChatUrl = ({
                   <input
                     value={value}
                     onChange={onChange}
-                    className="w-full rounded-lg border border-grey-100 bg-white p-8"
+                    className="w-full rounded-8 border border-basic-grey-100 bg-basic-white p-8"
                     placeholder={`${openChatUrl || '공지방 링크를 입력해주세요.'}`}
                   />
                   {errors.openChatUrl && (
-                    <p className="text-12 font-600 text-red-500">
+                    <p className="text-12 font-600 text-basic-red-500">
                       {errors.openChatUrl.message}
                     </p>
                   )}
                 </>
               )}
             />
-            <div className="flex justify-end gap-4 text-white [&>button]:rounded-lg [&>button]:px-16 [&>button]:py-4">
+            <div className="flex justify-end gap-4 text-basic-white [&>button]:rounded-8 [&>button]:px-16 [&>button]:py-4">
               <button
                 type="button"
-                className="bg-grey-400 transition-all hover:scale-95 active:scale-90"
+                className="bg-basic-grey-400 transition-all hover:scale-95 active:scale-90"
                 onClick={() => setIsOpen(false)}
               >
                 이 창 닫기
               </button>
               <button
-                className={`bg-blue-400 transition-all ${
+                className={`bg-basic-blue-400 transition-all ${
                   isSubmitting ? '' : 'hover:scale-95 active:scale-90'
                 } disabled:cursor-not-allowed disabled:opacity-50`}
                 disabled={isSubmitting}

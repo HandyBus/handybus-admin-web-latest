@@ -124,7 +124,7 @@ const HandyPartyMap = ({ clusteredData }: Props) => {
           <div
             className={
               error
-                ? 'absolute left-0 top-0 z-10 flex size-full touch-none items-center justify-center bg-white bg-opacity-75 text-red-500'
+                ? 'absolute left-0 top-0 z-10 flex size-full touch-none items-center justify-center bg-basic-white bg-opacity-75 text-basic-red-500'
                 : 'hidden'
             }
           >

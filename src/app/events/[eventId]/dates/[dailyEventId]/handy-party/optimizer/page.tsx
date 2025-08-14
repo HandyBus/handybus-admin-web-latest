@@ -233,7 +233,7 @@ const HandyPartyOptimizerPage = ({
           }}
         />
         <button
-          className="whitespace-nowrap rounded-full border border-grey-300 bg-blue-200 px-8 active:bg-blue-100 disabled:cursor-not-allowed disabled:bg-grey-100 disabled:opacity-50 disabled:active:bg-grey-100"
+          className="whitespace-nowrap rounded-full border border-basic-grey-300 bg-basic-blue-200 px-8 active:bg-basic-blue-100 disabled:cursor-not-allowed disabled:bg-basic-grey-100 disabled:opacity-50 disabled:active:bg-basic-grey-100"
           disabled={!isExcelDownloadable}
           onClick={() => handleExcelDownload(savedHandyPartyReservationList)}
         >
@@ -245,9 +245,11 @@ const HandyPartyOptimizerPage = ({
         {availableHandyPartyRouteList?.map((route, index) => (
           <button
             key={route.shuttleRouteId}
-            className={`rounded-full border border-grey-300 bg-grey-100 px-8 active:bg-grey-50 ${
-              route.isChecked ? 'bg-primary-300 active:bg-primary-200' : ''
-            } ${optimizedRouteDataList[0]?.shuttleRouteId === route.shuttleRouteId ? 'bg-blue-200 active:bg-blue-100' : ''}`}
+            className={`rounded-full border border-basic-grey-300 bg-basic-grey-100 px-8 active:bg-basic-grey-50 ${
+              route.isChecked
+                ? 'bg-brand-primary-300 active:bg-brand-primary-200'
+                : ''
+            } ${optimizedRouteDataList[0]?.shuttleRouteId === route.shuttleRouteId ? 'bg-basic-blue-200 active:bg-basic-blue-100' : ''}`}
             onClick={() => handleCalculateRoute(route)}
           >
             {index + 1 + ` ${route.shuttleName}`}
@@ -266,7 +268,7 @@ const HandyPartyOptimizerPage = ({
           <div className="mt-24 flex items-center gap-8">
             <Heading.h3>최적 경로 재조정하기</Heading.h3>
             <button
-              className="text-ellipsis whitespace-nowrap rounded-full border border-grey-300 bg-blue-200 px-8 active:bg-blue-100 disabled:cursor-not-allowed disabled:bg-grey-100 disabled:opacity-50 disabled:active:bg-grey-100"
+              className="text-ellipsis whitespace-nowrap rounded-full border border-basic-grey-300 bg-basic-blue-200 px-8 active:bg-basic-blue-100 disabled:cursor-not-allowed disabled:bg-basic-grey-100 disabled:opacity-50 disabled:active:bg-basic-grey-100"
               disabled={optimizedRouteDataList.length === 0}
               onClick={() => handleSaveCurrentWork()}
             >

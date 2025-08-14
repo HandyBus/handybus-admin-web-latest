@@ -1,5 +1,5 @@
 import { type Table, flexRender } from '@tanstack/react-table';
-import { twMerge } from 'tailwind-merge';
+import { customTwMerge } from 'tailwind.config';
 
 interface Props<TData> {
   table: Table<TData>;
@@ -19,10 +19,10 @@ const BaseTable = <TData,>({
   rowClassName,
 }: Props<TData>) => {
   return (
-    <table className="text-left text-16 text-grey-900 rtl:text-right">
-      <thead className="whitespace-nowrap break-keep text-14 uppercase text-grey-700">
+    <table className="text-basic-grey-900 text-left text-16 rtl:text-right">
+      <thead className="whitespace-nowrap break-keep text-14 uppercase text-basic-grey-700">
         {table.getHeaderGroups().map((headerGroup) => (
-          <tr key={headerGroup.id} className="bg-grey-100">
+          <tr key={headerGroup.id} className="bg-basic-grey-100">
             {headerGroup.headers.map((header) => (
               <th
                 key={header.id}
@@ -44,16 +44,16 @@ const BaseTable = <TData,>({
         {table.getRowModel().rows.map((row) => (
           <tr
             key={row.id}
-            className={twMerge(
-              'border-spacing-y-40 bg-white transition-colors',
+            className={customTwMerge(
+              'border-spacing-y-40 bg-basic-white transition-colors',
               rowClassName,
             )}
           >
             {row.getVisibleCells().map((cell) => (
               <td
                 key={cell.id}
-                className={twMerge(
-                  'border-y border-r border-grey-100 p-8 first:border-l',
+                className={customTwMerge(
+                  'border-y border-r border-basic-grey-100 p-8 first:border-l',
                   cellClassName,
                 )}
               >

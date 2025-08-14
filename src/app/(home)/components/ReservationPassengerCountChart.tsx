@@ -67,7 +67,7 @@ const ReservationPassengerCountChart = ({ options }: Props) => {
       title={
         <>
           <span className="keep-word shrink-0">예약 탑승객</span>
-          <span className="ml-[6px] line-clamp-1 text-12 font-400 text-grey-600">
+          <span className="ml-[6px] line-clamp-1 text-12 font-400 text-basic-grey-600">
             예약 탑승객 수는 취소한 예약 탑승객 수를 포함합니다.
           </span>
         </>

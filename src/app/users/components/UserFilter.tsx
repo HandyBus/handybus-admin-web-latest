@@ -22,11 +22,11 @@ interface Props {
 const UserFilter = ({ option, dispatch }: Props) => {
   return (
     <Disclosure>
-      <DisclosureButton className="group flex w-fit items-center justify-start gap-4 rounded-[8px] p-4 transition-all hover:bg-grey-50 active:scale-90 active:bg-grey-100">
+      <DisclosureButton className="group flex w-fit items-center justify-start gap-4 rounded-[8px] p-4 transition-all hover:bg-basic-grey-50 active:scale-90 active:bg-basic-grey-100">
         <FilterIcon size={16} />
         <ChevronDownIcon className="w-5 group-data-[open]:rotate-180" />
       </DisclosureButton>
-      <DisclosurePanel className="mb-8 flex flex-col gap-4 rounded-[4px] bg-notion-green/50 p-16">
+      <DisclosurePanel className="bg-notion-brand-primary/50 mb-8 flex flex-col gap-4 rounded-[4px] p-16">
         <div className="grid grid-cols-2 gap-12">
           <article>
             <Label>이름</Label>
@@ -223,5 +223,7 @@ const UserFilter = ({ option, dispatch }: Props) => {
 export default UserFilter;
 
 const Label = ({ children }: { children: ReactNode }) => {
-  return <label className="text-14 font-600 text-grey-900">{children}</label>;
+  return (
+    <label className="text-basic-grey-900 text-14 font-600">{children}</label>
+  );
 };

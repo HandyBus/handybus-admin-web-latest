@@ -33,12 +33,12 @@ export const columns = [
               : `${discountAmount?.toLocaleString()}원 할인`}
           </p>
           {discountType === 'RATE' && (
-            <p className="text-12 text-grey-700">
+            <p className="text-12 text-basic-grey-700">
               최대 {maxDiscountAmount?.toLocaleString()}원 할인 가능
             </p>
           )}
           {maxApplicablePeople !== null && (
-            <p className="text-12 text-grey-700">
+            <p className="text-12 text-basic-grey-700">
               최대 {maxApplicablePeople || '∞'}명 적용 가능
             </p>
           )}

@@ -26,7 +26,7 @@ const Page = ({ params: { reservationId } }: Props) => {
   return (
     <main>
       <Heading>예약 상세 정보</Heading>
-      <div className="flex flex-row flex-wrap gap-4 rounded-lg border border-grey-100 p-8 text-14">
+      <div className="flex flex-row flex-wrap gap-4 rounded-8 border border-basic-grey-100 p-8 text-14">
         <JSONViewer value={data} />
         <EditHandyStatusDialog response={data.reservation} />
       </div>

@@ -56,7 +56,7 @@ const ArtistInput = ({ value, setValue, modalState }: Props) => {
       onClose={() => setQuery('')}
     >
       <ComboboxInput
-        className="rounded-lg border border-grey-200 p-8 focus:outline-blue-400"
+        className="rounded-8 border border-basic-grey-200 p-8 focus:outline-basic-blue-400"
         aria-label="Assignee"
         placeholder={isLoading ? '로딩 중…' : '아티스트 선택'}
         defaultValue={null}
@@ -68,13 +68,13 @@ const ArtistInput = ({ value, setValue, modalState }: Props) => {
 
       <ComboboxOptions
         anchor="bottom"
-        className="mt-4 w-[var(--input-width)] rounded-lg bg-white shadow-md empty:invisible"
+        className="mt-4 w-[var(--input-width)] rounded-8 bg-basic-white shadow-md empty:invisible"
       >
         {filtered.map((artist) => (
           <ComboboxOption
             key={artist.artistId}
             value={artist}
-            className="p-8 data-[focus]:bg-blue-100"
+            className="p-8 data-[focus]:bg-basic-blue-100"
           >
             {artist.artistName}
           </ComboboxOption>
@@ -83,7 +83,7 @@ const ArtistInput = ({ value, setValue, modalState }: Props) => {
           <button
             type="button"
             onClick={() => modalState.setIsOpen(true)}
-            className="block p-8 text-blue-500 hover:bg-blue-100"
+            className="block p-8 text-basic-blue-400 hover:bg-basic-blue-100"
           >
             + 새로운 아티스트 만들기
           </button>

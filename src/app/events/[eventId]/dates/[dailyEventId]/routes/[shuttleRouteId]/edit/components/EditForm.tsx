@@ -81,7 +81,9 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
           노선 이름
         </FormContainer.label>
         <Input {...register('name')} />
-        {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+        {errors.name && (
+          <p className="text-basic-red-500">{errors.name.message}</p>
+        )}
       </FormContainer.section>
       <FormContainer.section>
         <FormContainer.label htmlFor="maxPassengerCount" required>
@@ -92,7 +94,9 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
           {...register('maxPassengerCount', { valueAsNumber: true })}
         />
         {errors.maxPassengerCount && (
-          <p className="text-red-500">{errors.maxPassengerCount.message}</p>
+          <p className="text-basic-red-500">
+            {errors.maxPassengerCount.message}
+          </p>
         )}
       </FormContainer.section>
 

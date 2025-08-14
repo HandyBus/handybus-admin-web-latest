@@ -1,8 +1,7 @@
 'use client';
 
-import { CheckIcon, XIcon } from 'lucide-react';
 import { Dispatch, MouseEvent, SetStateAction } from 'react';
-import { twJoin } from 'tailwind-merge';
+import { customTwMerge } from 'tailwind.config';
 
 interface Props {
   value: boolean;
@@ -18,16 +17,16 @@ interface Props {
 const Toggle = ({ disabled, value, setValue, label, onClick }: Props) => {
   return (
     <button
-      className={twJoin(
-        'flex flex-row items-center justify-start rounded-xl border border-blue-100 px-8 py-4 text-14 font-500 transition-all hover:border-blue-600 active:scale-90',
+      className={customTwMerge(
+        'flex items-center justify-start rounded-8 border border-brand-primary-200 px-[10px] py-[4px] text-14 font-500 transition-transform active:scale-[0.98]',
         'disabled:cursor-not-allowed disabled:opacity-50',
-        value ? 'bg-blue-400 text-white' : 'bg-neutral-50',
+        value && 'border-transparent bg-brand-primary-400 text-basic-white',
       )}
       onClick={onClick ?? (setValue && (() => setValue((prev) => !prev)))}
       disabled={disabled}
       type="button"
     >
-      {value ? <CheckIcon size={18} /> : <XIcon size={18} />} {label}
+      {label}
     </button>
   );
 };

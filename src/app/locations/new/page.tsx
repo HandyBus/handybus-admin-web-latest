@@ -122,7 +122,7 @@ const NewHubPage = ({ searchParams }: Props) => {
                 {recommended && (
                   <button
                     type="button"
-                    className="text-blue-500 hover:underline"
+                    className="text-basic-blue-400 hover:underline"
                     onClick={() => {
                       onChange(recommended.regionId);
                     }}

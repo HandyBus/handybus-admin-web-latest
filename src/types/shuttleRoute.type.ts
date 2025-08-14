@@ -76,10 +76,32 @@ export const AdminShuttleRoutesViewEntitySchema = z
     event: z.lazy(() => EventsViewEntitySchema),
     createdAt: z.string(),
     updatedAt: z.string(),
+    shuttleRouteMetadata: z.record(z.string(), z.any()).nullable().optional(),
   })
   .strict();
 export type AdminShuttleRoutesViewEntity = z.infer<
   typeof AdminShuttleRoutesViewEntitySchema
+>;
+
+export const ShuttleRouteAlertRequestsViewEntitySchema = z.object({
+  shuttleRouteAlertRequestId: z.string(),
+  shuttleRouteId: z.string(),
+  userId: z.string(),
+  userNickname: z.string(),
+  userName: z.string(),
+  userPhoneNumber: z.string(),
+  userProfileImage: z.string(),
+  shuttleRouteHubId: z.string().nullable(),
+  notifiedAt: z.string().nullable(),
+  notificationRequestedAt: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  deletedAt: z.string().nullable(),
+  queueIndex: z.number(),
+  shuttleRoute: AdminShuttleRoutesViewEntitySchema,
+});
+export type ShuttleRouteAlertRequestsViewEntity = z.infer<
+  typeof ShuttleRouteAlertRequestsViewEntitySchema
 >;
 
 // ----- POST -----

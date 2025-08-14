@@ -1,6 +1,6 @@
 import { InfoIcon } from 'lucide-react';
 import { ReactNode } from 'react';
-import { twMerge } from 'tailwind-merge';
+import { customTwMerge } from 'tailwind.config';
 
 interface Props {
   children: ReactNode;
@@ -13,11 +13,14 @@ const ToolTip = ({ children, iconClassName, textClassName }: Props) => {
     <div className="group relative">
       <InfoIcon
         size={16}
-        className={twMerge('text-grey-500 hover:text-grey-800', iconClassName)}
+        className={customTwMerge(
+          'text-basic-grey-500 hover:text-basic-grey-700',
+          iconClassName,
+        )}
       />
       <div
-        className={twMerge(
-          'absolute bottom-20 hidden max-w-300 whitespace-nowrap break-keep rounded-[4px] bg-white p-[6px] text-12 text-grey-800 opacity-95 shadow-md group-hover:block',
+        className={customTwMerge(
+          'absolute bottom-20 hidden max-w-300 whitespace-nowrap break-keep rounded-[4px] bg-basic-white p-[6px] text-12 text-basic-grey-700 opacity-95 shadow-md group-hover:block',
           textClassName,
         )}
       >

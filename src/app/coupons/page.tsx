@@ -91,7 +91,7 @@ const Page = ({ searchParams }: Props) => {
               (filter === '전체' && !searchParams.filter) ||
               filter === searchParams.filter
                 ? ''
-                : 'text-grey-300'
+                : 'text-basic-grey-300'
             }`}
           >
             {filter}

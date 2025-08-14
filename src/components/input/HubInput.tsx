@@ -92,11 +92,11 @@ const RegionHubInput = ({ hubType, regionId, value, setValue }: Props) => {
       onClose={() => setQuery('')}
     >
       <div className="group relative">
-        <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-grey-400 group-focus:text-blue-500">
+        <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-basic-grey-400 group-focus:text-basic-blue-400">
           <ChevronDown />
         </ComboboxButton>
         <ComboboxInput
-          className="size-full rounded-lg border border-grey-200 p-8 focus:outline-blue-400"
+          className="size-full rounded-8 border border-basic-grey-200 p-8 focus:outline-basic-blue-400"
           aria-label="Assignee"
           placeholder={
             !validRegionID(regionId)
@@ -115,13 +115,13 @@ const RegionHubInput = ({ hubType, regionId, value, setValue }: Props) => {
 
         <ComboboxOptions
           anchor="bottom"
-          className="mt-4 w-[var(--input-width)] rounded-lg bg-white shadow-md empty:invisible"
+          className="mt-4 w-[var(--input-width)] rounded-8 bg-basic-white shadow-md empty:invisible"
         >
           {filtered.map((hub) => (
             <ComboboxOption
               key={hub.regionHubId}
               value={hub}
-              className="p-8 data-[focus]:bg-blue-100"
+              className="p-8 data-[focus]:bg-basic-blue-100"
             >
               {hub.name}
             </ComboboxOption>
@@ -131,7 +131,7 @@ const RegionHubInput = ({ hubType, regionId, value, setValue }: Props) => {
               href="/locations/new"
               target="_blank"
               rel="noopener noreferrer"
-              className="block p-8 text-blue-500 hover:bg-blue-100"
+              className="block p-8 text-basic-blue-400 hover:bg-basic-blue-100"
             >
               + 새로운 거점 만들기
             </Link>

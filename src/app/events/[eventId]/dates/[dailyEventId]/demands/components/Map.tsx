@@ -12,7 +12,7 @@ import {
   RegionHubClusterNode,
 } from '@/types/demand.type';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { twMerge } from 'tailwind-merge';
+import { customTwMerge } from 'tailwind.config';
 import {
   createHubMarker,
   createRegionMarker,
@@ -355,9 +355,9 @@ const Map = ({ eventId, dailyEventId }: Props) => {
       <div className="flex grow gap-12">
         <div className="relative flex grow flex-col" ref={mapRef}>
           {viewingRegion && (
-            <section className="absolute bottom-0 left-0 top-0 z-50 w-240 bg-black/55 p-12 text-white">
+            <section className="absolute bottom-0 left-0 top-0 z-50 w-240 bg-basic-black/55 p-12 text-basic-white">
               <h5 className="text-18 font-600">{viewingRegion}</h5>
-              <article className="flex flex-col p-4 text-12 text-grey-100">
+              <article className="flex flex-col p-4 text-12 text-basic-grey-100">
                 {(() => {
                   const demand = demandsStats?.find(
                     (demand) => demand.provinceFullName === viewingRegion,
@@ -375,10 +375,10 @@ const Map = ({ eventId, dailyEventId }: Props) => {
                   );
                 })()}
               </article>
-              <article className="flex flex-col gap-4 text-grey-50">
+              <article className="flex flex-col gap-4 text-basic-grey-50">
                 <h6 className="flex items-center gap-4 pt-8 text-14 font-600">
                   {viewingRegion} 내 군집들
-                  <ToolTip iconClassName="text-grey-300 hover:text-grey-100">
+                  <ToolTip iconClassName="text-basic-grey-300 hover:text-basic-grey-100">
                     기타 수요조사는 지도 및 군집에 표시되지 않습니다.
                   </ToolTip>
                 </h6>
@@ -387,11 +387,11 @@ const Map = ({ eventId, dailyEventId }: Props) => {
                     return (
                       <button
                         key={cluster.clusterId}
-                        className="flex items-center justify-between p-4 text-14 hover:bg-grey-100/50"
+                        className="flex items-center justify-between p-4 text-14 hover:bg-basic-grey-100/50"
                         onClick={() => handleHubClick(cluster)}
                       >
                         <span>{cluster.nodes[0].data.regionHubName}</span>
-                        <span className="text-12 text-grey-200">
+                        <span className="text-12 text-basic-grey-200">
                           {cluster.totalCount}개
                         </span>
                       </button>
@@ -402,8 +402,8 @@ const Map = ({ eventId, dailyEventId }: Props) => {
             </section>
           )}
         </div>
-        <section className="flex w-320 flex-col gap-4 bg-white p-12 shadow-[0px_0px_10px_0px_rgba(0,0,0,0.18)]">
-          <Heading.h5 className="flex items-center gap-8 bg-notion-grey">
+        <section className="flex w-320 flex-col gap-4 bg-basic-white p-12 shadow-[0px_0px_10px_0px_rgba(0,0,0,0.18)]">
+          <Heading.h5 className="bg-notion-basic-grey flex items-center gap-8">
             추천 노선
             <ToolTip textClassName="top-20 bottom-auto right-0 z-[100]">
               <div className="flex flex-col gap-4">
@@ -431,9 +431,9 @@ const Map = ({ eventId, dailyEventId }: Props) => {
             {routeTree?.routes.map((route, index) => (
               <button
                 key={index}
-                className={twMerge(
-                  'flex items-center gap-8 overflow-x-auto px-4 py-8 hover:bg-notion-grey/70',
-                  selectedRouteIndex === index && 'bg-notion-grey/70',
+                className={customTwMerge(
+                  'hover:bg-notion-basic-grey/70 flex items-center gap-8 overflow-x-auto px-4 py-8',
+                  selectedRouteIndex === index && 'bg-notion-basic-grey/70',
                 )}
                 onClick={() => handleRouteClick(route, index)}
               >
@@ -450,7 +450,7 @@ const Map = ({ eventId, dailyEventId }: Props) => {
                         {cluster.nodes[0].data.regionHubName}
                       </span>
                       {index !== route.nodes.length - 1 && (
-                        <span className="text-grey-500">-</span>
+                        <span className="text-basic-grey-500">-</span>
                       )}
                     </>
                   );

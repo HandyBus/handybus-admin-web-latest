@@ -1,8 +1,8 @@
 'use client';
 
-import { CheckIcon, ImagePlusIcon, Loader2Icon } from 'lucide-react';
+import { Loader2Icon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { twJoin } from 'tailwind-merge';
+import { customTwMerge } from 'tailwind.config';
 import Image from 'next/image';
 import { ImageKey, getImageUrl } from '@/services/core.service';
 
@@ -29,30 +29,30 @@ const ImageFileInput = ({ type, value, setValue }: Props) => {
   }, [file, setValue, type]);
 
   return (
-    <div className="flex size-full flex-row items-center justify-between rounded-lg border border-grey-300 bg-white p-8">
-      <div className="h-[110px] w-[80px] overflow-hidden rounded-lg bg-grey-200">
-        {!isPending && (
+    <div className="flex flex-col items-center">
+      {!isPending && (
+        <div className="mb-24 h-[166px] w-[117px] bg-basic-grey-200">
           <Image
             src={value}
             alt="새로 등록할 포스터 이미지"
             width={80}
             height={110}
           />
-        )}
-      </div>
+        </div>
+      )}
       {isLoading && <Loader2Icon className="animate-spin" />}
 
       {!isLoading && (
         <label
           htmlFor="image_upload"
-          className={twJoin(
-            `gap-2 flex cursor-pointer items-center rounded-lg p-4 text-white`,
-            isPending ? 'bg-blue-400' : 'bg-grey-600',
-            'transition-transform active:scale-90',
+          className={customTwMerge(
+            `flex h-[50px] w-full cursor-pointer items-center justify-center gap-4 rounded-[8px] font-600`,
+            isPending
+              ? 'bg-brand-primary-50 text-brand-primary-400 active:[&:not([disabled])]:bg-brand-primary-100'
+              : 'bg-basic-grey-100 text-basic-grey-700 active:[&:not([disabled])]:bg-basic-grey-200',
           )}
         >
-          {isPending ? <ImagePlusIcon /> : <CheckIcon />}
-          {isPending ? ' 이미지 업로드' : ' 이미지 업로드됨, 새로 업로드하기…'}
+          {isPending ? ' 이미지 업로드' : ' 이미지 변경'}
           <input
             ref={inputRef}
             disabled={file !== null}

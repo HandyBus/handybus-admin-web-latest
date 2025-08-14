@@ -329,7 +329,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
               (error || loading) && 'opacity-50',
             )}
           />
-          <div className="absolute left-20 top-20 z-10 h-40 w-240 overflow-hidden rounded-[8px] border border-grey-200">
+          <div className="absolute left-20 top-20 z-10 h-40 w-240 overflow-hidden rounded-[8px] border border-basic-grey-200">
             <input
               id="search-input"
               type="text"
@@ -350,7 +350,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
           <div
             className={
               error
-                ? 'absolute left-0 top-0 z-10 flex size-full touch-none items-center justify-center bg-white bg-opacity-75 text-red-500'
+                ? 'absolute left-0 top-0 z-10 flex size-full touch-none items-center justify-center bg-basic-white bg-opacity-75 text-basic-red-500'
                 : 'hidden'
             }
           >
@@ -363,7 +363,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
               <button
                 type="button"
                 onClick={searchCurrentRegion}
-                className="flex items-center gap-8 rounded-full bg-blue-400 px-16 py-8 text-white shadow-lg hover:bg-blue-300"
+                className="flex items-center gap-8 rounded-full bg-basic-blue-400 px-16 py-8 text-basic-white shadow-lg hover:bg-basic-blue-300"
               >
                 <RotateCwIcon />이 지역 재검색하기{' '}
                 {currentRegion ? `(${currentRegion})` : ''}
