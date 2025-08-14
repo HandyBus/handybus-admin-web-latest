@@ -400,7 +400,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
               </div>
             </div>
             <div
-              className={`flex flex-col gap-8 rounded-[4px] p-8 ${watchHasEarlybird ? '' : 'bg-notion-basic-grey'}`}
+              className={`flex flex-col gap-8 rounded-[4px] p-8 ${watchHasEarlybird ? '' : 'bg-basic-grey-100'}`}
             >
               <Heading.h5 backgroundColor="blue">얼리버드 가격</Heading.h5>
               <label className="block text-16 font-500">예약 마감일</label>
@@ -538,7 +538,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                 return (
                   <li
                     key={field.id}
-                    className={`flex justify-between rounded-[6px] p-12 ${index === toDestHubFields.length - 1 ? 'bg-notion-basic-blue' : 'bg--basic-greyn-basic-grey/50'}`}
+                    className={`flex justify-between rounded-[6px] p-12 ${index === toDestHubFields.length - 1 ? 'bg-basic-blue-400' : 'bg-basic-grey-100/50'}`}
                   >
                     <h5 className="my-auto text-16 font-500">{index + 1}</h5>
                     <div className="w-[1px] rounded-full bg-basic-grey-100" />
@@ -672,7 +672,7 @@ const Form = ({ params, defaultValues, defaultDate }: FormProps) => {
                 return (
                   <li
                     key={field.id}
-                    className={`flex justify-between rounded-[6px] p-12 ${index === 0 ? 'bg-notion-basic-blue' : 'bg--basic-greyn-basic-grey/50'}`}
+                    className={`flex justify-between rounded-[6px] p-12 ${index === 0 ? 'bg-basic-blue-400' : 'bg-basic-grey-100/50'}`}
                   >
                     <h5 className="my-auto text-16 font-500">{index + 1}</h5>
                     <div className="w-[1px] rounded-full bg-basic-grey-100" />

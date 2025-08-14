@@ -106,7 +106,7 @@ export const reservationColumns = [
         승인됨: 'text-brand-primary-400',
         거절됨: 'text-basic-red-500',
         미지원: 'text-basic-grey-500',
-        지원함: 'text-basic-grey-900',
+        지원함: 'text-basic-grey-700',
       };
       return <b className={style[handyStatus]}>{handyStatus}</b>;
     },

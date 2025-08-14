@@ -111,7 +111,7 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
         />
         <button
           onClick={rejectAllSupportedHandy}
-          className="bg-notion-basic-grey/20 rounded-[4px] border border-basic-grey-300 px-12 py-[2px] text-14 font-500"
+          className="rounded-[4px] border border-basic-grey-300 bg-basic-grey-100/20 px-12 py-[2px] text-14 font-500"
         >
           핸디 지원 일괄 거절
         </button>

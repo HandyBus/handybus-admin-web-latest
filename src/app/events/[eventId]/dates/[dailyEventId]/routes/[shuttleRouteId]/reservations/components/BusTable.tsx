@@ -337,21 +337,21 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
           <div className="flex items-center gap-4">
             <button
               type="button"
-              className="bg-notion-basic-grey/20 rounded-6 border border-basic-grey-300 px-12 py-[2px] text-14 font-500"
+              className="rounded-6 border border-basic-grey-300 bg-basic-grey-100/20 px-12 py-[2px] text-14 font-500"
               onClick={handleAssignBus}
             >
               확인
             </button>
             <button
               type="button"
-              className="bg-notion-basic-grey/20 rounded-6 border border-basic-grey-300 px-12 py-[2px] text-14 font-500"
+              className="rounded-6 border border-basic-grey-300 bg-basic-grey-100/20 px-12 py-[2px] text-14 font-500"
               onClick={() => setIsEditMode(false)}
             >
               취소
             </button>
             <button
               type="button"
-              className="bg-notion-basic-grey/20 ml-16 rounded-6 border border-basic-grey-300 px-12 py-[2px] text-14 font-500"
+              className="ml-16 rounded-6 border border-basic-grey-300 bg-basic-grey-100/20 px-12 py-[2px] text-14 font-500"
               onClick={handleFillUnassignedReservation}
             >
               배차되지 않은 승객 채우기
@@ -360,7 +360,7 @@ const BusTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
         ) : (
           <button
             type="button"
-            className="bg-notion-basic-grey/20 rounded-6 border border-basic-grey-300 px-12 py-[2px] text-14 font-500"
+            className="rounded-6 border border-basic-grey-300 bg-basic-grey-100/20 px-12 py-[2px] text-14 font-500"
             onClick={() => {
               setIsEditMode(true);
               initEditing();
@@ -491,7 +491,7 @@ const PassengerItem = ({
 
   return (
     <li className="flex items-center gap-20 border-b border-basic-grey-300 px-12 py-4">
-      <p className="text-basic-grey-900 text-14 font-500">
+      <p className="text-14 font-500 text-basic-grey-700">
         {`${userName} (${userNickname})`}
       </p>
       <p className="text-14 font-400 text-basic-grey-700">

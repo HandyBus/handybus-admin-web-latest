@@ -403,7 +403,7 @@ const Map = ({ eventId, dailyEventId }: Props) => {
           )}
         </div>
         <section className="flex w-320 flex-col gap-4 bg-basic-white p-12 shadow-[0px_0px_10px_0px_rgba(0,0,0,0.18)]">
-          <Heading.h5 className="bg-notion-basic-grey flex items-center gap-8">
+          <Heading.h5 className="flex items-center gap-8 bg-basic-grey-100">
             추천 노선
             <ToolTip textClassName="top-20 bottom-auto right-0 z-[100]">
               <div className="flex flex-col gap-4">
@@ -432,8 +432,8 @@ const Map = ({ eventId, dailyEventId }: Props) => {
               <button
                 key={index}
                 className={customTwMerge(
-                  'hover:bg-notion-basic-grey/70 flex items-center gap-8 overflow-x-auto px-4 py-8',
-                  selectedRouteIndex === index && 'bg-notion-basic-grey/70',
+                  'flex items-center gap-8 overflow-x-auto px-4 py-8 hover:bg-basic-grey-100/50',
+                  selectedRouteIndex === index && 'bg-basic-grey-100/50',
                 )}
                 onClick={() => handleRouteClick(route, index)}
               >

@@ -15,7 +15,7 @@ interface Props<TData> {
  */
 const VerticalTable = <TData,>({ table }: Props<TData>) => {
   return (
-    <table className="text-basic-grey-900 border-separate border-spacing-y-4 text-left text-16 rtl:text-right">
+    <table className="border-separate border-spacing-y-4 text-left text-16 text-basic-grey-700 rtl:text-right">
       <tbody>
         {table.getHeaderGroups().map((headerGroup) =>
           headerGroup.headers.map((header, headerIndex) => (

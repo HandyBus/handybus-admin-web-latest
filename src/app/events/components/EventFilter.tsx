@@ -23,7 +23,7 @@ const EventFilter = ({ option, dispatch }: Props) => {
         <FilterIcon size={16} />
         <ChevronDownIcon className="w-5 group-data-[open]:rotate-180" />
       </DisclosureButton>
-      <DisclosurePanel className="bg-notion-brand-primary/50 mb-8 flex flex-col gap-4 rounded-[4px] p-16">
+      <DisclosurePanel className="mb-8 flex flex-col gap-4 rounded-[4px] bg-brand-primary-400/50 p-16">
         <div className="grid grid-cols-2 gap-12">
           <article>
             <Label>행사 이름</Label>
@@ -100,6 +100,6 @@ export default EventFilter;
 
 const Label = ({ children }: { children: ReactNode }) => {
   return (
-    <label className="text-basic-grey-900 text-14 font-600">{children}</label>
+    <label className="text-14 font-600 text-basic-grey-700">{children}</label>
   );
 };
