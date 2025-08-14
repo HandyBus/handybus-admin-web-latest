@@ -224,6 +224,6 @@ export default UserFilter;
 
 const Label = ({ children }: { children: ReactNode }) => {
   return (
-    <label className="text-basic-grey-900 text-14 font-600">{children}</label>
+    <label className="text-14 font-600 text-basic-grey-700">{children}</label>
   );
 };

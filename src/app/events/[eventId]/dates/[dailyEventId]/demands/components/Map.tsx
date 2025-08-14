@@ -382,7 +382,7 @@ const Map = ({ eventId, dailyEventId }: Props) => {
                     기타 수요조사는 지도 및 군집에 표시되지 않습니다.
                   </ToolTip>
                 </h6>
-                <ul className="flex flex-col gap-[1px]">
+                <ul className="flex flex-col gap-[1px] overflow-y-auto">
                   {clustersInRegion?.[viewingRegion]?.map((cluster) => {
                     return (
                       <button
