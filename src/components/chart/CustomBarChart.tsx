@@ -69,7 +69,7 @@ const CustomBarChart = ({ data, colors, isLoading }: Props) => {
                   <div className="min-w-60 rounded-[4px] border border-basic-grey-200 bg-basic-white p-4 shadow-[0_0_10px_0_rgba(0,0,0,0.1)]">
                     <h5 className="pb-4 text-14 font-500">{data.name}</h5>
                     <div className="flex items-baseline gap-4">
-                      <p className="text-basic-grey-900 text-16">
+                      <p className="text-16 text-basic-grey-700">
                         {percentage}%
                       </p>
                       <p className="text-14 text-basic-grey-700">

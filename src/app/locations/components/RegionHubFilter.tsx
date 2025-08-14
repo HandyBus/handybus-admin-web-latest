@@ -25,7 +25,7 @@ const RegionHubFilter = ({ option, dispatch }: Props) => {
         <FilterIcon size={16} />
         <ChevronDownIcon className="w-5 group-data-[open]:rotate-180" />
       </DisclosureButton>
-      <DisclosurePanel className="bg-notion-brand-primary/50 mb-8 flex flex-col gap-8 rounded-[4px] p-16">
+      <DisclosurePanel className="mb-8 flex flex-col gap-8 rounded-[4px] bg-brand-primary-400/50 p-16">
         <button
           type="button"
           onClick={() => dispatch({ type: 'RESET' })}
@@ -130,6 +130,6 @@ export default RegionHubFilter;
 
 const Label = ({ children }: { children: ReactNode }) => {
   return (
-    <label className="text-basic-grey-900 text-14 font-600">{children}</label>
+    <label className="text-14 font-600 text-basic-grey-700">{children}</label>
   );
 };

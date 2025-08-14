@@ -75,7 +75,7 @@ const AnnouncementDetailPage = ({
         </List>
       </Callout>
       <Heading.h2>내용</Heading.h2>
-      <section className="bg-notion-basic-grey prose w-dvw max-w-full p-20">
+      <section className="prose w-dvw max-w-full bg-basic-grey-100 p-20">
         <ReactMarkdown>{announcement?.content}</ReactMarkdown>
       </section>
     </main>
