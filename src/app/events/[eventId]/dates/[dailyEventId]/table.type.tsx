@@ -35,7 +35,7 @@ export const getColumns = (alertRequestCounts: Record<string, number>) => [
             diff === 0
               ? 'text-basic-grey-600'
               : diff <= 5
-                ? 'text-basic-red-600'
+                ? 'text-basic-red-500'
                 : 'text-brand-primary-400'
           }`}
         >
@@ -59,7 +59,7 @@ export const getColumns = (alertRequestCounts: Record<string, number>) => [
             diff === 0
               ? 'text-basic-grey-600'
               : diff <= 5
-                ? 'text-basic-red-600'
+                ? 'text-basic-red-500'
                 : 'text-brand-primary-400'
           }`}
         >
