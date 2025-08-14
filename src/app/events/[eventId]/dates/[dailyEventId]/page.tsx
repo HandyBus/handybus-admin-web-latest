@@ -220,7 +220,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
             openChatUrl={hasOpenChatUrl}
           />
         </Heading.h2>
-        <div className="bg-notion-basic-grey mb-12 flex justify-start gap-20 px-20 py-12">
+        <div className="mb-12 flex justify-start gap-20 bg-basic-grey-100 px-20 py-12">
           <h5 className="whitespace-nowrap text-14">핸디팟 기능 :</h5>
           <BlueLink
             href={`${dailyEventId}/handy-party/optimizer-paste`}

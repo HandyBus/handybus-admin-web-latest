@@ -19,7 +19,7 @@ const BaseTable = <TData,>({
   rowClassName,
 }: Props<TData>) => {
   return (
-    <table className="text-basic-grey-900 text-left text-16 rtl:text-right">
+    <table className="text-left text-16 text-basic-grey-700 rtl:text-right">
       <thead className="whitespace-nowrap break-keep text-14 uppercase text-basic-grey-700">
         {table.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id} className="bg-basic-grey-100">

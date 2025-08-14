@@ -65,7 +65,7 @@ export const createHubMarker = (cluster: RegionHubClusterNode) => {
   const name = cluster.nodes[0].data.regionHubName + ' 부근';
   const count = cluster.totalCount;
   content.className =
-    'w-80 h-80 bg-basic-blue-700/70 rounded-full flex justify-center items-center flex-col relative';
+    'w-80 h-80 bg-basic-blue-400/70 rounded-full flex justify-center items-center flex-col relative';
   content.innerHTML = `<div style="height: 4px"></div><p style="color: white; font-size: 12px; width: 64px; height: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${name}</p><p style="color: white;font-size: 14px; font-weight: 600;">${count}개</p>`;
 
   const tooltip = document.createElement('div');
