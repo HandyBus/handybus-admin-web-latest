@@ -166,7 +166,7 @@ const Page = () => {
                       노선 목록
                     </BlueLink>
                     <BlueLink
-                      href={`/events/${event.eventId}/dates/${dailyEvent.dailyEventId}`}
+                      href={`/events/${event.eventId}/dates/${dailyEvent.dailyEventId}/demands`}
                     >
                       수요조사 내역
                     </BlueLink>

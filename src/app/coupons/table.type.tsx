@@ -52,11 +52,11 @@ export const columns = [
         const { isActive, validFrom } = info.getValue();
         const now = dayjs();
         return isActive ? (
-          <span className="text-brand-primary-600">진행중</span>
+          <span className="text-brand-primary-500">진행중</span>
         ) : now.isBefore(dayjs(validFrom)) ? (
           <span className="text-basic-grey-700">대기</span>
         ) : (
-          <span className="text-basic-red-600">만료</span>
+          <span className="text-basic-red-500">만료</span>
         );
       },
     },

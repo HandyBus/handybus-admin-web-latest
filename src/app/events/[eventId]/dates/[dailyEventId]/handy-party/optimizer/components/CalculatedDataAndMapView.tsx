@@ -16,7 +16,7 @@ const colorClasses = [
   'bg-brand-primary-400',
   'bg-brand-primary-400',
   'bg-basic-blue-600',
-  'bg-basic-red-600',
+  'bg-basic-red-500',
   'bg-brand-primary-400',
   'bg-basic-grey-600',
 ];
