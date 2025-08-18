@@ -1,15 +1,22 @@
 'use client';
 
-import { Controller, useFormContext, useFieldArray } from 'react-hook-form';
+import {
+  Controller,
+  useFormContext,
+  useFieldArray,
+  useWatch,
+} from 'react-hook-form';
 import { MultiRouteFormValues } from '../form.type';
 import RegionHubInputWithButton from '@/components/input/RegionHubInputWithButton';
 import SingleRouteForm from './single-route-form/SingleRouteForm';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import Form from '@/components/form/Form';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { CreateShuttleRouteRequest } from '@/types/shuttleRoute.type';
 import { usePostShuttleRoute } from '@/services/shuttleRoute.service';
 import { validateShuttleRouteData } from '../utils/validateShuttleRouteData';
+import { RegionHubsViewEntity } from '@/types/hub.type';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   dailyEventDate: string;
@@ -24,12 +31,16 @@ const MultiRouteForm = ({
   eventId,
   dailyEventId,
 }: Props) => {
-  const { control, handleSubmit, watch, setValue } =
+  const router = useRouter();
+  const { control, handleSubmit, setValue } =
     useFormContext<MultiRouteFormValues>();
   const [currentRouteIndex, setCurrentRouteIndex] = useState(0);
+  const previousDestinationHubRef = useRef<RegionHubsViewEntity | null>(null);
 
-  const destinationHub = watch('destinationHub');
-  const shuttleRoutes = watch('shuttleRoutes');
+  const [destinationHub, shuttleRoutes] = useWatch({
+    control,
+    name: ['destinationHub', 'shuttleRoutes'],
+  });
 
   const defaultShuttleRoute = useMemo(() => {
     return {
@@ -78,7 +89,14 @@ const MultiRouteForm = ({
         { time: dailyEventDate },
       ],
     };
-  }, [dailyEventDate, reservationDeadline, destinationHub]);
+  }, [
+    dailyEventDate,
+    reservationDeadline,
+    destinationHub?.regionHubId,
+    destinationHub?.regionId,
+    destinationHub?.latitude,
+    destinationHub?.longitude,
+  ]);
 
   const {
     fields: shuttleRouteFields,
@@ -91,7 +109,11 @@ const MultiRouteForm = ({
 
   // destinationHub가 변경될 때 모든 노선의 도착지를 자동으로 업데이트
   useEffect(() => {
-    if (destinationHub && shuttleRoutes) {
+    const isDestinationHubChanged =
+      previousDestinationHubRef.current?.regionHubId !==
+      destinationHub?.regionHubId;
+
+    if (isDestinationHubChanged && destinationHub && shuttleRoutes) {
       shuttleRoutes.forEach((_, routeIndex) => {
         const toDestinationHubs = shuttleRoutes[routeIndex]?.toDestinationHubs;
         if (toDestinationHubs && toDestinationHubs.length > 0) {
@@ -107,8 +129,10 @@ const MultiRouteForm = ({
           );
         }
       });
+
+      previousDestinationHubRef.current = destinationHub;
     }
-  }, [dailyEventDate, destinationHub, shuttleRoutes, setValue]);
+  }, [destinationHub, setValue]);
 
   const handleAddRoute = () => {
     appendShuttleRoute(defaultShuttleRoute);
@@ -151,89 +175,85 @@ const MultiRouteForm = ({
       return;
     }
 
-    try {
-      setIsSubmitting(true);
-      const shuttleRoutes: CreateShuttleRouteRequest[] = data.shuttleRoutes.map(
-        (shuttleRoute) => {
-          const toDestinationHubs = shuttleRoute.toDestinationHubs
-            .filter(
-              (
-                hub,
-              ): hub is {
-                regionId: string;
-                regionHubId: string;
-                latitude: number;
-                longitude: number;
-              } =>
-                !!hub?.regionId &&
-                !!hub?.regionHubId &&
-                !!hub?.latitude &&
-                !!hub?.longitude,
-            )
-            .map((hub, index, array) => {
-              const isLastHub = index === array.length - 1;
-              return {
-                regionHubId: hub.regionHubId,
-                type: 'TO_DESTINATION' as const,
-                role: isLastHub ? ('DESTINATION' as const) : ('HUB' as const),
-                sequence: index + 1, // NOTE: 1부터 시작
-                arrivalTime: shuttleRoute.toDestinationArrivalTimes[index].time,
-              };
-            });
-          const fromDestinationHubs = shuttleRoute.toDestinationHubs
-            .toReversed()
-            .filter(
-              (
-                hub,
-              ): hub is {
-                regionId: string;
-                regionHubId: string;
-                latitude: number;
-                longitude: number;
-              } =>
-                !!hub?.regionId &&
-                !!hub?.regionHubId &&
-                !!hub?.latitude &&
-                !!hub?.longitude,
-            )
-            .map((hub, index) => {
-              const isFirstHub = index === 0;
-              return {
-                regionHubId: hub.regionHubId,
-                type: 'FROM_DESTINATION' as const,
-                role: isFirstHub ? ('DESTINATION' as const) : ('HUB' as const),
-                sequence: index + 1, // NOTE: 1부터 시작
-                arrivalTime:
-                  shuttleRoute.fromDestinationArrivalTimes[index].time,
-              };
-            });
+    setIsSubmitting(true);
+    const shuttleRoutes: CreateShuttleRouteRequest[] = data.shuttleRoutes.map(
+      (shuttleRoute) => {
+        const toDestinationHubs = shuttleRoute.toDestinationHubs
+          .filter(
+            (
+              hub,
+            ): hub is {
+              regionId: string;
+              regionHubId: string;
+              latitude: number;
+              longitude: number;
+            } =>
+              !!hub?.regionId &&
+              !!hub?.regionHubId &&
+              !!hub?.latitude &&
+              !!hub?.longitude,
+          )
+          .map((hub, index, array) => {
+            const isLastHub = index === array.length - 1;
+            return {
+              regionHubId: hub.regionHubId,
+              type: 'TO_DESTINATION' as const,
+              role: isLastHub ? ('DESTINATION' as const) : ('HUB' as const),
+              sequence: index + 1, // NOTE: 1부터 시작
+              arrivalTime: shuttleRoute.toDestinationArrivalTimes[index].time,
+            };
+          });
+        const fromDestinationHubs = shuttleRoute.toDestinationHubs
+          .toReversed()
+          .filter(
+            (
+              hub,
+            ): hub is {
+              regionId: string;
+              regionHubId: string;
+              latitude: number;
+              longitude: number;
+            } =>
+              !!hub?.regionId &&
+              !!hub?.regionHubId &&
+              !!hub?.latitude &&
+              !!hub?.longitude,
+          )
+          .map((hub, index) => {
+            const isFirstHub = index === 0;
+            return {
+              regionHubId: hub.regionHubId,
+              type: 'FROM_DESTINATION' as const,
+              role: isFirstHub ? ('DESTINATION' as const) : ('HUB' as const),
+              sequence: index + 1, // NOTE: 1부터 시작
+              arrivalTime: shuttleRoute.fromDestinationArrivalTimes[index].time,
+            };
+          });
 
-          return {
-            name: shuttleRoute.name,
-            reservationDeadline: shuttleRoute.reservationDeadline,
-            hasEarlybird: shuttleRoute.hasEarlybird,
-            earlybirdPrice: shuttleRoute.earlybirdPrice,
-            regularPrice: shuttleRoute.regularPrice,
-            earlybirdDeadline: shuttleRoute.earlybirdDeadline,
-            maxPassengerCount: shuttleRoute.maxPassengerCount,
-            shuttleRouteHubs: [...toDestinationHubs, ...fromDestinationHubs],
-          };
-        },
-      );
+        return {
+          name: shuttleRoute.name,
+          reservationDeadline: shuttleRoute.reservationDeadline,
+          hasEarlybird: shuttleRoute.hasEarlybird,
+          earlybirdPrice: shuttleRoute.earlybirdPrice,
+          regularPrice: shuttleRoute.regularPrice,
+          earlybirdDeadline: shuttleRoute.earlybirdDeadline,
+          maxPassengerCount: shuttleRoute.maxPassengerCount,
+          shuttleRouteHubs: [...toDestinationHubs, ...fromDestinationHubs],
+        };
+      },
+    );
 
-      console.log(shuttleRoutes);
-
-      return;
-
-      for (const shuttleRoute of shuttleRoutes) {
-        try {
-          validateShuttleRouteData(shuttleRoute);
-        } catch {
-          alert(`${shuttleRoute.name} 노선의 데이터가 올바르지 않습니다.`);
-          return;
-        }
+    for (const shuttleRoute of shuttleRoutes) {
+      try {
+        validateShuttleRouteData(shuttleRoute);
+      } catch {
+        alert(`${shuttleRoute.name} 노선의 데이터가 올바르지 않습니다.`);
+        setIsSubmitting(false);
+        return;
       }
+    }
 
+    try {
       // NOTE: Promise.all 사용 시 수요조사 한 사람들에게 알림톡 중복 발송됨
       for (const shuttleRoute of shuttleRoutes) {
         await postRoute({
@@ -242,6 +262,7 @@ const MultiRouteForm = ({
           body: shuttleRoute,
         });
       }
+      router.push(`/events/${eventId}/dates/${dailyEventId}`);
     } catch (error) {
       setIsSubmitting(false);
       console.error(error);
@@ -295,6 +316,19 @@ const MultiRouteForm = ({
           dailyEventDate={dailyEventDate}
           routeLength={shuttleRouteFields.length}
         />
+      </Form.section>
+      <Form.section>
+        <Form.label>입력한 노선 목록</Form.label>
+        <div className="flex gap-8">
+          {shuttleRoutes.map((shuttleRoute, index) => (
+            <div
+              key={index}
+              className="w-fit rounded-6 border border-brand-primary-200 bg-brand-primary-50 px-8 py-4 font-600 text-brand-primary-400"
+            >
+              {shuttleRoute.name}
+            </div>
+          ))}
+        </div>
       </Form.section>
       <Form.submitButton
         type="submit"

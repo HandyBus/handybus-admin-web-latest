@@ -30,8 +30,9 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
     control,
     name: ['destinationHub', `shuttleRoutes.${index}.toDestinationHubs`],
   });
+
   const fromDestinationHubs = useMemo(
-    () => toDestinationHubs.toReversed(),
+    () => toDestinationHubs?.toReversed() || [],
     [toDestinationHubs],
   );
 
@@ -43,8 +44,9 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
     control,
     name: `shuttleRoutes.${index}.toDestinationHubs`,
   });
+
   const fromDestinationHubsFields = useMemo(
-    () => toDestinationHubsFields.toReversed(),
+    () => toDestinationHubsFields?.toReversed() || [],
     [toDestinationHubsFields],
   );
 
@@ -66,7 +68,7 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
     name: `shuttleRoutes.${index}.fromDestinationArrivalTimes`,
   });
 
-  const handleAddToDestinationHub = () => {
+  const handleAddToDestinationHub = useCallback(() => {
     const insertIndex = Math.max(0, toDestinationHubsFields.length - 1);
     insertToDestinationHub(insertIndex, {
       regionId: null,
@@ -76,13 +78,26 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
     });
     insertToDestinationArrivalTime(insertIndex, { time: dailyEventDate });
     insertFromDestinationArrivalTime(insertIndex, { time: dailyEventDate });
-  };
+  }, [
+    toDestinationHubsFields.length,
+    insertToDestinationHub,
+    insertToDestinationArrivalTime,
+    insertFromDestinationArrivalTime,
+    dailyEventDate,
+  ]);
 
-  const handleRemoveToDestinationHub = (hubIndex: number) => {
-    removeToDestinationHub(hubIndex);
-    removeToDestinationArrivalTime(hubIndex);
-    removeFromDestinationArrivalTime(hubIndex);
-  };
+  const handleRemoveToDestinationHub = useCallback(
+    (hubIndex: number) => {
+      removeToDestinationHub(hubIndex);
+      removeToDestinationArrivalTime(hubIndex);
+      removeFromDestinationArrivalTime(hubIndex);
+    },
+    [
+      removeToDestinationHub,
+      removeToDestinationArrivalTime,
+      removeFromDestinationArrivalTime,
+    ],
+  );
 
   // 가는편 경유지 시간 계산
   const handleCalculateUnion = useCallback(
@@ -128,6 +143,43 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
       }
     },
     [setValue],
+  );
+
+  const convertToRouteHubData = useCallback(
+    (
+      hubs: ({
+        regionId: string | null;
+        regionHubId: string | null;
+        latitude: number | null;
+        longitude: number | null;
+      } | null)[],
+      arrivalTimes: {
+        time: string;
+      }[],
+    ) =>
+      hubs
+        .filter(
+          (
+            hub,
+          ): hub is {
+            regionId: string;
+            regionHubId: string;
+            latitude: number;
+            longitude: number;
+          } =>
+            !!hub?.regionId &&
+            !!hub?.regionHubId &&
+            !!hub?.latitude &&
+            !!hub?.longitude,
+        )
+        .map((hub, hubIndex) => ({
+          regionId: hub.regionId,
+          regionHubId: hub.regionHubId,
+          latitude: hub.latitude,
+          longitude: hub.longitude,
+          arrivalTime: arrivalTimes[hubIndex]?.time || '',
+        })),
+    [],
   );
 
   return (
@@ -332,37 +384,3 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
 };
 
 export default HubsSection;
-
-const convertToRouteHubData = (
-  hubs: ({
-    regionId: string | null;
-    regionHubId: string | null;
-    latitude: number | null;
-    longitude: number | null;
-  } | null)[],
-  arrivalTimes: {
-    time: string;
-  }[],
-) =>
-  hubs
-    .filter(
-      (
-        hub,
-      ): hub is {
-        regionId: string;
-        regionHubId: string;
-        latitude: number;
-        longitude: number;
-      } =>
-        !!hub?.regionId &&
-        !!hub?.regionHubId &&
-        !!hub?.latitude &&
-        !!hub?.longitude,
-    )
-    .map((hub, hubIndex) => ({
-      regionId: hub.regionId,
-      regionHubId: hub.regionHubId,
-      latitude: hub.latitude,
-      longitude: hub.longitude,
-      arrivalTime: arrivalTimes[hubIndex].time,
-    }));
