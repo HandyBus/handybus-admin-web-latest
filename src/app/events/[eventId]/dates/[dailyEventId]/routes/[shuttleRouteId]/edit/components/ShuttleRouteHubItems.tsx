@@ -105,7 +105,7 @@ const ShuttleRouteHubItem = ({
 }: ShuttleRouteHubItemProps) => (
   <li
     className={`flex justify-between rounded-[6px] p-12 ${
-      isVenue ? 'bg-basic-blue-400' : 'bg-basic-grey-100/50'
+      isVenue ? 'bg-basic-blue-100' : 'bg-basic-grey-100/50'
     }`}
   >
     <h5 className="my-auto text-16 font-500">{index + 1}</h5>
