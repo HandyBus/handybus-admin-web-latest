@@ -68,8 +68,6 @@ const Dropdown = <T,>({
     setQuery('');
   };
 
-  const displayValue = value ? getOptionLabel(value) : '';
-
   return (
     <Combobox
       immediate
@@ -87,11 +85,10 @@ const Dropdown = <T,>({
           className="size-full rounded-8 border border-basic-grey-200 p-8 focus:outline-brand-primary-300"
           aria-label={ariaLabel}
           placeholder={isLoading ? '로딩 중…' : placeholder}
-          value={query}
           onChange={(event) => setQuery(event.target.value)}
           autoComplete="off"
           name={name}
-          displayValue={() => displayValue}
+          displayValue={(item: T | null) => (item ? getOptionLabel(item) : '')}
         />
 
         <ComboboxOptions

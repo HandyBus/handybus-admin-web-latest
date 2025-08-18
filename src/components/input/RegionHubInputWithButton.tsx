@@ -16,9 +16,15 @@ interface Props {
   hubUsageTypes: HubUsageType[];
   regionHub: RegionHubsViewEntity | null;
   setRegionHub: (value: RegionHubsViewEntity | null) => void;
+  placeholder?: string;
 }
 
-const RegionHubInput = ({ hubUsageTypes, regionHub, setRegionHub }: Props) => {
+const RegionHubInputWithButton = ({
+  hubUsageTypes,
+  regionHub,
+  setRegionHub,
+  placeholder = '행사장을 선택해주세요',
+}: Props) => {
   const { data: hubs, isLoading } = useGetRegionHubs({
     options: {
       usageType: hubUsageTypes,
@@ -78,14 +84,14 @@ const RegionHubInput = ({ hubUsageTypes, regionHub, setRegionHub }: Props) => {
         options={filteredHubs}
         getOptionLabel={(hub) => hub.name}
         getOptionValue={(hub) => hub.regionId}
-        placeholder="행사장을 선택해주세요"
+        placeholder={placeholder}
         isLoading={isLoading}
       />
     </div>
   );
 };
 
-export default RegionHubInput;
+export default RegionHubInputWithButton;
 
 interface BigRegionButtonProps {
   children: ReactNode;

@@ -1,29 +1,39 @@
 'use client';
 
-import { useCallback, useState } from 'react';
-import { useForm, useFieldArray, useWatch } from 'react-hook-form';
-import { type EditEventFormData, conform } from './form.type';
+import { useCallback } from 'react';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import ArtistInput from '@/components/input/ArtistInput';
 import { Controller } from 'react-hook-form';
-import RegionInput from '@/components/input/RegionInput';
-import { ArrowBigRight, CheckIcon, PlusIcon, XIcon } from 'lucide-react';
-import { Button, Field, Label, RadioGroup, Radio } from '@headlessui/react';
+import { ArrowBigRight, XIcon } from 'lucide-react';
 import ImageFileInput from '@/components/input/ImageFileInput';
-import RegionHubInput from '@/components/input/HubInput';
+import RegionHubInputWithButton from '@/components/input/RegionHubInputWithButton';
 import Input from '@/components/input/Input';
 import dayjs from 'dayjs';
 import { useGetEvent, usePutEvent } from '@/services/event.service';
 import Form from '@/components/form/Form';
 import {
+  EventDailyShuttlesInEventsViewEntity,
+  EventStatus,
   EventStatusEnum,
   EventsViewEntity,
+  EventType,
   EventTypeEnum,
+  UpdateEventRequest,
 } from '@/types/event.type';
 import Heading from '@/components/text/Heading';
-import NewArtistsModal from '@/components/modal/NewArtistsModal';
 import Stringifier from '@/utils/stringifier.util';
 import Callout from '@/components/text/Callout';
+import Button from '@/components/button/Button';
+import { RegionHubsViewEntity } from '@/types/hub.type';
+
+interface FormValues {
+  status: EventStatus;
+  name: string;
+  imageUrl: string | undefined;
+  regionHub: RegionHubsViewEntity;
+  dailyEvents: EventDailyShuttlesInEventsViewEntity[];
+  type: EventType;
+}
 
 interface Props {
   params: { eventId: string };
@@ -56,18 +66,20 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
     status: event?.eventStatus,
     name: event?.eventName,
     imageUrl: event?.eventImageUrl,
-    regionId: event?.regionId,
-    regionHubId: event?.regionHubId,
+    regionHub: {
+      regionId: event?.regionId,
+      regionHubId: event?.regionHubId,
+      name: event?.eventLocationName,
+      address: event?.eventLocationAddress,
+      latitude: event?.eventLocationLatitude,
+      longitude: event?.eventLocationLongitude,
+      eventLocation: true,
+      eventParkingLot: false,
+      shuttleHub: false,
+      handyParty: false,
+    },
     type: event?.eventType,
-    dailyEvents: event?.dailyEvents?.map((dailyEvent) => ({
-      status: dailyEvent.status,
-      dailyEventId: dailyEvent.dailyEventId,
-      date: dayjs(dailyEvent.date, 'Asia/Seoul').toISOString(),
-    })),
-    artistIds:
-      event?.eventArtists?.map((artist) => ({
-        artistId: artist.artistId ?? null,
-      })) ?? [],
+    dailyEvents: event?.dailyEvents ?? [],
   };
 
   const previousDailyEvents = event?.dailyEvents?.map((dailyEvent) => ({
@@ -76,31 +88,17 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
     date: dayjs(dailyEvent.date, 'Asia/Seoul').toISOString(),
   }));
 
-  const { control, handleSubmit } = useForm<EditEventFormData>({
+  const { control, handleSubmit } = useForm<FormValues>({
     defaultValues,
-  });
-
-  const watch = useWatch({
-    control,
-    exact: false,
   });
 
   const {
     fields: dailyFields,
     append: appendDaily,
     remove: removeDaily,
-  } = useFieldArray<EditEventFormData>({
+  } = useFieldArray<FormValues>({
     control,
     name: 'dailyEvents',
-  });
-
-  const {
-    fields: concertArtistFields,
-    append: appendArtist,
-    remove: removeArtist,
-  } = useFieldArray<EditEventFormData>({
-    control,
-    name: 'artistIds',
   });
 
   const { mutate: putEvent } = usePutEvent({
@@ -118,262 +116,207 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
   });
 
   const onSubmit = useCallback(
-    (data: EditEventFormData) => {
-      if (confirm('행사를 수정하시겠습니까?')) {
-        putEvent({ eventId: event.eventId, body: conform(data) });
+    (data: FormValues) => {
+      if (!confirm('행사를 수정하시겠습니까?')) {
+        return;
       }
+      const body: UpdateEventRequest = {
+        ...data,
+        imageUrl: data.imageUrl ?? undefined,
+        regionId: data.regionHub.regionId,
+        regionHubId: data.regionHub.regionHubId,
+        dailyEvents: data.dailyEvents.map((dailyEvent) => ({
+          ...dailyEvent,
+          closeDeadline: dayjs(dailyEvent.date)
+            .subtract(14, 'day')
+            .toISOString(),
+        })),
+      };
+      putEvent({ eventId: event.eventId, body });
     },
     [event, putEvent],
   );
 
-  const [isArtistModalOpen, setIsArtistModalOpen] = useState(false);
-
   return (
-    <>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Form.section>
-          <Form.label>행사 이름</Form.label>
-          <Controller
-            control={control}
-            name="name"
-            render={({ field: { onChange, value } }) => (
-              <Input
-                type="text"
-                value={value}
-                placeholder="행사 이름"
-                setValue={onChange}
-              />
-            )}
-          />
-        </Form.section>
-        <Form.section>
-          <Form.label>장소</Form.label>
-          <Controller
-            control={control}
-            name="regionId"
-            render={({ field: { onChange, value } }) => (
-              <RegionInput
-                value={value}
-                setValue={(id) => onChange(id || null)}
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="regionHubId"
-            render={({ field: { onChange, value } }) => (
-              <RegionHubInput
-                hubType="EVENT_LOCATION"
-                regionId={watch.regionId}
-                value={value}
-                setValue={(n) => onChange(n)}
-              />
-            )}
-          />
-        </Form.section>
-        <Form.section>
-          <Form.label>
-            날짜
-            <button
-              type="button"
-              onClick={() =>
-                appendDaily({
-                  date: dayjs().startOf('day').toISOString(),
-                })
-              }
-              className="w-fit text-basic-blue-400"
-            >
-              <PlusIcon />
-            </button>
-          </Form.label>
-          <div className="flex gap-4">
-            <div className="flex w-full flex-col gap-4">
-              {previousDailyEvents?.map((dailyEvent) => (
-                <div
-                  key={dailyEvent.dailyEventId}
-                  className="flex w-full items-center gap-4"
-                >
-                  <Input
-                    type="date"
-                    value={dayjs(dailyEvent.date)
-                      .tz('Asia/Seoul')
-                      .startOf('day')
-                      .format('YYYY-MM-DD')}
-                    className="w-full"
-                    disabled={true}
-                  />
-                  <ArrowBigRight />
-                </div>
-              ))}
-            </div>
-            <div className="flex w-full flex-col gap-4">
-              {dailyFields.map((field, index) => (
-                <Controller
-                  key={field.id}
-                  control={control}
-                  name={`dailyEvents.${index}` as const}
-                  render={({ field: { onChange, value } }) => (
-                    <div className="flex w-full flex-col">
-                      <div className="flex w-full flex-row items-center">
-                        <Input
-                          type="date"
-                          className="w-full"
-                          defaultValue={dayjs(value.date)
-                            .tz('Asia/Seoul')
-                            .startOf('day')
-                            .format('YYYY-MM-DD')}
-                          setValue={(str) => {
-                            if (!str) {
-                              return;
-                            }
-                            onChange({
-                              ...value,
-                              date: dayjs.tz(str, 'Asia/Seoul').toISOString(),
-                            });
-                          }}
-                        />
-                        {!value.dailyEventId && (
-                          <button
-                            type="button"
-                            onClick={() => removeDaily(index)}
-                          >
-                            <XIcon />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                />
-              ))}
-            </div>
-          </div>
-        </Form.section>
-        <Form.section>
-          <Form.label>타입</Form.label>
-          <Controller
-            control={control}
-            name="type"
-            render={({ field: { onChange, value } }) => (
-              <RadioGroup
-                value={value}
-                className="flex flex-row gap-4"
-                onChange={(s) => onChange(s)}
-                aria-label="Server size"
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form.section>
+        <Form.label required>행사 이미지</Form.label>
+        <Controller
+          control={control}
+          name="imageUrl"
+          render={({ field: { onChange, value } }) => (
+            <ImageFileInput
+              type="concerts"
+              value={value}
+              setValue={(url) => onChange(url)}
+            />
+          )}
+        />
+      </Form.section>
+      <Form.section>
+        <Form.label required>행사명</Form.label>
+        <Controller
+          control={control}
+          name="name"
+          render={({ field: { onChange, value } }) => (
+            <Input
+              type="text"
+              value={value}
+              placeholder="IP 문제로 공식 명칭을 지양해 주세요. (e.g. 2025 SVT 9th 캐럿랜드 → 세븐틴 팬미팅)"
+              setValue={onChange}
+            />
+          )}
+        />
+      </Form.section>
+      <Form.section>
+        <Form.label required>행사장</Form.label>
+        <Controller
+          control={control}
+          name="regionHub"
+          render={({ field: { onChange, value } }) => (
+            <RegionHubInputWithButton
+              hubUsageTypes={['EVENT_LOCATION']}
+              regionHub={value}
+              setRegionHub={onChange}
+            />
+          )}
+        />
+      </Form.section>
+      <Form.section>
+        <Form.label required>날짜</Form.label>
+        <div className="flex gap-4">
+          <div className="flex w-full flex-col gap-4">
+            {previousDailyEvents?.map((dailyEvent) => (
+              <div
+                key={dailyEvent.dailyEventId}
+                className="flex w-full items-center gap-4"
               >
-                {EventTypeEnum.options.map((plan) => (
-                  <Field key={plan} className="gap-2 flex items-center">
-                    <Radio
-                      value={plan}
-                      className="group flex size-fit items-center justify-center rounded-8 bg-basic-white p-4 transition-transform hover:outline hover:outline-basic-blue-200 focus:outline focus:outline-basic-blue-200 active:scale-[0.9] data-[checked]:bg-basic-blue-400 data-[checked]:text-basic-white
-                    "
-                    >
-                      <CheckIcon
-                        className="invisible group-data-[checked]:visible"
-                        size={18}
-                      />
-                      <Label>{plan}</Label>
-                    </Radio>
-                  </Field>
-                ))}
-              </RadioGroup>
-            )}
-          />
-        </Form.section>
-        <Form.section>
-          <Form.label>행사 상태</Form.label>
-          <Callout>
-            행사 상태는 수요조사 모집 중 → 수요조사 마감으로 밖에 변경할 수
-            없습니다.
-          </Callout>
-          <Controller
-            control={control}
-            name="status"
-            render={({ field: { onChange, value } }) => (
-              <RadioGroup
-                value={value}
-                className="flex flex-row gap-4"
-                onChange={(s) => onChange(s)}
-                aria-label="Server size"
-              >
-                {EventStatusEnum.options.slice(0, 2).map((status) => (
-                  <Field key={status} className="gap-2 flex items-center">
-                    <Radio
-                      value={status}
-                      className="group flex size-fit items-center justify-center rounded-8 bg-basic-white p-4 transition-transform hover:outline hover:outline-basic-blue-200 focus:outline focus:outline-basic-blue-200 active:scale-[0.9] data-[checked]:bg-basic-blue-400 data-[checked]:text-basic-white
-                    "
-                    >
-                      <CheckIcon
-                        className="invisible group-data-[checked]:visible"
-                        size={18}
-                      />
-                      <Label>{Stringifier.eventStatus(status)}</Label>
-                    </Radio>
-                  </Field>
-                ))}
-              </RadioGroup>
-            )}
-          />
-        </Form.section>
-        <Form.section>
-          <Form.label>행사 이미지</Form.label>
-          <Controller
-            control={control}
-            name="imageUrl"
-            render={({ field: { onChange, value } }) => (
-              <ImageFileInput
-                type="concerts"
-                value={value}
-                setValue={(url) => onChange(url || null)}
-              />
-            )}
-          />
-        </Form.section>
-        <Form.section>
-          <Form.label>
-            아티스트{' '}
-            <button
-              type="button"
-              onClick={() => appendArtist({ artistId: null })}
-              className="w-fit text-basic-blue-400"
-            >
-              <PlusIcon />
-            </button>
-          </Form.label>
-          <div className="flex flex-col gap-4">
-            {concertArtistFields.map((field, index) => (
-              <div key={field.id} className="flex gap-4">
-                <Controller
-                  control={control}
-                  name={`artistIds.${index}.artistId`}
-                  render={({ field: { onChange, value } }) => (
-                    <ArtistInput
-                      value={value}
-                      setValue={(id) => onChange(id || null)}
-                      modalState={{
-                        isOpen: isArtistModalOpen,
-                        setIsOpen: setIsArtistModalOpen,
-                      }}
-                    />
-                  )}
+                <Input
+                  type="date"
+                  value={dayjs(dailyEvent.date)
+                    .tz('Asia/Seoul')
+                    .startOf('day')
+                    .format('YYYY-MM-DD')}
+                  className="w-full"
+                  disabled={true}
                 />
-                <Button
-                  className="transition-colors hover:text-basic-red-500"
-                  type="button"
-                  onClick={() => removeArtist(index)}
-                >
-                  <XIcon />
-                </Button>
+                <ArrowBigRight />
               </div>
             ))}
           </div>
-        </Form.section>
-        <Form.submitButton>수정하기</Form.submitButton>
-      </Form>
-
-      <NewArtistsModal
-        isOpen={isArtistModalOpen}
-        setIsOpen={setIsArtistModalOpen}
-      />
-    </>
+          <div className="flex w-full flex-col gap-4">
+            {dailyFields.map((field, index) => (
+              <Controller
+                key={field.id}
+                control={control}
+                name={`dailyEvents.${index}` as const}
+                render={({ field: { onChange, value } }) => (
+                  <div className="flex w-full flex-col">
+                    <div className="flex w-full flex-row items-center gap-8">
+                      <Input
+                        type="date"
+                        className="w-full"
+                        defaultValue={dayjs(value.date)
+                          .tz('Asia/Seoul')
+                          .startOf('day')
+                          .format('YYYY-MM-DD')}
+                        setValue={(str) => {
+                          if (!str) {
+                            return;
+                          }
+                          try {
+                            const newDate = dayjs
+                              .tz(str, 'Asia/Seoul')
+                              .startOf('day')
+                              .toISOString();
+                            onChange({
+                              ...value,
+                              date: newDate,
+                            });
+                          } catch (error) {
+                            console.error('Invalid date format:', error);
+                          }
+                        }}
+                      />
+                      {!value.dailyEventId && (
+                        <button
+                          type="button"
+                          onClick={() => removeDaily(index)}
+                          className="flex h-[42px] w-[42px] items-center justify-center rounded-4 bg-basic-red-100 p-4 text-basic-red-400"
+                        >
+                          <XIcon size={20} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              />
+            ))}
+            <Button
+              type="button"
+              size="large"
+              variant="tertiary"
+              onClick={() =>
+                appendDaily({
+                  date: dayjs().tz('Asia/Seoul').startOf('day').toISOString(),
+                })
+              }
+              className="mt-12"
+            >
+              추가하기
+            </Button>
+          </div>
+        </div>
+      </Form.section>
+      <Form.section>
+        <Form.label required>타입</Form.label>
+        <Controller
+          control={control}
+          name="type"
+          render={({ field: { onChange, value } }) => (
+            <div className="flex gap-8">
+              {EventTypeEnum.options.map((type) => (
+                <Button
+                  key={type}
+                  type="button"
+                  size="large"
+                  variant={value === type ? 'primary' : 'tertiary'}
+                  onClick={() => onChange(type)}
+                >
+                  {Stringifier.eventType(type)}
+                </Button>
+              ))}
+            </div>
+          )}
+        />
+      </Form.section>
+      <Form.section>
+        <Form.label required>행사 상태</Form.label>
+        <Callout>
+          행사 상태는 수요조사 모집 중 → 수요조사 마감으로 밖에 변경할 수
+          없습니다.
+        </Callout>
+        <Controller
+          control={control}
+          name="status"
+          render={({ field: { onChange, value } }) => (
+            <div className="flex gap-8">
+              {EventStatusEnum.options.slice(0, 2).map((status) => (
+                <Button
+                  key={status}
+                  type="button"
+                  size="large"
+                  variant={value === status ? 'primary' : 'tertiary'}
+                  onClick={() => onChange(status)}
+                >
+                  {Stringifier.eventStatus(status)}
+                </Button>
+              ))}
+            </div>
+          )}
+        />
+      </Form.section>
+      <Form.submitButton>수정하기</Form.submitButton>
+    </Form>
   );
 };
