@@ -48,9 +48,9 @@ const MultiRouteForm = ({
       reservationDeadline,
       hasEarlybird: false,
       earlybirdPrice: {
-        toDestination: 0,
-        fromDestination: 0,
-        roundTrip: 0,
+        toDestination: 1000000,
+        fromDestination: 1000000,
+        roundTrip: 1000000,
       },
       regularPrice: {
         toDestination: 1000000,
