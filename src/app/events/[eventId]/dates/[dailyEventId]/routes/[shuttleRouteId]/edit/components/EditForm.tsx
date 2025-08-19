@@ -42,7 +42,7 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
     setIsSubmitting(true);
     try {
       const { forwardHubs, returnHubs } = extractHubs(data);
-      validateShuttleRouteData(forwardHubs, returnHubs);
+      validateShuttleRouteData(forwardHubs, returnHubs, data.regularPrice);
       const shuttleRouteRequest = transformToShuttleRouteRequest(
         dirtyFields,
         data,

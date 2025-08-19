@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Controller } from 'react-hook-form';
 import { TrashIcon } from 'lucide-react';
 import ImageFileInput from '@/components/input/ImageFileInput';
-import RegionHubInput from './components/RegionHubInput';
+import RegionHubInputWithButton from '@/components/input/RegionHubInputWithButton';
 import Input from '@/components/input/Input';
 import { getEvent, usePostEvent } from '@/services/event.service';
 import Form from '@/components/form/Form';
@@ -135,7 +135,7 @@ const CreateEventForm = () => {
             control={control}
             name="regionHub"
             render={({ field: { onChange, value } }) => (
-              <RegionHubInput
+              <RegionHubInputWithButton
                 hubUsageTypes={['EVENT_LOCATION']}
                 regionHub={value}
                 setRegionHub={onChange}

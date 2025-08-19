@@ -2,9 +2,18 @@ import { CreateShuttleRouteRequest } from '@/types/shuttleRoute.type';
 import dayjs from 'dayjs';
 
 export const validateShuttleRouteData = (
-  forwardHubs: CreateShuttleRouteRequest['shuttleRouteHubs'],
-  returnHubs: CreateShuttleRouteRequest['shuttleRouteHubs'],
+  body: CreateShuttleRouteRequest,
 ): void => {
+  if (!validateTripTypePrice(body.regularPrice)) {
+    throw new Error('가격이 올바르지 않습니다.');
+  }
+
+  const forwardHubs = body.shuttleRouteHubs.filter(
+    (hub) => hub.type === 'TO_DESTINATION',
+  );
+  const returnHubs = body.shuttleRouteHubs.filter(
+    (hub) => hub.type === 'FROM_DESTINATION',
+  );
   const tripType = checkTripType(forwardHubs, returnHubs);
   switch (true) {
     case tripType === 'none':
@@ -92,4 +101,21 @@ const validateHubsMatch = (
     return true;
   }
   return false;
+};
+
+const validateTripTypePrice = (
+  regularPrice: CreateShuttleRouteRequest['regularPrice'],
+) => {
+  const { roundTrip, toDestination, fromDestination } = regularPrice;
+  const hasRoundTrip = roundTrip !== 0;
+  const hasToDestination = toDestination !== 0;
+  const hasFromDestination = fromDestination !== 0;
+
+  if (!hasRoundTrip && !hasToDestination && !hasFromDestination) {
+    return false;
+  } else if (hasRoundTrip && (!hasToDestination || !hasFromDestination)) {
+    return false;
+  }
+
+  return true;
 };

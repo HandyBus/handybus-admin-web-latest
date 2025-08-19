@@ -3,7 +3,7 @@ import FormContainer from '@/components/form/Form';
 import { Control } from 'react-hook-form';
 import { EditFormValues } from '../form.type';
 import { useShuttleRouteHubActions } from '../hooks/useShuttleRouteHubActions';
-import { ShuttleRouteHubItems } from './ShuttleRouteHubItems';
+import ShuttleRouteHubItems from './ShuttleRouteHubItems';
 
 export const FIELD_ARRAY_NAMES = {
   TO_DESTINATION: 'shuttleRouteHubsToDestination' as const,

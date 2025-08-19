@@ -11,7 +11,6 @@ import { EventsViewEntity } from '@/types/event.type';
 import { Controller, useForm } from 'react-hook-form';
 import usePostHandyPartyRoutes from '../hooks/usePostHandyPartyRoutes';
 import DateInput from '@/components/input/DateInput';
-import { RegionHubInputSelfContained } from '@/components/input/HubInput';
 import DateTimeInput from '@/components/input/DateTimeInput';
 import NumberInput from '@/components/input/NumberInput';
 import Callout from '@/components/text/Callout';
@@ -21,6 +20,7 @@ import {
   HandyPartyPriceTable,
   KSPO_DOME_PRICE_TABLE,
 } from '@/constants/handyPartyPriceTable.const';
+import RegionHubInputWithDropdown from '@/components/input/RegionHubInputWithDropdown';
 
 export interface FormValues {
   reservationDeadline: string;
@@ -157,12 +157,16 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
           control={control}
           name="destinationHubId"
           render={({ field: { onChange, value } }) => (
-            <RegionHubInputSelfContained
-              hubType="DESTINATION"
+            <RegionHubInputWithDropdown
+              hubType="EVENT_LOCATION"
               regionId={regionIdForDestinationHub}
               setRegionId={(regionId) => setRegionIdForDestinationHub(regionId)}
               regionHubId={value}
-              setRegionHubId={(regionHubId) => onChange(regionHubId)}
+              setRegionHubId={(regionHub) =>
+                onChange({
+                  regionHubId: regionHub.regionHubId,
+                })
+              }
             />
           )}
         />

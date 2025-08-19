@@ -20,7 +20,7 @@ const PriceSectionEarlybirdType = ({
 }: Props) => {
   return (
     <div
-      className={`flex flex-col gap-8 rounded-[4px] p-8 ${hasEarlybird ? '' : 'bg-basic-grey-100'}`}
+      className={`flex flex-col gap-8 rounded-[4px] p-8 ${hasEarlybird ? '' : 'opacity-50'}`}
     >
       <Heading.h5 backgroundColor="blue">얼리버드 가격</Heading.h5>
       <label className="block text-16 font-500">예약 마감일</label>
