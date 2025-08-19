@@ -6,7 +6,6 @@ import Stringifier from '@/utils/stringifier.util';
 import { formatDateString } from '@/utils/date.util';
 import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
 import { ReservationViewEntity } from '@/types/reservation.type';
-import EditHandyStatusDialog from '@/components/dialog/EditHandyStatusDialog';
 import CancelReservationDialog from '@/app/reservations/components/CancelReservationDialog';
 import RequestRefundDialog from '@/app/reservations/components/RequestRefundDialog';
 
@@ -101,27 +100,11 @@ export const reservationColumns = [
     header: () => '예약 유형',
     cell: (info) => Stringifier.tripType(info.getValue()),
   }),
-  reservationColumnHelper.accessor('handyStatus', {
-    id: 'handyStatus',
-    header: '핸디 지원 여부',
-    cell: (info) => {
-      const handyStatus = Stringifier.handyStatus(info.getValue());
-      const style = {
-        승인됨: 'text-brand-primary-400',
-        거절됨: 'text-basic-red-500',
-        미지원: 'text-basic-grey-500',
-        지원함: 'text-basic-grey-700',
-      };
-      return <b className={style[handyStatus]}>{handyStatus}</b>;
-    },
-  }),
   reservationColumnHelper.display({
     id: 'refundActions',
     header: () => '처리',
     cell: (info) => {
       const paymentId = info.row.original.paymentId;
-      const showHandyActions =
-        info.row.original.handyStatus !== 'NOT_SUPPORTED';
       if (!paymentId) {
         return null;
       }
@@ -131,10 +114,6 @@ export const reservationColumns = [
             reservationId={info.row.original.reservationId}
           />
           <RequestRefundDialog reservation={info.row.original} />
-          <EditHandyStatusDialog
-            response={info.row.original}
-            disabled={!showHandyActions}
-          />
         </div>
       );
     },

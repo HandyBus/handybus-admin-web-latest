@@ -35,11 +35,11 @@ interface Props {
   disabled?: boolean;
 }
 
-function EditHandyStatusDialog({
+const EditHandyStatusDialog = ({
   response,
   defaultHandyStatus,
   disabled,
-}: Props) {
+}: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { control, handleSubmit } = useForm<{ handyStatus: HandyStatus }>({
@@ -153,7 +153,7 @@ function EditHandyStatusDialog({
       </Dialog>
     </>
   );
-}
+};
 
 export default EditHandyStatusDialog;
 
