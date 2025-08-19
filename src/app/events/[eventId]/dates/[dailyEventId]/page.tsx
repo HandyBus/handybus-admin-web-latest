@@ -203,7 +203,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
           <BlueLink
             href={`${dailyEventId}/routes/new`}
             className="text-14"
-            disabled={!hasOpenChatUrl}
+            // disabled={!hasOpenChatUrl}
           >
             추가하기
           </BlueLink>
