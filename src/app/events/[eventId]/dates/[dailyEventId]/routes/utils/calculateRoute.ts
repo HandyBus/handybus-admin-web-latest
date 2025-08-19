@@ -174,7 +174,8 @@ export const calculateRouteBackwardTimes = async (
 
     return {
       ...hubsArray[index],
-      arrivalTime: lastHubArrivalTime.toISOString(),
+      arrivalTime:
+        roundUpToNearestFiveMinutes(lastHubArrivalTime).toISOString(),
     };
   });
 
