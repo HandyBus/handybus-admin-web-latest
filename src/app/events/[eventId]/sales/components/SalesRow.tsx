@@ -54,13 +54,15 @@ const SalesRow = ({
 
   // 문자열을 숫자로 변환
   const getNumericValue = (value: string): number => {
-    return parseInt(value.replace(/,/g, ''), 10) || 0;
+    return parseFloat(value.replace(/,/g, '')) || 0;
   };
 
   // 차량 대금 계산 (totalRow인 경우 합계 사용, 아닌 경우 입력값 사용)
+  // 일반 row는 차량 대금 * 차량 수
+  // total row는 각각 차량 대금과 차량 수를 계산한 합계
   const currentVehicleCost = isTotalRow
     ? totalVehicleCost
-    : getNumericValue(vehicleCost);
+    : getNumericValue(vehicleCost) * getNumericValue(vehicleCount);
 
   const totalProfit = isTotalRow
     ? totalSales -
@@ -89,8 +91,27 @@ const SalesRow = ({
   const handleNumberInput = (
     value: string,
     setter: (value: string) => void,
+    allowDecimal: boolean = false,
   ) => {
-    const numericValue = value.replace(/[^0-9,]/g, '');
+    let numericValue: string;
+
+    if (allowDecimal) {
+      numericValue = value.replace(/[^0-9,.]/g, '');
+
+      const dotCount = (numericValue.match(/\./g) || []).length;
+      if (dotCount > 1) {
+        const parts = numericValue.split('.');
+        numericValue = parts[0] + '.' + parts.slice(1).join('');
+      }
+
+      if (dotCount === 1) {
+        const parts = numericValue.split('.');
+        const integerPart = parts[0].replace(/^0+/, '') || '0';
+        numericValue = integerPart + '.' + parts[1];
+      }
+    } else {
+      numericValue = value.replace(/[^0-9,]/g, '');
+    }
 
     if (numericValue === '') {
       setter('0');
@@ -104,8 +125,19 @@ const SalesRow = ({
       return;
     }
 
-    const formattedValue = parseInt(numberOnly, 10).toLocaleString();
-    setter(formattedValue);
+    if (allowDecimal) {
+      if (numberOnly.includes('.')) {
+        const parts = numberOnly.split('.');
+        const integerPart = parts[0].replace(/^0+/, '') || '0';
+        const decimalPart = parts[1];
+        setter(integerPart + '.' + decimalPart);
+      } else {
+        setter(numberOnly.replace(/^0+/, '') || '0');
+      }
+    } else {
+      const formattedValue = parseInt(numberOnly, 10).toLocaleString();
+      setter(formattedValue);
+    }
   };
 
   // 차량 대금 입력 처리
@@ -120,7 +152,7 @@ const SalesRow = ({
 
   // 차량 수 입력 처리
   const handleVehicleCountInput = (value: string) => {
-    handleNumberInput(value, setVehicleCount);
+    handleNumberInput(value, setVehicleCount, true);
 
     if (onVehicleCountChange) {
       const numericValue = getNumericValue(value);
