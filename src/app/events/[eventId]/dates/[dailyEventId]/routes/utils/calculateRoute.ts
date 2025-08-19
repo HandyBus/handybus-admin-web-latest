@@ -259,12 +259,13 @@ export const updateRouteFormValues = (
   type: 'toDestination' | 'fromDestination',
   calculatedTimes: RouteHubData[],
   setValue: UseFormSetValue<MultiRouteFormValues>,
+  currentRouteIndex: number,
 ) => {
   calculatedTimes.forEach((hub, index) => {
     setValue(
       type === 'toDestination'
-        ? `shuttleRoutes.${index}.toDestinationArrivalTimes.${index}.time`
-        : `shuttleRoutes.${index}.fromDestinationArrivalTimes.${index}.time`,
+        ? `shuttleRoutes.${currentRouteIndex}.toDestinationArrivalTimes.${index}.time`
+        : `shuttleRoutes.${currentRouteIndex}.fromDestinationArrivalTimes.${index}.time`,
       hub.arrivalTime,
     );
   });
