@@ -2,14 +2,14 @@ import { Control, Controller, FieldErrors } from 'react-hook-form';
 import Heading from '@/components/text/Heading';
 import NumberInput from '@/components/input/NumberInput';
 import DateInput from '@/components/input/DateInput';
-import { EditFormValues } from '../form.type';
+import { FormValues } from '../form.type';
 
 const PriceSectionRegularType = ({
   control,
   errors,
 }: {
-  control: Control<EditFormValues>;
-  errors: FieldErrors<EditFormValues>;
+  control: Control<FormValues>;
+  errors: FieldErrors<FormValues>;
 }) => {
   return (
     <div className="flex flex-col gap-8 rounded-[4px] p-8">
@@ -28,7 +28,7 @@ const PriceSectionRegularType = ({
             <DateInput value={value} setValue={onChange} />
             {errors.reservationDeadline && (
               <p className="text-basic-red-500">
-                {errors.reservationDeadline.message}
+                {errors.reservationDeadline?.message ?? ''}
               </p>
             )}
           </div>
@@ -43,7 +43,7 @@ const PriceSectionRegularType = ({
 export default PriceSectionRegularType;
 
 interface Props {
-  control: Control<EditFormValues>;
+  control: Control<FormValues>;
 }
 
 const TripPriceInput = ({ control }: Props) => {

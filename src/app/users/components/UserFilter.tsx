@@ -26,7 +26,7 @@ const UserFilter = ({ option, dispatch }: Props) => {
         <FilterIcon size={16} />
         <ChevronDownIcon className="w-5 group-data-[open]:rotate-180" />
       </DisclosureButton>
-      <DisclosurePanel className="mb-8 flex flex-col gap-4 rounded-[4px] bg-brand-primary-400/50 p-16">
+      <DisclosurePanel className="mb-8 flex flex-col gap-4 rounded-8 border border-brand-primary-200 bg-brand-primary-50/50 p-16">
         <div className="grid grid-cols-2 gap-12">
           <article>
             <Label>이름</Label>

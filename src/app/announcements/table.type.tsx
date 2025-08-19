@@ -6,10 +6,6 @@ import dayjs from 'dayjs';
 const columnHelper = createColumnHelper<AdminAnnouncementResponseModel>();
 
 export const columns = [
-  columnHelper.accessor('id', {
-    header: () => 'ID',
-    cell: (info) => info.getValue(),
-  }),
   columnHelper.accessor('title', {
     header: () => '제목',
     cell: (info) => info.getValue(),

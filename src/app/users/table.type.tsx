@@ -30,11 +30,21 @@ export const columns = [
   }),
   columnHelper.accessor('name', {
     header: () => '이름',
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor('nickname', {
-    header: () => '닉네임',
-    cell: (info) => info.getValue(),
+    cell: (info) => {
+      const name = info.getValue();
+      const nickname = info.row.original.nickname;
+
+      const nameToUse = name || nickname || '탈퇴한 유저';
+      const onlyHasNickname = !name && !!nickname;
+      const withdrawnUser = !name && !nickname;
+      return (
+        <span
+          className={`text-16 font-500 ${withdrawnUser ? 'text-basic-grey-500' : onlyHasNickname ? 'text-basic-blue-400' : ''}`}
+        >
+          {nameToUse}
+        </span>
+      );
+    },
   }),
   columnHelper.accessor('phoneNumber', {
     header: () => '전화번호',

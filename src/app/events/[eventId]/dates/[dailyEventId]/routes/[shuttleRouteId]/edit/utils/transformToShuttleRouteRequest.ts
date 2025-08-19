@@ -1,10 +1,10 @@
 import { UpdateShuttleRouteRequest } from '@/types/shuttleRoute.type';
-import { EditFormValues } from '../form.type';
+import { FormValues } from '../form.type';
 import { FieldNamesMarkedBoolean } from 'react-hook-form';
 
 export const transformToShuttleRouteRequest = (
-  dirtyFields: Partial<Readonly<FieldNamesMarkedBoolean<EditFormValues>>>,
-  data: EditFormValues,
+  dirtyFields: Partial<Readonly<FieldNamesMarkedBoolean<FormValues>>>,
+  data: FormValues,
   forwardHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
   returnHubs: UpdateShuttleRouteRequest['shuttleRouteHubs'],
 ): UpdateShuttleRouteRequest => {
