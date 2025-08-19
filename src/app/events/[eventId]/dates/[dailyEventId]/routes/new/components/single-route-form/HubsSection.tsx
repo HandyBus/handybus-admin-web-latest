@@ -199,6 +199,7 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
       );
       return;
     }
+
     alert('경로 소요 시간 계산이 완료되었습니다.');
   }, [
     toDestinationHubs,
@@ -283,12 +284,12 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
                 <Controller
                   control={control}
                   name={
-                    `shuttleRoutes.${index}.toDestinationArrivalTimes.${hubIndex}` as const
+                    `shuttleRoutes.${index}.toDestinationArrivalTimes.${hubIndex}.time` as const
                   }
                   render={({ field: { onChange, value } }) => (
                     <DateTimeInput
-                      value={value.time}
-                      setValue={(time) => onChange({ ...value, time })}
+                      value={value}
+                      setValue={(time) => onChange(time)}
                     />
                   )}
                 />
@@ -372,12 +373,12 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
                 <Controller
                   control={control}
                   name={
-                    `shuttleRoutes.${index}.fromDestinationArrivalTimes.${hubIndex}` as const
+                    `shuttleRoutes.${index}.fromDestinationArrivalTimes.${hubIndex}.time` as const
                   }
                   render={({ field: { onChange, value } }) => (
                     <DateTimeInput
-                      value={value.time}
-                      setValue={(time) => onChange({ ...value, time })}
+                      value={value}
+                      setValue={(time) => onChange(time)}
                     />
                   )}
                 />

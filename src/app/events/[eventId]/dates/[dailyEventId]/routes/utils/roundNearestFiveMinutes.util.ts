@@ -3,13 +3,13 @@ import { Dayjs } from 'dayjs';
 const roundUpToNearestFiveMinutes = (time: Dayjs) => {
   const minutes = time.minute();
   const roundedMinutes = Math.ceil(minutes / 5) * 5;
-  return time.add(roundedMinutes - minutes, 'minute');
+  return time.add(roundedMinutes - minutes, 'minute').startOf('minute');
 };
 
 const roundDownToNearestFiveMinutes = (time: Dayjs) => {
   const minutes = time.minute();
   const roundedMinutes = Math.floor(minutes / 5) * 5;
-  return time.subtract(minutes - roundedMinutes, 'minute');
+  return time.subtract(minutes - roundedMinutes, 'minute').startOf('minute');
 };
 
 export { roundUpToNearestFiveMinutes, roundDownToNearestFiveMinutes };

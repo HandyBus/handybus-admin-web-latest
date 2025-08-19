@@ -320,14 +320,19 @@ const MultiRouteForm = ({
       <Form.section>
         <Form.label>입력한 노선 목록</Form.label>
         <div className="flex gap-8">
-          {shuttleRoutes.map((shuttleRoute, index) => (
-            <div
-              key={index}
-              className="w-fit rounded-6 border border-brand-primary-200 bg-brand-primary-50 px-8 py-4 font-600 text-brand-primary-400"
-            >
-              {shuttleRoute.name}
-            </div>
-          ))}
+          {shuttleRoutes.map((shuttleRoute, index) => {
+            const nameMissing = !shuttleRoute.name;
+            return (
+              <div
+                key={index}
+                className={`w-fit rounded-6 border border-brand-primary-200 bg-brand-primary-50 px-8 py-4 font-600 ${
+                  nameMissing ? 'text-basic-grey-400' : 'text-brand-primary-400'
+                }`}
+              >
+                {shuttleRoute.name || '이름 미입력'}
+              </div>
+            );
+          })}
         </div>
       </Form.section>
       <Form.submitButton
