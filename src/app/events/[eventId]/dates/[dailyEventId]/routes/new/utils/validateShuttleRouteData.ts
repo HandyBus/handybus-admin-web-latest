@@ -107,6 +107,15 @@ const validateTripTypePrice = (
   regularPrice: CreateShuttleRouteRequest['regularPrice'],
 ) => {
   const { roundTrip, toDestination, fromDestination } = regularPrice;
+
+  if (
+    (roundTrip && roundTrip >= 1000000) ||
+    (toDestination && toDestination >= 1000000) ||
+    (fromDestination && fromDestination >= 1000000)
+  ) {
+    return false;
+  }
+
   const hasRoundTrip = roundTrip !== 0;
   const hasToDestination = toDestination !== 0;
   const hasFromDestination = fromDestination !== 0;

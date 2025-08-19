@@ -26,9 +26,19 @@ interface Props {
 
 const HubsSection = ({ index, dailyEventDate }: Props) => {
   const { control, setValue } = useFormContext<MultiRouteFormValues>();
-  const [destinationHub, toDestinationHubs] = useWatch({
+  const [
+    destinationHub,
+    toDestinationHubs,
+    toDestinationArrivalTimes,
+    fromDestinationArrivalTimes,
+  ] = useWatch({
     control,
-    name: ['destinationHub', `shuttleRoutes.${index}.toDestinationHubs`],
+    name: [
+      'destinationHub',
+      `shuttleRoutes.${index}.toDestinationHubs`,
+      `shuttleRoutes.${index}.toDestinationArrivalTimes`,
+      `shuttleRoutes.${index}.fromDestinationArrivalTimes`,
+    ],
   });
 
   const fromDestinationHubs = useMemo(
@@ -51,7 +61,6 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
   );
 
   const {
-    fields: toDestinationArrivalTimesFields,
     remove: removeToDestinationArrivalTime,
     insert: insertToDestinationArrivalTime,
   } = useFieldArray({
@@ -60,7 +69,6 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
   });
 
   const {
-    fields: fromDestinationArrivalTimesFields,
     remove: removeFromDestinationArrivalTime,
     insert: insertFromDestinationArrivalTime,
   } = useFieldArray({
@@ -100,49 +108,25 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
   );
 
   // 가는편 경유지 시간 계산
-  const handleCalculateUnion = useCallback(
+  const handleCalculateToDestinationArrivalTimes = useCallback(
     async (hubsArray: RouteHubData[]) => {
-      const userConfirmed = confirm(
-        '경로 소요 시간을 계산하시겠습니까?\n경로 소요 시간은 `도착시간`을 기준으로 카카오 지도 길찾기 결과를 통해 계산됩니다.\n기존에 설정해두었던 나머지 경유지의 시간은 변경됩니다.',
-      );
-      if (!userConfirmed) return;
-      try {
-        const result = await calculateUnionTimes(hubsArray);
-        if (result) {
-          updateRouteFormValues('toDestination', result, setValue);
-          alert('경로 소요 시간 계산이 완료되었습니다.');
-        }
-      } catch (error) {
-        alert(
-          '경로 소요 시간 계산 중 오류가 발생했습니다.\n' +
-            (error instanceof Error ? error.message : '알 수 없는 오류'),
-        );
+      const result = await calculateUnionTimes(hubsArray);
+      if (result) {
+        updateRouteFormValues('toDestination', result, setValue, index);
       }
     },
-    [setValue],
+    [setValue, index],
   );
 
   // 오는편 경유지 시간 계산
-  const handleCalculateRoute = useCallback(
+  const handleCalculateFromDestinationArrivalTimes = useCallback(
     async (hubsArray: RouteHubData[]) => {
-      const userConfirmed = confirm(
-        '경로 소요 시간을 계산하시겠습니까?\n경로 소요 시간은 `출발시간`을 기준으로 카카오 지도 길찾기 결과를 통해 계산됩니다.\n기존에 설정해두었던 나머지 경유지의 시간은 변경됩니다.',
-      );
-      if (!userConfirmed) return;
-      try {
-        const result = await calculateRouteTimes('fromDestination', hubsArray);
-        if (result) {
-          updateRouteFormValues('fromDestination', result, setValue);
-          alert('경로 소요 시간 계산이 완료되었습니다.');
-        }
-      } catch (error) {
-        alert(
-          '경로 소요 시간 계산 중 오류가 발생했습니다.\n' +
-            (error instanceof Error ? error.message : '알 수 없는 오류'),
-        );
+      const result = await calculateRouteTimes('fromDestination', hubsArray);
+      if (result) {
+        updateRouteFormValues('fromDestination', result, setValue, index);
       }
     },
-    [setValue],
+    [setValue, index],
   );
 
   const convertToRouteHubData = useCallback(
@@ -182,6 +166,50 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
     [],
   );
 
+  const handleCalculateArrivalTimes = useCallback(async () => {
+    const userConfirmed = confirm(
+      '경로 소요 시간을 계산하시겠습니까?\n경로 소요 시간은 도착지의 시간을 기준으로 카카오 지도 길찾기 결과를 통해 계산됩니다.\n기존에 설정해두었던 나머지 경유지의 시간은 변경됩니다.',
+    );
+    if (!userConfirmed) {
+      return;
+    }
+    const toDestinationHubsData = convertToRouteHubData(
+      toDestinationHubs,
+      toDestinationArrivalTimes,
+    );
+    const fromDestinationHubsData = convertToRouteHubData(
+      fromDestinationHubs,
+      fromDestinationArrivalTimes,
+    );
+    try {
+      await handleCalculateToDestinationArrivalTimes(toDestinationHubsData);
+    } catch (error) {
+      alert(
+        '가는편 경로 소요 시간 계산 중 오류가 발생했습니다.\n' +
+          (error instanceof Error ? error.message : '알 수 없는 오류'),
+      );
+      return;
+    }
+    try {
+      await handleCalculateFromDestinationArrivalTimes(fromDestinationHubsData);
+    } catch (error) {
+      alert(
+        '오는편 경로 소요 시간 계산 중 오류가 발생했습니다.\n' +
+          (error instanceof Error ? error.message : '알 수 없는 오류'),
+      );
+      return;
+    }
+    alert('경로 소요 시간 계산이 완료되었습니다.');
+  }, [
+    toDestinationHubs,
+    toDestinationArrivalTimes,
+    fromDestinationHubs,
+    fromDestinationArrivalTimes,
+    handleCalculateToDestinationArrivalTimes,
+    handleCalculateFromDestinationArrivalTimes,
+    convertToRouteHubData,
+  ]);
+
   return (
     <div className="flex flex-col gap-8">
       <Form.label required>경유지</Form.label>
@@ -197,14 +225,7 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
           </button>
           <button
             type="button"
-            onClick={() =>
-              handleCalculateUnion(
-                convertToRouteHubData(
-                  toDestinationHubs,
-                  toDestinationArrivalTimesFields,
-                ),
-              )
-            }
+            onClick={handleCalculateArrivalTimes}
             className="ml-auto text-14 text-basic-blue-400"
           >
             경로 소요 시간 계산
@@ -295,20 +316,6 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
           <span className="text-12 font-400 text-basic-blue-400">
             (미러링 보장)
           </span>
-          <button
-            type="button"
-            onClick={() =>
-              handleCalculateRoute(
-                convertToRouteHubData(
-                  fromDestinationHubs,
-                  fromDestinationArrivalTimesFields,
-                ),
-              )
-            }
-            className="ml-auto text-14 text-basic-blue-400"
-          >
-            경로 소요 시간 계산
-          </button>
         </Heading.h5>
         <ul className="flex flex-col gap-8">
           {fromDestinationHubsFields.map((field, hubIndex) => {
