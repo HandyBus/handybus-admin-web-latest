@@ -2,14 +2,14 @@ import { Control, Controller } from 'react-hook-form';
 import Heading from '@/components/text/Heading';
 import NumberInput from '@/components/input/NumberInput';
 import DateInput from '@/components/input/DateInput';
-import { EditFormValues } from '../form.type';
+import { FormValues } from '../form.type';
 import { discountPercent } from '../../../discountPercent.util';
 
 interface Props {
-  control: Control<EditFormValues>;
+  control: Control<FormValues>;
   hasEarlybird: boolean;
-  watchRegularPrice: EditFormValues['regularPrice'];
-  watchEarlybirdPrice: EditFormValues['earlybirdPrice'];
+  watchRegularPrice: FormValues['regularPrice'];
+  watchEarlybirdPrice: FormValues['earlybirdPrice'];
 }
 
 const PriceSectionEarlybirdType = ({
@@ -20,7 +20,7 @@ const PriceSectionEarlybirdType = ({
 }: Props) => {
   return (
     <div
-      className={`flex flex-col gap-8 rounded-[4px] p-8 ${hasEarlybird ? '' : 'bg-basic-grey-100'}`}
+      className={`flex flex-col gap-8 rounded-[4px] p-8 ${hasEarlybird ? '' : 'opacity-50'}`}
     >
       <Heading.h5 backgroundColor="blue">얼리버드 가격</Heading.h5>
       <label className="block text-16 font-500">예약 마감일</label>
@@ -44,10 +44,10 @@ const PriceSectionEarlybirdType = ({
 export default PriceSectionEarlybirdType;
 
 interface TripPriceInputEarlybirdProps {
-  control: Control<EditFormValues>;
+  control: Control<FormValues>;
   hasEarlybird: boolean;
-  watchRegularPrice: EditFormValues['regularPrice'];
-  watchEarlybirdPrice: EditFormValues['earlybirdPrice'];
+  watchRegularPrice: FormValues['regularPrice'];
+  watchEarlybirdPrice: FormValues['earlybirdPrice'];
 }
 
 const TripPriceInputEarlybird = ({

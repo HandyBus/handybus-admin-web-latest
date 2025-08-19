@@ -87,7 +87,11 @@ const SalesTable = ({ event, shuttleRoutes }: Props) => {
 
           const totalVehicleCost = routesWithSales.reduce(
             (sum, routeWithSales) => {
-              return sum + (vehicleCosts[routeWithSales.shuttleRouteId] || 0);
+              return (
+                sum +
+                (vehicleCosts[routeWithSales.shuttleRouteId] || 0) *
+                  (vehicleCounts[routeWithSales.shuttleRouteId] || 0)
+              );
             },
             0,
           );

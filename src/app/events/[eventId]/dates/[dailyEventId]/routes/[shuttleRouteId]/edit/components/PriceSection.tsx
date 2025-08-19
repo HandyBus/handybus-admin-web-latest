@@ -1,4 +1,4 @@
-import { EditFormValues } from '../form.type';
+import { FormValues } from '../form.type';
 import PriceSectionRegularType from './PriceSectionRegularType';
 import PriceSectionEarlybirdType from './PriceSectionEarlyBirdType';
 import { Control, FieldErrors } from 'react-hook-form';
@@ -6,11 +6,11 @@ import FormContainer from '@/components/form/Form';
 import Callout from '@/components/text/Callout';
 
 interface Props {
-  control: Control<EditFormValues>;
-  errors: FieldErrors<EditFormValues>;
+  control: Control<FormValues>;
+  errors: FieldErrors<FormValues>;
   hasEarlybird: boolean;
-  watchRegularPrice: EditFormValues['regularPrice'];
-  watchEarlybirdPrice: EditFormValues['earlybirdPrice'];
+  watchRegularPrice: FormValues['regularPrice'];
+  watchEarlybirdPrice: FormValues['earlybirdPrice'];
 }
 
 const PriceSection = ({
@@ -25,7 +25,7 @@ const PriceSection = ({
       <div className="flex items-baseline gap-20">
         <FormContainer.label required>가격</FormContainer.label>
         <div className="flex gap-8">
-          <span className="text-14 text-blue-600">
+          <span className="text-blue-600 text-14">
             {`얼리버드 ${hasEarlybird ? '적용됨' : '미적용'}`}
           </span>
         </div>

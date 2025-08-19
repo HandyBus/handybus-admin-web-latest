@@ -20,6 +20,40 @@ export const getColumns = (alertRequestCounts: Record<string, number>) => [
     header: () => '상태',
     cell: (info) => Stringifier.shuttleRouteStatus(info.getValue()),
   }),
+  columnHelper.display({
+    id: 'price',
+    header: () => '가격',
+    cell: (info) => {
+      const {
+        regularPriceToDestination,
+        regularPriceFromDestination,
+        regularPriceRoundTrip,
+      } = info.row.original;
+
+      const formattedRegularPriceToDestination = regularPriceToDestination
+        ? `${regularPriceToDestination.toLocaleString()}원`
+        : '-';
+      const formattedRegularPriceFromDestination = regularPriceFromDestination
+        ? `${regularPriceFromDestination.toLocaleString()}원`
+        : '-';
+      const formattedRegularPriceRoundTrip = regularPriceRoundTrip
+        ? `${regularPriceRoundTrip.toLocaleString()}원`
+        : '-';
+
+      return (
+        <div className="grid grid-cols-2 items-center gap-x-16">
+          <span className="text-right text-basic-grey-600">가는편:</span>
+          <span className="font-500">{formattedRegularPriceToDestination}</span>
+          <span className="text-right text-basic-grey-600">오는편:</span>
+          <span className="font-500">
+            {formattedRegularPriceFromDestination}
+          </span>
+          <span className="text-right text-basic-grey-600">왕복:</span>
+          <span className="font-500">{formattedRegularPriceRoundTrip}</span>
+        </div>
+      );
+    },
+  }),
   columnHelper.accessor('toDestinationCount', {
     header: () => '가는 편',
     cell: (info) => {
@@ -69,17 +103,6 @@ export const getColumns = (alertRequestCounts: Record<string, number>) => [
     },
   }),
   columnHelper.display({
-    id: 'reservation-detail',
-    header: () => '예약 상세',
-    cell: (props) => (
-      <BlueLink
-        href={`/events/${props.row.original.eventId}/dates/${props.row.original.dailyEventId}/routes/${props.row.original.shuttleRouteId}/reservations`}
-      >
-        예약 상세보기
-      </BlueLink>
-    ),
-  }),
-  columnHelper.display({
     id: 'empty-seat-request-count',
     header: () => '빈자리 알림 요청수',
     cell: (props) => {
@@ -90,9 +113,14 @@ export const getColumns = (alertRequestCounts: Record<string, number>) => [
   }),
   columnHelper.display({
     id: 'route-detail',
-    header: () => '노선 상세',
+    header: () => '상세',
     cell: (props) => (
       <div className="flex flex-col items-center">
+        <BlueLink
+          href={`/events/${props.row.original.eventId}/dates/${props.row.original.dailyEventId}/routes/${props.row.original.shuttleRouteId}/reservations`}
+        >
+          예약 상세보기
+        </BlueLink>
         <BlueLink
           href={`/events/${props.row.original.eventId}/dates/${props.row.original.dailyEventId}/routes/${props.row.original.shuttleRouteId}`}
         >
@@ -103,39 +131,41 @@ export const getColumns = (alertRequestCounts: Record<string, number>) => [
         >
           노선 수정하기
         </BlueLink>
-        <EditRouteStatusDialog shuttleRoute={props.row.original} />
       </div>
     ),
   }),
   columnHelper.display({
     id: 'statusAction',
-    header: () => '탑승정보 알림톡 발송',
+    header: () => '액션',
     cell: (props) => (
-      <BlueButton
-        onClick={async () => {
-          try {
-            const isConfirmed = confirm(
-              `${props.row.original.name} 노선에 대해 탑승정보 알림톡을 발송하시겠습니까?`,
-            );
-            if (!isConfirmed) {
-              return;
-            }
+      <div className="flex flex-col items-center">
+        <EditRouteStatusDialog shuttleRoute={props.row.original} />
+        <BlueButton
+          onClick={async () => {
+            try {
+              const isConfirmed = confirm(
+                `${props.row.original.name} 노선에 대해 탑승정보 알림톡을 발송하시겠습니까?`,
+              );
+              if (!isConfirmed) {
+                return;
+              }
 
-            await sendShuttleInformation(
-              props.row.original.eventId,
-              props.row.original.dailyEventId,
-              props.row.original.shuttleRouteId,
-            );
-            alert('탑승정보 알림톡 발송 완료');
-          } catch (error) {
-            console.error(error);
-            alert('탑승정보 알림톡 발송 실패');
-          }
-        }}
-        disabled={props.row.original.name.includes(HANDY_PARTY_PREFIX)}
-      >
-        알림톡 발송하기
-      </BlueButton>
+              await sendShuttleInformation(
+                props.row.original.eventId,
+                props.row.original.dailyEventId,
+                props.row.original.shuttleRouteId,
+              );
+              alert('탑승정보 알림톡 발송 완료');
+            } catch (error) {
+              console.error(error);
+              alert('탑승정보 알림톡 발송 실패');
+            }
+          }}
+          disabled={props.row.original.name.includes(HANDY_PARTY_PREFIX)}
+        >
+          탑승정보 발송하기
+        </BlueButton>
+      </div>
     ),
   }),
 ];

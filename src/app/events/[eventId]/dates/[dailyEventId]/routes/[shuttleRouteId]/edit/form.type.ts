@@ -1,41 +1,32 @@
-import { ShuttleRouteStatusEnum } from '@/types/shuttleRoute.type';
-import { z } from 'zod';
+import { ShuttleRouteStatus } from '@/types/shuttleRoute.type';
 
-export const EditFormValuesSchema = z.object({
-  name: z.string(),
-  reservationDeadline: z.string(),
-  hasEarlybird: z.boolean(),
-  earlybirdDeadline: z.string().optional(),
-  maxPassengerCount: z.number().int(),
-  status: ShuttleRouteStatusEnum,
-  shuttleRouteHubsFromDestination: z.array(
-    z.object({
-      shuttleRouteHubId: z.string().optional(),
-      regionHubId: z.string(),
-      regionId: z.string().optional(),
-      arrivalTime: z.string(),
-    }),
-  ),
-  shuttleRouteHubsToDestination: z.array(
-    z.object({
-      shuttleRouteHubId: z.string().optional(),
-      regionHubId: z.string(),
-      regionId: z.string().optional(),
-      arrivalTime: z.string(),
-    }),
-  ),
-  regularPrice: z.object({
-    roundTrip: z.number().int(),
-    toDestination: z.number().int(),
-    fromDestination: z.number().int(),
-  }),
-  earlybirdPrice: z
-    .object({
-      roundTrip: z.number().int(),
-      toDestination: z.number().int(),
-      fromDestination: z.number().int(),
-    })
-    .optional(),
-});
-
-export type EditFormValues = z.infer<typeof EditFormValuesSchema>;
+export interface FormValues {
+  name: string;
+  reservationDeadline: string;
+  hasEarlybird: boolean;
+  earlybirdDeadline?: string;
+  maxPassengerCount: number;
+  status: ShuttleRouteStatus;
+  shuttleRouteHubsFromDestination: {
+    shuttleRouteHubId?: string;
+    regionHubId: string;
+    regionId?: string;
+    arrivalTime: string;
+  }[];
+  shuttleRouteHubsToDestination: {
+    shuttleRouteHubId?: string;
+    regionHubId: string;
+    regionId?: string;
+    arrivalTime: string;
+  }[];
+  regularPrice: {
+    roundTrip: number;
+    toDestination: number;
+    fromDestination: number;
+  };
+  earlybirdPrice?: {
+    roundTrip: number;
+    toDestination: number;
+    fromDestination: number;
+  };
+}

@@ -1,15 +1,15 @@
 import { Control, Controller } from 'react-hook-form';
-import { EditFormValues } from '../form.type';
+import { FormValues } from '../form.type';
 import { FieldArrayWithId } from 'react-hook-form';
 import { FIELD_ARRAY_NAMES } from './ShuttleRouteHubSection';
 import Heading from '@/components/text/Heading';
 import DateTimeInput from '@/components/input/DateTimeInput';
-import { RegionHubInputSelfContained } from '@/components/input/HubInput';
+import RegionHubInputWithDropdown from '@/components/input/RegionHubInputWithDropdown';
 
 interface ShuttleRouteHubItemsProps {
   title: '가는편' | '오는편';
   fields: FieldArrayWithId<
-    EditFormValues,
+    FormValues,
     'shuttleRouteHubsToDestination' | 'shuttleRouteHubsFromDestination',
     'id'
   >[];
@@ -20,13 +20,13 @@ interface ShuttleRouteHubItemsProps {
   canMoveUp: (index: number) => boolean;
   canMoveDown: (index: number) => boolean;
   canDelete: (index: number) => boolean;
-  control: Control<EditFormValues>;
+  control: Control<FormValues>;
   fieldArrayName:
     | 'shuttleRouteHubsToDestination'
     | 'shuttleRouteHubsFromDestination';
 }
 
-export const ShuttleRouteHubItems = ({
+const ShuttleRouteHubItems = ({
   title,
   fields,
   addItem,
@@ -85,7 +85,7 @@ interface ShuttleRouteHubItemProps {
   onMoveUp: () => void;
   onMoveDown: () => void;
   onDelete: () => void;
-  control: Control<EditFormValues>;
+  control: Control<FormValues>;
   fieldArrayName:
     | typeof FIELD_ARRAY_NAMES.TO_DESTINATION
     | typeof FIELD_ARRAY_NAMES.FROM_DESTINATION;
@@ -105,7 +105,7 @@ const ShuttleRouteHubItem = ({
 }: ShuttleRouteHubItemProps) => (
   <li
     className={`flex justify-between rounded-[6px] p-12 ${
-      isVenue ? 'bg-basic-blue-400' : 'bg-basic-grey-100/50'
+      isVenue ? 'bg-basic-blue-100' : 'bg-basic-grey-100/50'
     }`}
   >
     <h5 className="my-auto text-16 font-500">{index + 1}</h5>
@@ -116,13 +116,16 @@ const ShuttleRouteHubItem = ({
         control={control}
         name={`${fieldArrayName}.${index}` as const}
         render={({ field: { onChange, value } }) => (
-          <RegionHubInputSelfContained
-            hubType={isVenue ? 'DESTINATION' : 'SHUTTLE_HUB'}
+          <RegionHubInputWithDropdown
+            hubType={isVenue ? 'EVENT_LOCATION' : 'SHUTTLE_HUB'}
             regionId={value.regionId ?? null}
             setRegionId={(regionId) => onChange({ ...value, regionId })}
             regionHubId={value.regionHubId ?? null}
-            setRegionHubId={(regionHubId) =>
-              onChange({ ...value, regionHubId })
+            setRegionHubId={(regionHub) =>
+              onChange({
+                ...value,
+                regionHubId: regionHub.regionHubId,
+              })
             }
           />
         )}
@@ -168,3 +171,5 @@ const ShuttleRouteHubItem = ({
     </div>
   </li>
 );
+
+export default ShuttleRouteHubItems;

@@ -5,7 +5,7 @@ import {
   roundUpToNearestFiveMinutes,
 } from './roundNearestFiveMinutes.util';
 import { UseFormSetValue } from 'react-hook-form';
-import { CreateFormValues } from '../new/form.type';
+import { MultiRouteFormValues } from '../new/form.type';
 
 /**
  * 경로 계산을 위한 허브 데이터 타입
@@ -174,7 +174,8 @@ export const calculateRouteBackwardTimes = async (
 
     return {
       ...hubsArray[index],
-      arrivalTime: lastHubArrivalTime.toISOString(),
+      arrivalTime:
+        roundUpToNearestFiveMinutes(lastHubArrivalTime).toISOString(),
     };
   });
 
@@ -258,13 +259,14 @@ export const calculateUnionTimes = async (
 export const updateRouteFormValues = (
   type: 'toDestination' | 'fromDestination',
   calculatedTimes: RouteHubData[],
-  setValue: UseFormSetValue<CreateFormValues>,
+  setValue: UseFormSetValue<MultiRouteFormValues>,
+  currentRouteIndex: number,
 ) => {
   calculatedTimes.forEach((hub, index) => {
     setValue(
       type === 'toDestination'
-        ? `shuttleRouteHubsToDestination.${index}.arrivalTime`
-        : `shuttleRouteHubsFromDestination.${index}.arrivalTime`,
+        ? `shuttleRoutes.${currentRouteIndex}.toDestinationArrivalTimes.${index}.time`
+        : `shuttleRoutes.${currentRouteIndex}.fromDestinationArrivalTimes.${index}.time`,
       hub.arrivalTime,
     );
   });

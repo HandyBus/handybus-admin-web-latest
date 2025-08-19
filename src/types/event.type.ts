@@ -108,7 +108,7 @@ export const UpdateEventRequestSchema = z
         dailyEventId: z.string().optional(),
         date: z.string(),
         closeDeadline: z.string(),
-        metadata: z.record(z.string(), z.any()).optional(),
+        metadata: z.record(z.string(), z.any()).nullable().optional(),
       })
       .partial()
       .array(),

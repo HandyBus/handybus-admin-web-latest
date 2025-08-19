@@ -3,7 +3,6 @@
 import Stringifier from '@/utils/stringifier.util';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
-import EditHandyStatusDialog from '@/components/dialog/EditHandyStatusDialog';
 import BlueLink from '@/components/link/BlueLink';
 import { usePostBulkAssignBus } from '@/services/shuttleBus.service';
 import { useGetReservationsWithPagination } from '@/services/reservation.service';
@@ -503,17 +502,6 @@ const PassengerItem = ({
       <p className="text-14 font-400 text-basic-grey-700">
         {Stringifier.tripType(reservation.type)}
       </p>
-      <p
-        className={`text-14 font-400 ${
-          reservation.handyStatus === 'ACCEPTED'
-            ? 'text-brand-primary-400'
-            : reservation.handyStatus === 'SUPPORTED'
-              ? 'text-basic-grey-700'
-              : 'text-basic-grey-400'
-        }`}
-      >
-        {Stringifier.handyStatus(reservation.handyStatus)}
-      </p>
       {isEditMode && (
         <select
           className="text-14 font-400 text-basic-grey-700"
@@ -531,16 +519,9 @@ const PassengerItem = ({
         </select>
       )}
       <div className="ml-auto flex items-center gap-12">
-        {reservation.handyStatus !== 'NOT_SUPPORTED' && (
-          <p>
-            <EditHandyStatusDialog response={reservation} />
-          </p>
-        )}
-        <p>
-          <BlueLink href={`/reservations/${reservation.reservationId}`}>
-            상세보기
-          </BlueLink>
-        </p>
+        <BlueLink href={`/reservations/${reservation.reservationId}`}>
+          상세보기
+        </BlueLink>
       </div>
     </li>
   );

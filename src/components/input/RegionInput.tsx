@@ -21,9 +21,10 @@ import {
 interface Props {
   value: string | null;
   setValue: (value: string | null) => void;
+  disabled?: boolean;
 }
 
-const RegionInput = ({ value, setValue }: Props) => {
+const RegionInput = ({ value, setValue, disabled }: Props) => {
   const [queryBig, setQueryBig] = useState('');
   const [querySmall, setQuerySmall] = useState('');
 
@@ -94,13 +95,17 @@ const RegionInput = ({ value, setValue }: Props) => {
            size-full border border-basic-grey-200 p-8
            focus:outline-basic-blue-400"
             aria-label="Assignee"
-            placeholder={'도/광역시 선택'}
+            placeholder={'도/광역시'}
             defaultValue={null}
             displayValue={(province) => (province === null ? '' : province)}
             onChange={(event) => setQueryBig(event.target.value)}
             autoComplete="off"
+            disabled={disabled}
           />
-          <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-basic-grey-400 group-focus:text-basic-blue-400">
+          <ComboboxButton
+            disabled={disabled}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-basic-grey-400 group-focus:text-basic-blue-400"
+          >
             <ChevronDown />
           </ComboboxButton>
           <ComboboxOptions
@@ -129,7 +134,10 @@ const RegionInput = ({ value, setValue }: Props) => {
         onClose={() => setQuerySmall('')}
       >
         <div className="group relative size-full">
-          <ComboboxButton className="absolute right-4 top-1/2 -translate-y-1/2 text-basic-grey-400 group-focus:text-basic-blue-400">
+          <ComboboxButton
+            disabled={disabled}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-basic-grey-400 group-focus:text-basic-blue-400"
+          >
             <ChevronDown />
           </ComboboxButton>
           <ComboboxInput
@@ -137,11 +145,12 @@ const RegionInput = ({ value, setValue }: Props) => {
             border border-basic-grey-200 border-t-transparent p-8
             focus:outline-basic-blue-400"
             aria-label="Assignee"
-            placeholder={'시/군/구 선택'}
+            placeholder={'시/군/구'}
             defaultValue={null}
             displayValue={(smallRegion: string | null) => smallRegion ?? ''}
             onChange={(event) => setQuerySmall(event.target.value)}
             autoComplete="off"
+            disabled={disabled}
           />
           <ComboboxOptions
             anchor="bottom"

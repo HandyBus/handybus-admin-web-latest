@@ -11,17 +11,19 @@ interface Props {
 
 const DateTimeInput = ({ disabled, value, setValue }: Props) => {
   return (
-    <DatePicker
-      disabled={disabled}
-      selected={value ? dayjs(value).tz('Asia/Seoul').toDate() : null}
-      onChange={(date) =>
-        date && setValue(dayjs.tz(date, 'Asia/Seoul').toISOString())
-      }
-      showIcon
-      showTimeSelect
-      dateFormat="yyyy. MM. dd HH:mm"
-      className="rounded-[4px] border border-basic-grey-200"
-    />
+    <div>
+      <DatePicker
+        disabled={disabled}
+        selected={value ? dayjs(value).tz('Asia/Seoul').toDate() : null}
+        onChange={(date) =>
+          date && setValue(dayjs.tz(date, 'Asia/Seoul').toISOString())
+        }
+        showIcon
+        showTimeSelect
+        dateFormat="yyyy. MM. dd HH:mm"
+        className="rounded-4 border border-basic-grey-200 border-transparent outline-none focus:border-brand-primary-400"
+      />
+    </div>
   );
 };
 

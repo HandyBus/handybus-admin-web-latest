@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import Input from '@/components/input/Input';
 import { useState } from 'react';
 import { usePutShuttleRoute } from '@/services/shuttleRoute.service';
-import { EditFormValues } from '../form.type';
+import { FormValues } from '../form.type';
 import FormContainer from '@/components/form/Form';
 import PriceSection from './PriceSection';
 import ShuttleRouteHubSection from './ShuttleRouteHubSection';
@@ -13,7 +13,7 @@ import { transformToShuttleRouteRequest } from '../utils/transformToShuttleRoute
 
 interface Props {
   params: { eventId: string; dailyEventId: string; shuttleRouteId: string };
-  defaultValues: EditFormValues;
+  defaultValues: FormValues;
   defaultDate: string | undefined;
 }
 
@@ -27,7 +27,7 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
     control,
     handleSubmit,
     formState: { errors, dirtyFields },
-  } = useForm<EditFormValues>({
+  } = useForm<FormValues>({
     defaultValues,
   });
   const hasEarlybird = defaultValues.hasEarlybird;
@@ -36,13 +36,15 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
     name: ['regularPrice', 'earlybirdPrice'],
   });
 
-  const onSubmit = async (data: EditFormValues) => {
-    if (!confirm('수정하시겠습니까?')) return;
+  const onSubmit = async (data: FormValues) => {
+    if (!confirm('수정하시겠습니까?')) {
+      return;
+    }
 
     setIsSubmitting(true);
     try {
       const { forwardHubs, returnHubs } = extractHubs(data);
-      validateShuttleRouteData(forwardHubs, returnHubs);
+      validateShuttleRouteData(forwardHubs, returnHubs, data.regularPrice);
       const shuttleRouteRequest = transformToShuttleRouteRequest(
         dirtyFields,
         data,
