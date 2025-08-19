@@ -1,11 +1,11 @@
 import { UpdateShuttleRouteHubProps } from '@/types/shuttleRoute.type';
 import dayjs from 'dayjs';
-import { EditFormValues } from '../form.type';
+import { FormValues } from '../form.type';
 
 export const validateShuttleRouteData = (
   forwardHubs: Array<UpdateShuttleRouteHubProps>,
   returnHubs: Array<UpdateShuttleRouteHubProps>,
-  regularPrice: EditFormValues['regularPrice'],
+  regularPrice: FormValues['regularPrice'],
 ): void => {
   if (!validateTripTypePrice(regularPrice)) {
     throw new Error('가격이 올바르지 않습니다.');
@@ -98,9 +98,7 @@ const validateHubsMatch = (
   return false;
 };
 
-const validateTripTypePrice = (
-  regularPrice: EditFormValues['regularPrice'],
-) => {
+const validateTripTypePrice = (regularPrice: FormValues['regularPrice']) => {
   const { roundTrip, toDestination, fromDestination } = regularPrice;
   const hasRoundTrip = roundTrip !== 0;
   const hasToDestination = toDestination !== 0;
