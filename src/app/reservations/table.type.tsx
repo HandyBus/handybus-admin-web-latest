@@ -45,16 +45,20 @@ export const columns = [
     cell: (info) => {
       const userDesiredHubAddress =
         info.row.original.metadata?.desiredHubAddress;
+      const userPhoneNumber = info.row.original.userPhoneNumber;
       const userName = info.row.original.userName;
       const userNickname = info.row.original.userNickname;
-      const userPhoneNumber = info.row.original.userPhoneNumber;
+
+      const nameToUse = userName || userNickname || '탈퇴한 유저';
+      const onlyHasNickname = !userName && !!userNickname;
+      const withdrawnUser = !userName && !userNickname;
 
       return (
         <p>
-          <span className="text-16 font-500">{userName ?? '-'}</span>
-          <br />
-          <span className="text-14 font-400 text-basic-grey-600">
-            {userNickname ? `(${userNickname})` : '탈퇴한 유저'}
+          <span
+            className={`text-16 font-500 ${withdrawnUser ? 'text-basic-grey-500' : onlyHasNickname ? 'text-basic-blue-400' : ''}`}
+          >
+            {nameToUse}
           </span>
           <br />
           <span className="text-14 font-400 text-basic-grey-600">
