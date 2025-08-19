@@ -1,6 +1,6 @@
 import { FIELD_ARRAY_NAMES } from '../components/ShuttleRouteHubSection';
 import { Control, useFieldArray } from 'react-hook-form';
-import { EditFormValues } from '../form.type';
+import { FormValues } from '../form.type';
 
 export const useShuttleRouteHubActions = ({
   control,
@@ -8,7 +8,7 @@ export const useShuttleRouteHubActions = ({
   defaultDate,
   isDestinationStop,
 }: {
-  control: Control<EditFormValues>;
+  control: Control<FormValues>;
   fieldArrayName: (typeof FIELD_ARRAY_NAMES)[keyof typeof FIELD_ARRAY_NAMES];
   defaultDate: string | undefined;
   isDestinationStop: (index: number, length: number) => boolean;

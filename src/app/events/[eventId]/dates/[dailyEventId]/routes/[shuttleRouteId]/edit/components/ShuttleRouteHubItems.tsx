@@ -1,5 +1,5 @@
 import { Control, Controller } from 'react-hook-form';
-import { EditFormValues } from '../form.type';
+import { FormValues } from '../form.type';
 import { FieldArrayWithId } from 'react-hook-form';
 import { FIELD_ARRAY_NAMES } from './ShuttleRouteHubSection';
 import Heading from '@/components/text/Heading';
@@ -9,7 +9,7 @@ import RegionHubInputWithDropdown from '@/components/input/RegionHubInputWithDro
 interface ShuttleRouteHubItemsProps {
   title: '가는편' | '오는편';
   fields: FieldArrayWithId<
-    EditFormValues,
+    FormValues,
     'shuttleRouteHubsToDestination' | 'shuttleRouteHubsFromDestination',
     'id'
   >[];
@@ -20,7 +20,7 @@ interface ShuttleRouteHubItemsProps {
   canMoveUp: (index: number) => boolean;
   canMoveDown: (index: number) => boolean;
   canDelete: (index: number) => boolean;
-  control: Control<EditFormValues>;
+  control: Control<FormValues>;
   fieldArrayName:
     | 'shuttleRouteHubsToDestination'
     | 'shuttleRouteHubsFromDestination';
@@ -85,7 +85,7 @@ interface ShuttleRouteHubItemProps {
   onMoveUp: () => void;
   onMoveDown: () => void;
   onDelete: () => void;
-  control: Control<EditFormValues>;
+  control: Control<FormValues>;
   fieldArrayName:
     | typeof FIELD_ARRAY_NAMES.TO_DESTINATION
     | typeof FIELD_ARRAY_NAMES.FROM_DESTINATION;

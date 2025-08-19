@@ -1,7 +1,7 @@
 import Callout from '@/components/text/Callout';
 import FormContainer from '@/components/form/Form';
 import { Control } from 'react-hook-form';
-import { EditFormValues } from '../form.type';
+import { FormValues } from '../form.type';
 import { useShuttleRouteHubActions } from '../hooks/useShuttleRouteHubActions';
 import ShuttleRouteHubItems from './ShuttleRouteHubItems';
 
@@ -11,7 +11,7 @@ export const FIELD_ARRAY_NAMES = {
 } as const;
 
 interface Props {
-  control: Control<EditFormValues>;
+  control: Control<FormValues>;
   defaultDate: string | undefined;
 }
 

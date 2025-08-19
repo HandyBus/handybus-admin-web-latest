@@ -5,7 +5,7 @@ import { useGetShuttleRoute } from '@/services/shuttleRoute.service';
 import Heading from '@/components/text/Heading';
 import EditForm from './components/EditForm';
 import { extractSortedShuttleHubs } from './utils/extractSortedShuttleHubs.util';
-import { EditFormValues } from './form.type';
+import { FormValues } from './form.type';
 import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
 import BlueLink from '@/components/link/BlueLink';
@@ -19,12 +19,11 @@ interface Props {
 const Page = ({ params }: Props) => {
   const { eventId, dailyEventId, shuttleRouteId } = params;
 
-  const {
-    data: route,
-    isPending: isRoutePending,
-    isError: isRouteError,
-    error: routeError,
-  } = useGetShuttleRoute(eventId, dailyEventId, shuttleRouteId);
+  const { data: route } = useGetShuttleRoute(
+    eventId,
+    dailyEventId,
+    shuttleRouteId,
+  );
 
   const dailyEvent = route?.event?.dailyEvents.find(
     (de) => de.dailyEventId === dailyEventId,
@@ -36,7 +35,7 @@ const Page = ({ params }: Props) => {
     )?.date;
   }, [route]);
 
-  const defaultValues: EditFormValues = useMemo(
+  const defaultValues: FormValues = useMemo(
     () => ({
       name: route?.name ?? '',
       hasEarlybird: route?.hasEarlybird ?? false,
@@ -68,29 +67,29 @@ const Page = ({ params }: Props) => {
     [route],
   );
 
-  if (isRoutePending) return <div>Loading...</div>;
-  if (isRouteError) throw routeError;
+  if (!route || !dailyEvent) {
+    return null;
+  }
+
   return (
     <main>
       <Heading>노선 수정하기</Heading>
-      {route && dailyEvent && (
-        <Callout className="mb-20">
-          <List>
-            <List.item title="행사명">
-              <BlueLink href={`/events/${eventId}`}>
-                {route.event.eventName}
-              </BlueLink>
-            </List.item>
-            <List.item title="장소">{route.event.eventLocationName}</List.item>
-            <List.item title="날짜">
-              {formatDateString(dailyEvent.date)}
-            </List.item>
-            <List.item title="상태">
-              {Stringifier.dailyEventStatus(dailyEvent.status)}
-            </List.item>
-          </List>
-        </Callout>
-      )}
+      <Callout className="mb-20">
+        <List>
+          <List.item title="행사명">
+            <BlueLink href={`/events/${eventId}`}>
+              {route.event.eventName}
+            </BlueLink>
+          </List.item>
+          <List.item title="장소">{route.event.eventLocationName}</List.item>
+          <List.item title="날짜">
+            {formatDateString(dailyEvent.date)}
+          </List.item>
+          <List.item title="상태">
+            {Stringifier.dailyEventStatus(dailyEvent.status)}
+          </List.item>
+        </List>
+      </Callout>
       <EditForm
         params={params}
         defaultValues={defaultValues}

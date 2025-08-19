@@ -2,14 +2,14 @@ import { Control, Controller } from 'react-hook-form';
 import Heading from '@/components/text/Heading';
 import NumberInput from '@/components/input/NumberInput';
 import DateInput from '@/components/input/DateInput';
-import { EditFormValues } from '../form.type';
+import { FormValues } from '../form.type';
 import { discountPercent } from '../../../discountPercent.util';
 
 interface Props {
-  control: Control<EditFormValues>;
+  control: Control<FormValues>;
   hasEarlybird: boolean;
-  watchRegularPrice: EditFormValues['regularPrice'];
-  watchEarlybirdPrice: EditFormValues['earlybirdPrice'];
+  watchRegularPrice: FormValues['regularPrice'];
+  watchEarlybirdPrice: FormValues['earlybirdPrice'];
 }
 
 const PriceSectionEarlybirdType = ({
@@ -44,10 +44,10 @@ const PriceSectionEarlybirdType = ({
 export default PriceSectionEarlybirdType;
 
 interface TripPriceInputEarlybirdProps {
-  control: Control<EditFormValues>;
+  control: Control<FormValues>;
   hasEarlybird: boolean;
-  watchRegularPrice: EditFormValues['regularPrice'];
-  watchEarlybirdPrice: EditFormValues['earlybirdPrice'];
+  watchRegularPrice: FormValues['regularPrice'];
+  watchEarlybirdPrice: FormValues['earlybirdPrice'];
 }
 
 const TripPriceInputEarlybird = ({

@@ -1,8 +1,11 @@
-import { ShuttleRouteHubsInShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
+import {
+  ShuttleRouteHubsInShuttleRoutesViewEntity,
+  TripType,
+} from '@/types/shuttleRoute.type';
 
 export const extractSortedShuttleHubs = (
   hubs: ShuttleRouteHubsInShuttleRoutesViewEntity[],
-  type: 'TO_DESTINATION' | 'FROM_DESTINATION',
+  type: Exclude<TripType, 'ROUND_TRIP'>,
 ) => {
   return hubs
     .filter((hub) => hub.type === type)
