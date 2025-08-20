@@ -41,6 +41,7 @@ export interface GetUsersOptions {
   paymentComplete?: boolean;
   isConnectedKakao?: boolean;
   isConnectedNaver?: boolean;
+  isConnectedApple?: boolean;
 }
 
 export interface GetUsersOptionsWithPagination extends GetUsersOptions {
