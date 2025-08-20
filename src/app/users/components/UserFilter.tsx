@@ -127,6 +127,17 @@ const UserFilter = ({ option, dispatch }: Props) => {
                   })
                 }
               />
+              <Toggle
+                label={'애플'}
+                value={option.isConnectedApple === true}
+                setValue={() =>
+                  dispatch({
+                    type: 'SET_IS_CONNECTED_APPLE',
+                    isConnectedApple:
+                      option.isConnectedApple === true ? undefined : true,
+                  })
+                }
+              />
             </div>
           </article>
           <article>

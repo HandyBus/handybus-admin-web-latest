@@ -86,6 +86,12 @@ const useUserFilter = (partial: GetUsersOptions = {}) => {
         value === 'true' ? true : value === 'false' ? false : undefined;
     }
 
+    if (searchParams.has('isConnectedApple')) {
+      const value = searchParams.get('isConnectedApple');
+      urlState.isConnectedApple =
+        value === 'true' ? true : value === 'false' ? false : undefined;
+    }
+
     return {
       ...EMPTY_USER_FILTER,
       ...partial,
@@ -159,6 +165,10 @@ const useUserFilter = (partial: GetUsersOptions = {}) => {
         params.set('isConnectedNaver', String(newState.isConnectedNaver));
       }
 
+      if (newState.isConnectedApple !== undefined) {
+        params.set('isConnectedApple', String(newState.isConnectedApple));
+      }
+
       const paramString = params.toString();
       const newURL = paramString ? `?${paramString}` : window.location.pathname;
       router.replace(newURL, { scroll: false });
@@ -191,6 +201,7 @@ const EMPTY_USER_FILTER: GetUsersOptions = {
   marketingConsent: undefined,
   isConnectedKakao: undefined,
   isConnectedNaver: undefined,
+  isConnectedApple: undefined,
 };
 
 export type UserFilterAction =
@@ -253,6 +264,10 @@ export type UserFilterAction =
   | {
       type: 'SET_IS_CONNECTED_NAVER';
       isConnectedNaver: GetUsersOptions['isConnectedNaver'];
+    }
+  | {
+      type: 'SET_IS_CONNECTED_APPLE';
+      isConnectedApple: GetUsersOptions['isConnectedApple'];
     }
   | {
       type: 'RESET';
@@ -339,6 +354,11 @@ const reducer = (
       return {
         ...prevState,
         isConnectedNaver: action.isConnectedNaver,
+      };
+    case 'SET_IS_CONNECTED_APPLE':
+      return {
+        ...prevState,
+        isConnectedApple: action.isConnectedApple,
       };
     case 'RESET':
       return {
