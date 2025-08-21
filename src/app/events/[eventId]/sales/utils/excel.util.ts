@@ -52,7 +52,8 @@ export const convertSalesDataToExcelFormat = (
       const couponCost = route.totalSales - route.totalSalesWithDiscount;
 
       // 총 이익 계산
-      const totalProfit = route.totalSalesWithDiscount - vehicleCost;
+      const totalProfit =
+        route.totalSalesWithDiscount - vehicleCost * vehicleCount;
 
       // 이익률 계산
       const profitRate =
@@ -94,7 +95,10 @@ export const convertSalesDataToExcelFormat = (
 
     // 합계 행 추가
     const totalVehicleCost = dailyEvent.routesWithSales.reduce(
-      (sum, route) => sum + (vehicleCosts[route.shuttleRouteId] || 0),
+      (sum, route) =>
+        sum +
+        (vehicleCosts[route.shuttleRouteId] || 0) *
+          (vehicleCounts[route.shuttleRouteId] || 0),
       0,
     );
     const totalVehicleCount = dailyEvent.routesWithSales.reduce(
