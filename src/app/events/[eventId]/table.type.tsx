@@ -66,4 +66,25 @@ export const columns = [
       },
     },
   ),
+  columnHelper.accessor('eventDetailImageUrl', {
+    header: '상세 이미지',
+    cell: (info) => {
+      const { eventDetailImageUrl } = info.row.original;
+      if (!eventDetailImageUrl) {
+        return <div className="text-center">-</div>;
+      }
+      return (
+        <div className="relative w-400 p-4">
+          <Image
+            src={eventDetailImageUrl || DEFAULT_EVENT_IMAGE}
+            alt="Event"
+            width={400}
+            height={0}
+            className="h-auto w-full object-contain"
+            style={{ height: 'auto' }}
+          />
+        </div>
+      );
+    },
+  }),
 ];
