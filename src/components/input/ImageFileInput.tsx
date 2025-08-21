@@ -10,9 +10,10 @@ interface Props {
   type: ImageKey;
   value: string | undefined;
   setValue: (value: string | undefined) => void;
+  htmlFor?: string;
 }
 
-const ImageFileInput = ({ type, value, setValue }: Props) => {
+const ImageFileInput = ({ type, value, setValue, htmlFor }: Props) => {
   const [file, setFile] = useState<File | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -31,12 +32,12 @@ const ImageFileInput = ({ type, value, setValue }: Props) => {
   return (
     <div className="flex flex-col items-center">
       {!isPending && (
-        <div className="mb-24 h-[166px] w-[117px] bg-basic-grey-200">
+        <div className="relative mb-24 h-[166px] w-[117px] bg-basic-grey-200">
           <Image
             src={value}
             alt="새로 등록할 포스터 이미지"
-            width={80}
-            height={110}
+            fill
+            className="object-contain"
           />
         </div>
       )}
@@ -44,7 +45,7 @@ const ImageFileInput = ({ type, value, setValue }: Props) => {
 
       {!isLoading && (
         <label
-          htmlFor="image_upload"
+          htmlFor={htmlFor || 'image_upload'}
           className={customTwMerge(
             `flex h-[50px] w-full cursor-pointer items-center justify-center gap-4 rounded-[8px] font-600`,
             isPending
@@ -56,7 +57,7 @@ const ImageFileInput = ({ type, value, setValue }: Props) => {
           <input
             ref={inputRef}
             disabled={file !== null}
-            id="image_upload"
+            id={htmlFor || 'image_upload'}
             type="file"
             accept="image/*"
             className="hidden"

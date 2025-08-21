@@ -30,6 +30,7 @@ interface FormValues {
   status: EventStatus;
   name: string;
   imageUrl: string | undefined;
+  detailImageUrl: string | null;
   regionHub: RegionHubsViewEntity;
   dailyEvents: EventDailyShuttlesInEventsViewEntity[];
   type: EventType;
@@ -66,6 +67,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
     status: event?.eventStatus,
     name: event?.eventName,
     imageUrl: event?.eventImageUrl,
+    detailImageUrl: event?.eventDetailImageUrl,
     regionHub: {
       regionId: event?.regionId,
       regionHubId: event?.regionHubId,
@@ -123,6 +125,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
       const body: UpdateEventRequest = {
         ...data,
         imageUrl: data.imageUrl ?? undefined,
+        detailImageUrl: data.detailImageUrl || null,
         regionId: data.regionHub.regionId,
         regionHubId: data.regionHub.regionHubId,
         dailyEvents: data.dailyEvents.map((dailyEvent) => ({
@@ -146,9 +149,25 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
           name="imageUrl"
           render={({ field: { onChange, value } }) => (
             <ImageFileInput
+              htmlFor="imageUrl"
               type="concerts"
               value={value}
               setValue={(url) => onChange(url)}
+            />
+          )}
+        />
+      </Form.section>
+      <Form.section>
+        <Form.label required>행사 상세 이미지</Form.label>
+        <Controller
+          control={control}
+          name="detailImageUrl"
+          render={({ field: { onChange, value } }) => (
+            <ImageFileInput
+              htmlFor="detailImageUrl"
+              type="concerts"
+              value={value || undefined}
+              setValue={(url) => onChange(url || undefined)}
             />
           )}
         />

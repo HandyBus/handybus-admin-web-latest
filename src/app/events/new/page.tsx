@@ -25,6 +25,7 @@ import Stringifier from '@/utils/stringifier.util';
 interface FormValues {
   name: string;
   imageUrl: string;
+  detailImageUrl: string | null;
   regionHub: RegionHubsViewEntity;
   type: EventType;
   dailyEvents: { date: string }[];
@@ -33,6 +34,7 @@ interface FormValues {
 const defaultValues = {
   name: undefined,
   imageUrl: undefined,
+  detailImageUrl: undefined,
   regionHub: undefined,
   type: undefined,
   dailyEvents: [],
@@ -65,6 +67,7 @@ const CreateEventForm = () => {
     const body: CreateEventRequest = {
       name: data.name,
       imageUrl: data.imageUrl,
+      detailImageUrl: data.detailImageUrl || undefined,
       regionId: data.regionHub.regionId,
       regionHubId: data.regionHub.regionHubId,
       type: data.type,
@@ -110,6 +113,20 @@ const CreateEventForm = () => {
                 type="concerts"
                 value={value}
                 setValue={(url) => onChange(url || null)}
+              />
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label required>행사 상세 이미지</Form.label>
+          <Controller
+            control={control}
+            name="detailImageUrl"
+            render={({ field: { onChange, value } }) => (
+              <ImageFileInput
+                type="concerts"
+                value={value || undefined}
+                setValue={(url) => onChange(url || undefined)}
               />
             )}
           />

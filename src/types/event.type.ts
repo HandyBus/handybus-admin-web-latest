@@ -37,7 +37,8 @@ export const EventsViewEntitySchema = z
     regionId: z.string(),
     regionHubId: z.string(),
     eventStatus: EventStatusEnum,
-    eventImageUrl: z.literal('').or(z.string()),
+    eventImageUrl: z.string(),
+    eventDetailImageUrl: z.string().nullable(),
     eventLocationName: z.string(),
     eventLocationAddress: z.string(),
     eventLocationLatitude: z.number(),
@@ -84,6 +85,7 @@ export type EventWithStatisticsViewEntity = z.infer<
 export const CreateEventRequestSchema = z.object({
   name: z.string(),
   imageUrl: z.string().url(),
+  detailImageUrl: z.string().url().nullable().optional(),
   regionId: z.string(),
   regionHubId: z.string(),
   dailyEvents: z
@@ -100,6 +102,7 @@ export const UpdateEventRequestSchema = z
     status: EventStatusEnum,
     name: z.string(),
     imageUrl: z.string().url(),
+    detailImageUrl: z.string().url().nullable(),
     regionId: z.string(),
     regionHubId: z.string(),
     dailyEvents: z
