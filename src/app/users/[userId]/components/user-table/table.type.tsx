@@ -64,15 +64,15 @@ export const columns = [
     id: 'authChannel',
     header: () => '소셜 로그인',
     cell: (info) => {
-      const { isConnectedKakao, isConnectedNaver } = info.row.original;
-      const value =
-        isConnectedKakao && isConnectedNaver
-          ? '카카오, 네이버'
-          : isConnectedKakao
-            ? '카카오'
-            : isConnectedNaver
-              ? '네이버'
-              : '-';
+      const { isConnectedKakao, isConnectedNaver, isConnectedApple } =
+        info.row.original;
+      const value = isConnectedKakao
+        ? '카카오'
+        : isConnectedNaver
+          ? '네이버'
+          : isConnectedApple
+            ? '애플'
+            : '-';
       return value;
     },
   }),

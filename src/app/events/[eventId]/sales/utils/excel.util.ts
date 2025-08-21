@@ -51,22 +51,23 @@ export const convertSalesDataToExcelFormat = (
       // 쿠폰비 계산 (총 매출 - 실 매출)
       const couponCost = route.totalSales - route.totalSalesWithDiscount;
 
-      // 총 이익 계산 (운영비, 마케팅비 제외)
-      const totalProfit = route.totalSalesWithDiscount - vehicleCost;
+      // 총 이익 계산
+      const totalProfit =
+        route.totalSalesWithDiscount - vehicleCost * vehicleCount;
 
       // 이익률 계산
       const profitRate =
-        route.totalSalesWithDiscount > 0
-          ? Math.round(
-              (totalProfit / route.totalSalesWithDiscount) * 100 * 100,
-            ) / 100
+        route.totalSales > 0
+          ? Math.round((totalProfit / route.totalSales) * 100 * 100) / 100
           : 0;
 
       // 취소율 계산
       const cancellationRate =
         route.totalReservationCount > 0
           ? Math.round(
-              (route.canceledReservationCount / route.totalReservationCount) *
+              (route.canceledReservationCount /
+                (route.totalReservationCount +
+                  route.canceledReservationCount)) *
                 100 *
                 100,
             ) / 100
@@ -94,7 +95,10 @@ export const convertSalesDataToExcelFormat = (
 
     // 합계 행 추가
     const totalVehicleCost = dailyEvent.routesWithSales.reduce(
-      (sum, route) => sum + (vehicleCosts[route.shuttleRouteId] || 0),
+      (sum, route) =>
+        sum +
+        (vehicleCosts[route.shuttleRouteId] || 0) *
+          (vehicleCounts[route.shuttleRouteId] || 0),
       0,
     );
     const totalVehicleCount = dailyEvent.routesWithSales.reduce(
@@ -132,13 +136,16 @@ export const convertSalesDataToExcelFormat = (
       totalOperationCost -
       totalMarketingCost;
     const totalProfitRate =
-      totalSalesWithDiscount > 0
-        ? Math.round((totalProfit / totalSalesWithDiscount) * 100 * 100) / 100
+      totalSales > 0
+        ? Math.round((totalProfit / totalSales) * 100 * 100) / 100
         : 0;
     const totalCancellationRate =
       totalReservationCount > 0
         ? Math.round(
-            (totalCanceledReservationCount / totalReservationCount) * 100 * 100,
+            (totalCanceledReservationCount /
+              (totalReservationCount + totalCanceledReservationCount)) *
+              100 *
+              100,
           ) / 100
         : 0;
 
@@ -229,12 +236,12 @@ export const downloadSalesExcel = (
         row.operationCost,
         row.marketingCost,
         row.totalProfit,
-        row.profitRate.toFixed(2),
+        row.profitRate,
         row.passengerCount,
         row.vehicleCount,
         row.reservationCount,
         row.canceledReservationCount,
-        row.cancellationRate.toFixed(2),
+        row.cancellationRate,
       ].join(',');
     }),
   ].join('\n');
