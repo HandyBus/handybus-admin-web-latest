@@ -64,24 +64,26 @@ const CreateEventForm = () => {
     }
     setIsSubmitting(true);
 
-    const body: CreateEventRequest = {
-      name: data.name,
-      imageUrl: data.imageUrl,
-      detailImageUrl: data.detailImageUrl || undefined,
-      regionId: data.regionHub.regionId,
-      regionHubId: data.regionHub.regionHubId,
-      type: data.type,
-      // NOTE: 현재 아티스트 추가 기능은 비활성화
-      artistIds: [],
-      isPinned: false,
-      dailyEvents: data.dailyEvents.map((dailyEvent) => ({
-        ...dailyEvent,
-        // NOTE: 수요조사 종료 시간은 행사 시작 전 14일로 설정
-        closeDeadline: dayjs(dailyEvent.date).subtract(14, 'day').toISOString(),
-      })),
-    };
-
     try {
+      const body: CreateEventRequest = {
+        name: data.name,
+        imageUrl: data.imageUrl,
+        detailImageUrl: data.detailImageUrl || undefined,
+        regionId: data.regionHub.regionId,
+        regionHubId: data.regionHub.regionHubId,
+        type: data.type,
+        // NOTE: 현재 아티스트 추가 기능은 비활성화
+        artistIds: [],
+        isPinned: false,
+        dailyEvents: data.dailyEvents.map((dailyEvent) => ({
+          ...dailyEvent,
+          // NOTE: 수요조사 종료 시간은 행사 시작 전 14일로 설정
+          closeDeadline: dayjs(dailyEvent.date)
+            .subtract(14, 'day')
+            .toISOString(),
+        })),
+      };
+
       const eventId = await postEvent(body);
       const event = await getEvent(eventId);
       if (isDemandCoupon) {
@@ -110,8 +112,9 @@ const CreateEventForm = () => {
             name="imageUrl"
             render={({ field: { onChange, value } }) => (
               <ImageFileInput
+                htmlFor="imageUrl"
                 type="concerts"
-                value={value}
+                value={value || null}
                 setValue={(url) => onChange(url || null)}
               />
             )}
@@ -124,9 +127,10 @@ const CreateEventForm = () => {
             name="detailImageUrl"
             render={({ field: { onChange, value } }) => (
               <ImageFileInput
+                htmlFor="detailImageUrl"
                 type="concerts"
-                value={value || undefined}
-                setValue={(url) => onChange(url || undefined)}
+                value={value || null}
+                setValue={(url) => onChange(url || null)}
               />
             )}
           />

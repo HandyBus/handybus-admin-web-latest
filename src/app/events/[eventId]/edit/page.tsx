@@ -124,7 +124,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
       }
       const body: UpdateEventRequest = {
         ...data,
-        imageUrl: data.imageUrl ?? undefined,
+        imageUrl: data.imageUrl || undefined,
         detailImageUrl: data.detailImageUrl || null,
         regionId: data.regionHub.regionId,
         regionHubId: data.regionHub.regionHubId,
@@ -151,14 +151,14 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
             <ImageFileInput
               htmlFor="imageUrl"
               type="concerts"
-              value={value}
-              setValue={(url) => onChange(url)}
+              value={value || null}
+              setValue={(url) => onChange(url || null)}
             />
           )}
         />
       </Form.section>
       <Form.section>
-        <Form.label required>행사 상세 이미지</Form.label>
+        <Form.label>행사 상세 이미지</Form.label>
         <Controller
           control={control}
           name="detailImageUrl"
@@ -166,8 +166,8 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
             <ImageFileInput
               htmlFor="detailImageUrl"
               type="concerts"
-              value={value || undefined}
-              setValue={(url) => onChange(url || undefined)}
+              value={value || null}
+              setValue={(url) => onChange(url || null)}
             />
           )}
         />
