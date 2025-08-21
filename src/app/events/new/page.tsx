@@ -121,7 +121,7 @@ const CreateEventForm = () => {
           />
         </Form.section>
         <Form.section>
-          <Form.label required>행사 상세 이미지</Form.label>
+          <Form.label>행사 상세 이미지</Form.label>
           <Controller
             control={control}
             name="detailImageUrl"
