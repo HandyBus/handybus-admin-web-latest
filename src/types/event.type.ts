@@ -50,7 +50,7 @@ export const EventsViewEntitySchema = z
     createdAt: z.string(),
     updatedAt: z.string(),
     eventIsPinned: z.boolean(),
-    eventMinRoutePrice: z.number(),
+    eventMinRoutePrice: z.number().nullable(),
     eventHasOpenRoute: z.boolean(),
     eventRecommendationScore: z.number(),
     eventMetadata: z.record(z.string(), z.any()).nullable(),
