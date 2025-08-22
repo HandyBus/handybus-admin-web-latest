@@ -97,6 +97,13 @@ const Page = () => {
                 <Button
                   size="small"
                   variant="tertiary"
+                  onClick={() => router.push(`/events/${event.eventId}`)}
+                >
+                  상세
+                </Button>
+                <Button
+                  size="small"
+                  variant="tertiary"
                   onClick={() => router.push(`/events/${event.eventId}/edit`)}
                 >
                   수정
