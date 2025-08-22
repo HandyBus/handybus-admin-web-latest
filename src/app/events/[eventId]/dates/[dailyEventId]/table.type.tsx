@@ -6,7 +6,7 @@ import { AdminShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 import Stringifier from '@/utils/stringifier.util';
 import EditRouteStatusDialog from './EditRouteStatusDialog';
 import BlueButton from '@/components/link/BlueButton';
-import { sendShuttleInformation } from '@/services/shuttleRoute.service';
+import { sendShuttleInformation } from '@/services/solapi.service';
 import { HANDY_PARTY_PREFIX } from '@/constants/common';
 
 const columnHelper = createColumnHelper<AdminShuttleRoutesViewEntity>();

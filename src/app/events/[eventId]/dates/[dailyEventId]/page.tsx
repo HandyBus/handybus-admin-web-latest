@@ -10,7 +10,6 @@ import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
 import {
   useGetShuttleRoutesOfDailyEvent,
-  useSendShuttleInformation,
   useGetAlertRequests,
 } from '@/services/shuttleRoute.service';
 import { useGetEvent } from '@/services/event.service';
@@ -20,6 +19,7 @@ import List from '@/components/text/List';
 import { HANDY_PARTY_PREFIX } from '@/constants/common';
 import { HANDY_PARTY_ROUTE_AREA } from '@/constants/handyPartyArea.const';
 import EditDailyEventOpenChatUrl from './EditDailyEventOpenChatUrl';
+import { useSendShuttleInformation } from '@/services/solapi.service';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };

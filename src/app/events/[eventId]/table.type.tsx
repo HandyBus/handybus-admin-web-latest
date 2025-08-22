@@ -6,10 +6,63 @@ import { formatDateString } from '@/utils/date.util';
 import { EventsViewEntity } from '@/types/event.type';
 import { DEFAULT_EVENT_IMAGE } from '@/constants/common';
 import BlueLink from '@/components/link/BlueLink';
+import BlueButton from '@/components/link/BlueButton';
+import {
+  sendDemandedShuttleRouteDoneCreating,
+  sendDemandedShuttleRouteNotCreated,
+} from '@/services/solapi.service';
 
 const columnHelper = createColumnHelper<EventsViewEntity>();
 
 export const columns = [
+  columnHelper.display({
+    id: 'action',
+    header: '액션',
+    cell: (props) => {
+      const { eventId } = props.row.original;
+
+      const handleSendShuttleRouteNotCreated = async () => {
+        const isConfirmed = window.confirm(
+          '노선 미개설 안내를 발송하시겠습니까?\n* 안내를 기존에 발송했는지 확인해주세요.\n* 수요조사에 참여한 모든 유저들에게 발송됩니다.',
+        );
+        if (!isConfirmed) {
+          return;
+        }
+        try {
+          await sendDemandedShuttleRouteNotCreated(eventId);
+        } catch (error) {
+          console.error(error);
+          window.alert('발송에 실패했습니다.');
+        }
+      };
+
+      const handleSendShuttleRouteDoneCreating = async () => {
+        const isConfirmed = window.confirm(
+          '노선 최종 개설 안내를 발송하시겠습니까?\n*안내를 기존에 발송했는지 확인해주세요.\n*수요조사에 참여하고 예약을 하지 않은 모든 유저들에게 발송됩니다.',
+        );
+        if (!isConfirmed) {
+          return;
+        }
+        try {
+          await sendDemandedShuttleRouteDoneCreating(eventId);
+        } catch (error) {
+          console.error(error);
+          window.alert('발송에 실패했습니다.');
+        }
+      };
+
+      return (
+        <div className="flex flex-col gap-8">
+          <BlueButton onClick={handleSendShuttleRouteNotCreated}>
+            노선 미개설 안내 발송
+          </BlueButton>
+          <BlueButton onClick={handleSendShuttleRouteDoneCreating}>
+            노선 최종 개설 안내 발송
+          </BlueButton>
+        </div>
+      );
+    },
+  }),
   columnHelper.display({
     id: 'image',
     header: '포스터',
