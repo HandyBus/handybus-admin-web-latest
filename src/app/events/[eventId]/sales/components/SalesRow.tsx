@@ -181,7 +181,7 @@ const SalesRow = ({
   };
 
   return (
-    <div className="grid h-36 w-full grid-cols-[repeat(14,1fr)] items-center border-b border-basic-grey-200">
+    <div className="grid h-36 w-full grid-cols-[1.5fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] items-center border-b border-basic-grey-200">
       <div className="flex h-full w-full items-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-left text-14 font-500">
         {/* 노선명 */}
         {shuttleRouteName}
