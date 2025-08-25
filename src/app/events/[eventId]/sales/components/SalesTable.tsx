@@ -136,7 +136,7 @@ const SalesTable = ({ event, shuttleRoutes }: Props) => {
             <div key={dailyEventWithRoutesWithSales.dailyEventId}>
               <Heading.h4>{date}</Heading.h4>
               <div className="overflow-hidden rounded-8 bg-basic-white shadow-[0_2px_8px_0_rgba(0,0,0,0.08)]">
-                <div className="grid h-[32px] grid-cols-[repeat(14,1fr)] items-center bg-basic-grey-200">
+                <div className="grid h-[32px] grid-cols-[1.5fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] items-center bg-basic-grey-200">
                   <h4 className="flex h-full items-center justify-center whitespace-nowrap break-keep border-r border-basic-white text-center text-16 font-500 text-basic-black">
                     노선명
                   </h4>
