@@ -79,6 +79,7 @@ export const UserStatsAggregateResponseSchema = z.object({
   todayLoginCount: z.number(),
   kakaoUserCount: z.number(),
   naverUserCount: z.number(),
+  appleUserCount: z.number(),
 });
 export type UserStatsAggregateResponse = z.infer<
   typeof UserStatsAggregateResponseSchema
