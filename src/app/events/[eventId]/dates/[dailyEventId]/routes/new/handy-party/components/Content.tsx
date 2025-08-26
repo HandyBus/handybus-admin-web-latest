@@ -160,13 +160,9 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
             <RegionHubInputWithDropdown
               hubType="EVENT_LOCATION"
               regionId={regionIdForDestinationHub}
-              setRegionId={(regionId) => setRegionIdForDestinationHub(regionId)}
               regionHubId={value}
-              setRegionHubId={(regionHub) =>
-                onChange({
-                  regionHubId: regionHub.regionHubId,
-                })
-              }
+              setRegionId={(regionId) => setRegionIdForDestinationHub(regionId)}
+              setRegionHubId={(regionHub) => onChange(regionHub.regionHubId)}
             />
           )}
         />

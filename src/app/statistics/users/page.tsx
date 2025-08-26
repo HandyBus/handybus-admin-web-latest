@@ -119,6 +119,7 @@ const Page = () => {
     return [
       { name: '카카오', value: userStatsAggregate.kakaoUserCount },
       { name: '네이버', value: userStatsAggregate.naverUserCount },
+      { name: '애플', value: userStatsAggregate.appleUserCount },
     ];
   }, [userStatsAggregate]);
 

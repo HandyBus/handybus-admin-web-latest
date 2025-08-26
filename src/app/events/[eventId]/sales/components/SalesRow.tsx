@@ -181,20 +181,20 @@ const SalesRow = ({
   };
 
   return (
-    <div className="grid h-36 w-full grid-cols-[repeat(14,1fr)] items-center border-b border-basic-grey-200">
-      <div className="flex h-full w-full items-center justify-center overflow-x-auto whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
+    <div className="grid h-36 w-full grid-cols-[1.5fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] items-center border-b border-basic-grey-200">
+      <div className="flex h-full w-full items-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-left text-14 font-500">
         {/* 노선명 */}
         {shuttleRouteName}
       </div>
-      <div className="flex h-full w-full items-center justify-center overflow-x-auto whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
+      <div className="flex h-full w-full items-center justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
         {/* 총 매출 */}
         {totalSales.toLocaleString()}
       </div>
-      <div className="flex h-full w-full items-center justify-center overflow-x-auto whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
+      <div className="flex h-full w-full items-center justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
         {/* 실 매출 */}
         {totalSalesWithDiscount.toLocaleString()}
       </div>
-      <div className="flex h-full w-full items-center justify-center overflow-x-auto whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
+      <div className="flex h-full w-full items-center justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
         {/* 차량 대금 */}
         {isTotalRow ? (
           <span className="text-14 font-500">
@@ -209,11 +209,11 @@ const SalesRow = ({
           />
         )}
       </div>
-      <div className="flex h-full w-full items-center justify-center overflow-x-auto whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
+      <div className="flex h-full w-full items-center justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
         {/* 쿠폰비 */}
         {couponCost.toLocaleString()}
       </div>
-      <div className="flex h-full w-full items-center justify-center overflow-x-auto whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-16 font-500 text-basic-black">
+      <div className="flex h-full w-full items-center justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-16 font-500 text-basic-black">
         {/* 운영비 */}
         {isTotalRow && (
           <input
@@ -224,7 +224,7 @@ const SalesRow = ({
           />
         )}
       </div>
-      <div className="flex h-full w-full items-center justify-center overflow-x-auto whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-16 font-500 text-basic-black">
+      <div className="flex h-full w-full items-center justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-16 font-500 text-basic-black">
         {/* 마케팅비 */}
         {isTotalRow && (
           <input
@@ -235,19 +235,19 @@ const SalesRow = ({
           />
         )}
       </div>
-      <div className="flex h-full w-full items-center justify-center overflow-x-auto whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
+      <div className="flex h-full w-full items-center justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
         {/* 총 이익 */}
         {totalProfit.toLocaleString()}
       </div>
-      <div className="flex h-full w-full items-center justify-center overflow-x-auto whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
+      <div className="flex h-full w-full items-center justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
         {/* 이익률 */}
         {profitRate.toLocaleString()}%
       </div>
-      <div className="flex h-full w-full items-center justify-center overflow-x-auto whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
+      <div className="flex h-full w-full items-center justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
         {/* 탑승자 수*/}
         {routeWithSales.totalPassengerCount.toLocaleString()}
       </div>
-      <div className="flex h-full w-full items-center justify-center overflow-x-auto whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
+      <div className="flex h-full w-full items-center justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
         {/* 차량 수 */}
         {isTotalRow ? (
           <span className="text-14 font-500">
@@ -262,15 +262,15 @@ const SalesRow = ({
           />
         )}
       </div>
-      <div className="flex h-full w-full items-center justify-center overflow-x-auto whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
+      <div className="flex h-full w-full items-center justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
         {/* 총 예약 수 */}
         {totalReservationCount.toLocaleString()}
       </div>
-      <div className="flex h-full w-full items-center justify-center overflow-x-auto whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
+      <div className="flex h-full w-full items-center justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
         {/* 취소된 예약 수 */}
         {canceledReservationCount.toLocaleString()}
       </div>
-      <div className="flex h-full w-full items-center justify-center overflow-x-auto whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
+      <div className="flex h-full w-full items-center justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap break-keep border-r border-basic-grey-200 text-center text-14 font-500">
         {/* 취소율 */}
         {canceledReservationRate.toLocaleString()}%
       </div>
