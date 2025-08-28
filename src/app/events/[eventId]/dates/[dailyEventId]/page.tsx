@@ -116,32 +116,23 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     );
 
     const isConfirmed = confirm(
-      `핸디팟을 제외한 일자별 노선 전체(${shuttleRoutes.length}개)에 대해 탑승 정보 알림톡을 발송하시겠습니까?`,
+      `핸디팟을 제외한 일자별 노선 전체(${shuttleRoutes.length}개)에 대해 탑승 정보 알림톡을 발송하시겠습니까? 최대 1분이 소요됩니다. 절대 사이트를 끄지 말아주세요.`,
     );
     if (!isConfirmed) {
       return;
     }
 
-    const results = await Promise.allSettled(
-      shuttleRoutes.map((route) =>
-        sendShuttleInformation({
-          eventId,
-          dailyEventId,
-          shuttleRouteId: route.shuttleRouteId,
-        }),
-      ),
-    );
+    // Promise all 로 할 시 오류 발생
+    for (const route of shuttleRoutes) {
+      await sendShuttleInformation({
+        eventId,
+        dailyEventId,
+        shuttleRouteId: route.shuttleRouteId,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 300));
+    }
 
-    const successCount = results.filter(
-      (result) => result.status === 'fulfilled',
-    ).length;
-    const failedCount = results.filter(
-      (result) => result.status === 'rejected',
-    ).length;
-
-    alert(
-      `탑승정보 알림톡 발송 완료 (${successCount} / ${shuttleRoutes.length}) ${failedCount ? `\n 실패한 노선 : ${failedCount}` : ''}`,
-    );
+    alert(`탑승정보 알림톡 발송 완료`);
   };
 
   useEffect(() => {
