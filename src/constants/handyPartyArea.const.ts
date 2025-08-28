@@ -20,5 +20,6 @@ export const HANDY_PARTY_ROUTE_AREA = [
   '시흥',
   '파주',
   '평택',
+  '부천',
 ] as const;
 export type HandyPartyRouteArea = (typeof HANDY_PARTY_ROUTE_AREA)[number];

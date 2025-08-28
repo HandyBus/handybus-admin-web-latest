@@ -113,6 +113,11 @@ export const GOYANG_STADIUM_PRICE_TABLE: HandyPartyPriceTable = [
     regularPrice: 0,
     earlybirdPrice: 0,
   },
+  {
+    area: '부천',
+    regularPrice: 0,
+    earlybirdPrice: 0,
+  },
 ];
 
 // KSPO DOME 25.07
@@ -221,5 +226,10 @@ export const KSPO_DOME_PRICE_TABLE: HandyPartyPriceTable = [
     area: '평택',
     regularPrice: 44200,
     earlybirdPrice: 40800,
+  },
+  {
+    area: '부천',
+    regularPrice: 0,
+    earlybirdPrice: 0,
   },
 ];
