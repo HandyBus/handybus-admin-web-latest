@@ -369,8 +369,8 @@ const Map = ({ eventId, dailyEventId }: Props) => {
                     <>
                       <p>총 수요: {demand.totalCount}개</p>
                       <p>왕복 수요: {demand.roundTripCount}개</p>
-                      <p>가는 편 수요: {demand.toDestinationCount}개</p>
-                      <p>오는 편 수요: {demand.fromDestinationCount}개</p>
+                      <p>행사장행 수요: {demand.toDestinationCount}개</p>
+                      <p>귀가행 수요: {demand.fromDestinationCount}개</p>
                     </>
                   );
                 })()}

@@ -99,9 +99,9 @@ const Page = ({ params: { eventId, dailyEventId, shuttleRouteId } }: Props) => {
         {route && (
           <section className="flex flex-col">
             <Heading.h2>경유지</Heading.h2>
-            <Heading.h4>가는 편</Heading.h4>
+            <Heading.h4>행사장행</Heading.h4>
             <BaseTable table={toHubTable} />
-            <Heading.h4>오는 편</Heading.h4>
+            <Heading.h4>귀가행</Heading.h4>
             <BaseTable table={fromHubTable} />
           </section>
         )}

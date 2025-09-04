@@ -107,8 +107,8 @@ const displayArea = ({
       <h6 class="text-14 font-500">${area.name}</h6>
       <p class="text-14 text-basic-grey-200">총 수요: ${area.totalCount}개</p>
       <p class="text-14 text-basic-grey-200">왕복 수요: ${area.roundTripCount}개</p>
-      <p class="text-14 text-basic-grey-200">가는 편 수요: ${area.toDestinationCount}개</p>
-      <p class="text-14 text-basic-grey-200">오는 편 수요: ${area.fromDestinationCount}개</p>
+      <p class="text-14 text-basic-grey-200">행사장행 수요: ${area.toDestinationCount}개</p>
+      <p class="text-14 text-basic-grey-200">귀가행 수요: ${area.fromDestinationCount}개</p>
     `;
 
   const customOverlay = new kakao.maps.CustomOverlay({

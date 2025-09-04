@@ -81,8 +81,8 @@ const calculateRoute = (
     const isApiBasedSelection = (order - 1) % 5 === 0;
 
     if (isApiBasedSelection) {
-      /* NOTE: 가는편 : 5k+1 순서는 API 기준으로 콘서트장에서 가장 먼 정류장 선택
-       * NOTE: 오는편 : 5k+1 순서는 API 기준으로 콘서트장에서 가장 가까운 정류장 선택 */
+      /* NOTE: 행사장행 : 5k+1 순서는 API 기준으로 콘서트장에서 가장 먼 정류장 선택
+       * NOTE: 귀가행 : 5k+1 순서는 API 기준으로 콘서트장에서 가장 가까운 정류장 선택 */
       const sortedByTime = remainingTravelTimes.sort((a, b) =>
         tripType === 'TO_DESTINATION'
           ? b.duration - a.duration

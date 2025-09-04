@@ -185,11 +185,11 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
       const existingRoutesOfArea = existingHandyPartyRoutes.filter((route) =>
         route.name.includes(area),
       );
-      const toDestinationRouteExists = existingRoutesOfArea.some((route) =>
-        route.name.includes('가는편'),
+      const toDestinationRouteExists = existingRoutesOfArea.some(
+        (route) => route.name.includes('행사장행'), // 핸디팟 노선명이 행사장행/귀가행으로 수정되어야함.
       );
-      const fromDestinationRouteExists = existingRoutesOfArea.some((route) =>
-        route.name.includes('오는편'),
+      const fromDestinationRouteExists = existingRoutesOfArea.some(
+        (route) => route.name.includes('귀가행'), // 핸디팟 노선명이 행사장행/귀가행으로 수정되어야함.
       );
 
       if (!toDestinationRouteExists) {

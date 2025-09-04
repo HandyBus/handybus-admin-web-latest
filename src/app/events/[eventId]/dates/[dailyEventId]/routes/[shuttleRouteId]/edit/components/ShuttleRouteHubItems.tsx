@@ -7,7 +7,7 @@ import DateTimeInput from '@/components/input/DateTimeInput';
 import RegionHubInputWithDropdown from '@/components/input/RegionHubInputWithDropdown';
 
 interface ShuttleRouteHubItemsProps {
-  title: '가는편' | '오는편';
+  title: '행사장행' | '귀가행';
   fields: FieldArrayWithId<
     FormValues,
     'shuttleRouteHubsToDestination' | 'shuttleRouteHubsFromDestination',

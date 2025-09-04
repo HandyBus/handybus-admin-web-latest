@@ -57,14 +57,14 @@ export const shuttleRouteColumns = [
     },
   }),
   shuttleRouteColumnHelper.accessor('regularPriceToDestination', {
-    header: () => '가는 편 가격',
+    header: () => '행사장행 가격',
     cell: (info) => {
       const value = info.getValue();
       return value ? value.toLocaleString() : '-';
     },
   }),
   shuttleRouteColumnHelper.accessor('regularPriceFromDestination', {
-    header: () => '오는 편 가격',
+    header: () => '귀가행 가격',
     cell: (info) => {
       const value = info.getValue();
       return value ? value.toLocaleString() : '-';
@@ -85,14 +85,14 @@ export const shuttleRouteColumns = [
     },
   }),
   shuttleRouteColumnHelper.accessor('earlybirdPriceToDestination', {
-    header: () => '얼리버드 가는 편 가격',
+    header: () => '얼리버드 행사장행 가격',
     cell: (info) => {
       const value = info.getValue();
       return value ? value.toLocaleString() : '-';
     },
   }),
   shuttleRouteColumnHelper.accessor('earlybirdPriceFromDestination', {
-    header: () => '얼리버드 오는 편 가격',
+    header: () => '얼리버드 귀가행 가격',
     cell: (info) => {
       const value = info.getValue();
       return value ? value.toLocaleString() : '-';

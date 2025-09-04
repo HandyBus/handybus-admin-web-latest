@@ -169,7 +169,7 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
       </Form.section>
       <Form.section>
         <Form.label htmlFor="toDestinationArrivalTime" required>
-          가는편 도착 시간
+          행사장행 도착 시간
         </Form.label>
         <Controller
           control={control}
@@ -181,7 +181,7 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
       </Form.section>
       <Form.section>
         <Form.label htmlFor="fromDestinationDepartureTime" required>
-          오는편 출발 시간
+          귀가행 출발 시간
         </Form.label>
         <Controller
           control={control}

@@ -62,7 +62,7 @@ const PriceSection = ({ index }: Props) => {
             </div>
             <div className="flex flex-col items-start gap-8">
               <label className="block break-keep text-16 font-500">
-                가는편
+                행사장행
               </label>
               <Controller
                 control={control}
@@ -74,7 +74,7 @@ const PriceSection = ({ index }: Props) => {
             </div>
             <div className="flex flex-col items-start gap-8">
               <label className="block break-keep text-16 font-500">
-                오는편
+                귀가행
               </label>
               <Controller
                 control={control}
@@ -129,7 +129,7 @@ const PriceSection = ({ index }: Props) => {
             </div>
             <div className="flex flex-col items-start gap-8">
               <label className="block break-keep text-16 font-500">
-                가는편
+                행사장행
                 <span className="ml-4 text-14 text-basic-blue-400">
                   {discountPercent(
                     watchRegularPrice.toDestination,
@@ -151,7 +151,7 @@ const PriceSection = ({ index }: Props) => {
             </div>
             <div className="flex flex-col items-start gap-8">
               <label className="block break-keep text-16 font-500">
-                오는편
+                귀가행
                 <span className="ml-4 text-14 text-basic-blue-400">
                   {discountPercent(
                     watchRegularPrice.fromDestination,

@@ -80,8 +80,8 @@ const RouteOptimizer = () => {
             value={tripType as string}
             onChange={(e) => setTripType(e.target.value as SingleSideTripType)}
           >
-            <option value="TO_DESTINATION">가는 편</option>
-            <option value="FROM_DESTINATION">오는 편</option>
+            <option value="TO_DESTINATION">행사장행</option>
+            <option value="FROM_DESTINATION">귀가행</option>
           </select>
           <Heading.h5 className="whitespace-nowrap">행사장소</Heading.h5>
           <EventPlaceSelect
