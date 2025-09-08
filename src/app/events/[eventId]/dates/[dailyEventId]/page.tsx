@@ -73,7 +73,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
         return -1;
       }
       if (aIndex === bIndex) {
-        return aTripType === '가는편' ? -1 : 1;
+        return aTripType === '행사장행' ? -1 : 1;
       }
       return aIndex < bIndex ? -1 : 1;
     });

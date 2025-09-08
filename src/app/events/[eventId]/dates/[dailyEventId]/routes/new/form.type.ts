@@ -22,7 +22,7 @@ export interface SingleRouteFormValues {
   earlybirdDeadline: string;
   maxPassengerCount: number;
   toDestinationHubs: ({
-    // NOTE: 가는편와 오는편 경유지는 미러링 보장
+    // NOTE: 행사장행과 귀가행 경유지는 미러링 보장
     regionId: string | null;
     regionHubId: string | null;
     latitude: number | null;

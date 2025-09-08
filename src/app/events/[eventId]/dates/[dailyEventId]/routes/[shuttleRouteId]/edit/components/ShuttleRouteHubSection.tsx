@@ -47,14 +47,14 @@ const ShuttleRouteHubSection = ({ control, defaultDate }: Props) => {
       </Callout>
 
       <ShuttleRouteHubItems
-        title="가는편"
+        title="행사장행"
         control={control}
         fieldArrayName={FIELD_ARRAY_NAMES.TO_DESTINATION}
         {...toDestinationStop}
       />
 
       <ShuttleRouteHubItems
-        title="오는편"
+        title="귀가행"
         control={control}
         fieldArrayName={FIELD_ARRAY_NAMES.FROM_DESTINATION}
         {...fromDestinationStops}

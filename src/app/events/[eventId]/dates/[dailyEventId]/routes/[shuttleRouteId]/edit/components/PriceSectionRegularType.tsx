@@ -60,7 +60,7 @@ const TripPriceInput = ({ control }: Props) => {
         />
       </div>
       <div className="flex flex-col items-start gap-8">
-        <label className="block break-keep text-16 font-500">가는편</label>
+        <label className="block break-keep text-16 font-500">행사장행</label>
         <Controller
           control={control}
           name="regularPrice.toDestination"
@@ -70,7 +70,7 @@ const TripPriceInput = ({ control }: Props) => {
         />
       </div>
       <div className="flex flex-col items-start gap-8">
-        <label className="block break-keep text-16 font-500">오는편</label>
+        <label className="block break-keep text-16 font-500">귀가행</label>
         <Controller
           control={control}
           name="regularPrice.fromDestination"
