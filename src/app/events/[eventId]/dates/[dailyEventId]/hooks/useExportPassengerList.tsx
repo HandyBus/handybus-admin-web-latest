@@ -1,0 +1,469 @@
+import { getReservations } from '@/services/reservation.service';
+import { getShuttleRoutesOfDailyEvent } from '@/services/shuttleRoute.service';
+import { ReservationViewEntity } from '@/types/reservation.type';
+import { AdminShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
+import dayjs from 'dayjs';
+import ExcelJS from 'exceljs';
+
+interface Props {
+  eventId: string;
+  dailyEventId: string;
+}
+
+const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
+  const getAllShuttleRoutes = async () => {
+    const shuttleRoutes = await getShuttleRoutesOfDailyEvent(
+      eventId,
+      dailyEventId,
+    );
+    return shuttleRoutes;
+  };
+
+  const getAllReservations = async () => {
+    const res = await getReservations({
+      eventId,
+      dailyEventId,
+      reservationStatus: 'COMPLETE_PAYMENT',
+    });
+    return res.reservations;
+  };
+
+  const getShuttleRoutesWithReservations = async () => {
+    const shuttleRoutes = await getAllShuttleRoutes();
+    const reservations = await getAllReservations();
+    const shuttleRoutesWithReservations = shuttleRoutes.map((shuttleRoute) => ({
+      shuttleRoute,
+      reservations: reservations.filter(
+        (reservation) =>
+          reservation.shuttleRouteId === shuttleRoute.shuttleRouteId,
+      ),
+    }));
+
+    return shuttleRoutesWithReservations;
+  };
+
+  const convertToExcelFormat = async (
+    shuttleRoutesWithReservations: {
+      shuttleRoute: AdminShuttleRoutesViewEntity;
+      reservations: ReservationViewEntity[];
+    }[],
+  ) => {
+    const result = [];
+    for (const shuttleRouteWithReservation of shuttleRoutesWithReservations) {
+      const { shuttleRoute, reservations } = shuttleRouteWithReservation;
+      // 행사장행
+      if (shuttleRoute.toDestinationShuttleRouteHubs !== null) {
+        const toDestinationShuttleRouteHubs =
+          shuttleRoute.toDestinationShuttleRouteHubs
+            .filter((hub) => hub.role === 'HUB')
+            .sort((a, b) => a.sequence - b.sequence);
+
+        // NOTE: 행사장행 예약 내역은 정류장을 우선으로 묶고, 이름 가나다 순으로 정렬
+        const targetReservations = reservations
+          .filter(
+            (reservation) =>
+              reservation.type === 'TO_DESTINATION' ||
+              reservation.type === 'ROUND_TRIP',
+          )
+          .sort((a, b) => {
+            const aHubSequence = toDestinationShuttleRouteHubs.findIndex(
+              (hub) =>
+                hub.shuttleRouteHubId === a.toDestinationShuttleRouteHubId,
+            );
+            const bHubSequence = toDestinationShuttleRouteHubs.findIndex(
+              (hub) =>
+                hub.shuttleRouteHubId === b.toDestinationShuttleRouteHubId,
+            );
+            const aName = a.userName || a.userNickname;
+            const bName = b.userName || b.userNickname;
+            return (
+              aHubSequence - bHubSequence ||
+              aName.localeCompare(bName) ||
+              a.createdAt.localeCompare(b.createdAt)
+            );
+          });
+
+        if (targetReservations.length === 0) {
+          continue;
+        }
+
+        const shuttleRouteHubsCount = toDestinationShuttleRouteHubs.map((hub) =>
+          targetReservations
+            .filter(
+              (reservation) =>
+                reservation.toDestinationShuttleRouteHubId ===
+                hub.shuttleRouteHubId,
+            )
+            .reduce((acc, reservation) => acc + reservation.passengerCount, 0),
+        );
+
+        const shuttleRouteHubsWithCount = toDestinationShuttleRouteHubs.map(
+          (hub, index) => ({
+            shuttleRouteHub: hub,
+            count: shuttleRouteHubsCount[index],
+          }),
+        );
+
+        const totalCount = targetReservations.reduce(
+          (acc, reservation) => acc + reservation.passengerCount,
+          0,
+        );
+
+        result.push({
+          type: 'TO_DESTINATION' as const,
+          shuttleRouteName: `[행사장행] ${shuttleRoute.name}`,
+          shuttleRoute,
+          reservations: targetReservations,
+          shuttleRouteHubsWithCount,
+          totalCount,
+        });
+      }
+
+      // 귀가행
+      if (shuttleRoute.fromDestinationShuttleRouteHubs !== null) {
+        const fromDestinationShuttleRouteHubs =
+          shuttleRoute.fromDestinationShuttleRouteHubs
+            .filter((hub) => hub.role === 'HUB')
+            .sort((a, b) => a.sequence - b.sequence);
+
+        // NOTE: 귀가행 예약 내역은 이름 가나다 순으로 정렬
+        const targetReservations = reservations
+          .filter(
+            (reservation) =>
+              reservation.type === 'FROM_DESTINATION' ||
+              reservation.type === 'ROUND_TRIP',
+          )
+          .sort((a, b) => {
+            const aHubSequence = fromDestinationShuttleRouteHubs.findIndex(
+              (hub) =>
+                hub.shuttleRouteHubId === a.toDestinationShuttleRouteHubId,
+            );
+            const bHubSequence = fromDestinationShuttleRouteHubs.findIndex(
+              (hub) =>
+                hub.shuttleRouteHubId === b.toDestinationShuttleRouteHubId,
+            );
+            const aName = a.userName || a.userNickname;
+            const bName = b.userName || b.userNickname;
+            return (
+              aName.localeCompare(bName) ||
+              aHubSequence - bHubSequence ||
+              a.createdAt.localeCompare(b.createdAt)
+            );
+          });
+
+        if (targetReservations.length === 0) {
+          continue;
+        }
+
+        const shuttleRouteHubsCount = fromDestinationShuttleRouteHubs.map(
+          (hub) =>
+            targetReservations
+              .filter(
+                (reservation) =>
+                  reservation.fromDestinationShuttleRouteHubId ===
+                  hub.shuttleRouteHubId,
+              )
+              .reduce(
+                (acc, reservation) => acc + reservation.passengerCount,
+                0,
+              ),
+        );
+
+        const shuttleRouteHubsWithCount = fromDestinationShuttleRouteHubs.map(
+          (hub, index) => ({
+            shuttleRouteHub: hub,
+            count: shuttleRouteHubsCount[index],
+          }),
+        );
+
+        const totalCount = targetReservations.reduce(
+          (acc, reservation) => acc + reservation.passengerCount,
+          0,
+        );
+
+        result.push({
+          type: 'FROM_DESTINATION' as const,
+          shuttleRouteName: `[귀가행] ${shuttleRoute.name}`,
+          shuttleRoute,
+          reservations: targetReservations,
+          shuttleRouteHubsWithCount,
+          totalCount,
+        });
+      }
+    }
+
+    return result;
+  };
+
+  const exportExcel = async () => {
+    const shuttleRoutesWithReservations =
+      await getShuttleRoutesWithReservations();
+    const excelData = await convertToExcelFormat(shuttleRoutesWithReservations);
+
+    const dailyEventDate = dayjs(
+      shuttleRoutesWithReservations?.[0]?.shuttleRoute.event.dailyEvents.find(
+        (dailyEvent) => dailyEvent.dailyEventId === dailyEventId,
+      )?.date,
+    )
+      .tz('Asia/Seoul')
+      .format('MM/DD');
+
+    const workbook = new ExcelJS.Workbook();
+
+    // 각 노선별로 별도의 worksheet 생성
+    excelData.forEach((routeData) => {
+      const worksheetName = routeData.shuttleRouteName.replace(/[\[\]]/g, '');
+      const worksheet = workbook.addWorksheet(`${worksheetName}`);
+
+      // 안내 문구 (첫 번째 행)
+      const noticeCell = worksheet.getCell('A1');
+      noticeCell.value = '명단과 함께 탑승권을 반드시 확인해주세요.';
+      noticeCell.font = {
+        color: { argb: 'FFDC2626' },
+        bold: true,
+        size: 11,
+      };
+      noticeCell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFFFFFFF' },
+      };
+      noticeCell.alignment = { horizontal: 'center', vertical: 'middle' };
+      noticeCell.border = {
+        top: { style: 'medium', color: { argb: 'FFB91C1C' } },
+        left: { style: 'medium', color: { argb: 'FFB91C1C' } },
+        bottom: { style: 'medium', color: { argb: 'FFB91C1C' } },
+        right: { style: 'medium', color: { argb: 'FFB91C1C' } },
+      };
+      worksheet.mergeCells('A1:E1');
+
+      // 노선 이름 헤더 (진한 파란색 배경, 흰색 글자)
+      const routeNameCell = worksheet.getCell('A2');
+      routeNameCell.value = `[${dailyEventDate}] ${routeData.shuttleRouteName}`;
+      routeNameCell.font = {
+        color: { argb: 'FFFFFFFF' },
+        bold: true,
+        size: 13,
+      };
+      routeNameCell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF1E3A8A' },
+      };
+      routeNameCell.alignment = { horizontal: 'center', vertical: 'middle' };
+      routeNameCell.border = {
+        top: { style: 'thick', color: { argb: 'FF1E40A3' } },
+        left: { style: 'thick', color: { argb: 'FF1E40A3' } },
+        bottom: { style: 'thick', color: { argb: 'FF1E40A3' } },
+        right: { style: 'thick', color: { argb: 'FF1E40A3' } },
+      };
+      worksheet.mergeCells('A2:E2');
+
+      // 열 헤더 (진한 회색 배경, 흰색 글자, 테두리)
+      const headers = [
+        '확인',
+        '이름',
+        '전화번호',
+        '인원 수',
+        routeData.type === 'TO_DESTINATION' ? '탑승지' : '하차지',
+      ];
+      headers.forEach((header, headerIndex) => {
+        const cell = worksheet.getCell(3, headerIndex + 1);
+        cell.value = header;
+        cell.font = { color: { argb: 'FFFFFFFF' }, bold: true, size: 12 };
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FF374151' },
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'FF6B7280' } },
+          left: { style: 'thin', color: { argb: 'FF6B7280' } },
+          bottom: { style: 'thin', color: { argb: 'FF6B7280' } },
+          right: { style: 'thin', color: { argb: 'FF6B7280' } },
+        };
+      });
+
+      // 예약 내역 데이터 추가
+      routeData.reservations.forEach((reservation, reservationIndex) => {
+        const rowIndex = reservationIndex + 4; // 헤더 다음 행부터 시작
+
+        // 체크박스 (첫 번째 열)
+        const checkboxCell = worksheet.getCell(rowIndex, 1);
+        checkboxCell.value = '☐'; // 빈 체크박스 문자
+        checkboxCell.alignment = { horizontal: 'center', vertical: 'middle' };
+        checkboxCell.font = { size: 14 };
+        checkboxCell.border = {
+          top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        };
+
+        // 이름
+        const nameCell = worksheet.getCell(rowIndex, 2);
+        nameCell.value = reservation.userName || reservation.userNickname || '';
+        nameCell.border = {
+          top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        };
+
+        // 전화번호
+        const phoneCell = worksheet.getCell(rowIndex, 3);
+        phoneCell.value =
+          '010-' +
+            reservation.userPhoneNumber.slice(5, 9) +
+            '-' +
+            reservation.userPhoneNumber.slice(9) || '';
+        phoneCell.border = {
+          top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        };
+
+        // 인원 수
+        const countCell = worksheet.getCell(rowIndex, 4);
+        countCell.value = reservation.passengerCount;
+        countCell.alignment = { horizontal: 'center' };
+        countCell.border = {
+          top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        };
+
+        // 탑승지/하차지 + 정류장별 현황
+        const hubCell = worksheet.getCell(rowIndex, 5);
+        const targetHub =
+          routeData.type === 'TO_DESTINATION'
+            ? routeData.shuttleRoute.toDestinationShuttleRouteHubs.find(
+                (hub) =>
+                  hub.shuttleRouteHubId ===
+                  reservation.toDestinationShuttleRouteHubId,
+              )
+            : routeData.shuttleRoute.fromDestinationShuttleRouteHubs.find(
+                (hub) =>
+                  hub.shuttleRouteHubId ===
+                  reservation.fromDestinationShuttleRouteHubId,
+              );
+        hubCell.value = targetHub?.name || '';
+        hubCell.alignment = {
+          horizontal: 'left',
+          vertical: 'top',
+          wrapText: true,
+        };
+        hubCell.border = {
+          top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        };
+      });
+
+      // 마지막 열에 총 인원 수와 정류장별 현황 추가
+      const lastCell = worksheet.getCell(routeData.reservations.length + 4, 5);
+      const totalCountText = `총 인원: ${routeData.totalCount}명`;
+      const hubStatusText =
+        routeData.type === 'TO_DESTINATION'
+          ? routeData.shuttleRouteHubsWithCount
+              .map((hubWithCount) => {
+                const arrivalTime = hubWithCount.shuttleRouteHub.arrivalTime
+                  ? dayjs(hubWithCount.shuttleRouteHub.arrivalTime)
+                      .tz('Asia/Seoul')
+                      .format('HH:mm')
+                  : '';
+                return `${hubWithCount.shuttleRouteHub.name}: ${hubWithCount.count}명 (${arrivalTime} 도착)`;
+              })
+              .join('\n')
+          : routeData.shuttleRouteHubsWithCount
+              .map((hubWithCount) => {
+                // const arrivalTime = hubWithCount.shuttleRouteHub.arrivalTime
+                //   ? dayjs(hubWithCount.shuttleRouteHub.arrivalTime)
+                //       .tz('Asia/Seoul')
+                //       .format('HH:mm')
+                //   : '';
+                return `${hubWithCount.shuttleRouteHub.name}: ${hubWithCount.count}명`;
+              })
+              .join('\n');
+      const destinationHub =
+        routeData.type === 'TO_DESTINATION'
+          ? routeData.shuttleRoute.toDestinationShuttleRouteHubs.find(
+              (hub) => hub.role === 'DESTINATION',
+            )
+          : routeData.shuttleRoute.fromDestinationShuttleRouteHubs.find(
+              (hub) => hub.role === 'DESTINATION',
+            );
+      const destinationHubArrivalTime = destinationHub?.arrivalTime
+        ? dayjs(destinationHub.arrivalTime).tz('Asia/Seoul').format('HH:mm')
+        : '';
+      const destinationHubStatusText =
+        routeData.type === 'TO_DESTINATION'
+          ? `${destinationHub?.name || ''}: - (${destinationHubArrivalTime} 도착)`
+          : `${destinationHub?.name || ''}: -`;
+      lastCell.value =
+        routeData.type === 'TO_DESTINATION'
+          ? `${totalCountText}\n\n${hubStatusText}\n${destinationHubStatusText}`
+          : `${totalCountText}\n\n${destinationHubStatusText}\n${hubStatusText}`;
+      lastCell.alignment = {
+        horizontal: 'left',
+        vertical: 'top',
+        wrapText: true,
+        indent: 1,
+      };
+      lastCell.font = {
+        name: '맑은 고딕',
+        size: 11,
+        bold: true,
+      };
+      lastCell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFF8F9FA' },
+      };
+      lastCell.border = {
+        top: { style: 'thin', color: { argb: '12121212' } },
+        left: { style: 'thin', color: { argb: '12121212' } },
+        bottom: { style: 'thin', color: { argb: '12121212' } },
+        right: { style: 'thin', color: { argb: '12121212' } },
+      };
+
+      worksheet.columns = [
+        { width: 8 }, // 체크박스
+        { width: 15 }, // 이름
+        { width: 20 }, // 전화번호
+        { width: 8 }, // 인원 수
+        { width: 50 }, // 탑승지/하차지 + 정류장별 현황
+      ];
+    });
+
+    // 브라우저에서 Excel 파일 다운로드
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    const eventName =
+      shuttleRoutesWithReservations?.[0].shuttleRoute.event.eventName || '';
+    const formattedDailyEventDate = dailyEventDate.replace('/', '_');
+    link.download = `${eventName}_${formattedDailyEventDate}_탑승자_명단.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+
+    return excelData;
+  };
+
+  return {
+    exportExcel,
+  };
+};
+
+export default useExportPassengerList;

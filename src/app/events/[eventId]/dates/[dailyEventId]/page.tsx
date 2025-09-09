@@ -20,6 +20,7 @@ import { HANDY_PARTY_PREFIX } from '@/constants/common';
 import { HANDY_PARTY_ROUTE_AREA } from '@/constants/handyPartyArea.const';
 import EditDailyEventOpenChatUrl from './EditDailyEventOpenChatUrl';
 import { useSendShuttleInformation } from '@/services/solapi.service';
+import useExportPassengerList from './hooks/useExportPassengerList';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -135,6 +136,16 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     alert(`탑승정보 알림톡 발송 완료`);
   };
 
+  const { exportExcel } = useExportPassengerList({
+    eventId,
+    dailyEventId,
+  });
+  const handleExportPassengerList = async () => {
+    const excelData = await exportExcel();
+    console.log(excelData);
+    return excelData;
+  };
+
   useEffect(() => {
     if (event && !dailyEvent) {
       notFound();
@@ -210,6 +221,12 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
             dailyEventId={dailyEventId}
             openChatUrl={hasOpenChatUrl}
           />
+          <button
+            className="text-14 text-basic-blue-400 underline underline-offset-[3px]"
+            onClick={handleExportPassengerList}
+          >
+            탑승자 명단 다운로드
+          </button>
         </Heading.h2>
         <div className="mb-12 flex justify-start gap-20 bg-basic-grey-100 px-20 py-12">
           <h5 className="whitespace-nowrap text-14">핸디팟 기능 :</h5>
