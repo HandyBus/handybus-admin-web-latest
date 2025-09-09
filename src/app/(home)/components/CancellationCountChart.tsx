@@ -22,13 +22,8 @@ const CancellationCountChart = ({ options }: Props) => {
   );
 
   const parsedCancelledReservationCounts = cancelledReservationCounts?.map(
-    (item, index) => ({
-      intervalCancellationCount:
-        item.intervalCancellationCount +
-        (cancelledReservationCounts?.[index]?.intervalCancellationCount ?? 0),
-      cumulativeCancellationCount:
-        item.cumulativeCancellationCount +
-        (cancelledReservationCounts?.[index]?.cumulativeCancellationCount ?? 0),
+    (item) => ({
+      ...item,
       date: dayjs(item.date).tz('Asia/Seoul').format('MM.DD.'),
     }),
   );
