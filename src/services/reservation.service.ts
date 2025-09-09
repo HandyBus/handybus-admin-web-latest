@@ -21,6 +21,7 @@ import {
 import dayjs from 'dayjs';
 import {
   DashboardOptions,
+  TotalCancellationCountsReadModelSchema,
   TotalReservationCountsReadModelSchema,
   TotalReservationPassengerCountsReadModelSchema,
 } from '@/types/dashboard.type';
@@ -219,6 +220,40 @@ export const useGetTotalReservationCounts = (
   return useQuery({
     queryKey: ['reservation', 'count', options],
     queryFn: () => getTotalReservationCounts(options),
+  });
+};
+
+export const getCancelledReservationCounts = async ({
+  baseDate = dayjs().tz().endOf('day').toISOString(),
+  totalRangeDate = 1,
+  intervalDays = 1,
+  ...options
+}: Partial<GetTotalReservationPassengerCountsOptions> = {}) => {
+  const res = await authInstance.get(
+    `/v2/shuttle-operation/admin/reservations/all/total-cancellations${toSearchParamString(
+      {
+        baseDate,
+        totalRangeDate,
+        intervalDays,
+        ...options,
+      },
+      '?',
+    )}`,
+    {
+      shape: {
+        totalCancellationCounts: TotalCancellationCountsReadModelSchema.array(),
+      },
+    },
+  );
+  return res.totalCancellationCounts;
+};
+
+export const useGetCancelledReservationCounts = (
+  options?: Partial<GetTotalReservationPassengerCountsOptions>,
+) => {
+  return useQuery({
+    queryKey: ['cancelled-reservation', 'count', options],
+    queryFn: () => getCancelledReservationCounts(options),
   });
 };
 

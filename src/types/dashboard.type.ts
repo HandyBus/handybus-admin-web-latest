@@ -44,6 +44,15 @@ export type TotalReservationCountsReadModel = z.infer<
   typeof TotalReservationCountsReadModelSchema
 >;
 
+export const TotalCancellationCountsReadModelSchema = z.object({
+  date: z.string(),
+  intervalCancellationCount: z.number(),
+  cumulativeCancellationCount: z.number(),
+});
+export type TotalCancellationCountsReadModel = z.infer<
+  typeof TotalCancellationCountsReadModelSchema
+>;
+
 export const TotalSalesCountsReadModelSchema = z.object({
   date: z.string(),
   dailyGrossSales: z.number(), // 총 판매액
