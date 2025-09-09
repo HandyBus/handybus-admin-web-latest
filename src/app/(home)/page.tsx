@@ -11,6 +11,7 @@ import CountFilter from './components/CountFilter';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import UserFunnelChart from './components/UserFunnelChart';
+import CancellationCountChart from './components/CancellationCountChart';
 
 const GA_LINK =
   'https://analytics.google.com/analytics/web/?hl=ko#/p464197268/reports/intelligenthome';
@@ -76,6 +77,7 @@ const Page = () => {
             <UserCountChart options={countFilter} />
             <DemandCountChart options={countFilter} />
             <ReservationPassengerCountChart options={countFilter} />
+            <CancellationCountChart options={countFilter} />
             <SalesCountChart options={countFilter} />
             <ReviewCountChart options={countFilter} />
           </div>
