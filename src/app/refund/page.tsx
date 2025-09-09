@@ -8,6 +8,7 @@ import {
   getProcessingStats,
   ProcessedCsvRow,
 } from '@/utils/csvProcessor.util';
+import dayjs from 'dayjs';
 
 const Page = () => {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -43,7 +44,11 @@ const Page = () => {
     if (result.length === 0) return;
 
     const csvContent = convertToCsv(result);
-    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+    const timestamp = dayjs()
+      .tz('Asia/Seoul')
+      .toISOString()
+      .slice(0, 19)
+      .replace(/:/g, '-');
     const filename = `refund_processed_data_${timestamp}.csv`;
 
     downloadCsv(csvContent, filename);
