@@ -49,6 +49,7 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
     }[],
   ) => {
     const result = [];
+
     for (const shuttleRouteWithReservation of shuttleRoutesWithReservations) {
       const { shuttleRoute, reservations } = shuttleRouteWithReservation;
       // 행사장행
@@ -83,40 +84,42 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
             );
           });
 
-        if (targetReservations.length === 0) {
-          continue;
+        if (targetReservations.length > 0) {
+          const shuttleRouteHubsCount = toDestinationShuttleRouteHubs.map(
+            (hub) =>
+              targetReservations
+                .filter(
+                  (reservation) =>
+                    reservation.toDestinationShuttleRouteHubId ===
+                    hub.shuttleRouteHubId,
+                )
+                .reduce(
+                  (acc, reservation) => acc + reservation.passengerCount,
+                  0,
+                ),
+          );
+
+          const shuttleRouteHubsWithCount = toDestinationShuttleRouteHubs.map(
+            (hub, index) => ({
+              shuttleRouteHub: hub,
+              count: shuttleRouteHubsCount[index],
+            }),
+          );
+
+          const totalCount = targetReservations.reduce(
+            (acc, reservation) => acc + reservation.passengerCount,
+            0,
+          );
+
+          result.push({
+            type: 'TO_DESTINATION' as const,
+            shuttleRouteName: `[행사장행] ${shuttleRoute.name}`,
+            shuttleRoute,
+            reservations: targetReservations,
+            shuttleRouteHubsWithCount,
+            totalCount,
+          });
         }
-
-        const shuttleRouteHubsCount = toDestinationShuttleRouteHubs.map((hub) =>
-          targetReservations
-            .filter(
-              (reservation) =>
-                reservation.toDestinationShuttleRouteHubId ===
-                hub.shuttleRouteHubId,
-            )
-            .reduce((acc, reservation) => acc + reservation.passengerCount, 0),
-        );
-
-        const shuttleRouteHubsWithCount = toDestinationShuttleRouteHubs.map(
-          (hub, index) => ({
-            shuttleRouteHub: hub,
-            count: shuttleRouteHubsCount[index],
-          }),
-        );
-
-        const totalCount = targetReservations.reduce(
-          (acc, reservation) => acc + reservation.passengerCount,
-          0,
-        );
-
-        result.push({
-          type: 'TO_DESTINATION' as const,
-          shuttleRouteName: `[행사장행] ${shuttleRoute.name}`,
-          shuttleRoute,
-          reservations: targetReservations,
-          shuttleRouteHubsWithCount,
-          totalCount,
-        });
       }
 
       // 귀가행
@@ -136,11 +139,11 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
           .sort((a, b) => {
             const aHubSequence = fromDestinationShuttleRouteHubs.findIndex(
               (hub) =>
-                hub.shuttleRouteHubId === a.toDestinationShuttleRouteHubId,
+                hub.shuttleRouteHubId === a.fromDestinationShuttleRouteHubId,
             );
             const bHubSequence = fromDestinationShuttleRouteHubs.findIndex(
               (hub) =>
-                hub.shuttleRouteHubId === b.toDestinationShuttleRouteHubId,
+                hub.shuttleRouteHubId === b.fromDestinationShuttleRouteHubId,
             );
             const aName = a.userName || a.userNickname;
             const bName = b.userName || b.userNickname;
@@ -151,44 +154,42 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
             );
           });
 
-        if (targetReservations.length === 0) {
-          continue;
+        if (targetReservations.length > 0) {
+          const shuttleRouteHubsCount = fromDestinationShuttleRouteHubs.map(
+            (hub) =>
+              targetReservations
+                .filter(
+                  (reservation) =>
+                    reservation.fromDestinationShuttleRouteHubId ===
+                    hub.shuttleRouteHubId,
+                )
+                .reduce(
+                  (acc, reservation) => acc + reservation.passengerCount,
+                  0,
+                ),
+          );
+
+          const shuttleRouteHubsWithCount = fromDestinationShuttleRouteHubs.map(
+            (hub, index) => ({
+              shuttleRouteHub: hub,
+              count: shuttleRouteHubsCount[index],
+            }),
+          );
+
+          const totalCount = targetReservations.reduce(
+            (acc, reservation) => acc + reservation.passengerCount,
+            0,
+          );
+
+          result.push({
+            type: 'FROM_DESTINATION' as const,
+            shuttleRouteName: `[귀가행] ${shuttleRoute.name}`,
+            shuttleRoute,
+            reservations: targetReservations,
+            shuttleRouteHubsWithCount,
+            totalCount,
+          });
         }
-
-        const shuttleRouteHubsCount = fromDestinationShuttleRouteHubs.map(
-          (hub) =>
-            targetReservations
-              .filter(
-                (reservation) =>
-                  reservation.fromDestinationShuttleRouteHubId ===
-                  hub.shuttleRouteHubId,
-              )
-              .reduce(
-                (acc, reservation) => acc + reservation.passengerCount,
-                0,
-              ),
-        );
-
-        const shuttleRouteHubsWithCount = fromDestinationShuttleRouteHubs.map(
-          (hub, index) => ({
-            shuttleRouteHub: hub,
-            count: shuttleRouteHubsCount[index],
-          }),
-        );
-
-        const totalCount = targetReservations.reduce(
-          (acc, reservation) => acc + reservation.passengerCount,
-          0,
-        );
-
-        result.push({
-          type: 'FROM_DESTINATION' as const,
-          shuttleRouteName: `[귀가행] ${shuttleRoute.name}`,
-          shuttleRoute,
-          reservations: targetReservations,
-          shuttleRouteHubsWithCount,
-          totalCount,
-        });
       }
     }
 
