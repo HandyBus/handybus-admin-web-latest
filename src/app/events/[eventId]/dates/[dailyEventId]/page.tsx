@@ -142,7 +142,6 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
   });
   const handleExportPassengerList = async () => {
     const excelData = await exportExcel();
-    console.log(excelData);
     return excelData;
   };
 
