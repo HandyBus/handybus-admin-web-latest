@@ -30,11 +30,11 @@ export const columns = [
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('toDestinationCount', {
-    header: '가는 편 수요',
+    header: '행사장행 수요',
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('fromDestinationCount', {
-    header: '오는 편 수요',
+    header: '귀가행 수요',
     cell: (info) => info.getValue(),
   }),
 ];

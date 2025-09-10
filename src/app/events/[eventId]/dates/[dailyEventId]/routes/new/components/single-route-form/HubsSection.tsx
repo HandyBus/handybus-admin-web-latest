@@ -107,7 +107,7 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
     ],
   );
 
-  // 가는편 경유지 시간 계산
+  // 행사장행 경유지 시간 계산
   const handleCalculateToDestinationArrivalTimes = useCallback(
     async (hubsArray: RouteHubData[]) => {
       const result = await calculateUnionTimes(hubsArray);
@@ -118,7 +118,7 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
     [setValue, index],
   );
 
-  // 오는편 경유지 시간 계산
+  // 귀가행 경유지 시간 계산
   const handleCalculateFromDestinationArrivalTimes = useCallback(
     async (hubsArray: RouteHubData[]) => {
       const result = await calculateRouteTimes('fromDestination', hubsArray);
@@ -185,7 +185,7 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
       await handleCalculateToDestinationArrivalTimes(toDestinationHubsData);
     } catch (error) {
       alert(
-        '가는편 경로 소요 시간 계산 중 오류가 발생했습니다.\n' +
+        '행사장행 경로 소요 시간 계산 중 오류가 발생했습니다.\n' +
           (error instanceof Error ? error.message : '알 수 없는 오류'),
       );
       return;
@@ -194,7 +194,7 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
       await handleCalculateFromDestinationArrivalTimes(fromDestinationHubsData);
     } catch (error) {
       alert(
-        '오는편 경로 소요 시간 계산 중 오류가 발생했습니다.\n' +
+        '귀가행 경로 소요 시간 계산 중 오류가 발생했습니다.\n' +
           (error instanceof Error ? error.message : '알 수 없는 오류'),
       );
       return;
@@ -216,7 +216,7 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
       <Form.label required>경유지</Form.label>
       <article className="pb-12">
         <Heading.h5 backgroundColor="yellow" className="flex">
-          가는편
+          행사장행
           <button
             type="button"
             onClick={handleAddToDestinationHub}
@@ -313,7 +313,7 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
           backgroundColor="yellow"
           className="flex items-baseline gap-12"
         >
-          오는편{' '}
+          귀가행{' '}
           <span className="text-12 font-400 text-basic-blue-400">
             (미러링 보장)
           </span>

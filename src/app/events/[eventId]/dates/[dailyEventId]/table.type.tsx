@@ -42,9 +42,9 @@ export const getColumns = (alertRequestCounts: Record<string, number>) => [
 
       return (
         <div className="grid grid-cols-2 items-center gap-x-16">
-          <span className="text-right text-basic-grey-600">가는편:</span>
+          <span className="text-right text-basic-grey-600">행사장행:</span>
           <span className="font-500">{formattedRegularPriceToDestination}</span>
-          <span className="text-right text-basic-grey-600">오는편:</span>
+          <span className="text-right text-basic-grey-600">귀가행:</span>
           <span className="font-500">
             {formattedRegularPriceFromDestination}
           </span>
@@ -55,7 +55,7 @@ export const getColumns = (alertRequestCounts: Record<string, number>) => [
     },
   }),
   columnHelper.accessor('toDestinationCount', {
-    header: () => '가는 편',
+    header: () => '행사장행',
     cell: (info) => {
       const count = info.getValue();
       if (count === null) {
@@ -79,7 +79,7 @@ export const getColumns = (alertRequestCounts: Record<string, number>) => [
     },
   }),
   columnHelper.accessor('fromDestinationCount', {
-    header: () => '오는 편',
+    header: () => '귀가행',
     cell: (info) => {
       const count = info.getValue();
       if (count === null) {
