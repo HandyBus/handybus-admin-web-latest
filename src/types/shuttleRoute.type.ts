@@ -5,8 +5,8 @@ import { ActiveStatusEnum } from './common.type';
 // ----- ENUM -----
 
 export const TripTypeEnum = z.enum([
-  'TO_DESTINATION', // 가는편
-  'FROM_DESTINATION', // 오는편
+  'TO_DESTINATION', // 행사장행
+  'FROM_DESTINATION', // 귀가행
   'ROUND_TRIP', // 왕복행
 ]);
 export type TripType = z.infer<typeof TripTypeEnum>;

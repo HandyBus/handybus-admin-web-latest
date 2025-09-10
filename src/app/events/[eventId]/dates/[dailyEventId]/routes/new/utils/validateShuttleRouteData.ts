@@ -17,13 +17,13 @@ export const validateShuttleRouteData = (
   const tripType = checkTripType(forwardHubs, returnHubs);
   switch (true) {
     case tripType === 'none':
-      throw new Error('가는편/오는편의 정류장을 채워주세요.');
+      throw new Error('행사장행/귀가행의 정류장을 채워주세요.');
     case !validateEachSequenceOrder(forwardHubs) ||
       !validateEachSequenceOrder(returnHubs):
       throw new Error('정류장들의 순서가 올바르지 않습니다.');
     case tripType === 'roundTrip' &&
       !validateFromToOrder(forwardHubs, returnHubs):
-      throw new Error('가는편/오는편의 정류장들의 순서가 올바르지 않습니다.');
+      throw new Error('행사장행/귀가행의 정류장들의 순서가 올바르지 않습니다.');
     case tripType === 'roundTrip' &&
       !validateHubsMatch(forwardHubs, returnHubs):
       throw new Error('정류장들의 목록이 서로 일치하지 않습니다.');
