@@ -211,6 +211,253 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
 
     const workbook = new ExcelJS.Workbook();
 
+    // 첫 번째/두 번째 탭: 전체 탑승객 명단 (행사장행 / 귀가행)
+    const buildAllPassengers = (
+      tripType: 'TO_DESTINATION' | 'FROM_DESTINATION',
+    ) =>
+      excelData
+        .filter((routeData) => routeData.type === tripType)
+        .flatMap((routeData) =>
+          routeData.reservations.map((reservation) => {
+            const typeLabel =
+              routeData.type === 'TO_DESTINATION' ? '행사장행' : '귀가행';
+            const targetHub =
+              routeData.type === 'TO_DESTINATION'
+                ? routeData.shuttleRoute.toDestinationShuttleRouteHubs?.find(
+                    (hub) =>
+                      hub.shuttleRouteHubId ===
+                      reservation.toDestinationShuttleRouteHubId,
+                  )
+                : routeData.shuttleRoute.fromDestinationShuttleRouteHubs?.find(
+                    (hub) =>
+                      hub.shuttleRouteHubId ===
+                      reservation.fromDestinationShuttleRouteHubId,
+                  );
+
+            return {
+              userName: reservation.userName || reservation.userNickname || '',
+              userPhoneNumber: reservation.userPhoneNumber,
+              passengerCount: reservation.passengerCount,
+              routeName: routeData.shuttleRoute.name,
+              typeLabel,
+              hubName: targetHub?.name || '',
+              createdAt: reservation.createdAt,
+            };
+          }),
+        )
+        .sort(
+          (a, b) =>
+            a.routeName.localeCompare(b.routeName) ||
+            a.typeLabel.localeCompare(b.typeLabel) ||
+            a.userName.localeCompare(b.userName) ||
+            a.createdAt.localeCompare(b.createdAt),
+        );
+
+    const createAllPassengersWorksheet = (
+      tripType: 'TO_DESTINATION' | 'FROM_DESTINATION',
+    ) => {
+      const label = tripType === 'TO_DESTINATION' ? '행사장행' : '귀가행';
+      const passengers = buildAllPassengers(tripType);
+      const worksheet = workbook.addWorksheet(`전체 탑승객 명단 (${label})`);
+
+      // 안내 문구 (첫 번째 행)
+      const noticeCell = worksheet.getCell('A1');
+      noticeCell.value = '명단과 함께 탑승권을 반드시 확인해주세요.';
+      noticeCell.font = {
+        color: { argb: 'FFDC2626' },
+        bold: true,
+        size: 11,
+      };
+      noticeCell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFFFFFFF' },
+      };
+      noticeCell.alignment = { horizontal: 'center', vertical: 'middle' };
+      noticeCell.border = {
+        top: { style: 'medium', color: { argb: 'FFB91C1C' } },
+        left: { style: 'medium', color: { argb: 'FFB91C1C' } },
+        bottom: { style: 'medium', color: { argb: 'FFB91C1C' } },
+        right: { style: 'medium', color: { argb: 'FFB91C1C' } },
+      };
+      worksheet.mergeCells('A1:G1');
+
+      // 제목 (둘째 행)
+      const titleCell = worksheet.getCell('A2');
+      titleCell.value = `[${dailyEventDate}] 전체 탑승객 명단 (${label})`;
+      titleCell.font = {
+        color: { argb: 'FFFFFFFF' },
+        bold: true,
+        size: 13,
+      };
+      titleCell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF1E3A8A' },
+      };
+      titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+      titleCell.border = {
+        top: { style: 'thick', color: { argb: 'FF1E40A3' } },
+        left: { style: 'thick', color: { argb: 'FF1E40A3' } },
+        bottom: { style: 'thick', color: { argb: 'FF1E40A3' } },
+        right: { style: 'thick', color: { argb: 'FF1E40A3' } },
+      };
+      worksheet.mergeCells('A2:G2');
+
+      // 헤더 (셋째 행)
+      const headers = [
+        '확인',
+        '이름',
+        '전화번호',
+        '인원 수',
+        '노선명',
+        '방향',
+        '정류장',
+      ];
+      headers.forEach((header, headerIndex) => {
+        const cell = worksheet.getCell(3, headerIndex + 1);
+        cell.value = header;
+        cell.font = { color: { argb: 'FFFFFFFF' }, bold: true, size: 12 };
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FF374151' },
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'FF6B7280' } },
+          left: { style: 'thin', color: { argb: 'FF6B7280' } },
+          bottom: { style: 'thin', color: { argb: 'FF6B7280' } },
+          right: { style: 'thin', color: { argb: 'FF6B7280' } },
+        };
+      });
+
+      // 데이터 행
+      passengers.forEach((p, index) => {
+        const rowIndex = index + 4;
+
+        const checkboxCell = worksheet.getCell(rowIndex, 1);
+        checkboxCell.value = '☐';
+        checkboxCell.alignment = { horizontal: 'center', vertical: 'middle' };
+        checkboxCell.font = { size: 14 };
+        checkboxCell.border = {
+          top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        };
+
+        const nameCell = worksheet.getCell(rowIndex, 2);
+        nameCell.value = p.userName;
+        nameCell.border = {
+          top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        };
+
+        const phoneCell = worksheet.getCell(rowIndex, 3);
+        phoneCell.value =
+          '010-' +
+          p.userPhoneNumber.slice(5, 9) +
+          '-' +
+          p.userPhoneNumber.slice(9);
+        phoneCell.border = {
+          top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        };
+
+        const countCell = worksheet.getCell(rowIndex, 4);
+        countCell.value = p.passengerCount;
+        countCell.alignment = { horizontal: 'center' };
+        countCell.border = {
+          top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        };
+
+        const routeNameCell = worksheet.getCell(rowIndex, 5);
+        routeNameCell.value = p.routeName;
+        routeNameCell.border = {
+          top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        };
+
+        const typeCell = worksheet.getCell(rowIndex, 6);
+        typeCell.value = p.typeLabel;
+        typeCell.alignment = { horizontal: 'center' };
+        typeCell.border = {
+          top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        };
+
+        const hubCell = worksheet.getCell(rowIndex, 7);
+        hubCell.value = p.hubName;
+        hubCell.alignment = {
+          horizontal: 'left',
+          vertical: 'top',
+          wrapText: true,
+        };
+        hubCell.border = {
+          top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+          right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        };
+      });
+
+      // 총 인원 표시
+      const totalCell = worksheet.getCell(passengers.length + 4, 7);
+      const totalCount = passengers.reduce(
+        (acc, cur) => acc + (cur.passengerCount || 0),
+        0,
+      );
+      totalCell.value = `총 인원: ${totalCount}명`;
+      totalCell.alignment = {
+        horizontal: 'left',
+        vertical: 'top',
+        wrapText: true,
+        indent: 1,
+      };
+      totalCell.font = {
+        name: '맑은 고딕',
+        size: 11,
+        bold: true,
+      };
+      totalCell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFF8F9FA' },
+      };
+      totalCell.border = {
+        top: { style: 'thin', color: { argb: '12121212' } },
+        left: { style: 'thin', color: { argb: '12121212' } },
+        bottom: { style: 'thin', color: { argb: '12121212' } },
+        right: { style: 'thin', color: { argb: '12121212' } },
+      };
+
+      worksheet.columns = [
+        { width: 8 },
+        { width: 15 },
+        { width: 20 },
+        { width: 8 },
+        { width: 30 },
+        { width: 10 },
+        { width: 40 },
+      ];
+    };
+
+    // 첫 두 시트로 생성
+    createAllPassengersWorksheet('TO_DESTINATION');
+    createAllPassengersWorksheet('FROM_DESTINATION');
+
     // 각 노선별로 별도의 worksheet 생성
     excelData.forEach((routeData) => {
       const worksheetName = routeData.shuttleRouteName.replace(/[\[\]]/g, '');
