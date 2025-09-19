@@ -15,7 +15,6 @@ import UserFilter from './components/UserFilter';
 const Page = () => {
   const [option, dispatch] = useUserFilter({
     status: 'ACTIVE',
-    onboardingComplete: true,
   });
   const {
     data: users,
