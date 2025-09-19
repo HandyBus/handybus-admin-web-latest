@@ -7,6 +7,7 @@ import KakaoMapScript from '../script/KakaoMapScript';
 import { useGetRegionHubsWithoutPagination } from '@/services/hub.service';
 import { findRegionId, toAddress } from '@/utils/region.util';
 import { standardizeRegionName } from '@/utils/region.util';
+import Roadview from '@/app/locations/components/Roadview';
 
 const MAP_CONSTANTS = {
   INITIAL_ZOOM_LEVEL: 4,
@@ -39,6 +40,7 @@ const INITIAL_ZOOM_LEVEL = 4;
 
 const CoordInput = ({ coord, setCoord }: Props) => {
   const [mapInitialized, setMapInitialized] = useState(false);
+  const [isKakaoReady, setIsKakaoReady] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
   const [hasRequestedSearch, setHasRequestedSearch] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -317,7 +319,12 @@ const CoordInput = ({ coord, setCoord }: Props) => {
   return (
     <>
       <KakaoMapScript
-        onReady={() => window.kakao.maps.load(initializeMap)}
+        onReady={() =>
+          window.kakao.maps.load(() => {
+            setIsKakaoReady(true);
+            initializeMap();
+          })
+        }
         libraries={['services']}
       />
       <article className="relative h-auto p-16 [&_div]:cursor-pointer">
@@ -375,6 +382,14 @@ const CoordInput = ({ coord, setCoord }: Props) => {
           좌표: {coord.latitude}, {coord.longitude}
           <br />
           주소: {coord.address}
+        </div>
+        <div className="h-320 rounded-[12px]">
+          <Roadview
+            placeName={coord.address}
+            latitude={coord.latitude}
+            longitude={coord.longitude}
+            isKakaoReady={isKakaoReady}
+          />
         </div>
       </article>
     </>
