@@ -641,7 +641,7 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
                       .tz('Asia/Seoul')
                       .format('HH:mm')
                   : '';
-                return `${hubWithCount.shuttleRouteHub.name}: ${hubWithCount.count}명 (${arrivalTime} 도착)`;
+                return `${hubWithCount.shuttleRouteHub.name}: ${hubWithCount.count}명 (${arrivalTime} 출발)`;
               })
               .join('\n')
           : routeData.shuttleRouteHubsWithCount
@@ -667,7 +667,7 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
         : '';
       const destinationHubStatusText =
         routeData.type === 'TO_DESTINATION'
-          ? `${destinationHub?.name || ''}: - (${destinationHubArrivalTime} 도착)`
+          ? `${destinationHub?.name || ''}: - (${destinationHubArrivalTime} 출발)`
           : `${destinationHub?.name || ''}: -`;
       lastCell.value =
         routeData.type === 'TO_DESTINATION'
