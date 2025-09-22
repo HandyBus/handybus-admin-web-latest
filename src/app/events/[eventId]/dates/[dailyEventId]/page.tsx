@@ -18,7 +18,6 @@ import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
 import { HANDY_PARTY_PREFIX } from '@/constants/common';
 import { HANDY_PARTY_ROUTE_AREA } from '@/constants/handyPartyArea.const';
-import EditDailyEventOpenChatUrl from './EditDailyEventOpenChatUrl';
 import useExportPassengerList from './hooks/useExportPassengerList';
 import useExportHandyPartyPassengerList from './hooks/useExportHandyPartyPassengerList';
 
@@ -75,11 +74,6 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     });
     return [...sortedShuttleRoutes, ...sortedHandyPartyRoutes];
   }, [routes]);
-
-  const hasOpenChatUrl = useMemo(() => {
-    return event?.dailyEvents.find((d) => d.dailyEventId === dailyEventId)
-      ?.metadata?.openChatUrl;
-  }, [event, dailyEventId]);
 
   const shuttleRouteIdList = useMemo(
     () => sortedRoutes.map((r) => r.shuttleRouteId),
@@ -159,39 +153,15 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
             <List.item title="상태">
               {Stringifier.dailyEventStatus(dailyEvent?.status)}
             </List.item>
-            <List.item title="공지방링크">
-              {hasOpenChatUrl ? (
-                <a
-                  href={hasOpenChatUrl}
-                  target="_blank"
-                  className="text-basic-blue-400 underline underline-offset-[3px]"
-                >
-                  {hasOpenChatUrl}
-                </a>
-              ) : (
-                <span className="text-basic-red-500">
-                  없음, 노선을 추가하기 전에 링크를 꼭 추가해주세요.
-                </span>
-              )}
-            </List.item>
           </List>
         </Callout>
       )}
       <div className="flex flex-col">
         <Heading.h2 className="flex items-baseline gap-20">
           노선 목록
-          <BlueLink
-            href={`${dailyEventId}/routes/new`}
-            className="text-14"
-            // disabled={!hasOpenChatUrl}
-          >
+          <BlueLink href={`${dailyEventId}/routes/new`} className="text-14">
             추가하기
           </BlueLink>
-          <EditDailyEventOpenChatUrl
-            eventId={eventId}
-            dailyEventId={dailyEventId}
-            openChatUrl={hasOpenChatUrl}
-          />
           <button
             className="text-14 text-basic-blue-400 underline underline-offset-[3px]"
             onClick={handleExportPassengerList}
