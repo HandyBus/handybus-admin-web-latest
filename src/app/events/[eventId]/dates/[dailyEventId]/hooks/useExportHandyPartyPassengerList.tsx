@@ -205,10 +205,15 @@ const useExportHandyPartyPassengerList = ({ eventId, dailyEventId }: Props) => {
 
     // 첫 번째/두 번째 탭: 전체 탑승객 명단 (행사장행 / 귀가행)
     const buildAllPassengers = (
-      tripType: 'TO_DESTINATION' | 'FROM_DESTINATION',
+      tripType: 'TO_DESTINATION' | 'FROM_DESTINATION' | 'ALL',
     ) =>
       excelData
-        .filter((routeData) => routeData.type === tripType)
+        .filter((routeData) => {
+          if (tripType === 'ALL') {
+            return true;
+          }
+          return routeData.type === tripType;
+        })
         .flatMap((routeData) =>
           routeData.reservations.map((reservation) => {
             const typeLabel =
@@ -234,11 +239,18 @@ const useExportHandyPartyPassengerList = ({ eventId, dailyEventId }: Props) => {
         );
 
     const createAllPassengersWorksheet = (
-      tripType: 'TO_DESTINATION' | 'FROM_DESTINATION',
+      tripType: 'TO_DESTINATION' | 'FROM_DESTINATION' | 'ALL',
     ) => {
-      const label = tripType === 'TO_DESTINATION' ? '행사장행' : '귀가행';
+      const label =
+        tripType === 'ALL'
+          ? '전체'
+          : tripType === 'TO_DESTINATION'
+            ? '행사장행'
+            : '귀가행';
       const passengers = buildAllPassengers(tripType);
-      const worksheet = workbook.addWorksheet(`전체 탑승객 명단 (${label})`);
+      const worksheet = workbook.addWorksheet(
+        tripType === 'ALL' ? '전체' : `전체 (${label})`,
+      );
 
       // 안내 문구 (첫 번째 행)
       const noticeCell = worksheet.getCell('A1');
@@ -435,6 +447,7 @@ const useExportHandyPartyPassengerList = ({ eventId, dailyEventId }: Props) => {
     };
 
     // 첫 두 시트로 생성
+    createAllPassengersWorksheet('ALL');
     createAllPassengersWorksheet('TO_DESTINATION');
     createAllPassengersWorksheet('FROM_DESTINATION');
 
@@ -628,7 +641,7 @@ const useExportHandyPartyPassengerList = ({ eventId, dailyEventId }: Props) => {
     const eventName =
       shuttleRoutesWithReservations?.[0].shuttleRoute.event.eventName || '';
     const formattedDailyEventDate = dailyEventDate.replace('/', '_');
-    link.download = `${eventName}_${formattedDailyEventDate}_핸디팟_탑승자_명단.xlsx`;
+    link.download = `${eventName}_${formattedDailyEventDate}_핸디팟_명단.xlsx`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
