@@ -11,16 +11,16 @@ interface Props {
   dailyEventId: string;
 }
 
-const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
+const useExportHandyPartyPassengerList = ({ eventId, dailyEventId }: Props) => {
   const getAllShuttleRoutes = async () => {
     const shuttleRoutes = await getShuttleRoutesOfDailyEvent(
       eventId,
       dailyEventId,
     );
-    const shuttleBusShuttleRoutes = shuttleRoutes.filter(
-      (shuttleRoute) => !shuttleRoute.name.includes(HANDY_PARTY_PREFIX),
+    const handyPartyShuttleRoutes = shuttleRoutes.filter((shuttleRoute) =>
+      shuttleRoute.name.includes(HANDY_PARTY_PREFIX),
     );
-    return shuttleBusShuttleRoutes;
+    return handyPartyShuttleRoutes;
   };
 
   const getAllReservations = async () => {
@@ -71,19 +71,13 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
               reservation.type === 'ROUND_TRIP',
           )
           .sort((a, b) => {
-            const aHubSequence = toDestinationShuttleRouteHubs.findIndex(
-              (hub) =>
-                hub.shuttleRouteHubId === a.toDestinationShuttleRouteHubId,
-            );
-            const bHubSequence = toDestinationShuttleRouteHubs.findIndex(
-              (hub) =>
-                hub.shuttleRouteHubId === b.toDestinationShuttleRouteHubId,
-            );
+            const aDesiredHubAddress = a.metadata?.desiredHubAddress || '';
+            const bDesiredHubAddress = b.metadata?.desiredHubAddress || '';
             const aName = a.userName || a.userNickname;
             const bName = b.userName || b.userNickname;
             return (
-              aHubSequence - bHubSequence ||
               aName.localeCompare(bName) ||
+              aDesiredHubAddress.localeCompare(bDesiredHubAddress) ||
               a.createdAt.localeCompare(b.createdAt)
             );
           });
@@ -141,19 +135,13 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
               reservation.type === 'ROUND_TRIP',
           )
           .sort((a, b) => {
-            const aHubSequence = fromDestinationShuttleRouteHubs.findIndex(
-              (hub) =>
-                hub.shuttleRouteHubId === a.fromDestinationShuttleRouteHubId,
-            );
-            const bHubSequence = fromDestinationShuttleRouteHubs.findIndex(
-              (hub) =>
-                hub.shuttleRouteHubId === b.fromDestinationShuttleRouteHubId,
-            );
+            const aDesiredHubAddress = a.metadata?.desiredHubAddress || '';
+            const bDesiredHubAddress = b.metadata?.desiredHubAddress || '';
             const aName = a.userName || a.userNickname;
             const bName = b.userName || b.userNickname;
             return (
               aName.localeCompare(bName) ||
-              aHubSequence - bHubSequence ||
+              aDesiredHubAddress.localeCompare(bDesiredHubAddress) ||
               a.createdAt.localeCompare(b.createdAt)
             );
           });
@@ -225,18 +213,6 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
           routeData.reservations.map((reservation) => {
             const typeLabel =
               routeData.type === 'TO_DESTINATION' ? '행사장행' : '귀가행';
-            const targetHub =
-              routeData.type === 'TO_DESTINATION'
-                ? routeData.shuttleRoute.toDestinationShuttleRouteHubs?.find(
-                    (hub) =>
-                      hub.shuttleRouteHubId ===
-                      reservation.toDestinationShuttleRouteHubId,
-                  )
-                : routeData.shuttleRoute.fromDestinationShuttleRouteHubs?.find(
-                    (hub) =>
-                      hub.shuttleRouteHubId ===
-                      reservation.fromDestinationShuttleRouteHubId,
-                  );
 
             return {
               userName: reservation.userName || reservation.userNickname || '',
@@ -244,7 +220,7 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
               passengerCount: reservation.passengerCount,
               routeName: routeData.shuttleRoute.name,
               typeLabel,
-              hubName: targetHub?.name || '',
+              hubName: reservation.metadata?.desiredHubAddress || '',
               createdAt: reservation.createdAt,
             };
           }),
@@ -316,7 +292,7 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
         '인원 수',
         '노선명',
         '방향',
-        '정류장',
+        label === '행사장행' ? '희망 탑승지' : '희망 하차지',
       ];
       headers.forEach((header, headerIndex) => {
         const cell = worksheet.getCell(3, headerIndex + 1);
@@ -590,19 +566,7 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
 
         // 탑승지/하차지 + 정류장별 현황
         const hubCell = worksheet.getCell(rowIndex, 5);
-        const targetHub =
-          routeData.type === 'TO_DESTINATION'
-            ? routeData.shuttleRoute.toDestinationShuttleRouteHubs.find(
-                (hub) =>
-                  hub.shuttleRouteHubId ===
-                  reservation.toDestinationShuttleRouteHubId,
-              )
-            : routeData.shuttleRoute.fromDestinationShuttleRouteHubs.find(
-                (hub) =>
-                  hub.shuttleRouteHubId ===
-                  reservation.fromDestinationShuttleRouteHubId,
-              );
-        hubCell.value = targetHub?.name || '';
+        hubCell.value = reservation.metadata?.desiredHubAddress || '';
         hubCell.alignment = {
           horizontal: 'left',
           vertical: 'top',
@@ -619,47 +583,7 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
       // 마지막 열에 총 인원 수와 정류장별 현황 추가
       const lastCell = worksheet.getCell(routeData.reservations.length + 4, 5);
       const totalCountText = `총 인원: ${routeData.totalCount}명`;
-      const hubStatusText =
-        routeData.type === 'TO_DESTINATION'
-          ? routeData.shuttleRouteHubsWithCount
-              .map((hubWithCount) => {
-                const arrivalTime = hubWithCount.shuttleRouteHub.arrivalTime
-                  ? dayjs(hubWithCount.shuttleRouteHub.arrivalTime)
-                      .tz('Asia/Seoul')
-                      .format('HH:mm')
-                  : '';
-                return `${hubWithCount.shuttleRouteHub.name}: ${hubWithCount.count}명 (${arrivalTime} 도착)`;
-              })
-              .join('\n')
-          : routeData.shuttleRouteHubsWithCount
-              .map((hubWithCount) => {
-                // const arrivalTime = hubWithCount.shuttleRouteHub.arrivalTime
-                //   ? dayjs(hubWithCount.shuttleRouteHub.arrivalTime)
-                //       .tz('Asia/Seoul')
-                //       .format('HH:mm')
-                //   : '';
-                return `${hubWithCount.shuttleRouteHub.name}: ${hubWithCount.count}명`;
-              })
-              .join('\n');
-      const destinationHub =
-        routeData.type === 'TO_DESTINATION'
-          ? routeData.shuttleRoute.toDestinationShuttleRouteHubs.find(
-              (hub) => hub.role === 'DESTINATION',
-            )
-          : routeData.shuttleRoute.fromDestinationShuttleRouteHubs.find(
-              (hub) => hub.role === 'DESTINATION',
-            );
-      const destinationHubArrivalTime = destinationHub?.arrivalTime
-        ? dayjs(destinationHub.arrivalTime).tz('Asia/Seoul').format('HH:mm')
-        : '';
-      const destinationHubStatusText =
-        routeData.type === 'TO_DESTINATION'
-          ? `${destinationHub?.name || ''}: - (${destinationHubArrivalTime} 도착)`
-          : `${destinationHub?.name || ''}: -`;
-      lastCell.value =
-        routeData.type === 'TO_DESTINATION'
-          ? `${totalCountText}\n\n${hubStatusText}\n${destinationHubStatusText}`
-          : `${totalCountText}\n\n${destinationHubStatusText}\n${hubStatusText}`;
+      lastCell.value = totalCountText;
       lastCell.alignment = {
         horizontal: 'left',
         vertical: 'top',
@@ -688,7 +612,7 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
         { width: 15 }, // 이름
         { width: 20 }, // 전화번호
         { width: 8 }, // 인원 수
-        { width: 50 }, // 탑승지/하차지 + 정류장별 현황
+        { width: 50 }, // 희망 탑승지/하차지
       ];
     });
 
@@ -704,7 +628,7 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
     const eventName =
       shuttleRoutesWithReservations?.[0].shuttleRoute.event.eventName || '';
     const formattedDailyEventDate = dailyEventDate.replace('/', '_');
-    link.download = `${eventName}_${formattedDailyEventDate}_탑승자_명단.xlsx`;
+    link.download = `${eventName}_${formattedDailyEventDate}_핸디팟_탑승자_명단.xlsx`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -718,4 +642,4 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
   };
 };
 
-export default useExportPassengerList;
+export default useExportHandyPartyPassengerList;
