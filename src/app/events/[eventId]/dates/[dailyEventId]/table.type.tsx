@@ -5,9 +5,6 @@ import BlueLink from '@/components/link/BlueLink';
 import { AdminShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 import Stringifier from '@/utils/stringifier.util';
 import EditRouteStatusDialog from './EditRouteStatusDialog';
-import BlueButton from '@/components/link/BlueButton';
-import { sendShuttleInformation } from '@/services/solapi.service';
-import { HANDY_PARTY_PREFIX } from '@/constants/common';
 
 const columnHelper = createColumnHelper<AdminShuttleRoutesViewEntity>();
 
@@ -140,31 +137,6 @@ export const getColumns = (alertRequestCounts: Record<string, number>) => [
     cell: (props) => (
       <div className="flex flex-col items-center">
         <EditRouteStatusDialog shuttleRoute={props.row.original} />
-        <BlueButton
-          onClick={async () => {
-            try {
-              const isConfirmed = confirm(
-                `${props.row.original.name} 노선에 대해 탑승정보 알림톡을 발송하시겠습니까?`,
-              );
-              if (!isConfirmed) {
-                return;
-              }
-
-              await sendShuttleInformation(
-                props.row.original.eventId,
-                props.row.original.dailyEventId,
-                props.row.original.shuttleRouteId,
-              );
-              alert('탑승정보 알림톡 발송 완료');
-            } catch (error) {
-              console.error(error);
-              alert('탑승정보 알림톡 발송 실패');
-            }
-          }}
-          disabled={props.row.original.name.includes(HANDY_PARTY_PREFIX)}
-        >
-          탑승정보 발송하기
-        </BlueButton>
       </div>
     ),
   }),

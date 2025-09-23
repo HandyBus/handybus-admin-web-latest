@@ -31,6 +31,7 @@ export const RegionHubsViewEntitySchema = z.object({
   eventParkingLot: z.boolean(),
   shuttleHub: z.boolean(),
   handyParty: z.boolean(),
+  roadViewPan: z.number().nullable(),
 });
 export type RegionHubsViewEntity = z.infer<typeof RegionHubsViewEntitySchema>;
 
@@ -51,6 +52,7 @@ export const AdminUpdateRegionHubRequestSchema = z
     latitude: z.number(),
     longitude: z.number(),
     regionId: z.string(),
+    roadViewPan: z.number().nullable(),
   })
   .partial();
 export type AdminUpdateRegionHubRequest = z.infer<

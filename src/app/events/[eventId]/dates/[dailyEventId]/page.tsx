@@ -18,9 +18,8 @@ import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
 import { HANDY_PARTY_PREFIX } from '@/constants/common';
 import { HANDY_PARTY_ROUTE_AREA } from '@/constants/handyPartyArea.const';
-import EditDailyEventOpenChatUrl from './EditDailyEventOpenChatUrl';
-import { useSendShuttleInformation } from '@/services/solapi.service';
 import useExportPassengerList from './hooks/useExportPassengerList';
+import useExportHandyPartyPassengerList from './hooks/useExportHandyPartyPassengerList';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -40,11 +39,6 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     isError: isRoutesError,
     error: routesError,
   } = useGetShuttleRoutesOfDailyEvent(eventId, dailyEventId);
-
-  const {
-    mutateAsync: sendShuttleInformation,
-    isPending: isSendShuttleInformationPending,
-  } = useSendShuttleInformation();
 
   const sortedRoutes = useMemo(() => {
     if (!routes) {
@@ -81,11 +75,6 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     return [...sortedShuttleRoutes, ...sortedHandyPartyRoutes];
   }, [routes]);
 
-  const hasOpenChatUrl = useMemo(() => {
-    return event?.dailyEvents.find((d) => d.dailyEventId === dailyEventId)
-      ?.metadata?.openChatUrl;
-  }, [event, dailyEventId]);
-
   const shuttleRouteIdList = useMemo(
     () => sortedRoutes.map((r) => r.shuttleRouteId),
     [sortedRoutes],
@@ -110,38 +99,22 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     ? event.dailyEvents.find((d) => d.dailyEventId === dailyEventId)
     : null;
 
-  const handleSendShuttleInformationAllDailyEventRoutes = async () => {
-    // 핸디팟 노선들은 알림톡을 발송하지 않음.
-    const shuttleRoutes = routes.filter(
-      (route) => !route.name.includes(HANDY_PARTY_PREFIX),
-    );
-
-    const isConfirmed = confirm(
-      `핸디팟을 제외한 일자별 노선 전체(${shuttleRoutes.length}개)에 대해 탑승 정보 알림톡을 발송하시겠습니까? 최대 1분이 소요됩니다. 절대 사이트를 끄지 말아주세요.`,
-    );
-    if (!isConfirmed) {
-      return;
-    }
-
-    // Promise all 로 할 시 오류 발생
-    for (const route of shuttleRoutes) {
-      await sendShuttleInformation({
-        eventId,
-        dailyEventId,
-        shuttleRouteId: route.shuttleRouteId,
-      });
-      await new Promise((resolve) => setTimeout(resolve, 300));
-    }
-
-    alert(`탑승정보 알림톡 발송 완료`);
-  };
-
   const { exportExcel } = useExportPassengerList({
     eventId,
     dailyEventId,
   });
   const handleExportPassengerList = async () => {
     const excelData = await exportExcel();
+    return excelData;
+  };
+
+  const { exportExcel: exportHandyPartyPassengerList } =
+    useExportHandyPartyPassengerList({
+      eventId,
+      dailyEventId,
+    });
+  const handleExportHandyPartyPassengerList = async () => {
+    const excelData = await exportHandyPartyPassengerList();
     return excelData;
   };
 
@@ -180,51 +153,26 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
             <List.item title="상태">
               {Stringifier.dailyEventStatus(dailyEvent?.status)}
             </List.item>
-            <List.item title="공지방링크">
-              {hasOpenChatUrl ? (
-                <a
-                  href={hasOpenChatUrl}
-                  target="_blank"
-                  className="text-basic-blue-400 underline underline-offset-[3px]"
-                >
-                  {hasOpenChatUrl}
-                </a>
-              ) : (
-                <span className="text-basic-red-500">
-                  없음, 노선을 추가하기 전에 링크를 꼭 추가해주세요.
-                </span>
-              )}
-            </List.item>
           </List>
         </Callout>
       )}
       <div className="flex flex-col">
         <Heading.h2 className="flex items-baseline gap-20">
           노선 목록
-          <BlueLink
-            href={`${dailyEventId}/routes/new`}
-            className="text-14"
-            // disabled={!hasOpenChatUrl}
-          >
+          <BlueLink href={`${dailyEventId}/routes/new`} className="text-14">
             추가하기
           </BlueLink>
           <button
             className="text-14 text-basic-blue-400 underline underline-offset-[3px]"
-            onClick={handleSendShuttleInformationAllDailyEventRoutes}
-            disabled={isSendShuttleInformationPending}
-          >
-            탑승정보 알림톡 발송하기 (일자별 노선 전체)
-          </button>
-          <EditDailyEventOpenChatUrl
-            eventId={eventId}
-            dailyEventId={dailyEventId}
-            openChatUrl={hasOpenChatUrl}
-          />
-          <button
-            className="text-14 text-basic-blue-400 underline underline-offset-[3px]"
             onClick={handleExportPassengerList}
           >
-            탑승자 명단 다운로드
+            셔틀 명단 다운로드
+          </button>
+          <button
+            className="text-14 text-basic-blue-400 underline underline-offset-[3px]"
+            onClick={handleExportHandyPartyPassengerList}
+          >
+            핸디팟 명단 다운로드
           </button>
         </Heading.h2>
         <div className="mb-12 flex justify-start gap-20 bg-basic-grey-100 px-20 py-12">
