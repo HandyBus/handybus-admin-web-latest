@@ -7,9 +7,18 @@ interface Props {
   latitude: number;
   longitude: number;
   isKakaoReady?: boolean;
+  roadViewPan: number | null;
+  onViewpointChange: (roadviewPan: number) => void;
 }
 
-const Roadview = ({ placeName, latitude, longitude, isKakaoReady }: Props) => {
+const Roadview = ({
+  placeName,
+  latitude,
+  longitude,
+  isKakaoReady,
+  roadViewPan,
+  onViewpointChange,
+}: Props) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const roadviewRef = useRef<kakao.maps.Roadview | null>(null);
   const roadviewClientRef = useRef<kakao.maps.RoadviewClient | null>(null);
@@ -32,6 +41,21 @@ const Roadview = ({ placeName, latitude, longitude, isKakaoReady }: Props) => {
           return;
         }
         instance.setPanoId(panoId, position);
+
+        // 로드뷰 초기화 완료 이벤트 대기
+        kakao.maps.event.addListener(instance, 'init', () => {
+          instance.setViewpoint({
+            pan: roadViewPan ?? 0,
+            tilt: 0,
+            zoom: 1,
+          });
+        });
+
+        // 시점 변경 이벤트 리스너 추가 - 마우스로 조작할 때
+        kakao.maps.event.addListener(instance, 'viewpoint_changed', () => {
+          const viewpoint = instance.getViewpoint();
+          onViewpointChange(viewpoint.pan);
+        });
         setIsAvailable(true);
       });
     } catch (error) {

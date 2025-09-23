@@ -8,6 +8,7 @@ export const CreateHubFormSchema = z.object({
     address: z.string(),
     latitude: z.number(),
     longitude: z.number(),
+    roadViewPan: z.number().nullable(),
   }),
 });
 
