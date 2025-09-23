@@ -1,6 +1,5 @@
 'use client';
 
-import BusTable from './components/BusTable';
 import ReservationTable from './components/ReservationTable';
 import { formatDateString } from '@/utils/date.util';
 import { useGetShuttleRoute } from '@/services/shuttleRoute.service';
@@ -45,11 +44,6 @@ const Page = ({ params }: Props) => {
         </List>
       </Callout>
       <ReservationTable
-        eventId={eventId}
-        dailyEventId={dailyEventId}
-        shuttleRouteId={shuttleRouteId}
-      />
-      <BusTable
         eventId={eventId}
         dailyEventId={dailyEventId}
         shuttleRouteId={shuttleRouteId}
