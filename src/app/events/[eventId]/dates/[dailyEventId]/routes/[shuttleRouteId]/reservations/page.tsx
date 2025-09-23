@@ -6,6 +6,8 @@ import { useGetShuttleRoute } from '@/services/shuttleRoute.service';
 import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
+import { HANDY_PARTY_PREFIX } from '@/constants/common';
+import { useMemo } from 'react';
 
 interface Props {
   params: {
@@ -32,6 +34,10 @@ const Page = ({ params }: Props) => {
   );
 
   const shuttleRouteName = shuttleRoute?.name;
+  const isHandyParty = useMemo(
+    () => shuttleRoute?.name.includes(HANDY_PARTY_PREFIX) ?? false,
+    [shuttleRoute],
+  );
 
   return (
     <main>
@@ -47,6 +53,7 @@ const Page = ({ params }: Props) => {
         eventId={eventId}
         dailyEventId={dailyEventId}
         shuttleRouteId={shuttleRouteId}
+        isHandyParty={isHandyParty}
       />
     </main>
   );
