@@ -13,6 +13,7 @@ import {
   useInfiniteQuery,
   useMutation,
   useQuery,
+  useQueryClient,
 } from '@tanstack/react-query';
 import regions from '../data/regions.json';
 import { RegionSchema } from '@/types/region.type';
@@ -190,6 +191,7 @@ export const usePutRegionHub = ({
   onSuccess?: () => void;
   onError?: (error: unknown) => void;
 } = {}) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({
       regionId,
@@ -200,7 +202,12 @@ export const usePutRegionHub = ({
       regionHubId: string;
       body: PutRegionHubBody;
     }) => putRegionHub(regionId, regionHubId, body),
-    onSuccess,
+    onSuccess: (_, { regionId, regionHubId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ['regionHub', regionId, regionHubId],
+      });
+      onSuccess?.();
+    },
     onError,
   });
 };
