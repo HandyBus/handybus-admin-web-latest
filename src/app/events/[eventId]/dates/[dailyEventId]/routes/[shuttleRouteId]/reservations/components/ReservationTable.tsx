@@ -2,23 +2,26 @@
 
 import useTable from '@/hooks/useTable';
 import { useMemo, useState } from 'react';
-import { toast } from 'react-toastify';
 import BaseTable from '@/components/table/BaseTable';
-import {
-  useGetReservationsWithPagination,
-  usePutReservation,
-} from '@/services/reservation.service';
-import Heading from '@/components/text/Heading';
+import { useGetReservationsWithPagination } from '@/services/reservation.service';
 import { reservationColumns } from '../table.type';
 import Toggle from '@/components/button/Toggle';
+import BlueButton from '@/components/link/BlueButton';
+import { sendHandyPartyConfirmed } from '@/services/solapi.service';
 
 interface Props {
   eventId: string;
   dailyEventId: string;
   shuttleRouteId: string;
+  isHandyParty: boolean;
 }
 
-const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
+const ReservationTable = ({
+  eventId,
+  dailyEventId,
+  shuttleRouteId,
+  isHandyParty,
+}: Props) => {
   const [isHideCanceled, setIsHideCanceled] = useState(false);
 
   const { data, isLoading } = useGetReservationsWithPagination({
@@ -61,35 +64,22 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     }, 0);
   }, [validReservations]);
 
-  const { mutate: putReservation } = usePutReservation();
+  const delay = async (ms: number) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
 
-  const rejectAllSupportedHandy = async () => {
+  const handleSendHandyPartyConfirmation = async () => {
     const isConfirmed = confirm(
-      '핸디 지원자들을 일괄 거절하시겠습니까? \n 모두에게 거절 알림톡이 전송됩니다.',
+      '핸디팟 확정 안내를 일괄 전송하시겠습니까?\n 모든 핸디팟 예약에 대해 안내가 전송됩니다.\n 최대 1분이 소요됩니다. 절대 사이트를 끄지 말아주세요.',
     );
     if (!isConfirmed) {
       return;
     }
-
-    const reservationIds = validReservations
-      .filter((reservation) => reservation.handyStatus === 'SUPPORTED')
-      .map((reservation) => reservation.reservationId);
-
-    try {
-      await Promise.all(
-        reservationIds.map((reservationId) =>
-          putReservation({
-            reservationId,
-            body: {
-              handyStatus: 'DECLINED',
-            },
-          }),
-        ),
-      );
-      toast.success('핸디 지원자들을 일괄 거절했습니다.');
-    } catch {
-      toast.error('오류가 발생했습니다.');
+    for (const reservation of validReservations) {
+      await sendHandyPartyConfirmed(reservation.reservationId);
+      await delay(300);
     }
+    alert('핸디팟 확정 안내가 전송되었습니다.');
   };
 
   if (isLoading) {
@@ -98,8 +88,7 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
 
   return (
     <section className="flex flex-col pb-20 pt-12">
-      <Heading.h2 className="flex items-center gap-12">
-        배차되지 않은 예약{' '}
+      <div className="flex items-center gap-12">
         <span className="text-14 font-400 text-basic-grey-700">
           유효한 예약 {validReservations.length}건 ({totalNumberOfPeople}인) /
           합계 {reservations.length}건
@@ -109,13 +98,13 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
           value={isHideCanceled}
           setValue={() => setIsHideCanceled((prev) => !prev)}
         />
-        <button
-          onClick={rejectAllSupportedHandy}
-          className="rounded-[4px] border border-basic-grey-300 bg-basic-grey-100/20 px-12 py-[2px] text-14 font-500"
+        <BlueButton
+          disabled={!isHandyParty}
+          onClick={handleSendHandyPartyConfirmation}
         >
-          핸디 지원 일괄 거절
-        </button>
-      </Heading.h2>
+          핸디팟 확정 안내 일괄 전송
+        </BlueButton>
+      </div>
       <BaseTable table={reservationTable} />
     </section>
   );

@@ -8,6 +8,7 @@ import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
 import { ReservationViewEntity } from '@/types/reservation.type';
 import CancelReservationDialog from '@/app/reservations/components/CancelReservationDialog';
 import RequestRefundDialog from '@/app/reservations/components/RequestRefundDialog';
+import CancelHandyPartyButton from './components/CancelHandyPartyButton';
 
 const busColumnHelper = createColumnHelper<ShuttleBusesViewEntity>();
 
@@ -105,6 +106,7 @@ export const reservationColumns = [
     header: () => '처리',
     cell: (info) => {
       const paymentId = info.row.original.paymentId;
+      const reservation = info.row.original;
       if (!paymentId) {
         return null;
       }
@@ -114,6 +116,7 @@ export const reservationColumns = [
             reservationId={info.row.original.reservationId}
           />
           <RequestRefundDialog reservation={info.row.original} />
+          <CancelHandyPartyButton reservation={reservation} />
         </div>
       );
     },
