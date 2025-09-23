@@ -50,3 +50,29 @@ export const useSendDemandedShuttleRouteDoneCreating = () => {
       sendDemandedShuttleRouteDoneCreating(eventId),
   });
 };
+
+export const sendHandyPartyCancelled = async (reservationId: string) => {
+  await authInstance.post(
+    `/v1/shuttle-operation/admin/reservations/${reservationId}/send-handy-party-cancelled`,
+  );
+};
+
+export const useSendHandyPartyCancelled = () => {
+  return useMutation({
+    mutationFn: ({ reservationId }: { reservationId: string }) =>
+      sendHandyPartyCancelled(reservationId),
+  });
+};
+
+export const sendHandyPartyConfirmed = async (reservationId: string) => {
+  await authInstance.post(
+    `/v1/shuttle-operation/admin/reservations/${reservationId}/send-handy-party-confirmed`,
+  );
+};
+
+export const useSendHandyPartyConfirmed = () => {
+  return useMutation({
+    mutationFn: ({ reservationId }: { reservationId: string }) =>
+      sendHandyPartyConfirmed(reservationId),
+  });
+};
