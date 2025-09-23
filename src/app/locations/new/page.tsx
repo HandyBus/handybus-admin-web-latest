@@ -36,6 +36,7 @@ const NewHubPage = ({ searchParams }: Props) => {
         address: searchParams.address || '',
         latitude: parseFloat(searchParams.latitude) || 37.574187,
         longitude: parseFloat(searchParams.longitude) || 126.976882,
+        roadViewPan: null,
       },
     },
   });

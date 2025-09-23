@@ -73,6 +73,20 @@ const CoordInput = ({ coord, setCoord }: Props) => {
     [regionHubs],
   );
 
+  const coordRef = useRef(coord);
+  useEffect(() => {
+    coordRef.current = coord;
+  }, [coord]);
+
+  const setCoordWithRoadview = useCallback(
+    (roadviewPan: number) => {
+      const prev = coordRef.current;
+      if (prev.roadViewPan === roadviewPan) return;
+      setCoord({ ...prev, roadViewPan: roadviewPan });
+    },
+    [setCoord],
+  );
+
   const setCoordWithAddress = useCallback(
     async (latLng: kakao.maps.LatLng) => {
       const latitude = latLng.getLat();
@@ -82,10 +96,22 @@ const CoordInput = ({ coord, setCoord }: Props) => {
       try {
         const address = await toAddress(latitude, longitude);
         setLoading(false);
-        setCoord({ latitude, longitude, address: address.address_name });
+        const prev = coordRef.current;
+        setCoord({
+          ...prev,
+          latitude,
+          longitude,
+          address: address.address_name,
+        });
       } catch {
         setLoading(false);
-        setCoord({ latitude, longitude, address: 'unknown address' });
+        const prev = coordRef.current;
+        setCoord({
+          ...prev,
+          latitude,
+          longitude,
+          address: '알 수 없는 주소',
+        });
         setError(true);
       }
     },
@@ -314,7 +340,7 @@ const CoordInput = ({ coord, setCoord }: Props) => {
         new window.kakao.maps.LatLng(coord.latitude, coord.longitude),
       );
     }
-  }, [mapInitialized, setCoordWithAddress]);
+  }, [mapInitialized, coord.latitude, coord.longitude, setCoordWithAddress]);
 
   return (
     <>
@@ -381,6 +407,8 @@ const CoordInput = ({ coord, setCoord }: Props) => {
         <div>
           좌표: {coord.latitude}, {coord.longitude}
           <br />
+          시점: {coord.roadViewPan}
+          <br />
           주소: {coord.address}
         </div>
         <div className="h-320 rounded-[12px]">
@@ -389,6 +417,8 @@ const CoordInput = ({ coord, setCoord }: Props) => {
             latitude={coord.latitude}
             longitude={coord.longitude}
             isKakaoReady={isKakaoReady}
+            roadViewPan={coord.roadViewPan}
+            onViewpointChange={setCoordWithRoadview}
           />
         </div>
       </article>
@@ -398,8 +428,9 @@ const CoordInput = ({ coord, setCoord }: Props) => {
 
 export default CoordInput;
 
-interface Coord {
+export interface Coord {
   latitude: number;
   longitude: number;
   address: string;
+  roadViewPan: number | null;
 }
