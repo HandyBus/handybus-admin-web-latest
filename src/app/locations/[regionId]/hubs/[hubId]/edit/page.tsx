@@ -20,6 +20,7 @@ import { HubUsageType, RegionHubsViewEntity } from '@/types/hub.type';
 import MapGuidesAtNewEditPage from '@/app/locations/components/MapGuidesAtNewEditPage';
 import Toggle from '@/components/button/Toggle';
 import { putShuttleStop } from '@/services/shuttleStops.service';
+import KakaoMapScript from '@/components/script/KakaoMapScript';
 
 interface Props {
   params: { regionId: string; hubId: string };
@@ -61,6 +62,7 @@ interface EditFormProps {
 
 const EditForm = ({ regions, hub }: EditFormProps) => {
   const router = useRouter();
+  const [isKakaoReady, setIsKakaoReady] = useState(false);
   const [tagState, setTagState] = useState<HubUsageType | undefined>(
     hub.eventLocation
       ? 'EVENT_LOCATION'
@@ -151,13 +153,17 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
         <Form.section>
           <Form.label>위치 및 좌표</Form.label>
           <MapGuidesAtNewEditPage />
-          <Controller
-            control={control}
-            name={`coord`}
-            render={({ field: { onChange, value } }) => (
-              <CoordInput coord={value} setCoord={onChange} />
-            )}
-          />
+          {isKakaoReady && (
+            <Controller
+              control={control}
+              name={`coord`}
+              render={({ field: { onChange, value } }) => (
+                <>
+                  <CoordInput coord={value} setCoord={onChange} />
+                </>
+              )}
+            />
+          )}
         </Form.section>
         <Form.section>
           <Form.label>지역</Form.label>
@@ -210,6 +216,10 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
         </Form.section>
         <Form.submitButton>수정하기</Form.submitButton>
       </Form>
+      <KakaoMapScript
+        onReady={() => window.kakao.maps.load(() => setIsKakaoReady(true))}
+        libraries={['services']}
+      />
     </main>
   );
 };
