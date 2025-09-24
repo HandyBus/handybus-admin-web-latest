@@ -16,6 +16,7 @@ import MapGuidesAtNewEditPage from '../components/MapGuidesAtNewEditPage';
 import Toggle from '@/components/button/Toggle';
 import { putShuttleStop } from '@/services/shuttleStops.service';
 import { HubUsageType } from '@/types/hub.type';
+import KakaoMapScript from '@/components/script/KakaoMapScript';
 
 interface Props {
   searchParams: { latitude: string; longitude: string; address: string };
@@ -23,6 +24,7 @@ interface Props {
 
 const NewHubPage = ({ searchParams }: Props) => {
   const router = useRouter();
+  const [isKakaoReady, setIsKakaoReady] = useState(false);
   const [tagState, setTagState] = useState<HubUsageType | undefined>(
     'SHUTTLE_HUB',
   );
@@ -105,13 +107,17 @@ const NewHubPage = ({ searchParams }: Props) => {
         <Form.section>
           <Form.label>위치 및 좌표</Form.label>
           <MapGuidesAtNewEditPage />
-          <Controller
-            control={control}
-            name={`coord`}
-            render={({ field: { onChange, value } }) => (
-              <CoordInput coord={value} setCoord={onChange} />
-            )}
-          />
+          {isKakaoReady && (
+            <Controller
+              control={control}
+              name={`coord`}
+              render={({ field: { onChange, value } }) => (
+                <>
+                  <CoordInput coord={value} setCoord={onChange} />
+                </>
+              )}
+            />
+          )}
         </Form.section>
         <Form.section>
           <Form.label>지역</Form.label>
@@ -164,6 +170,10 @@ const NewHubPage = ({ searchParams }: Props) => {
         </Form.section>
         <Form.submitButton>추가하기</Form.submitButton>
       </Form>
+      <KakaoMapScript
+        onReady={() => window.kakao.maps.load(() => setIsKakaoReady(true))}
+        libraries={['services']}
+      />
     </main>
   );
 };
