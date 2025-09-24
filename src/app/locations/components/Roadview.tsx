@@ -6,7 +6,6 @@ interface Props {
   placeName: string;
   latitude: number;
   longitude: number;
-  isKakaoReady?: boolean;
   roadViewPan: number | null;
   onViewpointChange: (roadviewPan: number) => void;
 }
@@ -15,13 +14,13 @@ const Roadview = ({
   placeName,
   latitude,
   longitude,
-  isKakaoReady,
   roadViewPan,
   onViewpointChange,
 }: Props) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const roadviewRef = useRef<kakao.maps.Roadview | null>(null);
   const roadviewClientRef = useRef<kakao.maps.RoadviewClient | null>(null);
+  const customOverlayRef = useRef<kakao.maps.CustomOverlay | null>(null);
   const isInitialized = useRef(false);
   const [isAvailable, setIsAvailable] = useState(true);
 
@@ -41,6 +40,14 @@ const Roadview = ({
           return;
         }
         instance.setPanoId(panoId, position);
+
+        // 초기 오버레이 생성
+        const customOverlay = new kakao.maps.CustomOverlay({
+          position: position,
+          content: CUSTOM_OVERLAY,
+        });
+        customOverlay.setMap(instance);
+        customOverlayRef.current = customOverlay;
 
         // 로드뷰 초기화 완료 이벤트 대기
         kakao.maps.event.addListener(instance, 'init', () => {
@@ -66,16 +73,10 @@ const Roadview = ({
 
   // Initialize after Kakao SDK is ready
   useEffect(() => {
-    if (
-      !mapRef.current ||
-      isInitialized.current ||
-      !isKakaoReady ||
-      !window.kakao?.maps
-    )
-      return;
+    if (!mapRef.current || isInitialized.current || !window.kakao?.maps) return;
     isInitialized.current = true;
     initializeRoadview();
-  }, [isKakaoReady]);
+  }, []);
 
   // 핀의 위치를 조정하면 로드뷰의 위치도 조정
   useEffect(() => {
@@ -94,6 +95,20 @@ const Roadview = ({
         return;
       }
       roadviewRef.current?.setPanoId(panoId, position);
+
+      // 기존 오버레이 제거
+      if (customOverlayRef.current) {
+        customOverlayRef.current.setMap(null);
+      }
+
+      // 새로운 오버레이 생성 및 추가
+      const customOverlay = new kakao.maps.CustomOverlay({
+        position: position,
+        content: CUSTOM_OVERLAY,
+      });
+      customOverlay.setMap(roadviewRef.current);
+      customOverlayRef.current = customOverlay;
+
       setIsAvailable(true);
     });
   }, [latitude, longitude]);
@@ -117,3 +132,28 @@ const Roadview = ({
 export default Roadview;
 
 // kakaomap docs 로드뷰생성하기 : https://apis.map.kakao.com/web/sample/basicRoadview/
+
+const CUSTOM_OVERLAY = `<div style="
+                 background: #00C896;
+                 color: #fff;
+                 padding: 8px 12px;
+                 font-size: 14px;
+                 font-weight: 600;
+                 border-radius: 6px;
+                 box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                 position: relative;
+                 white-space: nowrap;
+                 text-align: center;
+               ">
+                 핸디버스 탑승장소
+                 <div style="
+                   content: '';
+                   position: absolute;
+                   margin-left: -11px;
+                   left: 50%;
+                   bottom: -12px;
+                   width: 22px;
+                   height: 12px;
+                   background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjIiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAyMiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExIDEyTDAgMEgyMkwxMSAxMloiIGZpbGw9IiMwMEM4OTYiLz4KPC9zdmc+') no-repeat 0 bottom;
+                 "></div>
+               </div>`;
