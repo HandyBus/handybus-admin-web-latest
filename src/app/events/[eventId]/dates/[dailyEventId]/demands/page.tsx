@@ -11,6 +11,7 @@ import { formatDateString } from '@/utils/date.util';
 import { useSuspenseGetEvent } from '@/services/event.service';
 import Loading from '@/components/loading/Loading';
 import { useParams } from 'next/navigation';
+import useExportDemandRequestersList from './hooks/useExportDemandRequestersList';
 
 type Tab = 'map' | 'table';
 
@@ -32,6 +33,11 @@ const DemandContent = () => {
   const [tab, setTab] = useState<Tab>('map');
   const { data: event } = useSuspenseGetEvent(eventId);
 
+  const { exportDemandRequestersList } = useExportDemandRequestersList({
+    eventId,
+    dailyEventId,
+  });
+
   return (
     <main className="flex grow flex-col">
       <Heading className="flex items-baseline gap-12">
@@ -52,6 +58,12 @@ const DemandContent = () => {
             }`}
           >
             목록
+          </button>
+          <button
+            className="text-14 text-basic-blue-400 underline underline-offset-[3px]"
+            onClick={async () => await exportDemandRequestersList()}
+          >
+            수요조사 명단추출
           </button>
         </div>
       </Heading>

@@ -20,6 +20,7 @@ import {
   DashboardOptions,
   TotalDemandCountsReadModelSchema,
 } from '@/types/dashboard.type';
+import { withPagination } from '@/types/common.type';
 
 // ----- GET -----
 
@@ -168,5 +169,44 @@ export const useGetTotalDemandCounts = (
   return useQuery({
     queryKey: ['demand', 'count', options],
     queryFn: () => getTotalDemandCounts(options),
+  });
+};
+
+export interface GetDemandsOptions {
+  userId?: string;
+  eventId?: string;
+  dailyEventId?: string;
+  regionId?: string;
+  status?: ShuttleDemandStatus;
+}
+
+interface GetDemandsOptionsWithPagination extends GetDemandsOptions {
+  page: string | undefined;
+  limit: number;
+}
+
+export const getDemands = async (
+  options?: Partial<GetDemandsOptionsWithPagination>,
+) => {
+  const res = await authInstance.get(
+    `/v2/shuttle-operation/admin/demands${toSearchParamString(
+      { ...options },
+      '?',
+    )}`,
+    {
+      shape: withPagination({
+        shuttleDemands: ShuttleDemandsViewEntitySchema.array(),
+      }),
+    },
+  );
+  return res;
+};
+
+export const useGetDemands = (
+  options?: Partial<GetDemandsOptionsWithPagination>,
+) => {
+  return useQuery({
+    queryKey: ['demand', options],
+    queryFn: () => getDemands(options),
   });
 };
