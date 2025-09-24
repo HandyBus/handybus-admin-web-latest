@@ -23,8 +23,8 @@ const Roadview = ({
   const customOverlayRef = useRef<kakao.maps.CustomOverlay | null>(null);
   const isInitialized = useRef(false);
   const [isAvailable, setIsAvailable] = useState(true);
-  const afterLongitude = Number(longitude.toFixed(8));
-  const afterLatitude = Number(latitude.toFixed(8));
+  const longitudeFixed8 = Number(longitude.toFixed(8));
+  const latitudeFixed8 = Number(latitude.toFixed(8));
 
   const initializeRoadview = () => {
     try {
@@ -36,8 +36,8 @@ const Roadview = ({
       roadviewClientRef.current = client;
 
       const position = new window.kakao.maps.LatLng(
-        afterLatitude,
-        afterLongitude,
+        latitudeFixed8,
+        longitudeFixed8,
       );
       client.getNearestPanoId(position, 50, (panoId) => {
         if (!panoId) {
@@ -94,8 +94,8 @@ const Roadview = ({
       return;
 
     const position = new window.kakao.maps.LatLng(
-      afterLatitude,
-      afterLongitude,
+      latitudeFixed8,
+      longitudeFixed8,
     );
     roadviewClientRef.current.getNearestPanoId(position, 50, (panoId) => {
       if (!panoId) {
