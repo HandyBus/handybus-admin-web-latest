@@ -82,6 +82,7 @@ const EditForm = ({ regions, hub }: EditFormProps) => {
       latitude: hub.latitude,
       longitude: hub.longitude,
       roadViewPan: hub.roadViewPan,
+      roadViewTilt: hub.roadViewTilt,
     },
   } satisfies EditHubFormType;
 
