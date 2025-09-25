@@ -56,9 +56,9 @@ const useExportDemandRequestersList = ({ eventId, dailyEventId }: Props) => {
       const userName = demand.userName || demand.userNickname || '';
 
       // 전화번호 포맷팅
-      // const phoneNumber = demand.userPhoneNumber
-      //   ? `010-${demand.userPhoneNumber.slice(5, 9)}-${demand.userPhoneNumber.slice(9)}`
-      //   : '';
+      const phoneNumber = demand.userPhoneNumber
+        ? `010-${demand.userPhoneNumber.slice(5, 9)}-${demand.userPhoneNumber.slice(9)}`
+        : '';
 
       // 지역 정보
       const region = getRegionInfo(demand.regionId);
@@ -78,7 +78,7 @@ const useExportDemandRequestersList = ({ eventId, dailyEventId }: Props) => {
 
       result.push({
         userName,
-        // phoneNumber,
+        phoneNumber,
         region,
         stopName,
         type: demand.type,
@@ -136,7 +136,7 @@ const useExportDemandRequestersList = ({ eventId, dailyEventId }: Props) => {
     worksheet.mergeCells('A1:E1');
 
     // 제목 (둘째 행)
-    const today = dayjs().tz('Asia/Seoul').format('MM/DD');
+    const today = dayjs().tz('Asia/Seoul').format('MM/DD hh:mm');
     const titleCell = worksheet.getCell('A2');
     titleCell.value = `[${eventName}] [${formattedDailyEventDate}] 수요조사 신청자 명단 (${today} 기준)`;
     titleCell.font = {
@@ -193,14 +193,14 @@ const useExportDemandRequestersList = ({ eventId, dailyEventId }: Props) => {
       };
 
       // 전화번호
-      // const phoneCell = worksheet.getCell(rowIndex, 2);
-      // phoneCell.value = demand.phoneNumber;
-      // phoneCell.border = {
-      //   top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
-      //   left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
-      //   bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
-      //   right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
-      // };
+      const phoneCell = worksheet.getCell(rowIndex, 2);
+      phoneCell.value = demand.phoneNumber;
+      phoneCell.border = {
+        top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+      };
 
       // 지역
       const regionCell = worksheet.getCell(rowIndex, 3);

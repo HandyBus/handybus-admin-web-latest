@@ -21,6 +21,7 @@ export const ShuttleDemandsViewEntitySchema = z
     userId: z.string(),
     userName: z.string(),
     userNickname: z.string(),
+    userPhoneNumber: z.string(),
     userProfileImage: z.string().nullable(),
     event: z.lazy(() => EventsViewEntitySchema),
     eventId: z.string(),
