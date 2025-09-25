@@ -25,7 +25,6 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
-  useSuspenseQuery,
 } from '@tanstack/react-query';
 import { silentParse } from '@/utils/parse.util';
 import { z } from 'zod';
@@ -79,13 +78,6 @@ export const getEvent = async (eventId: string) => {
 
 export const useGetEvent = (eventId: string) => {
   return useQuery({
-    queryKey: ['event', eventId],
-    queryFn: () => getEvent(eventId),
-  });
-};
-
-export const useSuspenseGetEvent = (eventId: string) => {
-  return useSuspenseQuery({
     queryKey: ['event', eventId],
     queryFn: () => getEvent(eventId),
   });
