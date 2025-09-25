@@ -32,6 +32,7 @@ export const RegionHubsViewEntitySchema = z.object({
   shuttleHub: z.boolean(),
   handyParty: z.boolean(),
   roadViewPan: z.number().nullable(),
+  roadViewTilt: z.number().nullable(),
 });
 export type RegionHubsViewEntity = z.infer<typeof RegionHubsViewEntitySchema>;
 
