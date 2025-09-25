@@ -43,6 +43,8 @@ export const CreateHubRequestSchema = z.object({
   address: z.string(),
   latitude: z.number(),
   longitude: z.number(),
+  roadViewPan: z.number().nullable(),
+  roadViewTilt: z.number().nullable(),
 });
 export type CreateHubRequest = z.infer<typeof CreateHubRequestSchema>;
 
@@ -54,6 +56,7 @@ export const AdminUpdateRegionHubRequestSchema = z
     longitude: z.number(),
     regionId: z.string(),
     roadViewPan: z.number().nullable(),
+    roadViewTilt: z.number().nullable(),
   })
   .partial();
 export type AdminUpdateRegionHubRequest = z.infer<
