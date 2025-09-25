@@ -45,8 +45,6 @@ const useExportDemandRequestersList = ({ eventId, dailyEventId }: Props) => {
     )?.date;
 
     for (const demand of demands) {
-      // userId로 사용자 정보 조회
-
       // 사용자 정보가 없거나 이름/닉네임이 모두 없으면 제외 (탈퇴한 유저)
       if (!demand.userName && !demand.userNickname) {
         continue;
