@@ -51,6 +51,8 @@ export const ShuttleDemandsViewEntitySchema = z
     passengerCount: z.number(),
     status: ShuttleDemandStatusEnum,
     hasShuttleRoute: z.boolean(),
+    hasShuttleRouteInRelatedRegion: z.boolean(),
+    demandCountOnRegion: z.number(),
     createdAt: z.string(),
     updatedAt: z.string(),
   })
