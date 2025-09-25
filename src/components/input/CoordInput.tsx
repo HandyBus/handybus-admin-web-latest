@@ -77,10 +77,18 @@ const CoordInput = ({ coord, setCoord }: Props) => {
   }, [coord]);
 
   const setCoordWithRoadview = useCallback(
-    (roadviewPan: number) => {
+    (roadviewPan: number, roadviewTilt: number) => {
       const prev = coordRef.current;
-      if (prev.roadViewPan === roadviewPan) return;
-      setCoord({ ...prev, roadViewPan: roadviewPan });
+      if (
+        prev.roadViewPan === roadviewPan &&
+        prev.roadViewTilt === roadviewTilt
+      )
+        return;
+      setCoord({
+        ...prev,
+        roadViewPan: roadviewPan,
+        roadViewTilt: roadviewTilt,
+      });
     },
     [setCoord],
   );
@@ -398,18 +406,20 @@ const CoordInput = ({ coord, setCoord }: Props) => {
           )}
         </div>
         <div>
-          좌표: {coord.latitude}, {coord.longitude}
+          좌표: {coord.latitude.toFixed(14)}, {coord.longitude.toFixed(14)}
           <br />
-          시점: {coord.roadViewPan}
+          시점(가로, 세로): {coord.roadViewPan?.toFixed(14)},{' '}
+          {coord.roadViewTilt?.toFixed(14)}
           <br />
           주소: {coord.address}
         </div>
-        <div className="h-320 rounded-[12px]">
+        <div className="h-[195px] rounded-[12px]">
           <Roadview
             placeName={coord.address}
             latitude={coord.latitude}
             longitude={coord.longitude}
             roadViewPan={coord.roadViewPan}
+            roadViewTilt={coord.roadViewTilt}
             onViewpointChange={setCoordWithRoadview}
           />
         </div>
@@ -425,4 +435,5 @@ export interface Coord {
   longitude: number;
   address: string;
   roadViewPan: number | null;
+  roadViewTilt: number | null;
 }

@@ -7,7 +7,8 @@ interface Props {
   latitude: number;
   longitude: number;
   roadViewPan: number | null;
-  onViewpointChange: (roadviewPan: number) => void;
+  roadViewTilt: number | null;
+  onViewpointChange: (roadviewPan: number, roadviewTilt: number) => void;
 }
 
 const Roadview = ({
@@ -15,6 +16,7 @@ const Roadview = ({
   latitude,
   longitude,
   roadViewPan,
+  roadViewTilt,
   onViewpointChange,
 }: Props) => {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -53,15 +55,15 @@ const Roadview = ({
         kakao.maps.event.addListener(instance, 'init', () => {
           instance.setViewpoint({
             pan: roadViewPan ?? 0,
-            tilt: 0,
-            zoom: 1,
+            tilt: roadViewTilt ?? 0,
+            zoom: -3,
           });
         });
 
         // 시점 변경 이벤트 리스너 추가 - 마우스로 조작할 때
         kakao.maps.event.addListener(instance, 'viewpoint_changed', () => {
           const viewpoint = instance.getViewpoint();
-          onViewpointChange(viewpoint.pan);
+          onViewpointChange(viewpoint.pan, viewpoint.tilt);
         });
         setIsAvailable(true);
       });
