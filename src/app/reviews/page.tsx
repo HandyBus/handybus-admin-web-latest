@@ -2,7 +2,7 @@ import ReviewList from './components/ReviewList';
 
 const ReviewsPage = () => {
   return (
-    <main>
+    <main className="max-w-840">
       <ReviewList />
     </main>
   );

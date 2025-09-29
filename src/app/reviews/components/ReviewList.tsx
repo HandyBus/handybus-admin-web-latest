@@ -6,13 +6,12 @@ import { useGetReviewsWithPagination } from '@/services/review.service';
 import FilterButton from './FilterButton';
 import { useMemo, useState } from 'react';
 import ReviewStatistics from './ReviewStatistics';
-import Image from 'next/image';
-import ReviewBanner from '../images/review-banner.png';
+import Callout from '@/components/text/Callout';
 
 export type ReviewSortType = 'DATE_DESC' | 'RATING_DESC' | 'RATING_ASC';
 
 const ReviewList = () => {
-  const [sort, setSort] = useState<ReviewSortType>('RATING_DESC');
+  const [sort, setSort] = useState<ReviewSortType>('DATE_DESC');
   const {
     data: reviewPages,
     fetchNextPage,
@@ -39,7 +38,10 @@ const ReviewList = () => {
 
   return (
     <>
-      <Image src={ReviewBanner} alt="핸디버스 후기" />
+      <Callout>
+        어드민 후기 기능 안내 : 프로필 이름을 누르면 해당 유저의 상세페이지로
+        이동합니다.
+      </Callout>
       <ReviewStatistics />
       <div className="h-8 bg-basic-grey-50" />
       <section className="mt-32 flex flex-col gap-16 px-16">
