@@ -6,6 +6,7 @@ import UserProfile from './UserProfile';
 import Rating from './Rating';
 import ReviewProperty from './ReviewProperty';
 import { formatDateString } from '@/utils/date.util';
+import Link from 'next/link';
 
 interface Props {
   review: ReviewsViewEntityProduct;
@@ -39,11 +40,9 @@ const ReviewItem = ({ review }: Props) => {
     [useClamp],
   );
 
-  const blurredName = review.userName?.slice(0, 1) + '**';
-
   const getDisplayName = () => {
     if (review.userName) {
-      return blurredName;
+      return review.userName;
     }
     if (review.userNickname) {
       return review.userNickname;
@@ -64,9 +63,12 @@ const ReviewItem = ({ review }: Props) => {
                   name={review.userName || review.userNickname}
                   profileImage={review.userProfileImage}
                 />
-                <p className="text-12 font-500 leading-[160%] text-basic-black">
+                <Link
+                  className="text-12 font-500 leading-[160%] text-basic-black hover:text-basic-blue-400 hover:underline hover:underline-offset-[3px]"
+                  href={`/users/${review.userId}`}
+                >
                   {displayName}
-                </p>
+                </Link>
               </div>
               <Rating size="medium" value={review.rating} />
             </div>
