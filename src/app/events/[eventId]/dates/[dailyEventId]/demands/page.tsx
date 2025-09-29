@@ -8,9 +8,10 @@ import Map from './components/Map';
 import { Suspense, useState } from 'react';
 import Table from './components/Table';
 import { formatDateString } from '@/utils/date.util';
-import { useSuspenseGetEvent } from '@/services/event.service';
+import { useGetEvent } from '@/services/event.service';
 import Loading from '@/components/loading/Loading';
 import { useParams } from 'next/navigation';
+import useExportDemandRequestersList from './hooks/useExportDemandRequestersList';
 
 type Tab = 'map' | 'table';
 
@@ -30,8 +31,15 @@ const DemandContent = () => {
     dailyEventId: string;
   }>();
   const [tab, setTab] = useState<Tab>('map');
-  const { data: event } = useSuspenseGetEvent(eventId);
+  const { data: event, isLoading, isError } = useGetEvent(eventId);
 
+  const { exportDemandRequestersList } = useExportDemandRequestersList({
+    eventId,
+    dailyEventId,
+  });
+
+  if (isLoading) return <Loading />;
+  if (isError) throw new Error('행사 데이터 조회에 실패했습니다.');
   return (
     <main className="flex grow flex-col">
       <Heading className="flex items-baseline gap-12">
@@ -53,16 +61,22 @@ const DemandContent = () => {
           >
             목록
           </button>
+          <button
+            className="text-14 text-basic-blue-400 underline underline-offset-[3px]"
+            onClick={async () => await exportDemandRequestersList()}
+          >
+            수요조사 명단추출
+          </button>
         </div>
       </Heading>
       <Callout className="mb-16">
         <List>
           <List.item title="행사명">
-            <BlueLink href={`/events/${eventId}`}>{event.eventName}</BlueLink>
+            <BlueLink href={`/events/${eventId}`}>{event?.eventName}</BlueLink>
           </List.item>
           <List.item title="날짜">
             {formatDateString(
-              event.dailyEvents.find(
+              event?.dailyEvents.find(
                 (dailyEvent) => dailyEvent.dailyEventId === dailyEventId,
               )?.date,
             )}

@@ -19,7 +19,9 @@ export const ShuttleDemandsViewEntitySchema = z
   .object({
     shuttleDemandId: z.string(),
     userId: z.string(),
+    userName: z.string(),
     userNickname: z.string(),
+    userPhoneNumber: z.string(),
     userProfileImage: z.string().nullable(),
     event: z.lazy(() => EventsViewEntitySchema),
     eventId: z.string(),
@@ -49,6 +51,8 @@ export const ShuttleDemandsViewEntitySchema = z
     passengerCount: z.number(),
     status: ShuttleDemandStatusEnum,
     hasShuttleRoute: z.boolean(),
+    hasShuttleRouteInRelatedRegion: z.boolean(),
+    demandCountOnRegion: z.number(),
     createdAt: z.string(),
     updatedAt: z.string(),
   })
