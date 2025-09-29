@@ -3,10 +3,15 @@ import {
   TotalReviewCountsReadModelSchema,
 } from '@/types/dashboard.type';
 import dayjs from 'dayjs';
-import { authInstance } from './config';
+import { authInstance, instance } from './config';
 import { toSearchParamString } from '@/utils/searchParam.util';
-import { useQuery } from '@tanstack/react-query';
-import { ReviewsViewEntitySchema } from '@/types/reviews.type';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import {
+  ReviewStatisticsViewEntityProductSchema,
+  ReviewsViewEntityProductSchema,
+  ReviewsViewEntitySchema,
+} from '@/types/reviews.type';
+import { withPagination } from '@/types/common.type';
 
 // ----- GET -----
 
@@ -62,3 +67,66 @@ export const useGetTotalReviewCounts = (
     queryFn: () => getTotalReviewCounts(options),
   });
 };
+
+// ----- product api) ------
+
+interface GetReviewsWithPaginationOptions {
+  limit: number;
+  page?: string;
+  eventId?: string;
+  userId?: string;
+  orderBy?: 'eventName' | 'userNickname' | 'rating';
+  additionalOrderOptions?: 'ASC' | 'DESC';
+}
+
+export const getReviewsWithPagination = async ({
+  limit = 15,
+  page,
+  eventId,
+  orderBy,
+  additionalOrderOptions,
+}: Partial<GetReviewsWithPaginationOptions> = {}) => {
+  const searchParams = toSearchParamString({
+    limit,
+    page,
+    eventId,
+    orderBy,
+    additionalOrderOptions,
+  });
+  const res = await instance.get(
+    `/v2/shuttle-operation/reviews?${searchParams}`,
+    {
+      shape: withPagination({
+        reviews: ReviewsViewEntityProductSchema.array(),
+      }),
+    },
+  );
+  return res;
+};
+
+export const useGetReviewsWithPagination = (
+  options?: Partial<GetReviewsWithPaginationOptions>,
+) =>
+  useInfiniteQuery({
+    queryKey: ['review', options],
+    queryFn: ({ pageParam }: { pageParam: string | undefined }) =>
+      getReviewsWithPagination({ page: pageParam, ...options }),
+    initialPageParam: undefined,
+    initialData: { pages: [], pageParams: [] },
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+  });
+
+export const getReviewStatistics = async () => {
+  const res = await instance.get('/v2/shuttle-operation/reviews/all/stats', {
+    shape: {
+      totalReviewStatistics: ReviewStatisticsViewEntityProductSchema.array(),
+    },
+  });
+  return res.totalReviewStatistics;
+};
+
+export const useGetReviewStatistics = () =>
+  useQuery({
+    queryKey: ['review', 'statistics'],
+    queryFn: getReviewStatistics,
+  });
