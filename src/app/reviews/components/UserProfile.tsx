@@ -1,6 +1,6 @@
 'use client';
 
-import { generateProfileBackgroundColor } from './generateProfileBackgroundColor';
+import { generateProfileBackgroundColor } from '../utils/generateProfileBackgroundColor';
 import Image from 'next/image';
 
 interface Props {
