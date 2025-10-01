@@ -5,6 +5,8 @@ import BlueLink from '@/components/link/BlueLink';
 import { AdminShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 import Stringifier from '@/utils/stringifier.util';
 import EditRouteStatusDialog from './EditRouteStatusDialog';
+import dayjs from 'dayjs';
+import { formatDateString } from '@/utils/date.util';
 
 const columnHelper = createColumnHelper<AdminShuttleRoutesViewEntity>();
 
@@ -25,6 +27,11 @@ export const getColumns = (alertRequestCounts: Record<string, number>) => [
         regularPriceToDestination,
         regularPriceFromDestination,
         regularPriceRoundTrip,
+        earlybirdPriceRoundTrip,
+        earlybirdPriceToDestination,
+        earlybirdPriceFromDestination,
+        hasEarlybird,
+        earlybirdDeadline,
       } = info.row.original;
 
       const formattedRegularPriceToDestination = regularPriceToDestination
@@ -36,17 +43,69 @@ export const getColumns = (alertRequestCounts: Record<string, number>) => [
       const formattedRegularPriceRoundTrip = regularPriceRoundTrip
         ? `${regularPriceRoundTrip.toLocaleString()}원`
         : '-';
+      const formattedEarlybirdPriceRoundTrip = earlybirdPriceRoundTrip
+        ? `${earlybirdPriceRoundTrip.toLocaleString()}원`
+        : '-';
+      const formattedEarlybirdPriceToDestination = earlybirdPriceToDestination
+        ? `${earlybirdPriceToDestination.toLocaleString()}원`
+        : '-';
+      const formattedEarlybirdPriceFromDestination =
+        earlybirdPriceFromDestination
+          ? `${earlybirdPriceFromDestination.toLocaleString()}원`
+          : '-';
+
+      const isEarlybirdPeriod =
+        hasEarlybird && dayjs().isBefore(earlybirdDeadline);
+
+      if (isEarlybirdPeriod) {
+        return (
+          <div className="flex flex-col gap-[6px]">
+            <div className="grid grid-cols-[1fr_55px_1fr] items-center">
+              <span className="pr-16 text-right text-basic-grey-600">
+                왕복:
+              </span>
+              <span className="text-12 font-500 text-basic-grey-600 line-through">
+                {formattedRegularPriceRoundTrip}
+              </span>
+              <span className="font-500">
+                {formattedEarlybirdPriceRoundTrip}
+              </span>
+              <span className="pr-16 text-right text-basic-grey-600">
+                행사장행:
+              </span>
+              <span className="text-12 font-500 text-basic-grey-600 line-through">
+                {formattedRegularPriceToDestination}
+              </span>
+              <span className="font-500">
+                {formattedEarlybirdPriceToDestination}
+              </span>
+              <span className="pr-16 text-right text-basic-grey-600">
+                귀가행:
+              </span>
+              <span className="text-12 font-500 text-basic-grey-600 line-through">
+                {formattedRegularPriceFromDestination}
+              </span>
+              <span className="font-500">
+                {formattedEarlybirdPriceFromDestination}
+              </span>
+            </div>
+            <span className="text-center text-12 font-500 text-basic-grey-600">
+              얼리버드 진행 중 ~{formatDateString(earlybirdDeadline, 'date')}
+            </span>
+          </div>
+        );
+      }
 
       return (
         <div className="grid grid-cols-2 items-center gap-x-16">
+          <span className="text-right text-basic-grey-600">왕복:</span>
+          <span className="font-500">{formattedRegularPriceRoundTrip}</span>
           <span className="text-right text-basic-grey-600">행사장행:</span>
           <span className="font-500">{formattedRegularPriceToDestination}</span>
           <span className="text-right text-basic-grey-600">귀가행:</span>
           <span className="font-500">
             {formattedRegularPriceFromDestination}
           </span>
-          <span className="text-right text-basic-grey-600">왕복:</span>
-          <span className="font-500">{formattedRegularPriceRoundTrip}</span>
         </div>
       );
     },
