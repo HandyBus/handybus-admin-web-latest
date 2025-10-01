@@ -186,6 +186,7 @@ export const useGetTotalReservationPassengerCounts = (
   return useQuery({
     queryKey: ['reservation', 'passenger-count', options],
     queryFn: () => getTotalReservationPassengerCounts(options),
+    retry: false,
   });
 };
 
@@ -220,6 +221,7 @@ export const useGetTotalReservationCounts = (
   return useQuery({
     queryKey: ['reservation', 'count', options],
     queryFn: () => getTotalReservationCounts(options),
+    retry: false,
   });
 };
 
@@ -254,6 +256,7 @@ export const useGetCancelledReservationCounts = (
   return useQuery({
     queryKey: ['cancelled-reservation', 'count', options],
     queryFn: () => getCancelledReservationCounts(options),
+    retry: false,
   });
 };
 

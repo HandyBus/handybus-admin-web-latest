@@ -141,6 +141,7 @@ export const useGetTotalUserCounts = (options?: Partial<DashboardOptions>) => {
   return useQuery({
     queryKey: ['user', 'count', options],
     queryFn: () => getTotalUserCounts(options),
+    retry: false,
   });
 };
 
@@ -158,5 +159,6 @@ export const useGetUserStatsAggregate = () => {
   return useQuery({
     queryKey: ['user', 'aggregate'],
     queryFn: () => getUserStatsAggregate(),
+    retry: false,
   });
 };

@@ -169,6 +169,7 @@ export const useGetTotalDemandCounts = (
   return useQuery({
     queryKey: ['demand', 'count', options],
     queryFn: () => getTotalDemandCounts(options),
+    retry: false,
   });
 };
 

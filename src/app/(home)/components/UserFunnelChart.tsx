@@ -86,5 +86,6 @@ const useGetTotalUserCounts = () => {
           res.totalUserCount - res.onboardingIncompleteCount,
       };
     },
+    retry: false,
   });
 };
