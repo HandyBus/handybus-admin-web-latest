@@ -12,6 +12,7 @@ import { UserFilterAction } from '../hooks/useUserFilter';
 import { Dispatch, ReactNode } from 'react';
 import { ActiveStatusEnum } from '@/types/common.type';
 import DebouncedInput from '@/components/input/DebouncedInput';
+import { convertToInternationalFormat } from '@/utils/phoneNumber.util';
 import DateTimeInput from '@/components/input/DateTimeInput';
 
 interface Props {
@@ -56,9 +57,10 @@ const UserFilter = ({ option, dispatch }: Props) => {
               setValue={(value) =>
                 dispatch({
                   type: 'SET_PHONE_NUMBER',
-                  phoneNumber: value || undefined,
+                  phoneNumber: convertToInternationalFormat(value) || undefined,
                 })
               }
+              placeholder="010-1234-5678"
             />
           </article>
           <article>
