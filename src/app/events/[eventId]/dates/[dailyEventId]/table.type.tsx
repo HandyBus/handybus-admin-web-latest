@@ -11,9 +11,30 @@ import { formatDateString } from '@/utils/date.util';
 const columnHelper = createColumnHelper<AdminShuttleRoutesViewEntity>();
 
 export const getColumns = (alertRequestCounts: Record<string, number>) => [
-  columnHelper.accessor('name', {
+  columnHelper.display({
+    id: 'name',
     header: () => '이름',
-    cell: (info) => info.getValue(),
+    cell: (info) => {
+      const { name, toDestinationShuttleRouteHubs } = info.row.original;
+      const toDestinationDestinationHub = toDestinationShuttleRouteHubs?.find(
+        (hub) => hub.role === 'DESTINATION',
+      );
+      const toDestinationArrivalTime = toDestinationDestinationHub?.arrivalTime
+        ? dayjs(toDestinationDestinationHub.arrivalTime)
+            .tz('Asia/Seoul')
+            .format('HH:mm')
+        : null;
+      return (
+        <div className="flex flex-col gap-[6px]">
+          <span className="font-500">{name}</span>
+          {toDestinationArrivalTime && (
+            <span className="text-12 font-500 text-basic-grey-600">
+              행사장행 {toDestinationArrivalTime} 도착
+            </span>
+          )}
+        </div>
+      );
+    },
   }),
   columnHelper.display({
     id: 'status',
