@@ -71,6 +71,7 @@ export const useGetTotalSalesCounts = (options?: Partial<DashboardOptions>) => {
   return useQuery({
     queryKey: ['sales', 'count', options],
     queryFn: () => getTotalSalesCounts(options),
+    retry: false,
   });
 };
 

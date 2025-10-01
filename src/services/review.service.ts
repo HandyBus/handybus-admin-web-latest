@@ -65,6 +65,7 @@ export const useGetTotalReviewCounts = (
   return useQuery({
     queryKey: ['review', 'count', options],
     queryFn: () => getTotalReviewCounts(options),
+    retry: false,
   });
 };
 
