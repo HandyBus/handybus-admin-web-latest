@@ -15,9 +15,29 @@ export const getColumns = (alertRequestCounts: Record<string, number>) => [
     header: () => '이름',
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor('status', {
+  columnHelper.display({
+    id: 'status',
     header: () => '상태',
-    cell: (info) => Stringifier.shuttleRouteStatus(info.getValue()),
+    cell: (info) => {
+      const { status, reservationDeadline } = info.row.original;
+      const statusText = Stringifier.shuttleRouteStatus(status);
+      const style = {
+        '예약 모집 중': 'text-brand-primary-400',
+        '예약 마감': 'text-basic-grey-700',
+        '운행 종료': 'text-basic-grey-500',
+        무산: 'text-basic-red-500',
+        비활성: 'text-basic-grey-500',
+      };
+      return (
+        <div className="flex flex-col items-center gap-[6px]">
+          <span className={`${style[statusText]} font-500`}>{statusText}</span>
+          <span className="text-12 font-500 text-basic-grey-600">
+            {reservationDeadline &&
+              ` ~ ${formatDateString(reservationDeadline, 'date')}`}
+          </span>
+        </div>
+      );
+    },
   }),
   columnHelper.display({
     id: 'price',
