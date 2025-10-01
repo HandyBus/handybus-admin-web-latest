@@ -9,14 +9,20 @@ const cancelReasonColumnHelper =
 export const cancelReasonColumns = [
   cancelReasonColumnHelper.accessor('createdAt', {
     header: () => '작성일',
-    cell: (info) => formatDateString(info.getValue(), 'datetime'),
+    cell: (info) => (
+      <span className="whitespace-nowrap break-keep">
+        {formatDateString(info.getValue(), 'datetime')}
+      </span>
+    ),
   }),
   cancelReasonColumnHelper.accessor('content', {
     header: () => '취소 사유',
     cell: (info) => {
       const content = info.getValue();
       const target = content.split(', ')?.[1]?.split(': ')?.[1];
-      return target ?? '-';
+      return (
+        <span className="whitespace-nowrap break-keep">{target ?? '-'}</span>
+      );
     },
   }),
   cancelReasonColumnHelper.accessor('content', {

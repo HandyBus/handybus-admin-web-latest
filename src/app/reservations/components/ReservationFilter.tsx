@@ -20,7 +20,6 @@ import { GetReservationsOptions } from '@/services/reservation.service';
 import { getShuttleRoute } from '@/services/shuttleRoute.service';
 import {
   CancelStatusEnum,
-  HandyStatusEnum,
   ReservationStatusEnum,
 } from '@/types/reservation.type';
 import DebouncedInput from '@/components/input/DebouncedInput';
@@ -50,7 +49,7 @@ function ReservationFilter({ option, dispatch }: Props) {
     <Disclosure>
       <DisclosureButton
         className={customTwMerge(
-          'gap-2 group flex w-fit items-center justify-start gap-4 rounded-8 p-4 transition-all hover:bg-basic-grey-50 active:scale-90 active:bg-basic-grey-100',
+          'gap-2 group flex w-fit items-center justify-start gap-4 rounded-8 p-4 text-14 font-500 transition-all hover:bg-basic-grey-50 active:scale-90 active:bg-basic-grey-100',
           filterCount === 0 ? '' : 'text-brand-primary-400',
           validity === false ? 'text-basic-red-500' : '',
         )}
@@ -62,7 +61,7 @@ function ReservationFilter({ option, dispatch }: Props) {
       </DisclosureButton>
       {filterCount > 0 && (
         <button
-          className="gap-2 group flex w-fit flex-row items-center justify-start gap-4 rounded-8 p-4 transition-all hover:bg-basic-grey-50 active:scale-90 active:bg-basic-grey-100"
+          className="gap-2 group flex w-fit flex-row items-center justify-start gap-4 rounded-8 p-4 text-14 font-500 text-basic-grey-600 transition-all hover:bg-basic-grey-50 active:scale-90 active:bg-basic-grey-100"
           onClick={() => {
             dispatch({ type: 'RESET' });
           }}
@@ -71,7 +70,7 @@ function ReservationFilter({ option, dispatch }: Props) {
           <span>필터 초기화</span>
         </button>
       )}
-      <DisclosurePanel className="flex flex-col gap-4 rounded-16 bg-basic-grey-50 p-8">
+      <DisclosurePanel className="flex flex-col gap-4 rounded-8 border border-brand-primary-200 bg-brand-primary-50/50 p-16">
         <label>셔틀</label>
         <EventInput
           value={option.eventId ?? null}
@@ -144,37 +143,6 @@ function ReservationFilter({ option, dispatch }: Props) {
             })
           }
         />
-        <label>
-          (구) 탑승자 이름 (fuzzy) (옛날 예약에서 탑승객 이름 받을떄 사용)
-        </label>
-        <DebouncedInput
-          value={option.passengerName ?? ''}
-          setValue={(n) =>
-            dispatch({
-              type: 'SET_PASSENGER_NAME',
-              passengerName: n || undefined,
-            })
-          }
-        />
-        <label>핸디 상태</label>
-        <div className="flex flex-row gap-4">
-          {HandyStatusEnum.options.map((handyStatus) => (
-            <Toggle
-              key={handyStatus}
-              label={Stringifier.handyStatus(handyStatus)}
-              value={option.handyStatus === handyStatus}
-              setValue={() =>
-                dispatch({
-                  type: 'SET_HANDY_STATUS',
-                  handyStatus:
-                    handyStatus === option.handyStatus
-                      ? undefined
-                      : handyStatus,
-                })
-              }
-            />
-          ))}
-        </div>
         <label>예약 상태</label>
         <div className="flex flex-row gap-4">
           {ReservationStatusEnum.options.map((reservationStatus) => (
