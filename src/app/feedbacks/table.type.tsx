@@ -8,11 +8,19 @@ const feedbackColumnHelper = createColumnHelper<AdminFeedbackResponseModel>();
 export const feedbackColumns = [
   feedbackColumnHelper.accessor('createdAt', {
     header: () => '작성일',
-    cell: (info) => formatDateString(info.getValue(), 'datetime'),
+    cell: (info) => (
+      <span className="whitespace-nowrap break-keep">
+        {formatDateString(info.getValue(), 'datetime')}
+      </span>
+    ),
   }),
   feedbackColumnHelper.accessor('subject', {
     header: () => '종류',
-    cell: (info) => info.getValue(),
+    cell: (info) => (
+      <span className="whitespace-nowrap break-keep font-500">
+        {info.getValue()}
+      </span>
+    ),
   }),
   feedbackColumnHelper.accessor('content', {
     header: () => '내용',
