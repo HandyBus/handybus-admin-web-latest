@@ -46,18 +46,22 @@ const SalesTable = ({ event, shuttleRoutes }: Props) => {
     setMarketingCost(cost);
   };
 
-  const handleExcelDownload = useCallback(() => {
+  const handleExcelDownload = useCallback(async () => {
     if (!dailyEventsWithRoutesWithSales) {
       return;
     }
-    downloadSalesExcel(
-      event,
-      dailyEventsWithRoutesWithSales,
-      vehicleCosts,
-      vehicleCounts,
-      operationCost,
-      marketingCost,
-    );
+    try {
+      await downloadSalesExcel(
+        event,
+        dailyEventsWithRoutesWithSales,
+        vehicleCosts,
+        vehicleCounts,
+        operationCost,
+        marketingCost,
+      );
+    } catch (error) {
+      console.error('Excel download failed:', error);
+    }
   }, [
     dailyEventsWithRoutesWithSales,
     event,
