@@ -21,15 +21,15 @@ interface Props {
 const RegionHubFilter = ({ option, dispatch }: Props) => {
   return (
     <Disclosure>
-      <DisclosureButton className="group flex w-fit items-center justify-start gap-4 rounded-[8px] p-4 transition-all hover:bg-basic-grey-50 active:scale-90 active:bg-basic-grey-100">
+      <DisclosureButton className="group flex w-fit items-center justify-start gap-4 rounded-8 p-4 text-14 font-500 transition-all hover:bg-basic-grey-50 active:scale-90 active:bg-basic-grey-100">
         <FilterIcon size={16} />
         <ChevronDownIcon className="w-5 group-data-[open]:rotate-180" />
       </DisclosureButton>
-      <DisclosurePanel className="mb-8 flex flex-col gap-8 rounded-[4px] bg-brand-primary-400/50 p-16">
+      <DisclosurePanel className="mb-8 flex flex-col gap-8 rounded-8 border border-brand-primary-200 bg-brand-primary-50/50 p-16">
         <button
           type="button"
           onClick={() => dispatch({ type: 'RESET' })}
-          className="flex items-center gap-4 text-14 font-500 text-basic-grey-600"
+          className="flex items-center gap-4 text-14 font-500 text-basic-grey-600 transition-all hover:bg-basic-grey-50 active:scale-90 active:bg-basic-grey-100"
         >
           <RefreshCwIcon size={14} />
           필터 초기화

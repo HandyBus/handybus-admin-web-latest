@@ -118,7 +118,7 @@ const ReviewItem = ({ review }: Props) => {
               {review.eventName}
             </p>
             <p className="text-12 font-500 leading-[160%] text-basic-grey-500">
-              {formatDateString(review.createdAt, 'date')}
+              {formatDateString(review.createdAt, 'datetime')}
             </p>
           </div>
         </div>
