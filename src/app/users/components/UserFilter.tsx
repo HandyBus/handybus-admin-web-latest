@@ -57,7 +57,9 @@ const UserFilter = ({ option, dispatch }: Props) => {
               setValue={(value) =>
                 dispatch({
                   type: 'SET_PHONE_NUMBER',
-                  phoneNumber: convertToInternationalFormat(value) || undefined,
+                  phoneNumber: value
+                    ? convertToInternationalFormat(value)
+                    : undefined,
                 })
               }
               placeholder="010-1234-5678"
