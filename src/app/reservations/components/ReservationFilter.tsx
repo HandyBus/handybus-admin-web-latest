@@ -126,14 +126,14 @@ function ReservationFilter({ option, dispatch }: Props) {
             />
           </>
         )}
-        <label>유저 이름 (fuzzy)</label>
+        <label>유저 이름</label>
         <DebouncedInput
           value={option.userName ?? ''}
           setValue={(n) =>
             dispatch({ type: 'SET_USER_NAME', userName: n || undefined })
           }
         />
-        <label>유저 닉네임 (fuzzy)</label>
+        <label>유저 닉네임</label>
         <DebouncedInput
           value={option.userNickname ?? ''}
           setValue={(n) =>
