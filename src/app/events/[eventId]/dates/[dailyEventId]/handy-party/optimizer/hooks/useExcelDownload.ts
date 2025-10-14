@@ -5,6 +5,10 @@ import dayjs from 'dayjs';
 import Stringifier from '@/utils/stringifier.util';
 import { HANDY_PARTY_OPTIMIZER_MESSAGES } from '../constants/handyPartyOptimizer.constant';
 import { HandyPartyReservationExcelData } from '../types/handyPartyOptimizer.type';
+import {
+  convertToKoreanMobileNumber,
+  formatPhoneNumber,
+} from '@/utils/phoneNumber.util';
 
 interface EventInformation {
   eventName: string;
@@ -30,12 +34,12 @@ const useExcelDownload = ({ eventInformation }: Props) => {
             return a.order - b.order;
           })
           .map((item) => ({
-            ReservationId: item.reservationId,
-            ShuttleRouteId: item.shuttleRouteId,
             노선명: item.shuttleName,
-            닉네임: item.nickname,
+            이름: item.name,
             방향: Stringifier.tripType(item.tripType),
-            핸드폰번호: item.phoneNumber,
+            핸드폰번호: formatPhoneNumber(
+              convertToKoreanMobileNumber(item.phoneNumber),
+            ),
             주소: item.address,
             파티넘버: item.partyId,
             순서: item.order,

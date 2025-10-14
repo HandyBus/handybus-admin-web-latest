@@ -41,6 +41,19 @@ export const convertToInternationalFormat = (phoneNumber: string): string => {
 };
 
 /**
+ * Converts an international phone number to a Korean mobile number
+ * @param phoneNumber - International phone number string (+821000000000)
+ * @returns Korean mobile number string (01000000000)
+ */
+export const convertToKoreanMobileNumber = (phoneNumber: string): string => {
+  if (phoneNumber.startsWith('+8210')) {
+    const digits = phoneNumber.replace(/\D/g, '');
+    return '010' + digits.slice(4);
+  }
+  return phoneNumber;
+};
+
+/**
  * Validates if the input contains only digits and common phone number characters
  * @param value - Input value to validate
  * @returns True if valid phone number input
