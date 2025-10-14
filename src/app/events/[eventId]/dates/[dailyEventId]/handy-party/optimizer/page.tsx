@@ -20,6 +20,8 @@ import {
 } from './types/handyPartyOptimizer.type';
 import { toast } from 'react-toastify';
 
+export const HANDY_PARTY_MAP_STATE_STORAGE_KEY = 'handy_party_map_state';
+
 interface Props {
   params: { eventId: string; dailyEventId: string };
 }
@@ -81,6 +83,7 @@ const HandyPartyOptimizerPage = ({
   }, [availableHandyPartyRouteList]);
 
   const handleCalculateRoute = async (route: HandyPartyRoute) => {
+    localStorage.removeItem(HANDY_PARTY_MAP_STATE_STORAGE_KEY);
     const result = await handleCalculateOptimalRoute(
       route,
       eventPlace,
