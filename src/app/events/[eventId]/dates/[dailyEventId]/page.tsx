@@ -189,12 +189,6 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
           >
             일자별 행사 핸디팟 경로 계산 (엑셀 추출)
           </BlueLink>
-          <BlueLink
-            href={`${dailyEventId}/handy-party/vehicle-auto-assignment`}
-            className="text-14"
-          >
-            일자별 행사 핸디팟 자동 배차
-          </BlueLink>
         </div>
         <BaseTable table={table} />
       </div>

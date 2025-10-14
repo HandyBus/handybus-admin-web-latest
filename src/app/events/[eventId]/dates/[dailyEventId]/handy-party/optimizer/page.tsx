@@ -135,6 +135,7 @@ const HandyPartyOptimizerPage = ({
               reservationId: item.reservationId!,
               shuttleRouteId: item.shuttleRouteId!,
               shuttleName: item.shuttleName!,
+              name: item.name!,
               nickname: item.nickname!,
               phoneNumber: item.phoneNumber!,
               tripType: item.tripType!,

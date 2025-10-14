@@ -64,6 +64,7 @@ const useHandyPartyReservations = ({
         reservationId: r.reservationId,
         shuttleRouteId: r.shuttleRouteId,
         shuttleName: r.shuttleRoute.name,
+        name: r.userName || r.userNickname || '탈퇴한유저',
         nickname: r.userNickname,
         phoneNumber: r.userPhoneNumber,
         tripType: r.type as TripTypeWithoutRoundTrip,

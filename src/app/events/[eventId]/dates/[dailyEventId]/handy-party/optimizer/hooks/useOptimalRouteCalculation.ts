@@ -39,6 +39,7 @@ const useOptimalRouteCalculation = () => {
             reservationId: null,
             shuttleRouteId: null,
             shuttleName: null,
+            name: null,
             nickname: null,
             phoneNumber: null,
             tripType: null,
