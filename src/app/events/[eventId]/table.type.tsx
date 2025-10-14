@@ -19,9 +19,16 @@ export const columns = [
     id: 'action',
     header: '액션',
     cell: (props) => {
-      const { eventId } = props.row.original;
+      const { eventId, eventMinRoutePrice } = props.row.original;
+
+      const isShuttleRouteAvailable =
+        eventMinRoutePrice !== null && eventMinRoutePrice !== undefined;
 
       const handleSendShuttleRouteNotCreated = async () => {
+        if (isShuttleRouteAvailable) {
+          window.alert('노선이 이미 개설되어 있습니다.');
+          return;
+        }
         const isConfirmed = window.confirm(
           '노선 미개설 안내를 발송하시겠습니까?\n* 안내를 기존에 발송했는지 확인해주세요.\n* 수요조사에 참여한 모든 유저들에게 발송됩니다.',
         );
@@ -37,6 +44,10 @@ export const columns = [
       };
 
       const handleSendShuttleRouteDoneCreating = async () => {
+        if (!isShuttleRouteAvailable) {
+          window.alert('노선이 개설되어 있지 않습니다.');
+          return;
+        }
         const isConfirmed = window.confirm(
           '노선 최종 개설 안내를 발송하시겠습니까?\n*안내를 기존에 발송했는지 확인해주세요.\n*수요조사에 참여하고 예약을 하지 않은 모든 유저들에게 발송됩니다.',
         );
@@ -53,10 +64,16 @@ export const columns = [
 
       return (
         <div className="flex flex-col gap-8">
-          <BlueButton onClick={handleSendShuttleRouteNotCreated}>
+          <BlueButton
+            onClick={handleSendShuttleRouteNotCreated}
+            disabled={isShuttleRouteAvailable}
+          >
             노선 미개설 안내 발송
           </BlueButton>
-          <BlueButton onClick={handleSendShuttleRouteDoneCreating}>
+          <BlueButton
+            onClick={handleSendShuttleRouteDoneCreating}
+            disabled={!isShuttleRouteAvailable}
+          >
             노선 최종 개설 안내 발송
           </BlueButton>
         </div>
