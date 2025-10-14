@@ -5,7 +5,7 @@ import { twJoin } from 'tailwind-merge';
 import { BanIcon } from 'lucide-react';
 import KakaoMapScript from '@/components/script/KakaoMapScript';
 import { ClusteredRouteResult } from '../types/handyPartyOptimizer.type';
-import { HANDY_PARTY_MAP_STATE_STORAGE_KEY } from '../page';
+import { HANDY_PARTY_MAP_STATE_STORAGE_KEY } from '../constants/handyPartyOptimizer.constant';
 
 const MAP_CONSTANTS = {
   INITIAL_ZOOM_LEVEL: 9,

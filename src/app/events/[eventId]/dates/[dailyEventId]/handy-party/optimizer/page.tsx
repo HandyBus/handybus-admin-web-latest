@@ -7,7 +7,10 @@ import EventPlaceSelect from './components/EventPlaceSelect';
 import Loading from '@/components/loading/Loading';
 import CalculatedDataAndMapView from './components/CalculatedDataAndMapView';
 import useDrag from './hooks/useDrag';
-import { HANDY_PARTY_OPTIMIZER_MESSAGES } from './constants/handyPartyOptimizer.constant';
+import {
+  HANDY_PARTY_MAP_STATE_STORAGE_KEY,
+  HANDY_PARTY_OPTIMIZER_MESSAGES,
+} from './constants/handyPartyOptimizer.constant';
 import useHandyPartyReservations from './hooks/useHandyPartyReservations';
 import useOptimalRouteCalculation from './hooks/useOptimalRouteCalculation';
 import useExcelDownload from './hooks/useExcelDownload';
@@ -19,8 +22,6 @@ import {
   HandyPartyRoute,
 } from './types/handyPartyOptimizer.type';
 import { toast } from 'react-toastify';
-
-export const HANDY_PARTY_MAP_STATE_STORAGE_KEY = 'handy_party_map_state';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };

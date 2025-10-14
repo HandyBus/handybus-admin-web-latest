@@ -17,3 +17,6 @@ export const HANDY_PARTY_OPTIMIZER_MESSAGES = {
     EXCEL_DOWNLOADED: '엑셀 파일이 다운로드되었습니다.',
   },
 } as const;
+
+export const HANDY_PARTY_MAP_STATE_STORAGE_KEY =
+  'handy_party_map_state' as const;
