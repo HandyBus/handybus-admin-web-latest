@@ -7,7 +7,10 @@ import EventPlaceSelect from './components/EventPlaceSelect';
 import Loading from '@/components/loading/Loading';
 import CalculatedDataAndMapView from './components/CalculatedDataAndMapView';
 import useDrag from './hooks/useDrag';
-import { HANDY_PARTY_OPTIMIZER_MESSAGES } from './constants/handyPartyOptimizer.constant';
+import {
+  HANDY_PARTY_MAP_STATE_STORAGE_KEY,
+  HANDY_PARTY_OPTIMIZER_MESSAGES,
+} from './constants/handyPartyOptimizer.constant';
 import useHandyPartyReservations from './hooks/useHandyPartyReservations';
 import useOptimalRouteCalculation from './hooks/useOptimalRouteCalculation';
 import useExcelDownload from './hooks/useExcelDownload';
@@ -81,6 +84,7 @@ const HandyPartyOptimizerPage = ({
   }, [availableHandyPartyRouteList]);
 
   const handleCalculateRoute = async (route: HandyPartyRoute) => {
+    localStorage.removeItem(HANDY_PARTY_MAP_STATE_STORAGE_KEY);
     const result = await handleCalculateOptimalRoute(
       route,
       eventPlace,
@@ -135,6 +139,7 @@ const HandyPartyOptimizerPage = ({
               reservationId: item.reservationId!,
               shuttleRouteId: item.shuttleRouteId!,
               shuttleName: item.shuttleName!,
+              name: item.name!,
               nickname: item.nickname!,
               phoneNumber: item.phoneNumber!,
               tripType: item.tripType!,

@@ -20,6 +20,8 @@ import { HANDY_PARTY_PREFIX } from '@/constants/common';
 import { HANDY_PARTY_ROUTE_AREA } from '@/constants/handyPartyArea.const';
 import useExportPassengerList from './hooks/useExportPassengerList';
 import useExportHandyPartyPassengerList from './hooks/useExportHandyPartyPassengerList';
+import useCloseMultipleShuttleRoutes from './hooks/useCloseMultipleShuttleRoutes';
+import BlueButton from '@/components/link/BlueButton';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -118,6 +120,19 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     return excelData;
   };
 
+  const { closeMultipleShuttleRoutes } = useCloseMultipleShuttleRoutes();
+  const handleCloseHandyPartyRoutes = async () => {
+    const handyPartyRouteIdList = sortedRoutes
+      .filter((r) => r.name.includes(HANDY_PARTY_PREFIX))
+      .map((r) => r.shuttleRouteId);
+
+    await closeMultipleShuttleRoutes({
+      eventId,
+      dailyEventId,
+      shuttleRouteIds: handyPartyRouteIdList,
+    });
+  };
+
   useEffect(() => {
     if (event && !dailyEvent) {
       notFound();
@@ -195,6 +210,9 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
           >
             일자별 행사 핸디팟 자동 배차
           </BlueLink>
+          <BlueButton onClick={handleCloseHandyPartyRoutes} className="text-14">
+            핸디팟 일괄 예약 마감
+          </BlueButton>
         </div>
         <BaseTable table={table} />
       </div>

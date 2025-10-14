@@ -6,6 +6,7 @@ export interface HandyPartyReservation {
   reservationId: string;
   shuttleRouteId: string;
   shuttleName: string;
+  name: string;
   nickname: string;
   phoneNumber: string;
   tripType: TripTypeWithoutRoundTrip;
@@ -26,6 +27,7 @@ export interface CalculatedOptimalRouteData {
   reservationId: string | null;
   shuttleRouteId: string | null;
   shuttleName: string | null;
+  name: string | null;
   nickname: string | null;
   phoneNumber: string | null;
   tripType: TripTypeWithoutRoundTrip | null;

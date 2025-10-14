@@ -5,6 +5,7 @@ import { twJoin } from 'tailwind-merge';
 import { BanIcon } from 'lucide-react';
 import KakaoMapScript from '@/components/script/KakaoMapScript';
 import { ClusteredRouteResult } from '../types/handyPartyOptimizer.type';
+import { HANDY_PARTY_MAP_STATE_STORAGE_KEY } from '../constants/handyPartyOptimizer.constant';
 
 const MAP_CONSTANTS = {
   INITIAL_ZOOM_LEVEL: 9,
@@ -16,11 +17,51 @@ interface Props {
   clusteredData?: ClusteredRouteResult[];
 }
 
+interface MapState {
+  lat: number;
+  lng: number;
+  level: number;
+}
+
 const HandyPartyMap = ({ clusteredData }: Props) => {
   const [isScriptReady, setIsScriptReady] = useState(false);
   const [error, setError] = useState<boolean>(false);
   const kakaoMapRef = useRef<kakao.maps.Map | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
+
+  const getSavedMapState = useCallback((): MapState => {
+    try {
+      const saved = localStorage.getItem(HANDY_PARTY_MAP_STATE_STORAGE_KEY);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (error) {
+      console.error('Failed to load saved map state:', error);
+    }
+    return {
+      lat: MAP_CONSTANTS.DEFAULT_LAT,
+      lng: MAP_CONSTANTS.DEFAULT_LNG,
+      level: MAP_CONSTANTS.INITIAL_ZOOM_LEVEL,
+    };
+  }, []);
+
+  const saveMapState = useCallback((map: kakao.maps.Map) => {
+    try {
+      const center = map.getCenter();
+      const level = map.getLevel();
+      const state: MapState = {
+        lat: center.getLat(),
+        lng: center.getLng(),
+        level: level,
+      };
+      localStorage.setItem(
+        HANDY_PARTY_MAP_STATE_STORAGE_KEY,
+        JSON.stringify(state),
+      );
+    } catch (error) {
+      console.error('Failed to save map state:', error);
+    }
+  }, []);
 
   const createClusteredMarker = useCallback(
     (map: kakao.maps.Map, cluster: ClusteredRouteResult) => {
@@ -79,17 +120,28 @@ const HandyPartyMap = ({ clusteredData }: Props) => {
 
   const initializeMap = useCallback(() => {
     try {
-      if (window.kakao && mapRef.current) {
+      if (window.kakao && mapRef.current && !kakaoMapRef.current) {
+        const savedState = getSavedMapState();
         const options = {
           center: new window.kakao.maps.LatLng(
-            MAP_CONSTANTS.DEFAULT_LAT,
-            MAP_CONSTANTS.DEFAULT_LNG,
+            savedState.lat ?? MAP_CONSTANTS.DEFAULT_LAT,
+            savedState.lng ?? MAP_CONSTANTS.DEFAULT_LNG,
           ),
-          level: MAP_CONSTANTS.INITIAL_ZOOM_LEVEL,
+          level: savedState.level ?? MAP_CONSTANTS.INITIAL_ZOOM_LEVEL,
         };
 
         const map = new window.kakao.maps.Map(mapRef.current, options);
         kakaoMapRef.current = map;
+
+        // 지도 중심 좌표 변경 이벤트
+        kakao.maps.event.addListener(map, 'center_changed', () => {
+          saveMapState(map);
+        });
+
+        // 지도 줌 레벨 변경 이벤트
+        kakao.maps.event.addListener(map, 'zoom_changed', () => {
+          saveMapState(map);
+        });
 
         displayHubs();
       }
@@ -97,7 +149,7 @@ const HandyPartyMap = ({ clusteredData }: Props) => {
       setError(true);
       alert('지도를 불러오는 중 오류가 발생했습니다. \n' + error);
     }
-  }, [displayHubs]);
+  }, [getSavedMapState, saveMapState, displayHubs]);
 
   useEffect(() => {
     if (isScriptReady) {
