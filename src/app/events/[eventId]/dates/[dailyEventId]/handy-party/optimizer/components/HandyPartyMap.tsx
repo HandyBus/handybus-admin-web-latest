@@ -120,7 +120,7 @@ const HandyPartyMap = ({ clusteredData }: Props) => {
 
   const initializeMap = useCallback(() => {
     try {
-      if (window.kakao && mapRef.current && !kakaoMapRef.current) {
+      if (window.kakao && mapRef.current) {
         const savedState = getSavedMapState();
         const options = {
           center: new window.kakao.maps.LatLng(

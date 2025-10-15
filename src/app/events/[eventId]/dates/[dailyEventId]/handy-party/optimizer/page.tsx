@@ -1,7 +1,7 @@
 'use client';
 
 import Heading from '@/components/text/Heading';
-import { useMemo, useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import Callout from '@/components/text/Callout';
 import EventPlaceSelect from './components/EventPlaceSelect';
 import Loading from '@/components/loading/Loading';
@@ -78,10 +78,6 @@ const HandyPartyOptimizerPage = ({
   const { handleExcelDownload } = useExcelDownload({
     eventInformation: handyPartyEventInformation,
   });
-
-  const isExcelDownloadable = useMemo(() => {
-    return availableHandyPartyRouteList.every((route) => route.isChecked);
-  }, [availableHandyPartyRouteList]);
 
   const handleCalculateRoute = async (route: HandyPartyRoute) => {
     localStorage.removeItem(HANDY_PARTY_MAP_STATE_STORAGE_KEY);
@@ -239,7 +235,6 @@ const HandyPartyOptimizerPage = ({
         />
         <button
           className="whitespace-nowrap rounded-full border border-basic-grey-300 bg-basic-blue-200 px-8 active:bg-basic-blue-100 disabled:cursor-not-allowed disabled:bg-basic-grey-100 disabled:opacity-50 disabled:active:bg-basic-grey-100"
-          disabled={!isExcelDownloadable}
           onClick={() => handleExcelDownload(savedHandyPartyReservationList)}
         >
           엑셀추출하기
