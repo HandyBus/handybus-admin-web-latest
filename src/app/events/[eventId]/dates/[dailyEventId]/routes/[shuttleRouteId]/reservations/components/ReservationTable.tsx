@@ -9,6 +9,7 @@ import Toggle from '@/components/button/Toggle';
 import BlueButton from '@/components/link/BlueButton';
 import useCancelMultipleReservations from '../hooks/useCancelMultipleReservations';
 import { ReservationViewEntity } from '@/types/reservation.type';
+import useConfirmMultipleReservations from '../hooks/useConfirmMultipleReservations';
 
 interface Props {
   eventId: string;
@@ -75,8 +76,23 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     },
     [filteredReservations],
   );
+  const handleClearSelect = useCallback(() => {
+    setSelectedReservations([]);
+  }, []);
 
-  const cancelMultipleReservations = useCancelMultipleReservations();
+  const cancelMultipleReservations = useCancelMultipleReservations({
+    onSuccess: handleClearSelect,
+  });
+  const confirmMultipleReservations = useConfirmMultipleReservations({
+    onSuccess: handleClearSelect,
+  });
+
+  const handleCancelMultipleReservations = useCallback(async () => {
+    await cancelMultipleReservations(selectedReservations);
+  }, [cancelMultipleReservations, selectedReservations]);
+  const handleConfirmMultipleReservations = useCallback(async () => {
+    await confirmMultipleReservations(selectedReservations);
+  }, [confirmMultipleReservations, selectedReservations]);
 
   const reservationColumns = useMemo(
     () =>
@@ -107,10 +123,16 @@ const ReservationTable = ({ eventId, dailyEventId, shuttleRouteId }: Props) => {
     <section className="flex flex-col pb-20 pt-12">
       <div className="mb-12 flex items-center gap-12 rounded-4 bg-basic-grey-100 p-8 text-14">
         <BlueButton
-          onClick={() => cancelMultipleReservations(selectedReservations)}
+          onClick={handleCancelMultipleReservations}
           disabled={selectedReservations.length === 0}
         >
           선택한 예약들 무산 처리하기
+        </BlueButton>
+        <BlueButton
+          onClick={handleConfirmMultipleReservations}
+          disabled={selectedReservations.length === 0}
+        >
+          선택한 예약들 확정 안내 발송하기
         </BlueButton>
       </div>
       <div className="flex items-center gap-12">

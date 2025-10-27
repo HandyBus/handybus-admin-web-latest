@@ -9,6 +9,7 @@ import {
   sendShuttleBusCancelled,
 } from '@/services/solapi.service';
 import { ReservationViewEntity } from '@/types/reservation.type';
+import { useQueryClient } from '@tanstack/react-query';
 
 // 한번에 처리 가능한 예약 취소 수 (백엔드 요청 제한으로 인하여)
 const MAX_BATCH_SIZE = 100;
@@ -16,8 +17,14 @@ const MAX_BATCH_SIZE = 100;
 const DELAY_TIME_BETWEEN_REQUESTS = 300;
 const DELAY_TIME_BETWEEN_BATCHES = 30000;
 
+interface Props {
+  onSuccess?: () => void;
+}
+
 // 다중 예약 무산 처리 (동일 노선에 속해야함)
-const useCancelMultipleReservations = () => {
+const useCancelMultipleReservations = ({ onSuccess }: Props) => {
+  const queryClient = useQueryClient();
+
   // 단일 예약 취소 및 환불 처리
   const cancelReservation = async (reservation: ReservationViewEntity) => {
     if (!reservation.paymentId || !reservation.paymentAmount) {
@@ -115,6 +122,10 @@ const useCancelMultipleReservations = () => {
     }
 
     await sendReservationCancelled(reservations);
+
+    queryClient.invalidateQueries({ queryKey: ['reservation'] });
+
+    onSuccess?.();
 
     alert('예약들이 무산 처리 및 안내되었습니다.');
   };
