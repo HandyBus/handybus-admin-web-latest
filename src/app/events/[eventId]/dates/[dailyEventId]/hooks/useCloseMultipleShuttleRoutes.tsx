@@ -24,7 +24,7 @@ const useCloseMultipleShuttleRoutes = () => {
   }) => {
     const shuttleRouteCount = shuttleRouteIds.length;
     const confirmed = confirm(
-      `${shuttleRouteCount}개의 핸디팟 노선을 예약 마감하시겠습니까?\n*최대 1분이 소요됩니다.\n*완료 메시지가 표시될 때까지 절대 사이트를 끄지 말아주세요.`,
+      `${shuttleRouteCount}개의 노선을 예약 마감하시겠습니까?\n*최대 1분이 소요됩니다.\n*완료 메시지가 표시될 때까지 절대 사이트를 끄지 말아주세요.`,
     );
     if (!confirmed) {
       return;
@@ -34,7 +34,7 @@ const useCloseMultipleShuttleRoutes = () => {
       await closeShuttleRoute(eventId, dailyEventId, shuttleRouteId);
     }
 
-    alert('핸디팟 노선들이 예약 마감되었습니다.');
+    alert('노선들이 예약 마감되었습니다.');
   };
 
   return {

@@ -5,7 +5,7 @@ import useTable from '@/hooks/useTable';
 import BlueLink from '@/components/link/BlueLink';
 import { notFound } from 'next/navigation';
 import { getColumns } from './table.type';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
 import {
@@ -22,6 +22,7 @@ import useExportPassengerList from './hooks/useExportPassengerList';
 import useExportHandyPartyPassengerList from './hooks/useExportHandyPartyPassengerList';
 import useCloseMultipleShuttleRoutes from './hooks/useCloseMultipleShuttleRoutes';
 import BlueButton from '@/components/link/BlueButton';
+import { AdminShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -92,9 +93,56 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     }, {});
   }, [alertRequests]);
 
+  const [selectedShuttleRoutes, setSelectedShuttleRoutes] = useState<
+    AdminShuttleRoutesViewEntity[]
+  >([]);
+  const handleSelectShuttleRoute = useCallback(
+    (shuttleRoute: AdminShuttleRoutesViewEntity, isChecked: boolean) => {
+      if (isChecked) {
+        setSelectedShuttleRoutes([...selectedShuttleRoutes, shuttleRoute]);
+      } else {
+        setSelectedShuttleRoutes(
+          selectedShuttleRoutes.filter(
+            (r) => r.shuttleRouteId !== shuttleRoute.shuttleRouteId,
+          ),
+        );
+      }
+    },
+    [selectedShuttleRoutes],
+  );
+  const handleSelectAllShuttleRoutes = useCallback(
+    (isChecked: boolean) => {
+      if (isChecked) {
+        setSelectedShuttleRoutes(sortedRoutes);
+      } else {
+        setSelectedShuttleRoutes([]);
+      }
+    },
+    [sortedRoutes],
+  );
+  const clearSelectedShuttleRoutes = useCallback(() => {
+    setSelectedShuttleRoutes([]);
+  }, []);
+
+  const columns = useMemo(
+    () =>
+      getColumns({
+        selectedShuttleRoutes,
+        onSelectShuttleRoute: handleSelectShuttleRoute,
+        onSelectAll: handleSelectAllShuttleRoutes,
+        alertRequestCounts: alertRequestCountMap,
+      }),
+    [
+      selectedShuttleRoutes,
+      handleSelectShuttleRoute,
+      handleSelectAllShuttleRoutes,
+      alertRequestCountMap,
+    ],
+  );
+
   const table = useTable({
     data: sortedRoutes,
-    columns: getColumns(alertRequestCountMap),
+    columns,
   });
 
   const dailyEvent = event
@@ -121,6 +169,18 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
   };
 
   const { closeMultipleShuttleRoutes } = useCloseMultipleShuttleRoutes();
+  const handleCloseSelectedShuttleRoutes = async () => {
+    const shuttleRouteIdList = selectedShuttleRoutes.map(
+      (r) => r.shuttleRouteId,
+    );
+
+    await closeMultipleShuttleRoutes({
+      eventId,
+      dailyEventId,
+      shuttleRouteIds: shuttleRouteIdList,
+    });
+    clearSelectedShuttleRoutes();
+  };
   const handleCloseHandyPartyRoutes = async () => {
     const handyPartyRouteIdList = sortedRoutes
       .filter((r) => r.name.includes(HANDY_PARTY_PREFIX))
@@ -131,6 +191,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
       dailyEventId,
       shuttleRouteIds: handyPartyRouteIdList,
     });
+    clearSelectedShuttleRoutes();
   };
 
   useEffect(() => {
@@ -190,6 +251,15 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
             핸디팟 명단 다운로드
           </button>
         </Heading.h2>
+        <div className="mb-12 flex flex-wrap gap-20 bg-basic-grey-100 px-20 py-12">
+          <BlueButton
+            onClick={handleCloseSelectedShuttleRoutes}
+            disabled={selectedShuttleRoutes.length === 0}
+            className="text-14"
+          >
+            선택한 노선 예약 마감하기
+          </BlueButton>
+        </div>
         <div className="mb-12 flex flex-wrap gap-20 bg-basic-grey-100 px-20 py-12">
           <h5 className="whitespace-nowrap text-14 font-600">핸디팟 기능 :</h5>
           <BlueLink
