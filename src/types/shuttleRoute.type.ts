@@ -37,6 +37,8 @@ export const ShuttleRouteHubsInShuttleRoutesViewEntitySchema = z
     address: z.string(),
     latitude: z.number(),
     longitude: z.number(),
+    roadViewPan: z.number().nullable(),
+    roadViewTilt: z.number().nullable(),
     role: ShuttleRouteHubRoleEnum,
     type: TripTypeEnum.exclude(['ROUND_TRIP']),
     sequence: z.number().int(),
@@ -74,6 +76,7 @@ export const AdminShuttleRoutesViewEntitySchema = z
     fromDestinationShuttleRouteHubs:
       ShuttleRouteHubsInShuttleRoutesViewEntitySchema.array(),
     event: z.lazy(() => EventsViewEntitySchema),
+    isHandyParty: z.boolean(),
     createdAt: z.string(),
     updatedAt: z.string(),
     shuttleRouteMetadata: z.record(z.string(), z.any()).nullable().optional(),
