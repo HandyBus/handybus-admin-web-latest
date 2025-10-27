@@ -113,6 +113,7 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
     const hasEarlybird = earlybirdPrice > 0; // 얼리버드 가격이 0원 이상인 경우에만 얼리버드 노선 생성
 
     const body: CreateShuttleRouteRequest = {
+      isHandyParty: true,
       name,
       reservationDeadline,
       earlybirdDeadline: hasEarlybird
@@ -161,8 +162,8 @@ const usePostHandyPartyRoutes = ({ eventId, dailyEventId }: Props) => {
     await fetchHandyPartyHubs();
     const routes = await getShuttleRoutesOfDailyEvent(eventId, dailyEventId);
 
-    const existingHandyPartyRoutes = routes.filter((route) =>
-      route.name.startsWith(HANDY_PARTY_PREFIX),
+    const existingHandyPartyRoutes = routes.filter(
+      (route) => route.isHandyParty,
     );
 
     const routeTasks: {

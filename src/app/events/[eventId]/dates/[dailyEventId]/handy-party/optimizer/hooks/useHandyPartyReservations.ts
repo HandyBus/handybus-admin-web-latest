@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { HANDY_PARTY_PREFIX } from '@/constants/common';
 import { HANDY_PARTY_OPTIMIZER_MESSAGES } from '../constants/handyPartyOptimizer.constant';
 import {
   HandyPartyReservation,
@@ -41,7 +40,7 @@ const useHandyPartyReservations = ({
 
     return reservationsData.reduce<HandyPartyReservation[]>((acc, r) => {
       // 핸디팟 노선이 아닌 경우 스킵
-      if (!r.shuttleRoute.name.includes(HANDY_PARTY_PREFIX)) {
+      if (!r.shuttleRoute.isHandyParty) {
         return acc;
       }
 

@@ -137,6 +137,7 @@ export const CreateShuttleRouteRequestSchema = z
         arrivalTime: z.string(),
       })
       .array(),
+    isHandyParty: z.boolean(),
   })
   .strict();
 export type CreateShuttleRouteRequest = z.infer<

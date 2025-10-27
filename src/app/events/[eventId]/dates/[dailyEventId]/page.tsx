@@ -16,7 +16,6 @@ import { useGetEvent } from '@/services/event.service';
 import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
-import { HANDY_PARTY_PREFIX } from '@/constants/common';
 import { HANDY_PARTY_ROUTE_AREA } from '@/constants/handyPartyArea.const';
 import useExportPassengerList from './hooks/useExportPassengerList';
 import useExportHandyPartyPassengerList from './hooks/useExportHandyPartyPassengerList';
@@ -48,16 +47,12 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
       return [];
     }
 
-    const shuttleRoutes = routes.filter(
-      (r) => !r.name.includes(HANDY_PARTY_PREFIX),
-    );
+    const shuttleRoutes = routes.filter((r) => !r.isHandyParty);
     const sortedShuttleRoutes = shuttleRoutes.sort((a, b) => {
       return a.name.localeCompare(b.name);
     });
 
-    const handyPartyRoutes = routes.filter((r) =>
-      r.name.includes(HANDY_PARTY_PREFIX),
-    );
+    const handyPartyRoutes = routes.filter((r) => r.isHandyParty);
     const sortedHandyPartyRoutes = handyPartyRoutes.sort((a, b) => {
       const aArea = a.name.split('_')[1];
       const bArea = b.name.split('_')[1];
@@ -183,7 +178,7 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
   };
   const handleCloseHandyPartyRoutes = async () => {
     const handyPartyRouteIdList = sortedRoutes
-      .filter((r) => r.name.includes(HANDY_PARTY_PREFIX))
+      .filter((r) => r.isHandyParty)
       .map((r) => r.shuttleRouteId);
 
     await closeMultipleShuttleRoutes({

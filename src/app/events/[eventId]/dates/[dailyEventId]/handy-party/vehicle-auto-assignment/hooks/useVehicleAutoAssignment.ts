@@ -5,7 +5,6 @@ import {
   postBulkAssignBus,
   postShuttleBus,
 } from '@/services/shuttleBus.service';
-import { HANDY_PARTY_PREFIX } from '@/constants/common';
 import { parseInputData } from '../utils/parseInputData';
 import {
   HandyPartySheetData,
@@ -15,6 +14,7 @@ import {
 } from '../types/vehicleAutoAssignment.type';
 import { AdminShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 import { ReservationViewEntity } from '@/types/reservation.type';
+import { HANDY_PARTY_PREFIX } from '@/constants/common';
 
 const BUS_TYPE = 'STARIA_7' as const;
 
@@ -48,7 +48,7 @@ export const useVehicleAutoAssignment = ({
 
   const handyPartyShuttleRoutesMap = new Map(
     shuttleRoutes
-      ?.filter((shuttleRoute) => shuttleRoute.name.includes(HANDY_PARTY_PREFIX))
+      ?.filter((shuttleRoute) => shuttleRoute.isHandyParty)
       .map((shuttleRoute) => [shuttleRoute.name, shuttleRoute]) || [],
   );
 
@@ -57,7 +57,7 @@ export const useVehicleAutoAssignment = ({
       page.reservations
         .filter(
           (reservation) =>
-            reservation.shuttleRoute.name.includes(HANDY_PARTY_PREFIX) &&
+            reservation.shuttleRoute.isHandyParty &&
             reservation.cancelStatus === 'NONE' &&
             reservation.reservationStatus === 'COMPLETE_PAYMENT',
         )

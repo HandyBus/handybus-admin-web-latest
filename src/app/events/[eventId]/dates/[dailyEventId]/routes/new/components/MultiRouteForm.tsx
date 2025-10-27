@@ -231,6 +231,7 @@ const MultiRouteForm = ({
           });
 
         return {
+          isHandyParty: false,
           name: shuttleRoute.name,
           reservationDeadline: shuttleRoute.reservationDeadline,
           hasEarlybird: shuttleRoute.hasEarlybird,
