@@ -190,8 +190,8 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
             핸디팟 명단 다운로드
           </button>
         </Heading.h2>
-        <div className="mb-12 flex justify-start gap-20 bg-basic-grey-100 px-20 py-12">
-          <h5 className="whitespace-nowrap text-14">핸디팟 기능 :</h5>
+        <div className="mb-12 flex flex-wrap gap-20 bg-basic-grey-100 px-20 py-12">
+          <h5 className="whitespace-nowrap text-14 font-600">핸디팟 기능 :</h5>
           <BlueLink
             href={`${dailyEventId}/handy-party/optimizer-paste`}
             className="text-14"
