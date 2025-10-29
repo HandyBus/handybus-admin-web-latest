@@ -8,7 +8,15 @@ import { ShuttleBusesViewEntity } from '@/types/shuttleBus.type';
 import { ReservationViewEntity } from '@/types/reservation.type';
 import CancelReservationDialog from '@/app/reservations/components/CancelReservationDialog';
 import RequestRefundDialog from '@/app/reservations/components/RequestRefundDialog';
-import CancelHandyPartyButton from './components/CancelHandyPartyButton';
+
+interface ReservationColumnsProps {
+  selectedReservations: ReservationViewEntity[];
+  onSelectReservation: (
+    reservation: ReservationViewEntity,
+    isChecked: boolean,
+  ) => void;
+  onSelectAll: (isChecked: boolean) => void;
+}
 
 const busColumnHelper = createColumnHelper<ShuttleBusesViewEntity>();
 
@@ -41,7 +49,62 @@ export const busColumns = [
 
 const reservationColumnHelper = createColumnHelper<ReservationViewEntity>();
 
-export const reservationColumns = [
+export const createReservationColumns = ({
+  selectedReservations,
+  onSelectReservation,
+  onSelectAll,
+}: ReservationColumnsProps) => [
+  reservationColumnHelper.display({
+    id: 'checkbox',
+    header: ({ table }) => {
+      const allRowReservations = table
+        .getRowModel()
+        .rows.map((row) => row.original);
+      const isAllSelected =
+        selectedReservations.length === allRowReservations.length &&
+        selectedReservations.every((reservation) =>
+          allRowReservations.includes(reservation),
+        );
+      const isSomeSelected =
+        !isAllSelected &&
+        selectedReservations.some((reservation) =>
+          allRowReservations.includes(reservation),
+        );
+
+      return (
+        <div className="flex justify-center">
+          <input
+            type="checkbox"
+            className="m-auto h-20 w-20"
+            checked={isAllSelected}
+            ref={(el) => {
+              if (el) {
+                el.indeterminate = isSomeSelected;
+              }
+            }}
+            onChange={(e) => onSelectAll(e.target.checked)}
+          />
+        </div>
+      );
+    },
+    cell: (info) => {
+      const reservation = info.row.original;
+      const isSelected = selectedReservations.includes(reservation);
+      const isCanceled = info.row.original.reservationStatus === 'CANCEL';
+
+      return (
+        <div className="flex justify-center">
+          <input
+            type="checkbox"
+            className="m-auto h-20 w-20"
+            checked={isSelected}
+            disabled={isCanceled}
+            onChange={(e) => onSelectReservation(reservation, e.target.checked)}
+          />
+        </div>
+      );
+    },
+  }),
   reservationColumnHelper.display({
     id: 'user',
     header: () => '고객 정보',
@@ -106,7 +169,6 @@ export const reservationColumns = [
     header: () => '처리',
     cell: (info) => {
       const paymentId = info.row.original.paymentId;
-      const reservation = info.row.original;
       if (!paymentId) {
         return null;
       }
@@ -116,7 +178,6 @@ export const reservationColumns = [
             reservationId={info.row.original.reservationId}
           />
           <RequestRefundDialog reservation={info.row.original} />
-          <CancelHandyPartyButton reservation={reservation} />
         </div>
       );
     },

@@ -10,7 +10,79 @@ import { formatDateString } from '@/utils/date.util';
 
 const columnHelper = createColumnHelper<AdminShuttleRoutesViewEntity>();
 
-export const getColumns = (alertRequestCounts: Record<string, number>) => [
+interface ShuttleRouteColumnsProps {
+  selectedShuttleRoutes: AdminShuttleRoutesViewEntity[];
+  onSelectShuttleRoute: (
+    shuttleRoute: AdminShuttleRoutesViewEntity,
+    isChecked: boolean,
+  ) => void;
+  onSelectAll: (isChecked: boolean) => void;
+  alertRequestCounts: Record<string, number>;
+}
+
+export const getColumns = ({
+  selectedShuttleRoutes,
+  onSelectShuttleRoute,
+  onSelectAll,
+  alertRequestCounts,
+}: ShuttleRouteColumnsProps) => [
+  columnHelper.display({
+    id: 'checkbox',
+    header: ({ table }) => {
+      const allRowShuttleRoutes = table
+        .getRowModel()
+        .rows.map((row) => row.original);
+      const isAllSelected =
+        selectedShuttleRoutes.length === allRowShuttleRoutes.length &&
+        selectedShuttleRoutes.every((shuttleRoute) =>
+          allRowShuttleRoutes.some(
+            (r) => r.shuttleRouteId === shuttleRoute.shuttleRouteId,
+          ),
+        );
+      const isSomeSelected =
+        !isAllSelected &&
+        selectedShuttleRoutes.some((shuttleRoute) =>
+          allRowShuttleRoutes.some(
+            (r) => r.shuttleRouteId === shuttleRoute.shuttleRouteId,
+          ),
+        );
+
+      return (
+        <div className="flex justify-center">
+          <input
+            type="checkbox"
+            className="m-auto h-20 w-20"
+            checked={isAllSelected}
+            ref={(el) => {
+              if (el) {
+                el.indeterminate = isSomeSelected;
+              }
+            }}
+            onChange={(e) => onSelectAll(e.target.checked)}
+          />
+        </div>
+      );
+    },
+    cell: (info) => {
+      const shuttleRoute = info.row.original;
+      const isSelected = selectedShuttleRoutes.some(
+        (r) => r.shuttleRouteId === shuttleRoute.shuttleRouteId,
+      );
+
+      return (
+        <div className="flex justify-center">
+          <input
+            type="checkbox"
+            className="m-auto h-20 w-20"
+            checked={isSelected}
+            onChange={(e) =>
+              onSelectShuttleRoute(shuttleRoute, e.target.checked)
+            }
+          />
+        </div>
+      );
+    },
+  }),
   columnHelper.display({
     id: 'name',
     header: () => '이름',
