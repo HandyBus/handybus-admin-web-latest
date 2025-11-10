@@ -23,6 +23,7 @@ import useCloseMultipleShuttleRoutes from './hooks/useCloseMultipleShuttleRoutes
 import BlueButton from '@/components/link/BlueButton';
 import { AdminShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 import ChangeReservationDeadlineDialog from './components/ChangeReservationDeadlineDialog';
+import ChangeMaxPassengerCountDialog from './components/ChangeMaxPassengerCountDialog';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -256,6 +257,12 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
             선택한 노선 예약 마감하기
           </BlueButton>
           <ChangeReservationDeadlineDialog
+            eventId={eventId}
+            dailyEventId={dailyEventId}
+            selectedShuttleRoutes={selectedShuttleRoutes}
+            clearSelectedShuttleRoutes={clearSelectedShuttleRoutes}
+          />
+          <ChangeMaxPassengerCountDialog
             eventId={eventId}
             dailyEventId={dailyEventId}
             selectedShuttleRoutes={selectedShuttleRoutes}
