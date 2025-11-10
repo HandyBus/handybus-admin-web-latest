@@ -142,12 +142,16 @@ const Page = () => {
                   const isShuttleRouteConfirmDate = today.isSame(
                     shuttleRouteConfirmDate,
                   );
-                  const isAfterShuttleRouteConfirmDate = today.isAfter(
-                    shuttleRouteConfirmDate,
-                  );
                   const isBeforeShuttleRouteConfirmDate = today.isBefore(
                     shuttleRouteConfirmDate,
                   );
+                  const isAfterShuttleRouteConfirmDate = today.isAfter(
+                    shuttleRouteConfirmDate,
+                  );
+                  const ddayBeforeShuttleRouteConfirmDate = Math.abs(
+                    today.diff(shuttleRouteConfirmDate, 'day'),
+                  );
+
                   return (
                     <div
                       key={dailyEvent.dailyEventId}
@@ -192,7 +196,7 @@ const Page = () => {
                             : isAfterShuttleRouteConfirmDate
                               ? '확정됨'
                               : isBeforeShuttleRouteConfirmDate
-                                ? '확정 전'
+                                ? `D-${ddayBeforeShuttleRouteConfirmDate}`
                                 : '오류 발생'}
                         </div>
                         <span className="text-12 font-500 text-basic-grey-500">
