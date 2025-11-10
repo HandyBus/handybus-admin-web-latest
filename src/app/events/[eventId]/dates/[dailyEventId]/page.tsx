@@ -22,6 +22,7 @@ import useExportHandyPartyPassengerList from './hooks/useExportHandyPartyPasseng
 import useCloseMultipleShuttleRoutes from './hooks/useCloseMultipleShuttleRoutes';
 import BlueButton from '@/components/link/BlueButton';
 import { AdminShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
+import ChangeReservationDeadlineDialog from './components/ChangeReservationDeadlineDialog';
 
 interface Props {
   params: { eventId: string; dailyEventId: string };
@@ -254,6 +255,12 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
           >
             선택한 노선 예약 마감하기
           </BlueButton>
+          <ChangeReservationDeadlineDialog
+            eventId={eventId}
+            dailyEventId={dailyEventId}
+            selectedShuttleRoutes={selectedShuttleRoutes}
+            clearSelectedShuttleRoutes={clearSelectedShuttleRoutes}
+          />
         </div>
         <div className="mb-12 flex flex-wrap gap-20 bg-basic-grey-100 px-20 py-12">
           <h5 className="whitespace-nowrap text-14 font-600">핸디팟 기능 :</h5>
