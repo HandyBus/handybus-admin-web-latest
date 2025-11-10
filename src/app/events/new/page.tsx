@@ -8,7 +8,7 @@ import { TrashIcon } from 'lucide-react';
 import ImageFileInput from '@/components/input/ImageFileInput';
 import RegionHubInputWithButton from '@/components/input/RegionHubInputWithButton';
 import Input from '@/components/input/Input';
-import { getEvent, usePostEvent } from '@/services/event.service';
+import { usePostEvent } from '@/services/event.service';
 import Form from '@/components/form/Form';
 import {
   CreateEventRequest,
@@ -16,8 +16,6 @@ import {
   EventTypeEnum,
 } from '@/types/event.type';
 import dayjs from 'dayjs';
-import Toggle from '@/components/button/Toggle';
-import { postShuttleDemandCoupon } from '@/utils/coupon.util';
 import { RegionHubsViewEntity } from '@/types/hub.type';
 import Button from '@/components/button/Button';
 import Stringifier from '@/utils/stringifier.util';
@@ -56,8 +54,6 @@ const CreateEventForm = () => {
 
   const { mutateAsync: postEvent } = usePostEvent();
 
-  const [isDemandCoupon, setIsDemandCoupon] = useState(true);
-
   const onSubmit = async (data: FormValues) => {
     if (!confirm('행사를 추가하시겠습니까?')) {
       return;
@@ -84,11 +80,8 @@ const CreateEventForm = () => {
         })),
       };
 
-      const eventId = await postEvent(body);
-      const event = await getEvent(eventId);
-      if (isDemandCoupon) {
-        await postShuttleDemandCoupon(event);
-      }
+      await postEvent(body);
+
       alert('행사가 등록되었습니다.');
       router.push('/events');
     } catch (error) {
@@ -254,16 +247,6 @@ const CreateEventForm = () => {
               </div>
             )}
           />
-        </Form.section>
-        <Form.section>
-          <Form.label required>수요조사 리워드 쿠폰</Form.label>
-          <div>
-            <Toggle
-              value={isDemandCoupon}
-              label="수요조사 리워드 쿠폰 생성하기"
-              setValue={(v) => setIsDemandCoupon(v)}
-            />
-          </div>
         </Form.section>
         <Form.submitButton disabled={isSubmitting}>
           {isSubmitting ? '등록 중...' : '행사 등록하기'}

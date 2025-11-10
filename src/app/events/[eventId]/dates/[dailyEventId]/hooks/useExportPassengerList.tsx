@@ -1,4 +1,3 @@
-import { HANDY_PARTY_PREFIX } from '@/constants/common';
 import { getReservations } from '@/services/reservation.service';
 import { getShuttleRoutesOfDailyEvent } from '@/services/shuttleRoute.service';
 import { ReservationViewEntity } from '@/types/reservation.type';
@@ -18,7 +17,7 @@ const useExportPassengerList = ({ eventId, dailyEventId }: Props) => {
       dailyEventId,
     );
     const shuttleBusShuttleRoutes = shuttleRoutes.filter(
-      (shuttleRoute) => !shuttleRoute.name.includes(HANDY_PARTY_PREFIX),
+      (shuttleRoute) => !shuttleRoute.isHandyParty,
     );
     return shuttleBusShuttleRoutes;
   };
