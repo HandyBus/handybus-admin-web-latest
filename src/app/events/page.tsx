@@ -137,19 +137,23 @@ const Page = () => {
                 {event.dailyEvents.map((dailyEvent) => {
                   const shuttleRouteConfirmDate = dayjs(dailyEvent.date)
                     .tz('Asia/Seoul')
-                    .subtract(11, 'day');
-                  const today = dayjs().tz('Asia/Seoul');
+                    .subtract(11, 'day')
+                    .startOf('day');
+                  const today = dayjs().tz('Asia/Seoul').startOf('day');
                   const isShuttleRouteConfirmDate = today.isSame(
                     shuttleRouteConfirmDate,
+                    'day',
                   );
                   const isBeforeShuttleRouteConfirmDate = today.isBefore(
                     shuttleRouteConfirmDate,
+                    'day',
                   );
                   const isAfterShuttleRouteConfirmDate = today.isAfter(
                     shuttleRouteConfirmDate,
+                    'day',
                   );
                   const ddayBeforeShuttleRouteConfirmDate = Math.abs(
-                    today.diff(shuttleRouteConfirmDate, 'day'),
+                    today.diff(shuttleRouteConfirmDate, 'days'),
                   );
 
                   return (
