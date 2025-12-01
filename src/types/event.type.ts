@@ -66,6 +66,7 @@ export const DailyEventWithStatisticsViewEntitySchema =
     roundTripDemandCount: z.number(),
     toDestinationDemandCount: z.number(),
     fromDestinationDemandCount: z.number(),
+    totalReservationCount: z.number(),
   });
 export type DailyEventWithStatisticsViewEntity = z.infer<
   typeof DailyEventWithStatisticsViewEntitySchema

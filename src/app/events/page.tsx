@@ -26,6 +26,8 @@ const Page = () => {
     hasNextPage,
   } = useGetEventsStatsWithPagination({
     ...option,
+    orderBy: 'startDate',
+    additionalOrderOptions: 'ASC',
     limit: EVENT_PAGINATION_LIMIT,
   });
 
@@ -113,7 +115,7 @@ const Page = () => {
                   </Button>
                 </div>
               </div>
-              <div className="grid h-[32px] grid-cols-6 items-center bg-basic-grey-100">
+              <div className="grid h-[32px] grid-cols-7 items-center bg-basic-grey-100">
                 <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
                   날짜
                 </h4>
@@ -121,13 +123,16 @@ const Page = () => {
                   상태
                 </h4>
                 <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
-                  수요조사 참가
-                </h4>
-                <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
                   노선 확정 상태
                 </h4>
                 <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
                   개설된 노선
+                </h4>
+                <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
+                  총 수요조사
+                </h4>
+                <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
+                  총 예약
                 </h4>
                 <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
                   액션
@@ -159,7 +164,7 @@ const Page = () => {
                   return (
                     <div
                       key={dailyEvent.dailyEventId}
-                      className="grid w-full grid-cols-6 items-center border-b border-basic-grey-100 py-16"
+                      className="grid w-full grid-cols-7 items-center border-b border-basic-grey-100 py-16"
                     >
                       <div className="whitespace-nowrap break-keep text-center text-18 font-500">
                         {formatDateString(dailyEvent.date, 'date')}
@@ -181,9 +186,6 @@ const Page = () => {
                             .tz('Asia/Seoul')
                             .format('~ MM.DD')}
                         </span>
-                      </div>
-                      <div className="whitespace-nowrap break-keep text-center text-16 font-500">
-                        {dailyEvent.totalDemandCount}
                       </div>
                       <div className="flex flex-col items-center justify-center whitespace-nowrap break-keep text-center text-16 font-500">
                         <div
@@ -209,6 +211,12 @@ const Page = () => {
                       </div>
                       <div className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-black">
                         {dailyEvent.shuttleRouteCount}
+                      </div>
+                      <div className="whitespace-nowrap break-keep text-center text-16 font-500">
+                        {dailyEvent.totalDemandCount}
+                      </div>
+                      <div className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-black">
+                        {dailyEvent.totalReservationCount}
                       </div>
                       <div className="flex flex-col items-center justify-center gap-4">
                         <BlueLink
