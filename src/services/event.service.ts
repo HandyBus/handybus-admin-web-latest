@@ -89,7 +89,7 @@ export interface GetEventsStatsOptions extends RouteTreeOptions {
   eventLocationAddress?: string;
   eventType?: EventType;
   status?: Combinations<EventStatus>;
-  orderBy?: 'eventName';
+  orderBy?: 'eventName' | 'startDate' | 'endDate';
   additionalOrderOptions?: 'ASC' | 'DESC';
   page: string | undefined;
   limit: number;
