@@ -14,6 +14,7 @@ import { withPagination } from '@/types/common.type';
 import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
 
 export interface GetJobApplicationsOptions {
+  jobPostingId?: string;
   applicationType?: JobApplicationType;
   status?: JobApplicationStatus;
   applicantEmail?: string;
