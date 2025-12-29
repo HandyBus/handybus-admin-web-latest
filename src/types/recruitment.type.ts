@@ -58,7 +58,7 @@ export const JobApplicationResponseModelSchema = z.object({
   applicantEmail: z.string(),
   applicantCareerYears: z.number().nullable(),
   applicationType: JobApplicationTypeEnum,
-  customJobTitle: z.string(),
+  customJobTitle: z.string().nullable(),
   resumeFile: z.string(),
   portfolioFile: z.string().nullable(),
   personalInfoConsent: z.boolean(),

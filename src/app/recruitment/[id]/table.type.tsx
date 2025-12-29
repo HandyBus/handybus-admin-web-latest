@@ -4,6 +4,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import Stringifier from '@/utils/stringifier.util';
 import { formatDateString } from '@/utils/date.util';
 import { JobApplicationResponseModel } from '@/types/recruitment.type';
+import EditJobApplicationStatusDialog from './components/EditJobApplicationStatusDialog';
 
 const columnHelper = createColumnHelper<JobApplicationResponseModel>();
 
@@ -27,14 +28,6 @@ export const columns = [
       return careerYears !== null ? `${careerYears}년` : '-';
     },
   }),
-  columnHelper.accessor('applicationType', {
-    header: () => '지원 유형',
-    cell: (info) => Stringifier.jobApplicationType(info.getValue()),
-  }),
-  columnHelper.accessor('customJobTitle', {
-    header: () => '지원 직무',
-    cell: (info) => info.getValue() || '-',
-  }),
   columnHelper.accessor('status', {
     header: () => '상태',
     cell: (info) => {
@@ -47,17 +40,6 @@ export const columns = [
         REJECTED: 'text-basic-red-500',
       };
       return <b className={style[status]}>{statusText}</b>;
-    },
-  }),
-  columnHelper.accessor('wantsCoffeeChat', {
-    header: () => '커피챗 희망',
-    cell: (info) => {
-      const wantsCoffeeChat = info.getValue();
-      return wantsCoffeeChat === true
-        ? '예'
-        : wantsCoffeeChat === false
-          ? '아니오'
-          : '-';
     },
   }),
   columnHelper.display({
@@ -97,5 +79,12 @@ export const columns = [
   columnHelper.accessor('createdAt', {
     header: () => '지원일',
     cell: (info) => formatDateString(info.getValue(), 'datetime'),
+  }),
+  columnHelper.display({
+    id: 'actions',
+    header: () => '액션',
+    cell: (info) => (
+      <EditJobApplicationStatusDialog jobApplication={info.row.original} />
+    ),
   }),
 ];

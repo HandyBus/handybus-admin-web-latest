@@ -1,5 +1,3 @@
-// ----- GET -----
-
 import {
   AdminJobPostingsViewEntitySchema,
   CareerType,
@@ -11,7 +9,14 @@ import {
 import { authInstance } from './config';
 import { toSearchParamString } from '@/utils/searchParam.util';
 import { withPagination } from '@/types/common.type';
-import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
+
+// ----- GET -----
 
 export interface GetJobApplicationsOptions {
   jobPostingId?: string;
@@ -91,5 +96,38 @@ export const useGetJobPostingsWithPagination = (
       return lastPage.nextPage;
     },
     placeholderData: keepPreviousData,
+  });
+};
+
+// ----- POST -----
+
+export const putJobApplication = async (
+  jobApplicationId: string,
+  body: {
+    status: JobApplicationStatus;
+  },
+) => {
+  const res = await authInstance.put(
+    `/v1/recruitment/admin/job-applications/${jobApplicationId}`,
+    body,
+  );
+  return res;
+};
+
+export const usePutJobApplication = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      jobApplicationId,
+      body,
+    }: {
+      jobApplicationId: string;
+      body: {
+        status: JobApplicationStatus;
+      };
+    }) => putJobApplication(jobApplicationId, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['jobApplications'] });
+    },
   });
 };
