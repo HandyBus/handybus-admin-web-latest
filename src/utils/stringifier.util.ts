@@ -10,6 +10,12 @@ import { BusType } from '@/types/shuttleBus.type';
 import { ShuttleRouteStatus, TripType } from '@/types/shuttleRoute.type';
 import { Gender } from '@/types/user.type';
 import { RefundRequestType } from '@/types/payment.type';
+import {
+  JobCategory,
+  CareerType,
+  JobApplicationType,
+  JobApplicationStatus,
+} from '@/types/recruitment.type';
 
 const Stringifier = Object.freeze({
   gender(v: Gender) {
@@ -174,6 +180,60 @@ const Stringifier = Object.freeze({
         return '페스티벌';
       case 'SPORTS':
         return '스포츠';
+    }
+  },
+  jobCategory(v: JobCategory) {
+    switch (v) {
+      case 'FRONTEND':
+        return '프론트엔드';
+      case 'BACKEND':
+        return '백엔드';
+      case 'MOBILE':
+        return '모바일';
+      case 'DATA':
+        return '데이터';
+      case 'DESIGN':
+        return '디자인';
+      case 'PRODUCT':
+        return '제품';
+      case 'MARKETING':
+        return '마케팅';
+      case 'SALES':
+        return '영업';
+      case 'HR':
+        return '인사';
+      case 'ETC':
+        return '기타';
+    }
+  },
+  careerType(v: CareerType) {
+    switch (v) {
+      case 'CAREER':
+        return '경력';
+      case 'NEW':
+        return '신입';
+      case 'BOTH':
+        return '경력/신입';
+    }
+  },
+  jobApplicationType(v: JobApplicationType) {
+    switch (v) {
+      case 'JOB':
+        return '채용 공고 지원';
+      case 'TALENT_POOL':
+        return '인재풀 등록';
+    }
+  },
+  jobApplicationStatus(v: JobApplicationStatus) {
+    switch (v) {
+      case 'SUBMITTED':
+        return '제출됨';
+      case 'REVIEWING':
+        return '검토 중';
+      case 'PASSED':
+        return '합격';
+      case 'REJECTED':
+        return '불합격';
     }
   },
 });

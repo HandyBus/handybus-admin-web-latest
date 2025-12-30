@@ -16,7 +16,13 @@ import {
 } from '@/types/announcement.type';
 import { silentParse } from '@/utils/parse.util';
 
-export type ImageKey = 'concerts' | 'users/profiles' | 'reviews';
+export type ImageKey =
+  | 'concerts'
+  | 'users/profiles'
+  | 'reviews'
+  | 'announcements'
+  | 'job-postings'
+  | 'resumes';
 export type ImageExtension = 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'svg';
 
 const getPresignedUrl = async (key: ImageKey, extension: ImageExtension) => {
