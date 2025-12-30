@@ -4,30 +4,19 @@ import { columns } from './table.type';
 import { Suspense, useMemo } from 'react';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import { LoaderCircleIcon } from 'lucide-react';
-import JobPostingFilter from './components/JobPostingFilter';
 import { PAGINATION_LIMIT } from '@/constants/config';
 import BaseTable from '@/components/table/BaseTable';
 import useTable from '@/hooks/useTable';
-import useJobPostingFilter from './hooks/useJobPostingFilter';
-import { useGetJobPostingsWithPagination } from '@/services/recruitment.service';
+import { useGetJobApplicationsWithPagination } from '@/services/recruitment.service';
 import ColumnFilter from '@/components/table/ColumnFilter';
 import Heading from '@/components/text/Heading';
-import BlueLink from '@/components/link/BlueLink';
 
 const Page = () => {
   return (
     <Suspense>
       <main className="flex grow flex-col">
-        <Heading className="flex items-baseline gap-20">
-          채용 대시보드
-          <BlueLink href="/recruitment/new" className="text-14">
-            채용 공고 추가하기
-          </BlueLink>
-          <BlueLink href="/recruitment/talent-pool" className="text-14">
-            인재풀 보기
-          </BlueLink>
-        </Heading>
-        <AllJobPostings />
+        <Heading>인재풀</Heading>
+        <AllTalentPoolApplications />
       </main>
     </Suspense>
   );
@@ -35,12 +24,10 @@ const Page = () => {
 
 export default Page;
 
-const AllJobPostings = () => {
-  const [option, dispatch] = useJobPostingFilter();
-
+const AllTalentPoolApplications = () => {
   const { data, fetchNextPage, isFetching, hasNextPage, isError, error } =
-    useGetJobPostingsWithPagination({
-      ...option,
+    useGetJobApplicationsWithPagination({
+      applicationType: 'TALENT_POOL',
       page: undefined,
       limit: PAGINATION_LIMIT,
     });
@@ -52,7 +39,7 @@ const AllJobPostings = () => {
   });
 
   const flatData = useMemo(
-    () => data.pages.flatMap((page) => page.jobPostings),
+    () => data.pages.flatMap((page) => page.jobApplications),
     [data],
   );
 
@@ -64,7 +51,6 @@ const AllJobPostings = () => {
 
   return (
     <section className="flex flex-col">
-      <JobPostingFilter option={option} dispatch={dispatch} />
       <ColumnFilter table={table} />
       <BaseTable table={table} />
       {flatData.length === 0 && !isFetching && <p>데이터가 없습니다.</p>}

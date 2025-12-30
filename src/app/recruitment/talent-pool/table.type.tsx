@@ -5,8 +5,36 @@ import Stringifier from '@/utils/stringifier.util';
 import { formatDateString } from '@/utils/date.util';
 import { JobApplicationResponseModel } from '@/types/recruitment.type';
 import EditJobApplicationStatusDialog from '../components/EditJobApplicationStatusDialog';
+import { useState } from 'react';
 
 const columnHelper = createColumnHelper<JobApplicationResponseModel>();
+
+const ExpandableMessage = ({ message }: { message: string | null }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const MAX_LENGTH = 50;
+
+  if (!message) {
+    return <span>-</span>;
+  }
+
+  const shouldTruncate = message.length > MAX_LENGTH;
+
+  if (!shouldTruncate) {
+    return <span>{message}</span>;
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <span className={isExpanded ? '' : 'line-clamp-2'}>{message}</span>
+      <button
+        onClick={() => setIsExpanded((prev) => !prev)}
+        className="w-fit text-14 text-brand-primary-400 underline"
+      >
+        {isExpanded ? '접기' : '더보기'}
+      </button>
+    </div>
+  );
+};
 
 export const columns = [
   columnHelper.accessor('applicantName', {
@@ -21,12 +49,24 @@ export const columns = [
     header: () => '전화번호',
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor('applicantCareerYears', {
-    header: () => '경력',
+  columnHelper.display({
+    id: 'customJobTitle',
+    header: () => '희망 직무',
     cell: (info) => {
-      const careerYears = info.getValue();
-      return careerYears !== null ? `${careerYears}년` : '-';
+      const customJobTitle = info.row.original.customJobTitle;
+      return customJobTitle || '-';
     },
+  }),
+  columnHelper.accessor('wantsCoffeeChat', {
+    header: () => '커피챗 희망 여부',
+    cell: (info) => (info.getValue() ? '예' : '아니오'),
+  }),
+  columnHelper.display({
+    id: 'messageToTeam',
+    header: () => '팀에게 전하는 메시지',
+    cell: (info) => (
+      <ExpandableMessage message={info.row.original.messageToTeam} />
+    ),
   }),
   columnHelper.accessor('status', {
     header: () => '상태',
@@ -77,7 +117,7 @@ export const columns = [
     },
   }),
   columnHelper.accessor('createdAt', {
-    header: () => '지원일',
+    header: () => '등록일',
     cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
   columnHelper.display({
