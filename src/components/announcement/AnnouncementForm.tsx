@@ -31,7 +31,7 @@ const AnnouncementForm: FC<AnnouncementFormProps> = ({
     async (file: File, callback: (url: string) => void) => {
       try {
         const imageUrl = await getImageUrl({
-          key: 'concerts', // 임시로 concerts 키를 사용
+          key: 'announcements',
           file: file,
         });
 

@@ -1,6 +1,7 @@
 import {
   AdminCreateJobPostingRequest,
   AdminJobPostingsViewEntitySchema,
+  AdminUpdateJobPostingRequest,
   CareerType,
   JobApplicationResponseModelSchema,
   JobApplicationStatus,
@@ -14,6 +15,7 @@ import {
   keepPreviousData,
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import { z } from 'zod';
@@ -101,6 +103,25 @@ export const useGetJobPostingsWithPagination = (
   });
 };
 
+export const getJobPosting = async (jobPostingId: string) => {
+  const res = await authInstance.get(
+    `/v1/recruitment/admin/job-postings/${jobPostingId}`,
+    {
+      shape: {
+        jobPosting: AdminJobPostingsViewEntitySchema,
+      },
+    },
+  );
+  return res.jobPosting;
+};
+
+export const useGetJobPosting = (jobPostingId: string) => {
+  return useQuery({
+    queryKey: ['jobPosting', jobPostingId],
+    queryFn: () => getJobPosting(jobPostingId),
+  });
+};
+
 // ----- POST -----
 
 export const putJobApplication = async (
@@ -159,5 +180,46 @@ export const usePostJobPosting = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['jobPostings'] });
     },
+  });
+};
+
+export const putJobPosting = async (
+  jobPostingId: string,
+  body: AdminUpdateJobPostingRequest,
+) => {
+  const res = await authInstance.put(
+    `/v1/recruitment/admin/job-postings/${jobPostingId}`,
+    body,
+    {
+      shape: {
+        jobPostingId: z.string(),
+      },
+    },
+  );
+  return res;
+};
+
+export const usePutJobPosting = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess?: () => void;
+  onError?: (error: unknown) => void;
+} = {}) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      jobPostingId,
+      body,
+    }: {
+      jobPostingId: string;
+      body: AdminUpdateJobPostingRequest;
+    }) => putJobPosting(jobPostingId, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['jobPostings'] });
+      queryClient.invalidateQueries({ queryKey: ['jobPosting'] });
+      onSuccess?.();
+    },
+    onError,
   });
 };

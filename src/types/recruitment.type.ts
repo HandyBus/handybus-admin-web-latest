@@ -92,7 +92,7 @@ export const AdminUpdateJobPostingRequestSchema = z.object({
   jobCategory: JobCategoryEnum.optional(),
   careerType: CareerTypeEnum.optional(),
   minCareerYears: z.number().optional(),
-  maxCareerYears: z.number().optional(),
+  maxCareerYears: z.number().nullable().optional(),
   description: z.string().optional(),
   closeAt: z.string().optional(),
 });

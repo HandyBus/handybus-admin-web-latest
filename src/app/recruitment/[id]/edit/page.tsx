@@ -1,15 +1,19 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { Controller } from 'react-hook-form';
 import Input from '@/components/input/Input';
 import NumberInput from '@/components/input/NumberInput';
-import { usePostJobPosting } from '@/services/recruitment.service';
+import {
+  useGetJobPosting,
+  usePutJobPosting,
+} from '@/services/recruitment.service';
 import Form from '@/components/form/Form';
 import {
-  AdminCreateJobPostingRequest,
+  AdminJobPostingsViewEntity,
+  AdminUpdateJobPostingRequest,
   JobCategory,
   JobCategoryEnum,
   CareerType,
@@ -22,36 +26,72 @@ import MdEditor from 'react-markdown-editor-lite';
 import 'react-markdown-editor-lite/lib/index.css';
 import ReactMarkdown from 'react-markdown';
 import { getImageUrl } from '@/services/core.service';
+import Heading from '@/components/text/Heading';
 
 interface FormValues {
   title: string;
   jobCategory: JobCategory;
   careerType: CareerType;
   minCareerYears: number;
-  maxCareerYears?: number;
+  maxCareerYears: number | null;
   description: string;
   closeAt: string;
 }
 
-const defaultValues: Partial<FormValues> = {
-  title: undefined,
-  jobCategory: undefined,
-  careerType: undefined,
-  minCareerYears: 0,
-  maxCareerYears: undefined,
-  description: undefined,
-  closeAt: undefined,
+interface Props {
+  params: { id: string };
+}
+
+const Page = ({ params }: Props) => {
+  const { id } = params;
+  const { data: jobPosting, isLoading, isError, error } = useGetJobPosting(id);
+
+  return (
+    <>
+      <Heading>채용 공고 수정하기</Heading>
+      {isLoading && <div>Loading...</div>}
+      {isError && <div>{error?.message}</div>}
+      {jobPosting && <EditJobPostingForm jobPosting={jobPosting} />}
+    </>
+  );
 };
 
-const Page = () => {
+export default Page;
+
+interface EditJobPostingFormProps {
+  jobPosting: AdminJobPostingsViewEntity;
+}
+
+const EditJobPostingForm = ({ jobPosting }: EditJobPostingFormProps) => {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const defaultValues: FormValues = {
+    title: jobPosting?.title ?? '',
+    jobCategory: jobPosting?.jobCategory,
+    careerType: jobPosting?.careerType,
+    minCareerYears: jobPosting?.minCareerYears ?? 0,
+    maxCareerYears: jobPosting?.maxCareerYears,
+    description: jobPosting?.description ?? '',
+    closeAt: jobPosting?.closeAt ? dayjs(jobPosting.closeAt).toISOString() : '',
+  };
 
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues,
   });
 
-  const { mutateAsync: postJobPosting } = usePostJobPosting();
+  const { mutate: putJobPosting } = usePutJobPosting({
+    onSuccess: () => {
+      alert('채용 공고가 수정되었습니다.');
+      router.push('/recruitment');
+    },
+    onError: (error: unknown) => {
+      console.error('Error editing job posting:', error);
+      alert(
+        '채용 공고 수정에 실패했습니다, ' +
+          (error instanceof Error && error.message),
+      );
+    },
+  });
 
   const plugins = ['font-bold', 'link', 'image'];
 
@@ -74,14 +114,12 @@ const Page = () => {
     [],
   );
 
-  const onSubmit = async (data: FormValues) => {
-    if (!confirm('채용 공고를 추가하시겠습니까?')) {
-      return;
-    }
-    setIsSubmitting(true);
-
-    try {
-      const body: AdminCreateJobPostingRequest = {
+  const onSubmit = useCallback(
+    (data: FormValues) => {
+      if (!confirm('채용 공고를 수정하시겠습니까?')) {
+        return;
+      }
+      const body: AdminUpdateJobPostingRequest = {
         title: data.title,
         jobCategory: data.jobCategory,
         careerType: data.careerType,
@@ -90,21 +128,10 @@ const Page = () => {
         description: data.description,
         closeAt: dayjs(data.closeAt).toISOString(),
       };
-
-      await postJobPosting(body);
-
-      alert('채용 공고가 등록되었습니다.');
-      router.push('/recruitment');
-    } catch (error) {
-      console.error('Error creating job posting:', error);
-      alert(
-        '채용 공고 등록에 실패했습니다, ' +
-          (error instanceof Error && error.message),
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+      putJobPosting({ jobPostingId: jobPosting.jobPostingId, body });
+    },
+    [jobPosting, putJobPosting],
+  );
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
@@ -248,11 +275,7 @@ const Page = () => {
           }}
         />
       </Form.section>
-      <Form.submitButton disabled={isSubmitting}>
-        {isSubmitting ? '등록 중...' : '채용 공고 등록하기'}
-      </Form.submitButton>
+      <Form.submitButton>수정하기</Form.submitButton>
     </Form>
   );
 };
-
-export default Page;

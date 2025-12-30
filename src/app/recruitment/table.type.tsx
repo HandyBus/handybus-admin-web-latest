@@ -79,9 +79,14 @@ export const columns = [
     id: 'actions',
     header: '액션',
     cell: (props) => (
-      <BlueLink href={`/recruitment/${props.row.original.jobPostingId}`}>
-        상세보기
-      </BlueLink>
+      <div className="flex flex-col items-center gap-8">
+        <BlueLink href={`/recruitment/${props.row.original.jobPostingId}`}>
+          지원자 목록
+        </BlueLink>
+        <BlueLink href={`/recruitment/${props.row.original.jobPostingId}/edit`}>
+          수정하기
+        </BlueLink>
+      </div>
     ),
   }),
 ];
