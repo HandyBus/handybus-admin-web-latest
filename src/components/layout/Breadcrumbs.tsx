@@ -95,6 +95,13 @@ const ROUTES: RouteConfig[] = [
   { path: '/feedbacks', name: '피드백 대시보드' },
   // 예약 취소 사유 관리
   { path: '/cancel-reasons', name: '예약 취소 사유 대시보드' },
+  // 협업문의 관리
+  { path: '/contacts', name: '협업문의 대시보드' },
+  {
+    path: '/contacts/:id',
+    name: '협업문의 상세 정보',
+    parent: '/contacts',
+  },
 ];
 
 const Breadcrumbs = () => {
