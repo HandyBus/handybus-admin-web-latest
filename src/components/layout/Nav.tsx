@@ -73,6 +73,7 @@ const NavItems = () => {
       <NavItem href="/feedbacks">피드백</NavItem>
       <NavItem href="/cancel-reasons">취소사유</NavItem>
       <NavItem href="/reviews">리뷰</NavItem>
+      <NavItem href="/contacts">협업문의</NavItem>
     </>
   );
 };
