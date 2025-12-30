@@ -1,7 +1,7 @@
 'use client';
 
 import { columns } from './table.type';
-import { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import { LoaderCircleIcon } from 'lucide-react';
 import JobPostingFilter from './components/JobPostingFilter';
@@ -12,13 +12,21 @@ import useJobPostingFilter from './hooks/useJobPostingFilter';
 import { useGetJobPostingsWithPagination } from '@/services/recruitment.service';
 import ColumnFilter from '@/components/table/ColumnFilter';
 import Heading from '@/components/text/Heading';
+import BlueLink from '@/components/link/BlueLink';
 
 const Page = () => {
   return (
-    <main className="flex grow flex-col">
-      <Heading>채용 대시보드</Heading>
-      <AllJobPostings />
-    </main>
+    <Suspense>
+      <main className="flex grow flex-col">
+        <Heading className="flex items-baseline gap-20">
+          채용 대시보드
+          <BlueLink href="/recruitment/new" className="text-14">
+            채용 공고 추가하기
+          </BlueLink>
+        </Heading>
+        <AllJobPostings />
+      </main>
+    </Suspense>
   );
 };
 
@@ -53,7 +61,6 @@ const AllJobPostings = () => {
 
   return (
     <section className="flex flex-col">
-      <Heading.h2>모든 채용 공고 조회</Heading.h2>
       <JobPostingFilter option={option} dispatch={dispatch} />
       <ColumnFilter table={table} />
       <BaseTable table={table} />
