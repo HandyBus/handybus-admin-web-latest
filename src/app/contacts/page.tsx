@@ -11,7 +11,7 @@ import Heading from '@/components/text/Heading';
 const Page = () => {
   return (
     <main>
-      <Heading>문의 대시보드</Heading>
+      <Heading>협업문의 대시보드</Heading>
       <AllContacts />
     </main>
   );
@@ -31,7 +31,6 @@ const AllContacts = () => {
   if (isLoading) {
     return (
       <section className="flex flex-col">
-        <Heading.h2>모든 문의 조회</Heading.h2>
         <LoaderCircleIcon className="animate-spin" />
       </section>
     );
@@ -48,7 +47,6 @@ const AllContacts = () => {
 
   return (
     <section className="flex flex-col">
-      <Heading.h2>모든 문의 조회</Heading.h2>
       <ColumnFilter table={table} />
       <BaseTable table={table} />
       {(!data || data.length === 0) && <p>데이터가 없습니다.</p>}
