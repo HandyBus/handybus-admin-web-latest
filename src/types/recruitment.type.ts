@@ -86,3 +86,16 @@ export const AdminCreateJobPostingRequestSchema = z.object({
 export type AdminCreateJobPostingRequest = z.infer<
   typeof AdminCreateJobPostingRequestSchema
 >;
+
+export const AdminUpdateJobPostingRequestSchema = z.object({
+  title: z.string().optional(),
+  jobCategory: JobCategoryEnum.optional(),
+  careerType: CareerTypeEnum.optional(),
+  minCareerYears: z.number().optional(),
+  maxCareerYears: z.number().optional(),
+  description: z.string().optional(),
+  closeAt: z.string().optional(),
+});
+export type AdminUpdateJobPostingRequest = z.infer<
+  typeof AdminUpdateJobPostingRequestSchema
+>;

@@ -1,4 +1,5 @@
 import {
+  AdminCreateJobPostingRequest,
   AdminJobPostingsViewEntitySchema,
   CareerType,
   JobApplicationResponseModelSchema,
@@ -15,6 +16,7 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
+import { z } from 'zod';
 
 // ----- GET -----
 
@@ -110,6 +112,11 @@ export const putJobApplication = async (
   const res = await authInstance.put(
     `/v1/recruitment/admin/job-applications/${jobApplicationId}`,
     body,
+    {
+      shape: {
+        jobApplicationId: z.string(),
+      },
+    },
   );
   return res;
 };
@@ -128,6 +135,29 @@ export const usePutJobApplication = () => {
     }) => putJobApplication(jobApplicationId, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['jobApplications'] });
+    },
+  });
+};
+
+export const postJobPosting = async (body: AdminCreateJobPostingRequest) => {
+  const res = await authInstance.post(
+    '/v1/recruitment/admin/job-postings',
+    body,
+    {
+      shape: {
+        jobPostingId: z.string(),
+      },
+    },
+  );
+  return res;
+};
+
+export const usePostJobPosting = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: AdminCreateJobPostingRequest) => postJobPosting(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['jobPostings'] });
     },
   });
 };
