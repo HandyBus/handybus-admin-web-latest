@@ -31,6 +31,7 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
     toDestinationHubs,
     toDestinationArrivalTimes,
     fromDestinationArrivalTimes,
+    regularPrice,
   ] = useWatch({
     control,
     name: [
@@ -38,6 +39,7 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
       `shuttleRoutes.${index}.toDestinationHubs`,
       `shuttleRoutes.${index}.toDestinationArrivalTimes`,
       `shuttleRoutes.${index}.fromDestinationArrivalTimes`,
+      `shuttleRoutes.${index}.regularPrice`,
     ],
   });
 
@@ -211,6 +213,14 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
     convertToRouteHubData,
   ]);
 
+  const showToDestinationHubs = useMemo(() => {
+    return regularPrice?.toDestination > 0 || regularPrice?.roundTrip > 0;
+  }, [regularPrice?.toDestination, regularPrice?.roundTrip]);
+
+  const showFromDestinationHubs = useMemo(() => {
+    return regularPrice?.fromDestination > 0 || regularPrice?.roundTrip > 0;
+  }, [regularPrice?.fromDestination, regularPrice?.roundTrip]);
+
   return (
     <div className="flex flex-col gap-8">
       <Form.label required>경유지</Form.label>
@@ -220,172 +230,214 @@ const HubsSection = ({ index, dailyEventDate }: Props) => {
           <button
             type="button"
             onClick={handleAddToDestinationHub}
-            className="ml-8 text-14 text-basic-blue-400"
+            className="ml-8 text-14 text-basic-blue-400 disabled:opacity-30"
+            disabled={!showToDestinationHubs}
           >
             추가
           </button>
           <button
             type="button"
             onClick={handleCalculateArrivalTimes}
-            className="ml-auto text-14 text-basic-blue-400"
+            className="ml-auto text-14 text-basic-blue-400 disabled:opacity-30"
+            disabled={!showToDestinationHubs}
           >
             경로 소요 시간 계산
           </button>
         </Heading.h5>
-        <ul className="flex flex-col gap-8">
-          {toDestinationHubsFields.map((field, hubIndex) => {
-            const isDestinationHub =
-              hubIndex === toDestinationHubsFields.length - 1;
-            return (
-              <li
-                key={field.id}
-                className={`grid grid-cols-[20px_1fr_1fr_50px] items-center justify-items-center gap-12 rounded-[6px] p-12 ${isDestinationHub ? 'bg-basic-blue-100' : 'bg-basic-grey-100/50'}`}
-              >
-                <h5 className="text-16 font-600 text-basic-grey-700">
-                  {hubIndex + 1}
-                </h5>
-                <div className="flex flex-col">
-                  {isDestinationHub ? (
-                    <div className="flex items-center gap-8 rounded-[4px] bg-basic-grey-100 p-8">
-                      <span className="text-14 text-basic-grey-600">
-                        {destinationHub?.name || '도착지가 선택되지 않음'}
-                      </span>
-                      <span className="text-12 text-basic-blue-400">
-                        (자동 설정)
-                      </span>
-                    </div>
-                  ) : (
-                    <Controller
-                      control={control}
-                      name={
-                        `shuttleRoutes.${index}.toDestinationHubs.${hubIndex}` as const
-                      }
-                      render={({ field: { onChange, value } }) => (
-                        <RegionHubInputWithDropdown
-                          hubType="SHUTTLE_HUB"
-                          regionId={value?.regionId ?? null}
-                          setRegionId={(regionId) =>
-                            onChange({ ...value, regionId })
-                          }
-                          regionHubId={value?.regionHubId ?? null}
-                          setRegionHubId={(regionHub) =>
-                            onChange({
-                              ...value,
-                              regionHubId: regionHub.regionHubId,
-                              latitude: regionHub.latitude,
-                              longitude: regionHub.longitude,
-                            })
-                          }
-                        />
-                      )}
-                    />
-                  )}
-                </div>
-                <Controller
-                  control={control}
-                  name={
-                    `shuttleRoutes.${index}.toDestinationArrivalTimes.${hubIndex}.time` as const
-                  }
-                  render={({ field: { onChange, value } }) => (
-                    <DateTimeInput
-                      value={value}
-                      setValue={(time) => onChange(time)}
-                    />
-                  )}
-                />
-                <div className="flex flex-col items-center justify-center gap-8">
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveToDestinationHub(hubIndex)}
-                    className="text-basic-red-500 disabled:opacity-30"
-                    disabled={isDestinationHub}
-                  >
-                    삭제
-                  </button>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+        {showToDestinationHubs ? (
+          <ul className="flex flex-col gap-8">
+            {toDestinationHubsFields.map((field, hubIndex) => {
+              const isDestinationHub =
+                hubIndex === toDestinationHubsFields.length - 1;
+              return (
+                <li
+                  key={field.id}
+                  className={`grid grid-cols-[20px_1fr_1fr_50px] items-center justify-items-center gap-12 rounded-[6px] p-12 ${isDestinationHub ? 'bg-basic-blue-100' : 'bg-basic-grey-100/50'}`}
+                >
+                  <h5 className="text-16 font-600 text-basic-grey-700">
+                    {hubIndex + 1}
+                  </h5>
+                  <div className="flex flex-col">
+                    {isDestinationHub ? (
+                      <div className="flex items-center gap-8 rounded-[4px] bg-basic-grey-100 p-8">
+                        <span className="text-14 text-basic-grey-600">
+                          {destinationHub?.name || '도착지가 선택되지 않음'}
+                        </span>
+                        <span className="text-12 text-basic-blue-400">
+                          (자동 설정)
+                        </span>
+                      </div>
+                    ) : (
+                      <Controller
+                        control={control}
+                        name={
+                          `shuttleRoutes.${index}.toDestinationHubs.${hubIndex}` as const
+                        }
+                        render={({ field: { onChange, value } }) => (
+                          <RegionHubInputWithDropdown
+                            hubType="SHUTTLE_HUB"
+                            regionId={value?.regionId ?? null}
+                            setRegionId={(regionId) =>
+                              onChange({ ...value, regionId })
+                            }
+                            regionHubId={value?.regionHubId ?? null}
+                            setRegionHubId={(regionHub) =>
+                              onChange({
+                                ...value,
+                                regionHubId: regionHub.regionHubId,
+                                latitude: regionHub.latitude,
+                                longitude: regionHub.longitude,
+                              })
+                            }
+                            disabled={
+                              regularPrice?.toDestination === 0 &&
+                              regularPrice?.roundTrip === 0
+                            }
+                          />
+                        )}
+                      />
+                    )}
+                  </div>
+                  <Controller
+                    control={control}
+                    name={
+                      `shuttleRoutes.${index}.toDestinationArrivalTimes.${hubIndex}.time` as const
+                    }
+                    render={({ field: { onChange, value } }) => (
+                      <DateTimeInput
+                        value={value}
+                        setValue={(time) => onChange(time)}
+                        disabled={
+                          regularPrice?.toDestination === 0 &&
+                          regularPrice?.roundTrip === 0
+                        }
+                      />
+                    )}
+                  />
+                  <div className="flex flex-col items-center justify-center gap-8">
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveToDestinationHub(hubIndex)}
+                      className="text-basic-red-500 disabled:opacity-30"
+                      disabled={isDestinationHub}
+                    >
+                      삭제
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <div className="text-14 text-basic-grey-600">
+            행사장행 또는 왕복 가격이 없기에 경유지가 설정되지 않습니다.
+          </div>
+        )}
       </article>
       <article className="pb-12">
         <Heading.h5
           backgroundColor="yellow"
           className="flex items-baseline gap-12"
         >
-          귀가행{' '}
-          <span className="text-12 font-400 text-basic-blue-400">
-            (미러링 보장)
-          </span>
+          귀가행
+          <button
+            type="button"
+            onClick={handleAddToDestinationHub}
+            className="ml-8 text-14 text-basic-blue-400 disabled:opacity-30"
+            disabled={!showFromDestinationHubs}
+          >
+            추가
+          </button>
+          <button
+            type="button"
+            onClick={handleCalculateArrivalTimes}
+            className="ml-auto text-14 text-basic-blue-400 disabled:opacity-30"
+            disabled={!showFromDestinationHubs}
+          >
+            경로 소요 시간 계산
+          </button>
         </Heading.h5>
-        <ul className="flex flex-col gap-8">
-          {fromDestinationHubsFields.map((field, hubIndex) => {
-            const reversedHubIndex =
-              fromDestinationHubsFields.length - 1 - hubIndex;
-            const isDestinationHub =
-              reversedHubIndex === fromDestinationHubsFields.length - 1;
-            return (
-              <li
-                key={field.id}
-                className={`grid grid-cols-[20px_1fr_1fr_50px] items-center justify-items-center gap-12 rounded-[6px] p-12 ${isDestinationHub ? 'bg-basic-blue-100' : 'bg-basic-grey-100/50'}`}
-              >
-                <h5 className="text-16 font-600 text-basic-grey-700">
-                  {hubIndex + 1}
-                </h5>
-                <div className="flex flex-col">
-                  {isDestinationHub ? (
-                    <div className="flex items-center gap-8 rounded-[4px] bg-basic-grey-100 p-8">
-                      <span className="text-14 text-basic-grey-600">
-                        {destinationHub?.name || '도착지가 선택되지 않음'}
-                      </span>
-                      <span className="text-12 text-basic-blue-400">
-                        (자동 설정)
-                      </span>
-                    </div>
-                  ) : (
-                    <Controller
-                      control={control}
-                      name={
-                        `shuttleRoutes.${index}.toDestinationHubs.${reversedHubIndex}` as const
-                      }
-                      render={({ field: { onChange, value } }) => (
-                        <RegionHubInputWithDropdown
-                          hubType="SHUTTLE_HUB"
-                          regionId={value?.regionId ?? null}
-                          regionHubId={value?.regionHubId ?? null}
-                          setRegionId={(regionId) =>
-                            onChange({ ...value, regionId })
-                          }
-                          setRegionHubId={(regionHub) =>
-                            onChange({
-                              ...value,
-                              regionHubId: regionHub.regionHubId,
-                              latitude: regionHub.latitude,
-                              longitude: regionHub.longitude,
-                            })
-                          }
-                          disabled
-                        />
-                      )}
-                    />
-                  )}
-                </div>
-                <Controller
-                  control={control}
-                  name={
-                    `shuttleRoutes.${index}.fromDestinationArrivalTimes.${hubIndex}.time` as const
-                  }
-                  render={({ field: { onChange, value } }) => (
-                    <DateTimeInput
-                      value={value}
-                      setValue={(time) => onChange(time)}
-                    />
-                  )}
-                />
-              </li>
-            );
-          })}
-        </ul>
+        {showFromDestinationHubs ? (
+          <ul className="flex flex-col gap-8">
+            {fromDestinationHubsFields.map((field, hubIndex) => {
+              const reversedHubIndex =
+                fromDestinationHubsFields.length - 1 - hubIndex;
+              const isDestinationHub =
+                reversedHubIndex === fromDestinationHubsFields.length - 1;
+              return (
+                <li
+                  key={field.id}
+                  className={`grid grid-cols-[20px_1fr_1fr_50px] items-center justify-items-center gap-12 rounded-[6px] p-12 ${isDestinationHub ? 'bg-basic-blue-100' : 'bg-basic-grey-100/50'}`}
+                >
+                  <h5 className="text-16 font-600 text-basic-grey-700">
+                    {hubIndex + 1}
+                  </h5>
+                  <div className="flex flex-col">
+                    {isDestinationHub ? (
+                      <div className="flex items-center gap-8 rounded-[4px] bg-basic-grey-100 p-8">
+                        <span className="text-14 text-basic-grey-600">
+                          {destinationHub?.name || '도착지가 선택되지 않음'}
+                        </span>
+                        <span className="text-12 text-basic-blue-400">
+                          (자동 설정)
+                        </span>
+                      </div>
+                    ) : (
+                      <Controller
+                        control={control}
+                        name={
+                          `shuttleRoutes.${index}.toDestinationHubs.${reversedHubIndex}` as const
+                        }
+                        render={({ field: { onChange, value } }) => (
+                          <RegionHubInputWithDropdown
+                            hubType="SHUTTLE_HUB"
+                            regionId={value?.regionId ?? null}
+                            regionHubId={value?.regionHubId ?? null}
+                            setRegionId={(regionId) =>
+                              onChange({ ...value, regionId })
+                            }
+                            setRegionHubId={(regionHub) =>
+                              onChange({
+                                ...value,
+                                regionHubId: regionHub.regionHubId,
+                                latitude: regionHub.latitude,
+                                longitude: regionHub.longitude,
+                              })
+                            }
+                            disabled={
+                              regularPrice?.fromDestination === 0 &&
+                              regularPrice?.roundTrip === 0
+                            }
+                          />
+                        )}
+                      />
+                    )}
+                  </div>
+                  <Controller
+                    control={control}
+                    name={
+                      `shuttleRoutes.${index}.fromDestinationArrivalTimes.${hubIndex}.time` as const
+                    }
+                    render={({ field: { onChange, value } }) => (
+                      <DateTimeInput
+                        value={value}
+                        setValue={(time) => onChange(time)}
+                        disabled={
+                          regularPrice?.fromDestination === 0 &&
+                          regularPrice?.roundTrip === 0
+                        }
+                      />
+                    )}
+                  />
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <div className="text-14 text-basic-grey-600">
+            귀가행 또는 왕복 가격이 없기에 경유지가 설정되지 않습니다.
+          </div>
+        )}
       </article>
     </div>
   );

@@ -8,13 +8,13 @@ export const validateShuttleRouteData = (
     throw new Error('가격이 올바르지 않습니다.');
   }
 
+  const tripType = checkTripType(body.regularPrice);
   const forwardHubs = body.shuttleRouteHubs.filter(
     (hub) => hub.type === 'TO_DESTINATION',
   );
   const returnHubs = body.shuttleRouteHubs.filter(
     (hub) => hub.type === 'FROM_DESTINATION',
   );
-  const tripType = checkTripType(forwardHubs, returnHubs);
   switch (true) {
     case tripType === 'none':
       throw new Error('행사장행/귀가행의 정류장을 채워주세요.');
@@ -31,19 +31,22 @@ export const validateShuttleRouteData = (
 };
 
 const checkTripType = (
-  forwardHubs: CreateShuttleRouteRequest['shuttleRouteHubs'],
-  returnHubs: CreateShuttleRouteRequest['shuttleRouteHubs'],
-): 'roundTrip' | 'oneWay' | 'none' => {
-  switch (true) {
-    case forwardHubs.length > 0 && returnHubs.length > 0:
-      return 'roundTrip';
-    case forwardHubs.length > 0 && returnHubs.length === 0:
-      return 'oneWay';
-    case forwardHubs.length === 0 && returnHubs.length > 0:
-      return 'oneWay';
-    default:
-      return 'none';
+  regularPrice: CreateShuttleRouteRequest['regularPrice'],
+): 'roundTrip' | 'toDestination' | 'fromDestination' | 'none' => {
+  const hasRoundTrip = !!regularPrice.roundTrip;
+  const hasToDestination = !!regularPrice.toDestination;
+  const hasFromDestination = !!regularPrice.fromDestination;
+
+  if (hasRoundTrip || (hasToDestination && hasFromDestination)) {
+    return 'roundTrip';
   }
+  if (hasToDestination && !hasFromDestination) {
+    return 'toDestination';
+  }
+  if (!hasToDestination && hasFromDestination) {
+    return 'fromDestination';
+  }
+  return 'none';
 };
 
 const validateEachSequenceOrder = (
@@ -116,13 +119,17 @@ const validateTripTypePrice = (
     return false;
   }
 
-  const hasRoundTrip = roundTrip !== 0;
-  const hasToDestination = toDestination !== 0;
-  const hasFromDestination = fromDestination !== 0;
+  const hasRoundTrip = roundTrip && roundTrip !== 0;
+  const hasToDestination = toDestination && toDestination !== 0;
+  const hasFromDestination = fromDestination && fromDestination !== 0;
 
   if (!hasRoundTrip && !hasToDestination && !hasFromDestination) {
     return false;
-  } else if (hasRoundTrip && (!hasToDestination || !hasFromDestination)) {
+  } else if (
+    hasRoundTrip &&
+    ((hasToDestination && !hasFromDestination) ||
+      (!hasToDestination && hasFromDestination))
+  ) {
     return false;
   }
 
