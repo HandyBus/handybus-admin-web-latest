@@ -56,9 +56,7 @@ const Page = () => {
 
   return (
     <div className="mx-auto max-w-4xl p-8">
-      <h1 className="text-2xl font-bold mb-6">
-        추가 환불 처리 CSV 데이터 처리
-      </h1>
+      <h1 className="text-2xl font-bold mb-6">환불 처리 CSV 데이터 처리</h1>
 
       <div className="mb-6">
         <label className="text-sm font-medium mb-2 block">
@@ -102,16 +100,13 @@ const Page = () => {
                   <p className="text-yellow-700">건너뜀: {stats.skipped}개</p>
                   <p className="text-red-700">오류: {stats.errors}개</p>
                   <p className="text-blue-700 font-semibold">
-                    총 귀가행 결제 금액:{' '}
-                    {stats.totalReturnPaymentAmount.toLocaleString()}원
+                    총 원금액: {stats.totalPrincipalAmount.toLocaleString()}원
                   </p>
                   <p className="text-purple-700 font-semibold">
-                    총 귀가행 환불 금액:{' '}
-                    {stats.totalRefundAmount.toLocaleString()}원
+                    총 결제 금액: {stats.totalPaymentAmount.toLocaleString()}원
                   </p>
                   <p className="text-orange-700 font-semibold">
-                    총 추가 환불 금액:{' '}
-                    {stats.totalAdditionalRefundAmount.toLocaleString()}원
+                    총 환불 금액: {stats.totalRefundAmount.toLocaleString()}원
                   </p>
                   <p className="text-green-700 font-semibold">
                     실제 처리된 환불 금액:{' '}
@@ -141,10 +136,9 @@ const Page = () => {
         <h3 className="text-lg font-semibold mb-3">처리 과정</h3>
 
         <ol className="space-y-2 text-sm text-gray-700 list-inside list-decimal">
-          <li>예약 ID를 기반으로 reservation을 조회한다.</li>
+          <li>CSV 파일에서 payment_id를 확인한다.</li>
           <li>
-            찾아진 reservation에서 paymentId를 가져와 &apos;추가 환불
-            금액&apos;을 기준으로 환불 API를 요청한다.
+            payment_id와 &apos;환불 금액&apos;을 사용하여 환불 API를 요청한다.
           </li>
           <li>처리 결과를 CSV 항목으로 추가해둔다.</li>
           <li>각 처리들은 모두 무조건 순차적으로 진행되어야 한다.</li>

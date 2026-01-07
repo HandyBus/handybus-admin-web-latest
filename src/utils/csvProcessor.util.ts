@@ -1,41 +1,36 @@
-import { getReservation } from '@/services/reservation.service';
 import {
   postAdminRequestRefund,
   postCompleteRefundRequest,
 } from '@/services/payment.service';
 
 export interface CsvRow {
-  timestamp: string;
-  name: string;
-  phoneNumber: string;
-  evidence: string;
-  emergencyContact: string;
-  refundCase: string;
+  shuttleRouteName: string;
+  type: string;
   userId: string;
   reservationId: string;
+  paymentId: string;
+  name: string;
+  phoneNumber: string;
+  principalAmount: string;
   paymentAmount: string;
-  fromDestinationPaymentAmount: string;
+  passengerCount: string;
+  priceToBeChanged: string;
   refundAmount: string;
-  additionalRefundAmount: string;
-  additionalCost: string;
-  remarks: string;
 }
 
 export interface ProcessedCsvRow {
-  timestamp: string;
-  name: string;
-  phoneNumber: string;
-  evidence: string;
-  emergencyContact: string;
-  refundCase: string;
+  shuttleRouteName: string;
+  type: string;
   userId: string;
   reservationId: string;
+  paymentId: string;
+  name: string;
+  phoneNumber: string;
+  principalAmount: number;
   paymentAmount: number;
-  returnPaymentAmount: number;
-  returnRefundAmount: number;
-  additionalRefundAmount: number;
-  additionalCost: number;
-  remarks: string;
+  passengerCount: number;
+  priceToBeChanged: number;
+  refundAmount: number;
   processingStatus?: 'success' | 'skipped' | 'error';
   errorMessage?: string;
   refundRequestId?: string;
@@ -81,137 +76,79 @@ export const processCsvFile = async (
     const values = parseCsvLine(line);
 
     const row: CsvRow = {
-      timestamp: values[0],
-      name: values[1],
-      phoneNumber: values[2],
-      evidence: values[3],
-      emergencyContact: values[4],
-      refundCase: values[5],
-      userId: values[6],
-      reservationId: values[7],
-      paymentAmount: values[8],
-      fromDestinationPaymentAmount: values[9],
-      refundAmount: values[10],
-      additionalRefundAmount: values[11] || '',
-      additionalCost: values[12] || '',
-      remarks: values[13] || '',
+      shuttleRouteName: values[0] || '',
+      type: values[1] || '',
+      userId: values[2] || '',
+      reservationId: values[3] || '',
+      paymentId: values[4] || '',
+      name: values[5] || '',
+      phoneNumber: values[6] || '',
+      principalAmount: values[7] || '',
+      paymentAmount: values[8] || '',
+      passengerCount: values[9] || '',
+      priceToBeChanged: values[10] || '',
+      refundAmount: values[11] || '',
     };
 
     try {
-      // 1. 예약 ID를 기반으로 reservation을 조회한다.
-      if (!row.reservationId) {
+      // 1. payment_id가 있는지 확인한다.
+      if (!row.paymentId) {
         processedRows.push({
-          timestamp: row.timestamp,
-          name: row.name,
-          phoneNumber: row.phoneNumber,
-          evidence: row.evidence,
-          emergencyContact: row.emergencyContact,
-          refundCase: row.refundCase,
-          userId: row.userId,
-          reservationId: '',
-          paymentAmount: 0,
-          returnPaymentAmount: 0,
-          returnRefundAmount: 0,
-          additionalRefundAmount:
-            parseFloat(row.additionalRefundAmount.replace(/,/g, '')) || 0,
-          additionalCost: parseFloat(row.additionalCost.replace(/,/g, '')) || 0,
-          remarks: row.remarks,
-          processingStatus: 'error',
-          errorMessage: '예약 ID가 없습니다.',
-        });
-        continue;
-      }
-
-      const reservationData = await getReservation(row.reservationId);
-      const reservation = reservationData.reservation;
-
-      if (!reservation) {
-        processedRows.push({
-          timestamp: row.timestamp,
-          name: row.name,
-          phoneNumber: row.phoneNumber,
-          evidence: row.evidence,
-          emergencyContact: row.emergencyContact,
-          refundCase: row.refundCase,
+          shuttleRouteName: row.shuttleRouteName,
+          type: row.type,
           userId: row.userId,
           reservationId: row.reservationId,
-          paymentAmount: 0,
-          returnPaymentAmount: 0,
-          returnRefundAmount: 0,
-          additionalRefundAmount:
-            parseFloat(row.additionalRefundAmount.replace(/,/g, '')) || 0,
-          additionalCost: parseFloat(row.additionalCost.replace(/,/g, '')) || 0,
-          remarks: row.remarks,
-          processingStatus: 'error',
-          errorMessage: '예약을 찾을 수 없습니다.',
-        });
-        continue;
-      }
-
-      // 2. 찾아진 reservation에서 paymentId를 가져와 환불 api를 요청한다.
-      if (!reservation.paymentId) {
-        processedRows.push({
-          timestamp: row.timestamp,
+          paymentId: '',
           name: row.name,
           phoneNumber: row.phoneNumber,
-          evidence: row.evidence,
-          emergencyContact: row.emergencyContact,
-          refundCase: row.refundCase,
-          userId: reservation.userId,
-          reservationId: reservation.reservationId,
-          paymentAmount: reservation.paymentAmount || 0,
-          returnPaymentAmount: 0,
-          returnRefundAmount: 0,
-          additionalRefundAmount:
-            parseFloat(row.additionalRefundAmount.replace(/,/g, '')) || 0,
-          additionalCost: parseFloat(row.additionalCost.replace(/,/g, '')) || 0,
-          remarks: row.remarks,
+          principalAmount:
+            parseFloat(row.principalAmount.replace(/,/g, '')) || 0,
+          paymentAmount: parseFloat(row.paymentAmount.replace(/,/g, '')) || 0,
+          passengerCount: parseInt(row.passengerCount) || 0,
+          priceToBeChanged:
+            parseFloat(row.priceToBeChanged.replace(/,/g, '')) || 0,
+          refundAmount: parseFloat(row.refundAmount.replace(/,/g, '')) || 0,
           processingStatus: 'error',
-          errorMessage: '결제 정보가 없습니다.',
+          errorMessage: '결제 ID가 없습니다.',
         });
         continue;
       }
 
-      // 환불 금액 계산 (CSV의 "추가 환불 금액" 컬럼 사용)
-      const refundAmount =
-        parseFloat(row.additionalRefundAmount.replace(/,/g, '')) || 0;
+      // 환불 금액 계산 (CSV의 "refund_amount" 컬럼 사용)
+      const refundAmount = parseFloat(row.refundAmount.replace(/,/g, '')) || 0;
 
       if (refundAmount <= 0) {
         processedRows.push({
-          timestamp: row.timestamp,
+          shuttleRouteName: row.shuttleRouteName,
+          type: row.type,
+          userId: row.userId,
+          reservationId: row.reservationId,
+          paymentId: row.paymentId,
           name: row.name,
           phoneNumber: row.phoneNumber,
-          evidence: row.evidence,
-          emergencyContact: row.emergencyContact,
-          refundCase: row.refundCase,
-          userId: reservation.userId,
-          reservationId: reservation.reservationId,
-          paymentAmount: reservation.paymentAmount || 0,
-          returnPaymentAmount: 0,
-          returnRefundAmount: 0,
-          additionalRefundAmount:
-            parseFloat(row.additionalRefundAmount.replace(/,/g, '')) || 0,
-          additionalCost: parseFloat(row.additionalCost.replace(/,/g, '')) || 0,
-          remarks: row.remarks,
+          principalAmount:
+            parseFloat(row.principalAmount.replace(/,/g, '')) || 0,
+          paymentAmount: parseFloat(row.paymentAmount.replace(/,/g, '')) || 0,
+          passengerCount: parseInt(row.passengerCount) || 0,
+          priceToBeChanged:
+            parseFloat(row.priceToBeChanged.replace(/,/g, '')) || 0,
+          refundAmount: refundAmount,
           processingStatus: 'skipped',
-          errorMessage: '추가 환불 금액이 0원 이하입니다.',
+          errorMessage: '환불 금액이 0원 이하입니다.',
         });
         continue;
       }
 
-      // 환불 요청 API 호출
-      const refundRequest = await postAdminRequestRefund(
-        reservation.paymentId,
-        {
-          refundAmount: refundAmount,
-          refundReason: '데이식스 환불',
-          type: 'ADMIN_ADJUSTMENT', // 관리자 조정으로 인한 환불
-        },
-      );
+      // 2. payment_id를 사용하여 환불 API를 요청한다.
+      const refundRequest = await postAdminRequestRefund(row.paymentId, {
+        refundAmount: refundAmount,
+        refundReason: 'CxM 가격 인하로 인한 환불',
+        type: 'ADMIN_ADJUSTMENT', // 관리자 조정으로 인한 환불
+      });
 
       // 환불 완료 API 호출
       await postCompleteRefundRequest(
-        reservation.paymentId,
+        row.paymentId,
         refundRequest.refundRequestId,
         {
           refundAmount: refundAmount,
@@ -220,21 +157,19 @@ export const processCsvFile = async (
 
       // 3. 처리 결과를 csv 항목으로 추가해둔다.
       const processedRow: ProcessedCsvRow = {
-        timestamp: row.timestamp,
+        shuttleRouteName: row.shuttleRouteName,
+        type: row.type,
+        userId: row.userId,
+        reservationId: row.reservationId,
+        paymentId: row.paymentId,
         name: row.name,
         phoneNumber: row.phoneNumber,
-        evidence: row.evidence,
-        emergencyContact: row.emergencyContact,
-        refundCase: row.refundCase,
-        userId: reservation.userId,
-        reservationId: reservation.reservationId,
-        paymentAmount: reservation.paymentAmount || 0,
-        returnPaymentAmount:
-          parseFloat(row.paymentAmount.replace(/,/g, '')) || 0,
-        returnRefundAmount: parseFloat(row.refundAmount.replace(/,/g, '')) || 0,
-        additionalRefundAmount: refundAmount,
-        additionalCost: parseFloat(row.additionalCost.replace(/,/g, '')) || 0,
-        remarks: row.remarks,
+        principalAmount: parseFloat(row.principalAmount.replace(/,/g, '')) || 0,
+        paymentAmount: parseFloat(row.paymentAmount.replace(/,/g, '')) || 0,
+        passengerCount: parseInt(row.passengerCount) || 0,
+        priceToBeChanged:
+          parseFloat(row.priceToBeChanged.replace(/,/g, '')) || 0,
+        refundAmount: refundAmount,
         processingStatus: 'success',
         refundRequestId: refundRequest.refundRequestId,
         refundStatus: 'COMPLETED',
@@ -243,25 +178,23 @@ export const processCsvFile = async (
       processedRows.push(processedRow);
     } catch (error) {
       console.error(
-        `Error processing refund for reservation ${row.reservationId}:`,
+        `Error processing refund for payment ${row.paymentId}:`,
         error,
       );
       processedRows.push({
-        timestamp: row.timestamp,
-        name: row.name,
-        phoneNumber: row.phoneNumber,
-        evidence: row.evidence,
-        emergencyContact: row.emergencyContact,
-        refundCase: row.refundCase,
+        shuttleRouteName: row.shuttleRouteName,
+        type: row.type,
         userId: row.userId,
         reservationId: row.reservationId,
-        paymentAmount: 0,
-        returnPaymentAmount: 0,
-        returnRefundAmount: 0,
-        additionalRefundAmount:
-          parseFloat(row.additionalRefundAmount.replace(/,/g, '')) || 0,
-        additionalCost: parseFloat(row.additionalCost.replace(/,/g, '')) || 0,
-        remarks: row.remarks,
+        paymentId: row.paymentId,
+        name: row.name,
+        phoneNumber: row.phoneNumber,
+        principalAmount: parseFloat(row.principalAmount.replace(/,/g, '')) || 0,
+        paymentAmount: parseFloat(row.paymentAmount.replace(/,/g, '')) || 0,
+        passengerCount: parseInt(row.passengerCount) || 0,
+        priceToBeChanged:
+          parseFloat(row.priceToBeChanged.replace(/,/g, '')) || 0,
+        refundAmount: parseFloat(row.refundAmount.replace(/,/g, '')) || 0,
         processingStatus: 'error',
         errorMessage:
           error instanceof Error
@@ -284,20 +217,18 @@ export const processCsvFile = async (
 
 export const convertToCsv = (rows: ProcessedCsvRow[]): string => {
   const headers = [
-    '타임스탬프',
-    '예약자명',
-    '전화번호',
-    '증빙자료',
-    '비상연락망',
-    '환불 케이스 선택',
+    '셔틀 노선명',
+    '타입',
     '유저 ID',
     '예약 ID',
+    '결제 ID',
+    '예약자명',
+    '전화번호',
+    '원금액',
     '결제 금액',
-    '귀가행 결제 금액',
-    '귀가행 환불 금액',
-    '추가 환불 금액',
-    '추가 비용',
-    '비고',
+    '승객 수',
+    '변경될 가격',
+    '환불 금액',
     '처리 상태',
     '환불 요청 ID',
     '환불 상태',
@@ -305,20 +236,18 @@ export const convertToCsv = (rows: ProcessedCsvRow[]): string => {
   ];
 
   const csvRows = rows.map((row) => [
-    row.timestamp,
-    row.name,
-    row.phoneNumber,
-    row.evidence,
-    row.emergencyContact,
-    row.refundCase,
+    row.shuttleRouteName,
+    row.type,
     row.userId,
     row.reservationId,
+    row.paymentId,
+    row.name,
+    row.phoneNumber,
+    row.principalAmount.toString(),
     row.paymentAmount.toString(),
-    row.returnPaymentAmount.toString(),
-    row.returnRefundAmount.toString(),
-    row.additionalRefundAmount.toString(),
-    row.additionalCost.toString(),
-    row.remarks,
+    row.passengerCount.toString(),
+    row.priceToBeChanged.toString(),
+    row.refundAmount.toString(),
     row.processingStatus || '',
     row.refundRequestId || '',
     row.refundStatus || '',
@@ -348,21 +277,18 @@ export const getProcessingStats = (rows: ProcessedCsvRow[]) => {
     success: rows.filter((row) => row.processingStatus === 'success').length,
     skipped: rows.filter((row) => row.processingStatus === 'skipped').length,
     errors: rows.filter((row) => row.processingStatus === 'error').length,
-    totalReturnPaymentAmount: rows
-      .filter((row) => row.returnPaymentAmount)
-      .reduce((sum, row) => sum + row.returnPaymentAmount, 0),
+    totalPrincipalAmount: rows
+      .filter((row) => row.principalAmount)
+      .reduce((sum, row) => sum + row.principalAmount, 0),
+    totalPaymentAmount: rows
+      .filter((row) => row.paymentAmount)
+      .reduce((sum, row) => sum + row.paymentAmount, 0),
     totalRefundAmount: rows
-      .filter((row) => row.returnRefundAmount)
-      .reduce((sum, row) => sum + row.returnRefundAmount, 0),
-    totalAdditionalRefundAmount: rows
-      .filter((row) => row.additionalRefundAmount)
-      .reduce((sum, row) => sum + row.additionalRefundAmount, 0),
+      .filter((row) => row.refundAmount)
+      .reduce((sum, row) => sum + row.refundAmount, 0),
     totalProcessedRefundAmount: rows
-      .filter(
-        (row) =>
-          row.processingStatus === 'success' && row.additionalRefundAmount,
-      )
-      .reduce((sum, row) => sum + row.additionalRefundAmount, 0),
+      .filter((row) => row.processingStatus === 'success' && row.refundAmount)
+      .reduce((sum, row) => sum + row.refundAmount, 0),
     completedRefunds: rows.filter((row) => row.refundStatus === 'COMPLETED')
       .length,
     failedRefunds: rows.filter((row) => row.refundStatus === 'FAILED').length,
