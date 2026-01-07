@@ -176,8 +176,9 @@ const MultiRouteForm = ({
     }
 
     setIsSubmitting(true);
-    const shuttleRoutes: CreateShuttleRouteRequest[] = data.shuttleRoutes.map(
-      (shuttleRoute) => {
+    let shuttleRoutes: CreateShuttleRouteRequest[] = [];
+    try {
+      shuttleRoutes = data.shuttleRoutes.map((shuttleRoute) => {
         const toDestinationExists = shuttleRoute.regularPrice.toDestination > 0;
         const fromDestinationExists =
           shuttleRoute.regularPrice.fromDestination > 0;
@@ -279,6 +280,39 @@ const MultiRouteForm = ({
               : shuttleRoute.regularPrice.fromDestination,
         };
 
+        if (
+          (toDestinationExists || roundTripExists) &&
+          toDestinationHubs.length !== shuttleRoute.toDestinationHubs.length
+        ) {
+          throw new Error(
+            `${shuttleRoute.name}의 행사장행 정류장 정보를 모두 채워주세요.`,
+          );
+        }
+        if (
+          (fromDestinationExists || roundTripExists) &&
+          fromDestinationHubs.length !== shuttleRoute.toDestinationHubs.length
+        ) {
+          throw new Error(
+            `${shuttleRoute.name}의 귀가행 정류장 정보를 모두 채워주세요.`,
+          );
+        }
+        if (!shuttleRoute.name) {
+          throw new Error(`${shuttleRoute.name}의 노선 이름을 입력해주세요.`);
+        }
+        if (!shuttleRoute.reservationDeadline) {
+          throw new Error(
+            `${shuttleRoute.name}의 예약 마감 시간을 입력해주세요.`,
+          );
+        }
+        if (
+          !shuttleRoute.maxPassengerCount ||
+          shuttleRoute.maxPassengerCount <= 0
+        ) {
+          throw new Error(
+            `${shuttleRoute.name}의 최대 승객 수를 입력해주세요.`,
+          );
+        }
+
         return {
           isHandyParty: false,
           name: shuttleRoute.name,
@@ -290,15 +324,19 @@ const MultiRouteForm = ({
           maxPassengerCount: shuttleRoute.maxPassengerCount,
           shuttleRouteHubs: [...toDestinationHubs, ...fromDestinationHubs],
         };
-      },
-    );
+      });
+    } catch (error) {
+      alert(error instanceof Error ? error.message : '알 수 없는 오류');
+      setIsSubmitting(false);
+      return;
+    }
 
     for (const shuttleRoute of shuttleRoutes) {
       try {
         validateShuttleRouteData(shuttleRoute);
       } catch (error) {
         alert(
-          `${shuttleRoute.name} 노선의 데이터가 올바르지 않습니다.\n${
+          `${shuttleRoute.name}의 데이터가 올바르지 않습니다.\n${
             error instanceof Error ? error.message : '알 수 없는 오류'
           }`,
         );

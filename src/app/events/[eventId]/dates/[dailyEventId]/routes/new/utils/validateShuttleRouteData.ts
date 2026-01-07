@@ -15,9 +15,12 @@ export const validateShuttleRouteData = (
   const returnHubs = body.shuttleRouteHubs.filter(
     (hub) => hub.type === 'FROM_DESTINATION',
   );
+
   switch (true) {
     case tripType === 'none':
       throw new Error('행사장행/귀가행의 정류장을 채워주세요.');
+    case !validateHubsLengthAndRole(tripType, body.shuttleRouteHubs):
+      throw new Error('도착지 또는 경유지의 정류장들을 올바르게 채워주세요.');
     case !validateEachSequenceOrder(forwardHubs) ||
       !validateEachSequenceOrder(returnHubs):
       throw new Error('정류장들의 순서가 올바르지 않습니다.');
@@ -134,4 +137,41 @@ const validateTripTypePrice = (
   }
 
   return true;
+};
+
+const validateHubsLengthAndRole = (
+  tripType: 'roundTrip' | 'toDestination' | 'fromDestination' | 'none',
+  hubs: CreateShuttleRouteRequest['shuttleRouteHubs'],
+) => {
+  if (tripType === 'none') {
+    return false;
+  }
+  const destinationCount = hubs.filter(
+    (hub) => hub.role === 'DESTINATION',
+  ).length;
+  const toDestinationHubCount = hubs.filter(
+    (hub) => hub.role === 'HUB' && hub.type === 'TO_DESTINATION',
+  ).length;
+  const fromDestinationHubCount = hubs.filter(
+    (hub) => hub.role === 'HUB' && hub.type === 'FROM_DESTINATION',
+  ).length;
+
+  if (tripType === 'roundTrip') {
+    if (
+      destinationCount === 2 &&
+      toDestinationHubCount >= 1 &&
+      fromDestinationHubCount >= 1
+    ) {
+      return true;
+    }
+  } else if (tripType === 'toDestination') {
+    if (destinationCount === 1 && toDestinationHubCount >= 1) {
+      return true;
+    }
+  } else if (tripType === 'fromDestination') {
+    if (destinationCount === 1 && fromDestinationHubCount >= 1) {
+      return true;
+    }
+  }
+  return false;
 };
