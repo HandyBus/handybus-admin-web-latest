@@ -48,14 +48,14 @@ const MultiRouteForm = ({
       reservationDeadline,
       hasEarlybird: false,
       earlybirdPrice: {
-        toDestination: 1000000,
-        fromDestination: 1000000,
-        roundTrip: 1000000,
+        toDestination: 0,
+        fromDestination: 0,
+        roundTrip: 0,
       },
       regularPrice: {
-        toDestination: 1000000,
-        fromDestination: 1000000,
-        roundTrip: 1000000,
+        toDestination: 0,
+        fromDestination: 0,
+        roundTrip: 0,
       },
       earlybirdDeadline: reservationDeadline,
       maxPassengerCount: 0,
@@ -176,79 +176,170 @@ const MultiRouteForm = ({
     }
 
     setIsSubmitting(true);
-    const shuttleRoutes: CreateShuttleRouteRequest[] = data.shuttleRoutes.map(
-      (shuttleRoute) => {
-        const toDestinationHubs = shuttleRoute.toDestinationHubs
-          .filter(
-            (
-              hub,
-            ): hub is {
-              regionId: string;
-              regionHubId: string;
-              latitude: number;
-              longitude: number;
-            } =>
-              !!hub?.regionId &&
-              !!hub?.regionHubId &&
-              !!hub?.latitude &&
-              !!hub?.longitude,
-          )
-          .map((hub, index, array) => {
-            const isLastHub = index === array.length - 1;
-            return {
-              regionHubId: hub.regionHubId,
-              type: 'TO_DESTINATION' as const,
-              role: isLastHub ? ('DESTINATION' as const) : ('HUB' as const),
-              sequence: index + 1, // NOTE: 1부터 시작
-              arrivalTime: shuttleRoute.toDestinationArrivalTimes[index].time,
-            };
-          });
-        const fromDestinationHubs = shuttleRoute.toDestinationHubs
-          .toReversed()
-          .filter(
-            (
-              hub,
-            ): hub is {
-              regionId: string;
-              regionHubId: string;
-              latitude: number;
-              longitude: number;
-            } =>
-              !!hub?.regionId &&
-              !!hub?.regionHubId &&
-              !!hub?.latitude &&
-              !!hub?.longitude,
-          )
-          .map((hub, index) => {
-            const isFirstHub = index === 0;
-            return {
-              regionHubId: hub.regionHubId,
-              type: 'FROM_DESTINATION' as const,
-              role: isFirstHub ? ('DESTINATION' as const) : ('HUB' as const),
-              sequence: index + 1, // NOTE: 1부터 시작
-              arrivalTime: shuttleRoute.fromDestinationArrivalTimes[index].time,
-            };
-          });
+    let shuttleRoutes: CreateShuttleRouteRequest[] = [];
+    try {
+      shuttleRoutes = data.shuttleRoutes.map((shuttleRoute) => {
+        const toDestinationExists = shuttleRoute.regularPrice.toDestination > 0;
+        const fromDestinationExists =
+          shuttleRoute.regularPrice.fromDestination > 0;
+        const roundTripExists = shuttleRoute.regularPrice.roundTrip > 0;
+
+        const toDestinationHubs =
+          toDestinationExists || roundTripExists
+            ? shuttleRoute.toDestinationHubs
+                .filter(
+                  (
+                    hub,
+                  ): hub is {
+                    regionId: string;
+                    regionHubId: string;
+                    latitude: number;
+                    longitude: number;
+                  } =>
+                    !!hub?.regionId &&
+                    !!hub?.regionHubId &&
+                    !!hub?.latitude &&
+                    !!hub?.longitude,
+                )
+                .map((hub, index, array) => {
+                  const isLastHub = index === array.length - 1;
+                  return {
+                    regionHubId: hub.regionHubId,
+                    type: 'TO_DESTINATION' as const,
+                    role: isLastHub
+                      ? ('DESTINATION' as const)
+                      : ('HUB' as const),
+                    sequence: index + 1, // NOTE: 1부터 시작
+                    arrivalTime:
+                      shuttleRoute.toDestinationArrivalTimes[index].time,
+                  };
+                })
+            : [];
+        const fromDestinationHubs =
+          fromDestinationExists || roundTripExists
+            ? shuttleRoute.toDestinationHubs
+                .toReversed()
+                .filter(
+                  (
+                    hub,
+                  ): hub is {
+                    regionId: string;
+                    regionHubId: string;
+                    latitude: number;
+                    longitude: number;
+                  } =>
+                    !!hub?.regionId &&
+                    !!hub?.regionHubId &&
+                    !!hub?.latitude &&
+                    !!hub?.longitude,
+                )
+                .map((hub, index) => {
+                  const isFirstHub = index === 0;
+                  return {
+                    regionHubId: hub.regionHubId,
+                    type: 'FROM_DESTINATION' as const,
+                    role: isFirstHub
+                      ? ('DESTINATION' as const)
+                      : ('HUB' as const),
+                    sequence: index + 1, // NOTE: 1부터 시작
+                    arrivalTime:
+                      shuttleRoute.fromDestinationArrivalTimes[index].time,
+                  };
+                })
+            : [];
+
+        const earlybirdPrice = shuttleRoute.hasEarlybird
+          ? {
+              roundTrip:
+                shuttleRoute.earlybirdPrice.roundTrip === 0
+                  ? null
+                  : shuttleRoute.earlybirdPrice.roundTrip,
+              toDestination:
+                shuttleRoute.earlybirdPrice.toDestination === 0
+                  ? null
+                  : shuttleRoute.earlybirdPrice.toDestination,
+              fromDestination:
+                shuttleRoute.earlybirdPrice.fromDestination === 0
+                  ? null
+                  : shuttleRoute.earlybirdPrice.fromDestination,
+            }
+          : undefined;
+
+        const regularPrice = {
+          roundTrip:
+            shuttleRoute.regularPrice.roundTrip === 0
+              ? null
+              : shuttleRoute.regularPrice.roundTrip,
+          toDestination:
+            shuttleRoute.regularPrice.toDestination === 0
+              ? null
+              : shuttleRoute.regularPrice.toDestination,
+          fromDestination:
+            shuttleRoute.regularPrice.fromDestination === 0
+              ? null
+              : shuttleRoute.regularPrice.fromDestination,
+        };
+
+        if (
+          (toDestinationExists || roundTripExists) &&
+          toDestinationHubs.length !== shuttleRoute.toDestinationHubs.length
+        ) {
+          throw new Error(
+            `${shuttleRoute.name}의 행사장행 정류장 정보를 모두 채워주세요.`,
+          );
+        }
+        if (
+          (fromDestinationExists || roundTripExists) &&
+          fromDestinationHubs.length !== shuttleRoute.toDestinationHubs.length
+        ) {
+          throw new Error(
+            `${shuttleRoute.name}의 귀가행 정류장 정보를 모두 채워주세요.`,
+          );
+        }
+        if (!shuttleRoute.name) {
+          throw new Error(`${shuttleRoute.name}의 노선 이름을 입력해주세요.`);
+        }
+        if (!shuttleRoute.reservationDeadline) {
+          throw new Error(
+            `${shuttleRoute.name}의 예약 마감 시간을 입력해주세요.`,
+          );
+        }
+        if (
+          !shuttleRoute.maxPassengerCount ||
+          shuttleRoute.maxPassengerCount <= 0
+        ) {
+          throw new Error(
+            `${shuttleRoute.name}의 최대 승객 수를 입력해주세요.`,
+          );
+        }
 
         return {
           isHandyParty: false,
           name: shuttleRoute.name,
           reservationDeadline: shuttleRoute.reservationDeadline,
           hasEarlybird: shuttleRoute.hasEarlybird,
-          earlybirdPrice: shuttleRoute.earlybirdPrice,
-          regularPrice: shuttleRoute.regularPrice,
+          earlybirdPrice,
+          regularPrice,
           earlybirdDeadline: shuttleRoute.earlybirdDeadline,
           maxPassengerCount: shuttleRoute.maxPassengerCount,
           shuttleRouteHubs: [...toDestinationHubs, ...fromDestinationHubs],
         };
-      },
-    );
+      });
+    } catch (error) {
+      alert(error instanceof Error ? error.message : '알 수 없는 오류');
+      setIsSubmitting(false);
+      return;
+    }
 
     for (const shuttleRoute of shuttleRoutes) {
       try {
         validateShuttleRouteData(shuttleRoute);
-      } catch {
-        alert(`${shuttleRoute.name} 노선의 데이터가 올바르지 않습니다.`);
+      } catch (error) {
+        alert(
+          `${shuttleRoute.name}의 데이터가 올바르지 않습니다.\n${
+            error instanceof Error ? error.message : '알 수 없는 오류'
+          }`,
+        );
         setIsSubmitting(false);
         return;
       }
