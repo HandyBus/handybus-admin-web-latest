@@ -166,6 +166,11 @@ interface PutShuttleRouteBody {
   reservationDeadline?: string;
   maxPassengerCount?: number;
   status?: ShuttleRouteStatus;
+  isReservationDisabled?: {
+    toDestination?: boolean;
+    fromDestination?: boolean;
+    roundTrip?: boolean;
+  };
   shuttleRouteHubs?: {
     shuttleRouteHubId?: string;
     regionHubId?: string;

@@ -77,6 +77,9 @@ export const AdminShuttleRoutesViewEntitySchema = z
       ShuttleRouteHubsInShuttleRoutesViewEntitySchema.array(),
     event: z.lazy(() => EventsViewEntitySchema),
     isHandyParty: z.boolean(),
+    isReservationDisabledToDestination: z.boolean(),
+    isReservationDisabledFromDestination: z.boolean(),
+    isReservationDisabledRoundTrip: z.boolean(),
     createdAt: z.string(),
     updatedAt: z.string(),
     shuttleRouteMetadata: z.record(z.string(), z.any()).nullable().optional(),
@@ -137,6 +140,13 @@ export const CreateShuttleRouteRequestSchema = z
         arrivalTime: z.string(),
       })
       .array(),
+    isReservationDisabled: z
+      .object({
+        toDestination: z.boolean().optional(),
+        fromDestination: z.boolean().optional(),
+        roundTrip: z.boolean().optional(),
+      })
+      .optional(),
     isHandyParty: z.boolean(),
   })
   .strict();
@@ -173,6 +183,13 @@ export const UpdateShuttleRouteRequestSchema = z.object({
       roundTrip: z.number().int().optional(),
       toDestination: z.number().int().optional(),
       fromDestination: z.number().int().optional(),
+    })
+    .optional(),
+  isReservationDisabled: z
+    .object({
+      toDestination: z.boolean().optional(),
+      fromDestination: z.boolean().optional(),
+      roundTrip: z.boolean().optional(),
     })
     .optional(),
 });
