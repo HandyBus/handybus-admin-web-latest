@@ -7,6 +7,12 @@ export const validateShuttleRouteData = (
   if (!validateTripTypePrice(body.regularPrice)) {
     throw new Error('가격이 올바르지 않습니다.');
   }
+  if (
+    body.hasEarlybird &&
+    !validateEarlybirdPrice(body.regularPrice, body.earlybirdPrice)
+  ) {
+    throw new Error('얼리버드 예약 가격이 올바르지 않습니다.');
+  }
 
   const tripType = checkTripType(body.regularPrice);
   const forwardHubs = body.shuttleRouteHubs.filter(
@@ -174,4 +180,60 @@ const validateHubsLengthAndRole = (
     }
   }
   return false;
+};
+
+const validateEarlybirdPrice = (
+  regularPrice: CreateShuttleRouteRequest['regularPrice'],
+  earlybirdPrice: CreateShuttleRouteRequest['earlybirdPrice'],
+) => {
+  if (
+    regularPrice.roundTrip === null &&
+    regularPrice.toDestination === null &&
+    regularPrice.fromDestination === null
+  ) {
+    return false;
+  }
+  if (!earlybirdPrice) {
+    return true;
+  }
+
+  if (
+    earlybirdPrice.roundTrip === null &&
+    earlybirdPrice.toDestination === null &&
+    earlybirdPrice.fromDestination === null
+  ) {
+    return false;
+  }
+
+  if (
+    regularPrice.roundTrip &&
+    earlybirdPrice.roundTrip &&
+    regularPrice.roundTrip < earlybirdPrice.roundTrip
+  ) {
+    return false;
+  }
+  if (
+    regularPrice.toDestination &&
+    earlybirdPrice.toDestination &&
+    regularPrice.toDestination < earlybirdPrice.toDestination
+  ) {
+    return false;
+  }
+  if (
+    regularPrice.fromDestination &&
+    earlybirdPrice.fromDestination &&
+    regularPrice.fromDestination < earlybirdPrice.fromDestination
+  ) {
+    return false;
+  }
+  if (regularPrice.roundTrip === null && earlybirdPrice.roundTrip) {
+    return false;
+  }
+  if (regularPrice.toDestination === null && earlybirdPrice.toDestination) {
+    return false;
+  }
+  if (regularPrice.fromDestination === null && earlybirdPrice.fromDestination) {
+    return false;
+  }
+  return true;
 };

@@ -248,23 +248,6 @@ const MultiRouteForm = ({
                 })
             : [];
 
-        const earlybirdPrice = shuttleRoute.hasEarlybird
-          ? {
-              roundTrip:
-                shuttleRoute.earlybirdPrice.roundTrip === 0
-                  ? null
-                  : shuttleRoute.earlybirdPrice.roundTrip,
-              toDestination:
-                shuttleRoute.earlybirdPrice.toDestination === 0
-                  ? null
-                  : shuttleRoute.earlybirdPrice.toDestination,
-              fromDestination:
-                shuttleRoute.earlybirdPrice.fromDestination === 0
-                  ? null
-                  : shuttleRoute.earlybirdPrice.fromDestination,
-            }
-          : undefined;
-
         const regularPrice = {
           roundTrip:
             shuttleRoute.regularPrice.roundTrip === 0
@@ -279,6 +262,29 @@ const MultiRouteForm = ({
               ? null
               : shuttleRoute.regularPrice.fromDestination,
         };
+
+        const earlybirdPrice = shuttleRoute.hasEarlybird
+          ? {
+              roundTrip:
+                shuttleRoute.earlybirdPrice.roundTrip === 0 ||
+                regularPrice.roundTrip === 0 ||
+                regularPrice.roundTrip === null
+                  ? null
+                  : shuttleRoute.earlybirdPrice.roundTrip,
+              toDestination:
+                shuttleRoute.earlybirdPrice.toDestination === 0 ||
+                regularPrice.toDestination === 0 ||
+                regularPrice.toDestination === null
+                  ? null
+                  : shuttleRoute.earlybirdPrice.toDestination,
+              fromDestination:
+                shuttleRoute.earlybirdPrice.fromDestination === 0 ||
+                regularPrice.fromDestination === 0 ||
+                regularPrice.fromDestination === null
+                  ? null
+                  : shuttleRoute.earlybirdPrice.fromDestination,
+            }
+          : undefined;
 
         if (
           (toDestinationExists || roundTripExists) &&
