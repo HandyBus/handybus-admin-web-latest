@@ -86,14 +86,14 @@ const Content = ({ dailyEvent, eventId, dailyEventId }: ContentProps) => {
           hasEarlybird: false,
           earlybirdDeadline: reservationDeadline,
           earlybirdPrice: {
-            toDestination: 1000000,
-            fromDestination: 1000000,
-            roundTrip: 1000000,
+            toDestination: 0,
+            fromDestination: 0,
+            roundTrip: 0,
           },
           regularPrice: {
-            toDestination: 1000000,
-            fromDestination: 1000000,
-            roundTrip: 1000000,
+            toDestination: 0,
+            fromDestination: 0,
+            roundTrip: 0,
           },
           maxPassengerCount: 0,
           toDestinationHubs: [

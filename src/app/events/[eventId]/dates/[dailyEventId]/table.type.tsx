@@ -145,6 +145,9 @@ export const getColumns = ({
         earlybirdPriceFromDestination,
         hasEarlybird,
         earlybirdDeadline,
+        isReservationDisabledToDestination,
+        isReservationDisabledFromDestination,
+        isReservationDisabledRoundTrip,
       } = info.row.original;
 
       const formattedRegularPriceToDestination = regularPriceToDestination
@@ -173,7 +176,9 @@ export const getColumns = ({
       if (isEarlybirdPeriod) {
         return (
           <div className="flex flex-col gap-[6px]">
-            <div className="grid grid-cols-[1fr_55px_1fr] items-center">
+            <div
+              className={`grid grid-cols-[1fr_55px_1fr] items-center ${isReservationDisabledRoundTrip ? 'opacity-30' : ''}`}
+            >
               <span className="pr-16 text-right text-basic-grey-600">
                 왕복:
               </span>
@@ -183,6 +188,10 @@ export const getColumns = ({
               <span className="font-500">
                 {formattedEarlybirdPriceRoundTrip}
               </span>
+            </div>
+            <div
+              className={`grid grid-cols-[1fr_55px_1fr] items-center ${isReservationDisabledToDestination ? 'opacity-30' : ''}`}
+            >
               <span className="pr-16 text-right text-basic-grey-600">
                 행사장행:
               </span>
@@ -192,6 +201,10 @@ export const getColumns = ({
               <span className="font-500">
                 {formattedEarlybirdPriceToDestination}
               </span>
+            </div>
+            <div
+              className={`grid grid-cols-[1fr_55px_1fr] items-center ${isReservationDisabledFromDestination ? 'opacity-30' : ''}`}
+            >
               <span className="pr-16 text-right text-basic-grey-600">
                 귀가행:
               </span>
@@ -211,12 +224,34 @@ export const getColumns = ({
 
       return (
         <div className="grid grid-cols-2 items-center gap-x-16">
-          <span className="text-right text-basic-grey-600">왕복:</span>
-          <span className="font-500">{formattedRegularPriceRoundTrip}</span>
-          <span className="text-right text-basic-grey-600">행사장행:</span>
-          <span className="font-500">{formattedRegularPriceToDestination}</span>
-          <span className="text-right text-basic-grey-600">귀가행:</span>
-          <span className="font-500">
+          <span
+            className={`text-right text-basic-grey-600 ${isReservationDisabledRoundTrip ? 'opacity-30' : ''}`}
+          >
+            왕복:
+          </span>
+          <span
+            className={`font-500 ${isReservationDisabledRoundTrip ? 'opacity-30' : ''}`}
+          >
+            {formattedRegularPriceRoundTrip}
+          </span>
+          <span
+            className={`text-right text-basic-grey-600 ${isReservationDisabledToDestination ? 'opacity-30' : ''}`}
+          >
+            행사장행:
+          </span>
+          <span
+            className={`font-500 ${isReservationDisabledToDestination ? 'opacity-30' : ''}`}
+          >
+            {formattedRegularPriceToDestination}
+          </span>
+          <span
+            className={`text-right text-basic-grey-600 ${isReservationDisabledFromDestination ? 'opacity-30' : ''}`}
+          >
+            귀가행:
+          </span>
+          <span
+            className={`font-500 ${isReservationDisabledFromDestination ? 'opacity-30' : ''}`}
+          >
             {formattedRegularPriceFromDestination}
           </span>
         </div>

@@ -7,6 +7,11 @@ export interface FormValues {
   earlybirdDeadline?: string;
   maxPassengerCount: number;
   status: ShuttleRouteStatus;
+  isReservationDisabled: {
+    toDestination: boolean;
+    fromDestination: boolean;
+    roundTrip: boolean;
+  };
   shuttleRouteHubsFromDestination: {
     shuttleRouteHubId?: string;
     regionHubId: string;

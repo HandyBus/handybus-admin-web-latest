@@ -63,6 +63,11 @@ const Page = ({ params }: Props) => {
         route?.toDestinationShuttleRouteHubs ?? [],
         'TO_DESTINATION',
       ),
+      isReservationDisabled: {
+        toDestination: route?.isReservationDisabledToDestination ?? false,
+        fromDestination: route?.isReservationDisabledFromDestination ?? false,
+        roundTrip: route?.isReservationDisabledRoundTrip ?? false,
+      },
     }),
     [route],
   );
