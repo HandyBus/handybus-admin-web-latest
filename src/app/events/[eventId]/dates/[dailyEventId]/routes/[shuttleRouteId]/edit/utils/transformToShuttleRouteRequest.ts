@@ -13,8 +13,15 @@ export const transformToShuttleRouteRequest = (
     shuttleRouteHubsToDestination,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars -- we don't need to use these
     shuttleRouteHubsFromDestination,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- we don't need to use these
+    isReservationDisabled,
     ...rest
   } = data;
+
+  const hasDirtyReservationDisabled =
+    !!dirtyFields?.isReservationDisabled?.toDestination ||
+    !!dirtyFields?.isReservationDisabled?.fromDestination ||
+    !!dirtyFields?.isReservationDisabled?.roundTrip;
 
   const request = {
     ...rest,
@@ -33,6 +40,9 @@ export const transformToShuttleRouteRequest = (
     regularPrice: dirtyFields?.regularPrice ? data.regularPrice : undefined,
     earlybirdPrice: dirtyFields?.earlybirdPrice
       ? data.earlybirdPrice
+      : undefined,
+    isReservationDisabled: hasDirtyReservationDisabled
+      ? data.isReservationDisabled
       : undefined,
   } satisfies UpdateShuttleRouteRequest;
   return request;
