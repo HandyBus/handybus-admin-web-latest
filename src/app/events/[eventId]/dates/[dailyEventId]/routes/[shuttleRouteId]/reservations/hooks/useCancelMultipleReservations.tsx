@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  getUserPayment,
   postAdminRequestRefund,
   postCompleteRefundRequest,
 } from '@/services/payment.service';
@@ -12,10 +13,10 @@ import { ReservationViewEntity } from '@/types/reservation.type';
 import { useQueryClient } from '@tanstack/react-query';
 
 // 한번에 처리 가능한 예약 취소 수 (백엔드 요청 제한으로 인하여)
-const MAX_BATCH_SIZE = 100;
+const MAX_BATCH_SIZE = 50;
 
 const DELAY_TIME_BETWEEN_REQUESTS = 300;
-const DELAY_TIME_BETWEEN_BATCHES = 30000;
+const DELAY_TIME_BETWEEN_BATCHES = 60 * 1000; // 1분
 
 interface Props {
   onSuccess?: () => void;
@@ -28,7 +29,19 @@ const useCancelMultipleReservations = ({ onSuccess }: Props) => {
   // 단일 예약 취소 및 환불 처리
   const cancelReservation = async (reservation: ReservationViewEntity) => {
     if (!reservation.paymentId || !reservation.paymentAmount) {
-      alert('결제 정보가 없습니다.');
+      console.error('결제 정보가 없습니다.');
+      return;
+    }
+    const { payments } = await getUserPayment(
+      reservation.userId,
+      reservation.paymentId,
+    );
+    if (!payments) {
+      console.error('payment 정보가 없습니다.');
+      return;
+    }
+    if (payments.refundableAmount === 0) {
+      console.error('환불 가능 금액이 0원입니다.');
       return;
     }
     const isHandyParty = reservation.shuttleRoute.isHandyParty;
@@ -37,7 +50,7 @@ const useCancelMultipleReservations = ({ onSuccess }: Props) => {
       const refundRequest = await postAdminRequestRefund(
         reservation.paymentId,
         {
-          refundAmount: reservation.paymentAmount,
+          refundAmount: payments.refundableAmount,
           refundReason,
           type: 'ADMIN_RETRIEVAL',
         },
@@ -46,7 +59,7 @@ const useCancelMultipleReservations = ({ onSuccess }: Props) => {
         reservation.paymentId,
         refundRequest.refundRequestId,
         {
-          refundAmount: reservation.paymentAmount,
+          refundAmount: payments.refundableAmount,
         },
       );
     } catch (error) {
