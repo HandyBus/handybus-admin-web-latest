@@ -1,7 +1,7 @@
 'use client';
 
 import ChartBox from '@/components/chart/ChartBox';
-import CustomLineChart from '../../../components/chart/CustomLineChart';
+import CustomLineChart from '@/components/chart/CustomLineChart';
 import { useGetTotalReviewCounts } from '@/services/review.service';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
 import { TotalReviewCountsReadModel } from '@/types/dashboard.type';

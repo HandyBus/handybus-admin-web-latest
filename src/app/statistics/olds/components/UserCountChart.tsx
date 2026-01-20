@@ -2,7 +2,7 @@
 
 import ChartBox from '@/components/chart/ChartBox';
 import { useGetTotalUserCounts } from '@/services/user.service';
-import CustomLineChart from '../../../components/chart/CustomLineChart';
+import CustomLineChart from '@/components/chart/CustomLineChart';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
 import { TotalUserCountsReadModel } from '@/types/dashboard.type';
 import dayjs from 'dayjs';
