@@ -28,6 +28,7 @@
     "@tanstack/react-table": "^8.20.5",
     "@types/mdx": "^2.0.13",
     "axios": "^1.7.7",
+    "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "exceljs": "^4.4.0",
     "kled": "^0.1.6",

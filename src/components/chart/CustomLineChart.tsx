@@ -22,7 +22,7 @@ interface Props<T> {
 
 const CustomLineChart = <T,>({ data, dataKey, label }: Props<T>) => {
   return (
-    <div className="grow">
+    <div className="h-full w-full grow">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ left: -10, right: 20 }}>
           <CartesianGrid stroke="#e5e7eb" vertical={false} />
