@@ -22,7 +22,7 @@ const Page = () => {
           </div>
           <GrowthAndConversion />
         </div>
-        <div className="grid grid-cols-2 gap-24">
+        <div className="grid min-w-[936px] grid-cols-2 gap-24">
           <RepurchaseAnalysis />
           <ActiveEvents />
         </div>

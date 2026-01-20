@@ -274,7 +274,7 @@ const GrowthAndConversion = () => {
   }, [isDatePickerOpen]);
 
   return (
-    <div className="flex w-full flex-col gap-16">
+    <div className="flex w-full min-w-[936px] flex-col gap-16">
       <div className="flex items-center justify-between">
         <span className="text-20 font-600 text-basic-black">성장 및 전환</span>
         <div className="flex items-center gap-16">
