@@ -64,6 +64,9 @@ const Page = () => {
         <BlueLink href="/events/pin" className="text-14">
           이달의 추천 행사 관리
         </BlueLink>
+        <BlueLink href="/artists" className="text-14">
+          아티스트 관리
+        </BlueLink>
       </Heading>
       <EventFilter option={option} dispatch={dispatch} />
       <section className="flex flex-col gap-32">
@@ -84,6 +87,11 @@ const Page = () => {
                 </div>
                 <h2 className="ml-16 text-left text-20 font-700">
                   {event.eventName}
+                  <span className="ml-12 text-14 font-500 text-basic-grey-500">
+                    {event.eventArtists
+                      ?.map((artist) => artist.artistName)
+                      .join(', ')}
+                  </span>
                 </h2>
                 <p className="text-16 font-500">{event.eventLocationName}</p>
                 <p className="text-16 font-500">
