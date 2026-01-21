@@ -19,6 +19,8 @@ import dayjs from 'dayjs';
 import { RegionHubsViewEntity } from '@/types/hub.type';
 import Button from '@/components/button/Button';
 import Stringifier from '@/utils/stringifier.util';
+import ArtistInput from '@/components/input/ArtistInput';
+import NewArtistsModal from '@/components/modal/NewArtistsModal';
 
 interface FormValues {
   name: string;
@@ -27,6 +29,7 @@ interface FormValues {
   regionHub: RegionHubsViewEntity;
   type: EventType;
   dailyEvents: { date: string }[];
+  artistIds: { artistId: string }[];
 }
 
 const defaultValues = {
@@ -36,6 +39,7 @@ const defaultValues = {
   regionHub: undefined,
   type: undefined,
   dailyEvents: [],
+  artistIds: [],
 };
 
 const CreateEventForm = () => {
@@ -51,6 +55,19 @@ const CreateEventForm = () => {
       control,
       name: 'dailyEvents',
     });
+
+  const {
+    fields: artistFields,
+    append: appendArtist,
+    remove: removeArtist,
+  } = useFieldArray<FormValues>({
+    control,
+    name: 'artistIds',
+  });
+
+  const [artistModalStates, setArtistModalStates] = useState<
+    Record<number, boolean>
+  >({});
 
   const { mutateAsync: postEvent } = usePostEvent();
 
@@ -68,8 +85,9 @@ const CreateEventForm = () => {
         regionId: data.regionHub.regionId,
         regionHubId: data.regionHub.regionHubId,
         type: data.type,
-        // NOTE: 현재 아티스트 추가 기능은 비활성화
-        artistIds: [],
+        artistIds: data.artistIds
+          .map((item) => item.artistId)
+          .filter((id) => id !== null && id !== ''),
         isPinned: false,
         dailyEvents: data.dailyEvents.map((dailyEvent) => ({
           ...dailyEvent,
@@ -221,6 +239,79 @@ const CreateEventForm = () => {
                   className="mt-12"
                 >
                   추가하기
+                </Button>
+              </div>
+            )}
+          />
+        </Form.section>
+        <Form.section>
+          <Form.label>아티스트</Form.label>
+          <Controller
+            control={control}
+            name="artistIds"
+            render={({ field: { onChange, value } }) => (
+              <div className="flex flex-col gap-12">
+                {artistFields.map((field, index) => (
+                  <div
+                    key={field.id}
+                    className="flex w-full flex-row items-center gap-8"
+                  >
+                    <div className="w-full">
+                      <ArtistInput
+                        value={value[index]?.artistId || null}
+                        setValue={(artistId) => {
+                          const newArtistIds = [...value];
+                          newArtistIds[index] = { artistId: artistId || '' };
+                          onChange(newArtistIds);
+                        }}
+                        modalState={{
+                          isOpen: artistModalStates[index] || false,
+                          setIsOpen: (isOpen) => {
+                            setArtistModalStates((prev) => ({
+                              ...prev,
+                              [index]: isOpen,
+                            }));
+                          },
+                        }}
+                      />
+                      <NewArtistsModal
+                        isOpen={artistModalStates[index] || false}
+                        setIsOpen={(isOpen) => {
+                          setArtistModalStates((prev) => ({
+                            ...prev,
+                            [index]: isOpen,
+                          }));
+                        }}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        removeArtist(index);
+                        const newModalStates = { ...artistModalStates };
+                        delete newModalStates[index];
+                        setArtistModalStates(newModalStates);
+                      }}
+                      className="flex h-[42px] w-[42px] items-center justify-center rounded-4 bg-basic-red-100 p-4 text-basic-red-400"
+                    >
+                      <TrashIcon size={20} />
+                    </button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  size="large"
+                  variant="tertiary"
+                  onClick={() => {
+                    appendArtist({ artistId: '' });
+                    setArtistModalStates((prev) => ({
+                      ...prev,
+                      [artistFields.length]: false,
+                    }));
+                  }}
+                  className="mt-12"
+                >
+                  아티스트 추가하기
                 </Button>
               </div>
             )}
