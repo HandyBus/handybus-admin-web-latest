@@ -1,5 +1,250 @@
 import { z } from 'zod';
 
+/**
+ * Daily Active Users Explore
+ */
+
+export const DailyExploreMetricsByEventInDailyExploreMetricsViewEntitySchema =
+  z.object({
+    eventId: z.string().describe('행사 ID'),
+    pageReachUserCount: z
+      .number()
+      .describe(
+        '페이지 조회 사용자 수 (Page Reach Users): 당일 해당 이벤트 상세(/event/{id})를 1회 이상 조회한 고유 사용자 수',
+      ),
+    eventDetailPageViewCount: z.number().describe('행사 상세 페이지 조회 수'),
+  });
+
+export type DailyExploreMetricsByEventInDailyExploreMetricsViewEntity = z.infer<
+  typeof DailyExploreMetricsByEventInDailyExploreMetricsViewEntitySchema
+>;
+
+export const DailyExploreMetricsViewEntitySchema = z.object({
+  date: z.string().describe('비즈니스 기준 날짜 (Asia/Seoul)'),
+  pageReachUserCount: z
+    .number()
+    .describe(
+      '페이지 조회 사용자 수 (Page Reach Users): 당일 어떤 이벤트 상세(/event/*)든 1회 이상 조회한 고유 사용자 수',
+    ),
+  eventDetailPageViewCount: z.number().describe('행사 상세 페이지 조회 수'),
+  dailyExploreMetricsByEvent: z
+    .array(DailyExploreMetricsByEventInDailyExploreMetricsViewEntitySchema)
+    .nullable()
+    .describe('행사별 탐색 메트릭'),
+  createdAt: z.string().describe('생성 일자'),
+  updatedAt: z.string().describe('수정 일자'),
+});
+
+export type DailyExploreMetricsViewEntity = z.infer<
+  typeof DailyExploreMetricsViewEntitySchema
+>;
+
+/**
+ * Weekly Active Users Explore
+ */
+
+export const WeeklyExploreMetricsByEventInWeeklyExploreMetricsViewEntitySchema =
+  z.object({
+    eventId: z.string().describe('행사 ID'),
+    pageReachUserCount: z
+      .number()
+      .describe(
+        '페이지 조회 사용자 수 (Page Reach Users): 해당 주 해당 이벤트 상세(/event/{id})를 1회 이상 조회한 고유 사용자 수',
+      ),
+    eventDetailPageViewCount: z.number().describe('행사 상세 페이지 조회 수'),
+  });
+
+export type WeeklyExploreMetricsByEventInWeeklyExploreMetricsViewEntity =
+  z.infer<
+    typeof WeeklyExploreMetricsByEventInWeeklyExploreMetricsViewEntitySchema
+  >;
+
+export const WeeklyExploreMetricsViewEntitySchema = z.object({
+  week: z
+    .string()
+    .describe('비즈니스 기준 주 (해당 주의 첫 번째 날(월요일), Asia/Seoul)'),
+  pageReachUserCount: z
+    .number()
+    .describe(
+      '페이지 조회 사용자 수 (Page Reach Users): 해당 주 어떤 이벤트 상세(/event/*)든 1회 이상 조회한 고유 사용자 수',
+    ),
+  eventDetailPageViewCount: z.number().describe('행사 상세 페이지 조회 수'),
+  weeklyExploreMetricsByEvent: z
+    .array(WeeklyExploreMetricsByEventInWeeklyExploreMetricsViewEntitySchema)
+    .nullable()
+    .describe('행사별 탐색 메트릭'),
+  createdAt: z.string().describe('생성 일자'),
+  updatedAt: z.string().describe('수정 일자'),
+});
+
+export type WeeklyExploreMetricsViewEntity = z.infer<
+  typeof WeeklyExploreMetricsViewEntitySchema
+>;
+
+/**
+ * Monthly Active Users Explore
+ */
+
+export const MonthlyExploreMetricsByEventInMonthlyExploreMetricsViewEntitySchema =
+  z.object({
+    eventId: z.string().describe('행사 ID'),
+    pageReachUserCount: z
+      .number()
+      .describe(
+        '페이지 조회 사용자 수 (Page Reach Users): 해당 월 해당 이벤트 상세(/event/{id})를 1회 이상 조회한 고유 사용자 수',
+      ),
+    eventDetailPageViewCount: z.number().describe('행사 상세 페이지 조회 수'),
+  });
+
+export type MonthlyExploreMetricsByEventInMonthlyExploreMetricsViewEntity =
+  z.infer<
+    typeof MonthlyExploreMetricsByEventInMonthlyExploreMetricsViewEntitySchema
+  >;
+
+export const MonthlyExploreMetricsViewEntitySchema = z.object({
+  month: z
+    .string()
+    .describe('비즈니스 기준 월 (해당 월의 첫 번째 날, Asia/Seoul)'),
+  pageReachUserCount: z
+    .number()
+    .describe(
+      '페이지 조회 사용자 수 (Page Reach Users): 해당 월 어떤 이벤트 상세(/event/*)든 1회 이상 조회한 고유 사용자 수',
+    ),
+  eventDetailPageViewCount: z.number().describe('행사 상세 페이지 조회 수'),
+  monthlyExploreMetricsByEvent: z
+    .array(MonthlyExploreMetricsByEventInMonthlyExploreMetricsViewEntitySchema)
+    .nullable()
+    .describe('행사별 탐색 메트릭'),
+  createdAt: z.string().describe('생성 일자'),
+  updatedAt: z.string().describe('수정 일자'),
+});
+
+export type MonthlyExploreMetricsViewEntity = z.infer<
+  typeof MonthlyExploreMetricsViewEntitySchema
+>;
+
+/**
+ * Daily Active Users Core
+ */
+
+export const DailyCoreMetricsByEventInDailyCoreMetricsViewEntitySchema =
+  z.object({
+    eventId: z.string().describe('행사 ID'),
+    participationUserCount: z
+      .number()
+      .describe('참여 유저 수 (수요조사 또는 예약 유저 수)'),
+    reservationUserCount: z.number().describe('예약 유저 수'),
+    demandUserCount: z.number().describe('수요조사 유저 수'),
+  });
+
+export type DailyCoreMetricsByEventInDailyCoreMetricsViewEntity = z.infer<
+  typeof DailyCoreMetricsByEventInDailyCoreMetricsViewEntitySchema
+>;
+
+export const DailyCoreMetricsViewEntitySchema = z.object({
+  date: z.string().describe('비즈니스 기준 날짜 (Asia/Seoul)'),
+  participationUserCount: z
+    .number()
+    .describe('참여 유저 수 (수요조사 또는 예약 유저 수)'),
+  reservationUserCount: z.number().describe('예약 유저 수'),
+  demandUserCount: z.number().describe('수요조사 유저 수'),
+  firstParticipationUserCount: z.number().describe('해당 일자 첫 참여 유저 수'),
+  firstReservationUserCount: z.number().describe('해당 일자 첫 예약 유저 수'),
+  firstDemandUserCount: z.number().describe('해당 일자 첫 수요조사 유저 수'),
+  dailyCoreMetricsByEvent: z
+    .array(DailyCoreMetricsByEventInDailyCoreMetricsViewEntitySchema)
+    .nullable()
+    .describe('행사별 Core 메트릭'),
+  createdAt: z.string().describe('생성 일자'),
+  updatedAt: z.string().describe('수정 일자'),
+});
+
+export type DailyCoreMetricsViewEntity = z.infer<
+  typeof DailyCoreMetricsViewEntitySchema
+>;
+
+/**
+ * Weekly Active Users Core
+ */
+
+export const WeeklyCoreMetricsByEventInWeeklyCoreMetricsViewEntitySchema =
+  z.object({
+    eventId: z.string().describe('행사 ID'),
+    participationUserCount: z
+      .number()
+      .describe('참여 유저 수 (수요조사 또는 예약 유저 수)'),
+    reservationUserCount: z.number().describe('예약 유저 수'),
+    demandUserCount: z.number().describe('수요조사 유저 수'),
+  });
+
+export type WeeklyCoreMetricsByEventInWeeklyCoreMetricsViewEntity = z.infer<
+  typeof WeeklyCoreMetricsByEventInWeeklyCoreMetricsViewEntitySchema
+>;
+
+export const WeeklyCoreMetricsViewEntitySchema = z.object({
+  week: z
+    .string()
+    .describe('비즈니스 기준 주 (해당 주의 첫 번째 날(월요일), Asia/Seoul)'),
+  participationUserCount: z
+    .number()
+    .describe('참여 유저 수 (수요조사 또는 예약 유저 수)'),
+  reservationUserCount: z.number().describe('예약 유저 수'),
+  demandUserCount: z.number().describe('수요조사 유저 수'),
+  weeklyCoreMetricsByEvent: z
+    .array(WeeklyCoreMetricsByEventInWeeklyCoreMetricsViewEntitySchema)
+    .nullable()
+    .describe('행사별 Core 메트릭'),
+  createdAt: z.string().describe('생성 일자'),
+  updatedAt: z.string().describe('수정 일자'),
+});
+
+export type WeeklyCoreMetricsViewEntity = z.infer<
+  typeof WeeklyCoreMetricsViewEntitySchema
+>;
+
+/*
+ * Monthly Active Users Core
+ */
+
+export const MonthlyCoreMetricsByEventInMonthlyCoreMetricsViewEntitySchema =
+  z.object({
+    eventId: z.string().describe('행사 ID'),
+    participationUserCount: z
+      .number()
+      .describe('참여 유저 수 (수요조사 또는 예약 유저 수)'),
+    reservationUserCount: z.number().describe('예약 유저 수'),
+    demandUserCount: z.number().describe('수요조사 유저 수'),
+  });
+
+export type MonthlyCoreMetricsByEventInMonthlyCoreMetricsViewEntity = z.infer<
+  typeof MonthlyCoreMetricsByEventInMonthlyCoreMetricsViewEntitySchema
+>;
+
+export const MonthlyCoreMetricsViewEntitySchema = z.object({
+  month: z
+    .string()
+    .describe('비즈니스 기준 월 (해당 월의 첫 번째 날, Asia/Seoul)'),
+  participationUserCount: z
+    .number()
+    .describe('참여 유저 수 (수요조사 또는 예약 유저 수)'),
+  reservationUserCount: z.number().describe('예약 유저 수'),
+  demandUserCount: z.number().describe('수요조사 유저 수'),
+  monthlyCoreMetricsByEvent: z
+    .array(MonthlyCoreMetricsByEventInMonthlyCoreMetricsViewEntitySchema)
+    .nullable()
+    .describe('행사별 Core 메트릭'),
+  createdAt: z.string().describe('생성 일자'),
+  updatedAt: z.string().describe('수정 일자'),
+});
+
+export type MonthlyCoreMetricsViewEntity = z.infer<
+  typeof MonthlyCoreMetricsViewEntitySchema
+>;
+
+/**
+ * GMV
+ */
+
 export const DailyGmvMetricsViewEntitySchema = z.object({
   date: z.string().describe('비즈니스 기준 날짜 (Asia/Seoul)'),
   gmvAmount: z.number().describe('GMV (결제 금액 합)'),
@@ -26,6 +271,10 @@ export const DailyGmvMetricsViewEntitySchema = z.object({
 export type DailyGmvMetricsViewEntity = z.infer<
   typeof DailyGmvMetricsViewEntitySchema
 >;
+
+/**
+ * 신규 가입자 수
+ */
 
 export const DailySignupMetricsViewEntitySchema = z.object({
   date: z.string().describe('비즈니스 기준 날짜 (Asia/Seoul)'),

@@ -7,11 +7,16 @@ import weekOfYear from 'dayjs/plugin/weekOfYear';
 import {
   useGetDailyGmvMetrics,
   useGetDailySignupMetrics,
+  useGetDailyExploreMetrics,
+  useGetWeeklyExploreMetrics,
+  useGetMonthlyExploreMetrics,
+  useGetDailyCoreMetrics,
+  useGetWeeklyCoreMetrics,
+  useGetMonthlyCoreMetrics,
 } from '@/services/analytics.service';
 import AnalysisSectionHeader from './AnalysisSectionHeader';
 import MetricCard from './MetricCard';
 import { MetricData, MetricId, FilterPeriod } from '../types/types';
-import { METRICS } from '../constants/growthMetrics.constant';
 import { processChartData } from '../utils/chartData.util';
 
 dayjs.extend(isSameOrAfter);
@@ -67,16 +72,130 @@ const GrowthMetrics = () => {
     endDate: queryEndDate,
   });
 
+  // Active Users Explore - 기간에 따른 조건부 fetching
+  const { data: dailyExploreData } = useGetDailyExploreMetrics({
+    startDate: queryStartDate,
+    endDate: queryEndDate,
+  });
+  const { data: weeklyExploreData } = useGetWeeklyExploreMetrics({
+    startDate: queryStartDate,
+    endDate: queryEndDate,
+  });
+  const { data: monthlyExploreData } = useGetMonthlyExploreMetrics({
+    startDate: queryStartDate,
+    endDate: queryEndDate,
+  });
+
+  // Active Users Core - 기간에 따른 조건부 fetching
+  const { data: dailyCoreData } = useGetDailyCoreMetrics({
+    startDate: queryStartDate,
+    endDate: queryEndDate,
+  });
+  const { data: weeklyCoreData } = useGetWeeklyCoreMetrics({
+    startDate: queryStartDate,
+    endDate: queryEndDate,
+  });
+  const { data: monthlyCoreData } = useGetMonthlyCoreMetrics({
+    startDate: queryStartDate,
+    endDate: queryEndDate,
+  });
+
+  // 기간에 따른 Active Users 데이터 선택
+  const exploreData = useMemo(() => {
+    if (period === '일간') {
+      return dailyExploreData;
+    }
+    if (period === '주간') {
+      return weeklyExploreData;
+    }
+    // 전체 또는 월간
+    return monthlyExploreData;
+  }, [period, dailyExploreData, weeklyExploreData, monthlyExploreData]);
+
+  const coreData = useMemo(() => {
+    if (period === '일간') {
+      return dailyCoreData;
+    }
+    if (period === '주간') {
+      return weeklyCoreData;
+    }
+    // 전체 또는 월간
+    return monthlyCoreData;
+  }, [period, dailyCoreData, weeklyCoreData, monthlyCoreData]);
+
+  // 기간 라벨 접두사 생성
+  const getPeriodLabelPrefix = (currentPeriod: FilterPeriod): string => {
+    if (currentPeriod === '일간') return 'DAU';
+    if (currentPeriod === '주간') return 'WAU';
+    return 'MAU';
+  };
+
   const processedMetrics: MetricData[] = useMemo(() => {
     const metrics: MetricData[] = [];
+    const periodPrefix = getPeriodLabelPrefix(period);
 
-    // 활성 사용자 (Explore) - 모킹 데이터
-    metrics.push(
-      METRICS.find((m) => m.id === 'activeUsersExplore') || METRICS[0],
-    );
+    // 활성 사용자 (Explore)
+    const exploreRawData = exploreData?.map((d) => {
+      // Daily는 date, Weekly는 week, Monthly는 month 필드 사용
+      let dateField: string;
+      if ('date' in d) {
+        dateField = d.date;
+      } else if ('week' in d) {
+        dateField = d.week;
+      } else {
+        dateField = d.month;
+      }
+      return {
+        date: dateField,
+        value: d.pageReachUserCount,
+      };
+    });
+    const exploreChartData = processChartData(exploreRawData, period);
+    const totalExploreUsers =
+      exploreData?.reduce((acc, curr) => acc + curr.pageReachUserCount, 0) || 0;
 
-    // 활성 사용자 (Core) - 모킹 데이터
-    metrics.push(METRICS.find((m) => m.id === 'activeUsersCore') || METRICS[1]);
+    metrics.push({
+      id: 'activeUsersExplore',
+      title: 'Active Users',
+      subtitle: 'Explore',
+      value: totalExploreUsers.toLocaleString(),
+      unit: '명',
+      percentage: '-',
+      chartData: exploreChartData,
+      chartLabel: `${periodPrefix} (Explore)`,
+    });
+
+    // 활성 사용자 (Core)
+    const coreRawData = coreData?.map((d) => {
+      // Daily는 date, Weekly는 week, Monthly는 month 필드 사용
+      let dateField: string;
+      if ('date' in d) {
+        dateField = d.date;
+      } else if ('week' in d) {
+        dateField = d.week;
+      } else {
+        dateField = d.month;
+      }
+      return {
+        date: dateField,
+        value: d.participationUserCount,
+      };
+    });
+    const coreChartData = processChartData(coreRawData, period);
+    const totalCoreUsers =
+      coreData?.reduce((acc, curr) => acc + curr.participationUserCount, 0) ||
+      0;
+
+    metrics.push({
+      id: 'activeUsersCore',
+      title: 'Active Users',
+      subtitle: 'Core',
+      value: totalCoreUsers.toLocaleString(),
+      unit: '명',
+      percentage: '-',
+      chartData: coreChartData,
+      chartLabel: `${periodPrefix} (Core)`,
+    });
 
     // 신규 가입자
     const totalNewUsers =
@@ -120,7 +239,7 @@ const GrowthMetrics = () => {
     });
 
     return metrics;
-  }, [gmvData, signupData, period]);
+  }, [gmvData, signupData, period, exploreData, coreData]);
 
   const selectedMetric =
     processedMetrics.find((metric) => metric.id === selectedMetricId) ||
