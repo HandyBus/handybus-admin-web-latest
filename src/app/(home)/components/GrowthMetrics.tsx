@@ -72,7 +72,7 @@ const GrowthMetrics = () => {
     endDate: queryEndDate,
   });
 
-  // Active Users Explore - 기간에 따른 조건부 fetching
+  // Active Users Explore
   const { data: dailyExploreData } = useGetDailyExploreMetrics({
     startDate: queryStartDate,
     endDate: queryEndDate,
@@ -86,7 +86,7 @@ const GrowthMetrics = () => {
     endDate: queryEndDate,
   });
 
-  // Active Users Core - 기간에 따른 조건부 fetching
+  // Active Users Core
   const { data: dailyCoreData } = useGetDailyCoreMetrics({
     startDate: queryStartDate,
     endDate: queryEndDate,

@@ -31,8 +31,6 @@ export const processChartData = (
 
   // 주간: 12주 -> "M월 W주" (1월 첫째 주거나 첫 번째 인덱스인 경우 "YY년 MM월 W주")
   if (period === '주간') {
-    // weeklyMap variable removed as it was unused
-
     const aggregatedData: Record<string, { value: number; dateObj: Dayjs }> =
       {};
 
