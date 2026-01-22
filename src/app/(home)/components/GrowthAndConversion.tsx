@@ -11,6 +11,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/locale';
 
 const FILTER_PERIODS = ['전체', '월간', '주간', '일간'] as const;
+type FilterPeriod = (typeof FILTER_PERIODS)[number];
 
 type MetricId =
   | 'gmv'
@@ -28,7 +29,6 @@ interface MetricData {
   value: string;
   unit: string;
   percentage: string;
-  size: 'large' | 'small';
   chartData: { date: string; value: number }[];
   chartLabel: string;
 }
@@ -41,7 +41,6 @@ const METRICS: MetricData[] = [
     value: '280만',
     unit: '원',
     percentage: '15.3%',
-    size: 'large',
     chartData: [
       { date: '1월', value: 200 },
       { date: '2월', value: 250 },
@@ -65,7 +64,6 @@ const METRICS: MetricData[] = [
     value: '85.7K',
     unit: '명',
     percentage: '15.3%',
-    size: 'large',
     chartData: [
       { date: '1월', value: 30 },
       { date: '2월', value: 45 },
@@ -89,7 +87,6 @@ const METRICS: MetricData[] = [
     value: '280만',
     unit: '원',
     percentage: '15.3%',
-    size: 'large',
     chartData: [
       { date: '1월', value: 25 },
       { date: '2월', value: 40 },
@@ -112,7 +109,6 @@ const METRICS: MetricData[] = [
     value: '5K',
     unit: '명',
     percentage: '15.3%',
-    size: 'small',
     chartData: [
       { date: '1월', value: 3 },
       { date: '2월', value: 4 },
@@ -135,7 +131,6 @@ const METRICS: MetricData[] = [
     value: '24.8',
     unit: '%',
     percentage: '15.3%',
-    size: 'small',
     chartData: [
       { date: '1월', value: 20 },
       { date: '2월', value: 22 },
@@ -159,7 +154,6 @@ const METRICS: MetricData[] = [
     value: '3.2',
     unit: '일',
     percentage: '15.3%',
-    size: 'small',
     chartData: [
       { date: '1월', value: 4 },
       { date: '2월', value: 3.5 },
@@ -182,7 +176,6 @@ const METRICS: MetricData[] = [
     value: '23.1',
     unit: '%',
     percentage: '15.3%',
-    size: 'small',
     chartData: [
       { date: '1월', value: 18 },
       { date: '2월', value: 20 },
@@ -201,33 +194,191 @@ const METRICS: MetricData[] = [
   },
 ];
 
+const GROWTH_METRIC_IDS: MetricId[] = [
+  'gmv',
+  'activeUsersBrowse',
+  'activeUsersParticipate',
+  'newUsers',
+];
+
+const INFLOW_METRIC_IDS: MetricId[] = [
+  'newUserConversionRate',
+  'firstPurchaseTime',
+  'firstPaymentContribution',
+];
+
 const GrowthAndConversion = () => {
-  const [selectedPeriod, setSelectedPeriod] =
-    useState<(typeof FILTER_PERIODS)[number]>('전체');
-  const [selectedMetricId, setSelectedMetricId] =
-    useState<MetricId>('activeUsersBrowse');
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  // Growth Filter State
+  const [growthPeriod, setGrowthPeriod] = useState<FilterPeriod>('전체');
+  const [growthStartDate, setGrowthStartDate] = useState<Date | null>(null);
+  const [growthEndDate, setGrowthEndDate] = useState<Date | null>(null);
+  const [selectedGrowthMetricId, setSelectedGrowthMetricId] =
+    useState<MetricId>('gmv');
+
+  // Inflow Filter State
+  const [inflowPeriod, setInflowPeriod] = useState<FilterPeriod>('전체');
+  const [inflowStartDate, setInflowStartDate] = useState<Date | null>(null);
+  const [inflowEndDate, setInflowEndDate] = useState<Date | null>(null);
+  const [selectedInflowMetricId, setSelectedInflowMetricId] =
+    useState<MetricId>('newUserConversionRate');
+
+  const growthMetrics = METRICS.filter((metric) =>
+    GROWTH_METRIC_IDS.includes(metric.id),
+  );
+  const inflowMetrics = METRICS.filter((metric) =>
+    INFLOW_METRIC_IDS.includes(metric.id),
+  );
+
+  const selectedGrowthMetric =
+    growthMetrics.find((metric) => metric.id === selectedGrowthMetricId) ||
+    growthMetrics[0];
+
+  const selectedInflowMetric =
+    inflowMetrics.find((metric) => metric.id === selectedInflowMetricId) ||
+    inflowMetrics[0];
+
+  const getChartData = (metric: MetricData) => {
+    return metric.chartData;
+  };
+
+  const getPeriodLabel = (
+    period: FilterPeriod,
+    start: Date | null,
+    end: Date | null,
+  ) => {
+    if (period === '전체') {
+      return '전체 기간 (1월 - 12월)';
+    }
+    if (start && end) {
+      const s = dayjs(start).format('YYYY.MM.DD');
+      const e = dayjs(end).format('YYYY.MM.DD');
+      return `${period} (${s} - ${e})`;
+    }
+    return `${period} (기간 선택 필요)`;
+  };
+
+  return (
+    <div className="flex w-full min-w-[936px] flex-col gap-48">
+      {/* 1. Growth Section */}
+      <div className="flex flex-col gap-16">
+        <AnalysisSectionHeader
+          title="성장"
+          selectedPeriod={growthPeriod}
+          onChangePeriod={(period) => {
+            setGrowthPeriod(period);
+            if (period === '전체') {
+              setGrowthStartDate(null);
+              setGrowthEndDate(null);
+            }
+          }}
+          startDate={growthStartDate}
+          endDate={growthEndDate}
+          onChangeDateRange={(start, end) => {
+            setGrowthStartDate(start);
+            setGrowthEndDate(end);
+          }}
+        />
+
+        <div className="flex w-full gap-16">
+          {growthMetrics.map((metric) => (
+            <MetricCard
+              key={metric.id}
+              metric={metric}
+              isSelected={selectedGrowthMetricId === metric.id}
+              onClick={() => setSelectedGrowthMetricId(metric.id)}
+            />
+          ))}
+        </div>
+        <div className="relative w-full overflow-hidden rounded-16 border border-basic-grey-400 bg-basic-white shadow-md">
+          <div className="flex items-center justify-between p-24">
+            <p className="text-20 font-600 text-basic-black">
+              {selectedGrowthMetric.chartLabel}
+            </p>
+            <p className="text-16 font-500 text-basic-grey-600">
+              {getPeriodLabel(growthPeriod, growthStartDate, growthEndDate)}
+            </p>
+          </div>
+          <div className="flex h-[530px] w-full p-24">
+            <CustomLineChart
+              data={getChartData(selectedGrowthMetric)}
+              dataKey={['value']}
+              label={{ value: selectedGrowthMetric.chartLabel }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Inflow and Conversion Section */}
+      <div className="flex flex-col gap-16">
+        <AnalysisSectionHeader
+          title="유입과 전환"
+          selectedPeriod={inflowPeriod}
+          onChangePeriod={(period) => {
+            setInflowPeriod(period);
+            if (period === '전체') {
+              setInflowStartDate(null);
+              setInflowEndDate(null);
+            }
+          }}
+          startDate={inflowStartDate}
+          endDate={inflowEndDate}
+          onChangeDateRange={(start, end) => {
+            setInflowStartDate(start);
+            setInflowEndDate(end);
+          }}
+        />
+
+        <div className="flex w-full gap-16">
+          {inflowMetrics.map((metric) => (
+            <MetricCard
+              key={metric.id}
+              metric={metric}
+              isSelected={selectedInflowMetricId === metric.id}
+              onClick={() => setSelectedInflowMetricId(metric.id)}
+            />
+          ))}
+        </div>
+        <div className="relative w-full overflow-hidden rounded-16 border border-basic-grey-400 bg-basic-white shadow-md">
+          <div className="flex items-center justify-between p-24">
+            <p className="text-20 font-600 text-basic-black">
+              {selectedInflowMetric.chartLabel}
+            </p>
+            <p className="text-16 font-500 text-basic-grey-600">
+              {getPeriodLabel(inflowPeriod, inflowStartDate, inflowEndDate)}
+            </p>
+          </div>
+          <div className="flex h-[530px] w-full p-24">
+            <CustomLineChart
+              data={getChartData(selectedInflowMetric)}
+              dataKey={['value']}
+              label={{ value: selectedInflowMetric.chartLabel }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+interface AnalysisSectionHeaderProps {
+  title: string;
+  selectedPeriod: FilterPeriod;
+  onChangePeriod: (period: FilterPeriod) => void;
+  startDate: Date | null;
+  endDate: Date | null;
+  onChangeDateRange: (start: Date | null, end: Date | null) => void;
+}
+
+const AnalysisSectionHeader = ({
+  title,
+  selectedPeriod,
+  onChangePeriod,
+  startDate,
+  endDate,
+  onChangeDateRange,
+}: AnalysisSectionHeaderProps) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const datePickerRef = useRef<HTMLDivElement>(null);
-
-  const selectedMetric =
-    METRICS.find((metric) => metric.id === selectedMetricId) || METRICS[1];
-  const largeMetrics = METRICS.filter((metric) => metric.size === 'large');
-  const smallMetrics = METRICS.filter((metric) => metric.size === 'small');
-
-  const handleMetricClick = (metricId: MetricId) => {
-    setSelectedMetricId(metricId);
-  };
-
-  const handlePeriodChange = (period: (typeof FILTER_PERIODS)[number]) => {
-    setSelectedPeriod(period);
-    if (period === '전체') {
-      setStartDate(null);
-      setEndDate(null);
-      setIsDatePickerOpen(false);
-    }
-  };
 
   const formatDateRange = () => {
     if (!startDate || !endDate) return '모든 기간';
@@ -236,23 +387,7 @@ const GrowthAndConversion = () => {
     return `${start} - ${end}`;
   };
 
-  const getFilteredChartData = () => {
-    // TODO: 실제 API 연동 시 기간 필터와 날짜 범위에 따라 데이터 필터링
-    // 현재는 더미 데이터를 그대로 반환
-    return selectedMetric.chartData;
-  };
-
-  const getPeriodLabel = () => {
-    if (selectedPeriod === '전체') {
-      return '전체 기간 (1월 - 12월)';
-    }
-    if (startDate && endDate) {
-      const start = dayjs(startDate).format('YYYY.MM.DD');
-      const end = dayjs(endDate).format('YYYY.MM.DD');
-      return `${selectedPeriod} (${start} - ${end})`;
-    }
-    return `${selectedPeriod} (기간 선택 필요)`;
-  };
+  const currentPeriod = selectedPeriod;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -274,116 +409,73 @@ const GrowthAndConversion = () => {
   }, [isDatePickerOpen]);
 
   return (
-    <div className="flex w-full min-w-[936px] flex-col gap-16">
-      <div className="flex items-center justify-between">
-        <span className="text-20 font-600 text-basic-black">성장 및 전환</span>
-        <div className="flex items-center gap-16">
-          <div className="relative" ref={datePickerRef}>
-            <button
-              type="button"
-              onClick={() => {
-                if (selectedPeriod !== '전체') {
-                  setIsDatePickerOpen(!isDatePickerOpen);
-                }
-              }}
-              disabled={selectedPeriod === '전체'}
-              className={`flex h-full items-center rounded-8 border border-basic-grey-200 bg-basic-white p-12 ${
-                selectedPeriod === '전체'
-                  ? 'cursor-not-allowed opacity-60'
-                  : 'cursor-pointer hover:border-basic-grey-400'
-              }`}
-            >
-              <div className="flex items-center gap-8">
-                <CalendarIcon />
-                <span
-                  className={`text-14 font-500 ${
-                    selectedPeriod === '전체'
-                      ? 'text-basic-grey-400'
-                      : 'text-basic-black'
-                  }`}
-                >
-                  {formatDateRange()}
-                </span>
-              </div>
-            </button>
-            {isDatePickerOpen && selectedPeriod !== '전체' && (
-              <div className="absolute left-0 top-full z-50 mt-4">
-                <DatePicker
-                  selected={startDate}
-                  onChange={(dates) => {
-                    const [start, end] = dates as [Date | null, Date | null];
-                    setStartDate(start);
-                    setEndDate(end);
-                    if (start && end) {
-                      setIsDatePickerOpen(false);
-                    }
-                  }}
-                  selectsRange
-                  startDate={startDate}
-                  endDate={endDate}
-                  inline
-                  className="rounded-8 border border-basic-grey-200 bg-basic-white shadow-lg"
-                  locale={ko}
-                />
-              </div>
-            )}
-          </div>
-          <div className="h-46 flex items-start rounded-8 bg-basic-white p-4">
-            {FILTER_PERIODS.map((period) => (
-              <button
-                key={period}
-                onClick={() => handlePeriodChange(period)}
-                className={`flex h-36 w-56 items-center justify-center rounded-8 text-14 font-500 ${
-                  selectedPeriod === period
-                    ? 'bg-basic-black text-basic-white'
-                    : 'text-basic-grey-700'
+    <div className="flex items-center justify-between">
+      <span className="text-20 font-600 text-basic-black">{title}</span>
+      <div className="flex items-center gap-16">
+        <div className="relative" ref={datePickerRef}>
+          <button
+            type="button"
+            onClick={() => {
+              if (currentPeriod !== '전체') {
+                setIsDatePickerOpen(!isDatePickerOpen);
+              }
+            }}
+            disabled={currentPeriod === '전체'}
+            className={`flex h-full items-center rounded-8 border border-basic-grey-200 bg-basic-white p-12 ${
+              currentPeriod === '전체'
+                ? 'cursor-not-allowed opacity-60'
+                : 'cursor-pointer hover:border-basic-grey-400'
+            }`}
+          >
+            <div className="flex items-center gap-8">
+              <CalendarIcon />
+              <span
+                className={`text-14 font-500 ${
+                  currentPeriod === '전체'
+                    ? 'text-basic-grey-400'
+                    : 'text-basic-black'
                 }`}
               >
-                {period}
-              </button>
-            ))}
-          </div>
+                {formatDateRange()}
+              </span>
+            </div>
+          </button>
+          {isDatePickerOpen && currentPeriod !== '전체' && (
+            <div className="absolute left-0 top-full z-50 mt-4">
+              <DatePicker
+                selected={startDate}
+                onChange={(dates) => {
+                  const [start, end] = dates as [Date | null, Date | null];
+                  onChangeDateRange(start, end);
+                  if (start && end) {
+                    setIsDatePickerOpen(false);
+                  }
+                }}
+                selectsRange
+                startDate={startDate}
+                endDate={endDate}
+                inline
+                className="rounded-8 border border-basic-grey-200 bg-basic-white shadow-lg"
+                locale={ko}
+              />
+            </div>
+          )}
         </div>
-      </div>
-
-      <div className="flex w-full gap-16">
-        {largeMetrics.map((metric) => (
-          <MetricCard
-            key={metric.id}
-            metric={metric}
-            isSelected={selectedMetricId === metric.id}
-            onClick={() => handleMetricClick(metric.id)}
-          />
-        ))}
-      </div>
-
-      <div className="relative w-full overflow-hidden rounded-16 border border-basic-grey-400 bg-basic-white shadow-md">
-        <div className="flex items-center justify-between p-24">
-          <p className="text-20 font-600 text-basic-black">
-            {selectedMetric.chartLabel}
-          </p>
-          <p className="text-16 font-500 text-basic-grey-600">
-            {getPeriodLabel()}
-          </p>
+        <div className="h-46 flex items-start rounded-8 bg-basic-white p-4">
+          {FILTER_PERIODS.map((period) => (
+            <button
+              key={period}
+              onClick={() => onChangePeriod(period)}
+              className={`flex h-36 w-56 items-center justify-center rounded-8 text-14 font-500 ${
+                currentPeriod === period
+                  ? 'bg-basic-black text-basic-white'
+                  : 'text-basic-grey-700'
+              }`}
+            >
+              {period}
+            </button>
+          ))}
         </div>
-        <div className="flex h-[530px] w-full p-24">
-          <CustomLineChart
-            data={getFilteredChartData()}
-            dataKey={['value']}
-            label={{ value: selectedMetric.chartLabel }}
-          />
-        </div>
-      </div>
-
-      <div className="flex w-full gap-16">
-        {smallMetrics.map((metric) => (
-          <MetricCard
-            key={metric.id}
-            metric={metric}
-            isSelected={selectedMetricId === metric.id}
-            onClick={() => handleMetricClick(metric.id)}
-          />
-        ))}
       </div>
     </div>
   );

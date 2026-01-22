@@ -131,14 +131,13 @@ const RepurchaseAnalysis = () => {
 
   return (
     <div className="flex w-full flex-col gap-32">
-      <h2 className="text-28 font-600 text-basic-black">재예매율 분석</h2>
+      <h2 className="text-28 font-600 text-basic-black">
+        행사별 첫 이용 유저 비율
+      </h2>
 
       <div className="flex min-h-[420px] w-full flex-col rounded-16 bg-basic-white p-24 shadow-md md:p-32">
         {/* Header Section */}
-        <div className="mb-24 flex flex-col justify-between gap-16 md:flex-row md:items-center">
-          <h3 className="text-20 font-600 text-basic-black">
-            이벤트 재예매율 일별 트렌드
-          </h3>
+        <div className="mb-24 flex flex-col justify-end gap-16 md:flex-row md:items-center">
           <Combobox
             immediate
             value={selectedEvent}
@@ -158,8 +157,8 @@ const RepurchaseAnalysis = () => {
                 onChange={(e) => setQuery(e.target.value)}
               />
               <ComboboxOptions
-                anchor="bottom end"
-                className="ring-black z-50 mt-4 max-h-240 w-[calc(100vw-48px)] overflow-auto rounded-8 bg-basic-white p-4 shadow-lg ring-1 ring-opacity-5 focus:outline-none md:w-272"
+                anchor="bottom"
+                className="ring-black z-50 mt-4 max-h-240 w-[var(--input-width)] overflow-auto rounded-8 bg-basic-white p-4 shadow-lg ring-1 ring-opacity-5 focus:outline-none"
               >
                 {isLoading ? (
                   <div className="p-8 text-center text-basic-grey-400">

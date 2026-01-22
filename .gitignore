@@ -35,6 +35,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# cursor
+.cursor/
+
 .env
 .eslintcache
 *storybook.log
