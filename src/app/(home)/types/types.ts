@@ -4,8 +4,8 @@ export const FILTER_PERIODS: FilterPeriod[] = ['전체', '월간', '주간', '�
 
 export type MetricId =
   | 'gmv'
-  | 'activeUsersBrowse'
-  | 'activeUsersParticipate'
+  | 'activeUsersExplore'
+  | 'activeUsersCore'
   | 'newUsers'
   | 'newUserConversionRate'
   | 'firstPurchaseTime'
