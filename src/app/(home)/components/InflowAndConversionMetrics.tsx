@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import CustomLineChart from '@/components/chart/CustomLineChart';
-import dayjs from 'dayjs';
+import { Dayjs } from 'dayjs';
 import AnalysisSectionHeader from './AnalysisSectionHeader';
 import MetricCard from './MetricCard';
 import { MetricData, MetricId, FilterPeriod } from '../types/types';
@@ -85,8 +85,8 @@ const INFLOW_METRIC_IDS: MetricId[] = [
 
 const InflowAndConversionMetrics = () => {
   const [period, setPeriod] = useState<FilterPeriod>('전체');
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [endDate, setEndDate] = useState<Dayjs | null>(null);
   const [selectedMetricId, setSelectedMetricId] = useState<MetricId>(
     'newUserConversionRate',
   );
@@ -104,15 +104,15 @@ const InflowAndConversionMetrics = () => {
 
   const getPeriodLabel = (
     period: FilterPeriod,
-    start: Date | null,
-    end: Date | null,
+    start: Dayjs | null,
+    end: Dayjs | null,
   ) => {
     if (period === '전체') {
       return '전체 기간 (1월 - 12월)';
     }
     if (start && end) {
-      const s = dayjs(start).format('YYYY.MM.DD');
-      const e = dayjs(end).format('YYYY.MM.DD');
+      const s = start.format('YYYY.MM.DD');
+      const e = end.format('YYYY.MM.DD');
       return `${period} (${s} - ${e})`;
     }
     return `${period} (기간 선택 필요)`;
