@@ -66,19 +66,6 @@ const MOCK_DATA: Metric[] = [
     ],
   },
   {
-    id: 'rebooking_rate',
-    title: '행사 재예매율',
-    value: '42.1%',
-    chartData: [
-      { name: '1월', value: 35 },
-      { name: '2월', value: 38 },
-      { name: '3월', value: 40 },
-      { name: '4월', value: 41 },
-      { name: '5월', value: 41.5 },
-      { name: '6월', value: 42.1 },
-    ],
-  },
-  {
     id: 'reparticipation_cycle',
     title: '행사 재참여주기',
     value: '45일',
@@ -89,6 +76,19 @@ const MOCK_DATA: Metric[] = [
       { name: '4월', value: 48 },
       { name: '5월', value: 46 },
       { name: '6월', value: 45 },
+    ],
+  },
+  {
+    id: 'rebooking_rate',
+    title: '행사 재예매율',
+    value: '42.1%',
+    chartData: [
+      { name: '1월', value: 35 },
+      { name: '2월', value: 38 },
+      { name: '3월', value: 40 },
+      { name: '4월', value: 41 },
+      { name: '5월', value: 41.5 },
+      { name: '6월', value: 42.1 },
     ],
   },
   {
@@ -312,9 +312,9 @@ const RetentionFandomsDashboard = () => {
     { label: '아티스트명', key: 'artist' },
     { label: '팬덤규모', key: 'fandomSize' },
     { label: '재참여율', key: 'reparticipationRate' },
+    { label: '재참여 주기', key: 'reparticipationCycle' },
     { label: '재예매율', key: 'rebookingRate' },
     { label: '재예매 주기', key: 'rebookingCycle' },
-    { label: '재참여 주기', key: 'reparticipationCycle' },
     { label: '재탑승 주기', key: 'reboardingCycle' },
     { label: '예매 증가율', key: 'bookingGrowth' },
     { label: '유입 믹스', key: 'inflowMix', width: 'w-[200px]' },
@@ -503,14 +503,14 @@ const RetentionFandomsDashboard = () => {
                   <td className="px-16 py-20 text-14 font-600 text-[#3B82F6]">
                     {row.reparticipationRate}%
                   </td>
+                  <td className="px-16 py-20 text-14 text-basic-grey-600">
+                    {row.reparticipationCycle}일
+                  </td>
                   <td className="px-16 py-20 text-14 font-600 text-[#A855F7]">
                     {row.rebookingRate}%
                   </td>
                   <td className="px-16 py-20 text-14 text-basic-grey-600">
                     {row.rebookingCycle}일
-                  </td>
-                  <td className="px-16 py-20 text-14 text-basic-grey-600">
-                    {row.reparticipationCycle}일
                   </td>
                   <td className="px-16 py-20 text-14 text-basic-grey-600">
                     {row.reboardingCycle}일

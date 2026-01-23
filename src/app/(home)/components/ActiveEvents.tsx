@@ -17,6 +17,7 @@ import {
   ListboxOption,
   ListboxOptions,
 } from '@headlessui/react';
+import Heading from '@/components/text/Heading';
 
 // TODO: Replace with actual API call when available
 const MOCK_DATA = [
@@ -41,13 +42,11 @@ const ActiveEvents = () => {
 
   return (
     <div className="flex w-full flex-col gap-32">
-      <h2 className="text-28 font-600 text-basic-black">활성 행사</h2>
+      <Heading.h3>월별 활성 행사 수</Heading.h3>
 
       <div className="flex min-h-[420px] w-full flex-col rounded-16 bg-basic-white p-24 shadow-md md:p-32">
         {/* Header Section */}
-        <div className="mb-24 flex items-center justify-between">
-          <p className="text-20 font-600 text-basic-black">월별 활성 행사 수</p>
-
+        <div className="mb-24 flex items-center justify-end">
           <Listbox value={selectedYear} onChange={setSelectedYear}>
             <div className="relative">
               <ListboxButton className="flex w-136 items-center justify-between rounded-8 border border-basic-black px-12 py-8 text-16 font-500 text-basic-black hover:bg-basic-grey-50 focus:outline-none">

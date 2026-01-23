@@ -35,6 +35,20 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# cursor
+.cursor/
+
+# gemini
+.gemini
+.agent
+.agents
+
+# codex
+.codex
+
+# claude
+.claude
+
 .env
 .eslintcache
 *storybook.log

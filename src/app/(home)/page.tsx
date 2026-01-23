@@ -3,7 +3,8 @@
 import Heading from '@/components/text/Heading';
 import ExternalAnalysisTools from './components/ExternalAnalysisTools';
 import StatisticsInsights from './components/StatisticsInsights';
-import GrowthAndConversion from './components/GrowthAndConversion';
+import GrowthMetrics from './components/GrowthMetrics';
+import InflowAndConversionMetrics from './components/InflowAndConversionMetrics';
 import RepurchaseAnalysis from './components/RepurchaseAnalysis';
 import ActiveEvents from './components/ActiveEvents';
 
@@ -20,7 +21,10 @@ const Page = () => {
             <div className="w-[1px] self-stretch bg-basic-grey-200" />
             <StatisticsInsights />
           </div>
-          <GrowthAndConversion />
+          <div className="flex w-full min-w-[936px] flex-col gap-48">
+            <GrowthMetrics />
+            <InflowAndConversionMetrics />
+          </div>
         </div>
         <div className="grid min-w-[936px] grid-cols-2 gap-24">
           <RepurchaseAnalysis />
