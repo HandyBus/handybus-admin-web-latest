@@ -102,6 +102,16 @@ const Page = () => {
                     size="small"
                     variant="tertiary"
                     onClick={() =>
+                      router.push(`/events/${event.eventId}/default-routes`)
+                    }
+                    className="w-116"
+                  >
+                    기본 노선 생성하기
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="tertiary"
+                    onClick={() =>
                       router.push(`/events/${event.eventId}/sales`)
                     }
                   >
