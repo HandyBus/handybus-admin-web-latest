@@ -9,9 +9,10 @@ import { calculateDiscountPercent } from '../../utils/formatPrice.util';
 
 interface Props {
   index: number;
+  isEnabled: boolean;
 }
 
-const PriceSection = ({ index }: Props) => {
+const PriceSection = ({ index, isEnabled }: Props) => {
   const { control, watch } = useFormContext<BulkRouteFormValues>();
   const watchHasEarlybird = watch(`routes.${index}.hasEarlybird`);
   const watchRegularPrice = watch(`routes.${index}.regularPrice`);
@@ -30,7 +31,11 @@ const PriceSection = ({ index }: Props) => {
               control={control}
               name={`routes.${index}.regularPrice.roundTrip`}
               render={({ field: { onChange, value } }) => (
-                <NumberInput value={value ?? 0} setValue={onChange} />
+                <NumberInput
+                  value={value ?? 0}
+                  setValue={onChange}
+                  disabled={!isEnabled}
+                />
               )}
             />
           </div>
@@ -40,7 +45,11 @@ const PriceSection = ({ index }: Props) => {
               control={control}
               name={`routes.${index}.regularPrice.toDestination`}
               render={({ field: { onChange, value } }) => (
-                <NumberInput value={value ?? 0} setValue={onChange} />
+                <NumberInput
+                  value={value ?? 0}
+                  setValue={onChange}
+                  disabled={!isEnabled}
+                />
               )}
             />
           </div>
@@ -50,7 +59,11 @@ const PriceSection = ({ index }: Props) => {
               control={control}
               name={`routes.${index}.regularPrice.fromDestination`}
               render={({ field: { onChange, value } }) => (
-                <NumberInput value={value ?? 0} setValue={onChange} />
+                <NumberInput
+                  value={value ?? 0}
+                  setValue={onChange}
+                  disabled={!isEnabled}
+                />
               )}
             />
           </div>
@@ -72,6 +85,7 @@ const PriceSection = ({ index }: Props) => {
                 type="checkbox"
                 checked={value}
                 onChange={(e) => onChange(e.target.checked)}
+                disabled={!isEnabled}
               />
             )}
           />
@@ -94,7 +108,7 @@ const PriceSection = ({ index }: Props) => {
                 <NumberInput
                   value={value ?? 0}
                   setValue={onChange}
-                  disabled={!watchHasEarlybird}
+                  disabled={!isEnabled || !watchHasEarlybird}
                 />
               )}
             />
@@ -116,7 +130,7 @@ const PriceSection = ({ index }: Props) => {
                 <NumberInput
                   value={value ?? 0}
                   setValue={onChange}
-                  disabled={!watchHasEarlybird}
+                  disabled={!isEnabled || !watchHasEarlybird}
                 />
               )}
             />
@@ -138,7 +152,7 @@ const PriceSection = ({ index }: Props) => {
                 <NumberInput
                   value={value ?? 0}
                   setValue={onChange}
-                  disabled={!watchHasEarlybird}
+                  disabled={!isEnabled || !watchHasEarlybird}
                 />
               )}
             />

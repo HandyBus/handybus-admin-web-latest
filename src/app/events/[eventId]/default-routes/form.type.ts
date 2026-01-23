@@ -15,6 +15,7 @@ export interface BulkRouteFormValues {
 export interface BulkRouteItem {
   name: string;
   maxPassengerCount: number;
+  isEnabled: boolean; // 노선 생성 여부
   hasEarlybird: boolean;
   earlybirdPrice: {
     toDestination: number;

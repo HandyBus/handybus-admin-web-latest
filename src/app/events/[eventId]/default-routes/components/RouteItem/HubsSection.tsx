@@ -16,9 +16,10 @@ import dayjs from 'dayjs';
 
 interface Props {
   index: number;
+  isEnabled: boolean;
 }
 
-const HubsSection = ({ index }: Props) => {
+const HubsSection = ({ index, isEnabled }: Props) => {
   const { control } = useFormContext<BulkRouteFormValues>();
   const [destinationHub, toDestinationArrivalTime, regularPrice] = useWatch({
     control,
@@ -176,8 +177,9 @@ const HubsSection = ({ index }: Props) => {
                               })
                             }
                             disabled={
-                              regularPrice?.toDestination === 0 &&
-                              regularPrice?.roundTrip === 0
+                              !isEnabled ||
+                              (regularPrice?.toDestination === 0 &&
+                                regularPrice?.roundTrip === 0)
                             }
                           />
                         )}
@@ -194,8 +196,9 @@ const HubsSection = ({ index }: Props) => {
                         value={value}
                         setValue={(time) => onChange(time)}
                         disabled={
-                          regularPrice?.toDestination === 0 &&
-                          regularPrice?.roundTrip === 0
+                          !isEnabled ||
+                          (regularPrice?.toDestination === 0 &&
+                            regularPrice?.roundTrip === 0)
                         }
                       />
                     )}
@@ -275,8 +278,9 @@ const HubsSection = ({ index }: Props) => {
                               })
                             }
                             disabled={
-                              regularPrice?.fromDestination === 0 &&
-                              regularPrice?.roundTrip === 0
+                              !isEnabled ||
+                              (regularPrice?.fromDestination === 0 &&
+                                regularPrice?.roundTrip === 0)
                             }
                           />
                         )}
@@ -293,8 +297,9 @@ const HubsSection = ({ index }: Props) => {
                         value={value}
                         setValue={(time) => onChange(time)}
                         disabled={
-                          regularPrice?.fromDestination === 0 &&
-                          regularPrice?.roundTrip === 0
+                          !isEnabled ||
+                          (regularPrice?.fromDestination === 0 &&
+                            regularPrice?.roundTrip === 0)
                         }
                       />
                     )}

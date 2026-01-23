@@ -163,6 +163,7 @@ export const createRoutesFromDefaultHubs = (
     return {
       name: routeName,
       maxPassengerCount,
+      isEnabled: true,
       hasEarlybird: false,
       earlybirdPrice: {
         toDestination: 0,

@@ -56,8 +56,13 @@ export const useBulkRouteSubmission = ({
           .subtract(data.reservationDeadlineDays, 'day')
           .toISOString();
 
-        // 각 노선에 대해 생성
+        // 각 노선에 대해 생성 (활성화된 노선만)
         for (const route of data.routes) {
+          // 비활성화된 노선은 건너뛰기
+          if (!route.isEnabled) {
+            continue;
+          }
+
           const body = createShuttleRouteRequest(
             route,
             dailyEventDate,
