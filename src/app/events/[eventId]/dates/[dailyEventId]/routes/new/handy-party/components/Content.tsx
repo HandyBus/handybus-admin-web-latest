@@ -204,12 +204,12 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
             <PriceTableButton
               onClick={() => handleApplyPriceTable(GOYANG_STADIUM_PRICE_TABLE)}
             >
-              고양종합운동장 25.06
+              고양종합운동장 26.01
             </PriceTableButton>
             <PriceTableButton
               onClick={() => handleApplyPriceTable(KSPO_DOME_PRICE_TABLE)}
             >
-              KSPO DOME 25.07
+              KSPO DOME 26.01
             </PriceTableButton>
           </div>
         </div>
