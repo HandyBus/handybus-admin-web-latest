@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { Controller } from 'react-hook-form';
-import { ArrowBigRight, XIcon } from 'lucide-react';
+import { ArrowBigRight, XIcon, TrashIcon } from 'lucide-react';
 import ImageFileInput from '@/components/input/ImageFileInput';
 import RegionHubInputWithButton from '@/components/input/RegionHubInputWithButton';
 import Input from '@/components/input/Input';
@@ -25,6 +25,8 @@ import Stringifier from '@/utils/stringifier.util';
 import Callout from '@/components/text/Callout';
 import Button from '@/components/button/Button';
 import { RegionHubsViewEntity } from '@/types/hub.type';
+import ArtistInput from '@/components/input/ArtistInput';
+import NewArtistsModal from '@/components/modal/NewArtistsModal';
 
 interface FormValues {
   status: EventStatus;
@@ -34,6 +36,7 @@ interface FormValues {
   regionHub: RegionHubsViewEntity;
   dailyEvents: EventDailyShuttlesInEventsViewEntity[];
   type: EventType;
+  artistIds: { artistId: string }[];
 }
 
 interface Props {
@@ -82,6 +85,9 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
     },
     type: event?.eventType,
     dailyEvents: event?.dailyEvents ?? [],
+    artistIds:
+      event?.eventArtists?.map((artist) => ({ artistId: artist.artistId })) ??
+      [],
   };
 
   const previousDailyEvents = event?.dailyEvents?.map((dailyEvent) => ({
@@ -102,6 +108,19 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
     control,
     name: 'dailyEvents',
   });
+
+  const {
+    fields: artistFields,
+    append: appendArtist,
+    remove: removeArtist,
+  } = useFieldArray<FormValues>({
+    control,
+    name: 'artistIds',
+  });
+
+  const [artistModalStates, setArtistModalStates] = useState<
+    Record<number, boolean>
+  >({});
 
   const { mutate: putEvent } = usePutEvent({
     onSuccess: () => {
@@ -128,6 +147,9 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
         detailImageUrl: data.detailImageUrl || null,
         regionId: data.regionHub.regionId,
         regionHubId: data.regionHub.regionHubId,
+        artistIds: data.artistIds
+          .map((item) => item.artistId)
+          .filter((id) => id !== null && id !== ''),
         dailyEvents: data.dailyEvents.map((dailyEvent) => ({
           ...dailyEvent,
           closeDeadline: dayjs(dailyEvent.date)
@@ -286,6 +308,79 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
             </Button>
           </div>
         </div>
+      </Form.section>
+      <Form.section>
+        <Form.label>아티스트</Form.label>
+        <Controller
+          control={control}
+          name="artistIds"
+          render={({ field: { onChange, value } }) => (
+            <div className="flex flex-col gap-12">
+              {artistFields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="flex w-full flex-row items-center gap-8"
+                >
+                  <div className="w-full">
+                    <ArtistInput
+                      value={value[index]?.artistId || null}
+                      setValue={(artistId) => {
+                        const newArtistIds = [...value];
+                        newArtistIds[index] = { artistId: artistId || '' };
+                        onChange(newArtistIds);
+                      }}
+                      modalState={{
+                        isOpen: artistModalStates[index] || false,
+                        setIsOpen: (isOpen) => {
+                          setArtistModalStates((prev) => ({
+                            ...prev,
+                            [index]: isOpen,
+                          }));
+                        },
+                      }}
+                    />
+                    <NewArtistsModal
+                      isOpen={artistModalStates[index] || false}
+                      setIsOpen={(isOpen) => {
+                        setArtistModalStates((prev) => ({
+                          ...prev,
+                          [index]: isOpen,
+                        }));
+                      }}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      removeArtist(index);
+                      const newModalStates = { ...artistModalStates };
+                      delete newModalStates[index];
+                      setArtistModalStates(newModalStates);
+                    }}
+                    className="flex h-[42px] w-[42px] items-center justify-center rounded-4 bg-basic-red-100 p-4 text-basic-red-400"
+                  >
+                    <TrashIcon size={20} />
+                  </button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                size="large"
+                variant="tertiary"
+                onClick={() => {
+                  appendArtist({ artistId: '' });
+                  setArtistModalStates((prev) => ({
+                    ...prev,
+                    [artistFields.length]: false,
+                  }));
+                }}
+                className="mt-12"
+              >
+                아티스트 추가하기
+              </Button>
+            </div>
+          )}
+        />
       </Form.section>
       <Form.section>
         <Form.label required>타입</Form.label>
