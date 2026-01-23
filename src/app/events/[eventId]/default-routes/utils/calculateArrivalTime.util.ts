@@ -69,12 +69,25 @@ export const calculateFromDestinationArrivalTime = (
     const existingTime = dayjs(
       route.fromDestinationArrivalTimes[hubIndex].time,
     );
-    return dayjs(dailyEventDate)
+    const baseDate = dayjs(dailyEventDate);
+    const calculatedTime = baseDate
       .set('hour', existingTime.hour())
       .set('minute', existingTime.minute())
       .set('second', 0)
-      .set('millisecond', 0)
-      .toISOString();
+      .set('millisecond', 0);
+
+    // 기존 시간이 dailyEventDate의 다음날인 경우 (예: 오후 11시 출발 -> 다음날 오전 도착)
+    // existingTime의 날짜가 baseDate보다 하루 이후인지 확인
+    const existingDate = existingTime.startOf('day');
+    const baseDateOnly = baseDate.startOf('day');
+    const daysDifference = existingDate.diff(baseDateOnly, 'day');
+
+    // 날짜 차이가 있으면 그만큼 더해줌
+    if (daysDifference > 0) {
+      return calculatedTime.add(daysDifference, 'day').toISOString();
+    }
+
+    return calculatedTime.toISOString();
   }
 
   return dailyEventDate;
