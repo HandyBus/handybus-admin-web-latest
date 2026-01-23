@@ -29,7 +29,7 @@ export const useBulkRouteSubmission = ({
   const submitBulkRoutes = async (data: BulkRouteFormValues) => {
     if (
       !confirm(
-        '노선을 생성하시겠습니까? 노선 생성 후 가격 변동은 자제해주세요.',
+        '노선을 생성하시겠습니까? 노선 생성 후 가격 변동은 자제해주세요.\n\n*최대 3분이 소요됩니다.\n*완료 메시지가 표시될 때까지 **절대** 사이트를 끄지 말아주세요.',
       )
     ) {
       return;
@@ -74,7 +74,7 @@ export const useBulkRouteSubmission = ({
         }
       }
 
-      router.push(`/events/${eventId}`);
+      router.push(`/events`);
     } catch (error) {
       setIsSubmitting(false);
       console.error(error);
