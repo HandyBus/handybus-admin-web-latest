@@ -52,7 +52,7 @@ const GrowthMetrics = () => {
   const getPeriodLabel = () => {
     if (isAllTime) {
       const s = dayjs('2025-02-12').format('YYYY.MM.DD');
-      const e = dayjs().format('YYYY.MM.DD');
+      const e = dayjs().subtract(1, 'day').format('YYYY.MM.DD');
       return `전체 기간 (${s} - ${e})`;
     }
     if (startDate && endDate) {
@@ -95,6 +95,7 @@ const GrowthMetrics = () => {
           isAllTime={isAllTime}
           isPrevDisabled={isPrevDisabled}
           isNextDisabled={isNextDisabled}
+          period={period}
         />
       </div>
 
