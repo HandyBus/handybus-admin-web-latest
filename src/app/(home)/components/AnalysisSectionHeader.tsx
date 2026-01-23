@@ -6,6 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/locale';
 import { FILTER_PERIODS, FilterPeriod } from '../types/types';
 import Heading from '@/components/text/Heading';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface AnalysisSectionHeaderProps {
   title: string;
@@ -14,6 +15,11 @@ interface AnalysisSectionHeaderProps {
   startDate: Dayjs | null;
   endDate: Dayjs | null;
   onChangeDateRange: (start: Dayjs | null, end: Dayjs | null) => void;
+  onPrevClick?: () => void;
+  onNextClick?: () => void;
+  isNavigationDisabled?: boolean;
+  isPrevDisabled?: boolean;
+  isNextDisabled?: boolean;
 }
 
 const AnalysisSectionHeader = ({
@@ -23,6 +29,11 @@ const AnalysisSectionHeader = ({
   startDate,
   endDate,
   onChangeDateRange,
+  onPrevClick,
+  onNextClick,
+  isNavigationDisabled = false,
+  isPrevDisabled = false,
+  isNextDisabled = false,
 }: AnalysisSectionHeaderProps) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [hoveredDate, setHoveredDate] = useState<Dayjs | null>(null);
@@ -99,6 +110,49 @@ const AnalysisSectionHeader = ({
     <div className="flex items-center justify-between">
       <Heading.h2>{title}</Heading.h2>
       <div className="flex items-center gap-16">
+        <div className="flex h-[46px] items-start rounded-8 bg-basic-white p-4">
+          {FILTER_PERIODS.map((period) => (
+            <button
+              key={period}
+              onClick={() => onChangePeriod(period)}
+              className={`flex h-36 w-56 items-center justify-center rounded-8 text-14 font-500 ${
+                currentPeriod === period
+                  ? 'bg-basic-black text-basic-white'
+                  : 'text-basic-grey-700'
+              }`}
+            >
+              {period}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-8">
+          <button
+            type="button"
+            onClick={onPrevClick}
+            disabled={isNavigationDisabled || isPrevDisabled}
+            className={`flex h-48 w-48 items-center justify-center rounded-8 border border-basic-grey-200 bg-basic-white text-basic-grey-600 transition-colors ${
+              isNavigationDisabled || isPrevDisabled
+                ? 'cursor-not-allowed opacity-50'
+                : 'hover:border-basic-grey-400 hover:text-basic-black'
+            }`}
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            type="button"
+            onClick={onNextClick}
+            disabled={isNavigationDisabled || isNextDisabled}
+            className={`flex h-48 w-48 items-center justify-center rounded-8 border border-basic-grey-200 bg-basic-white text-basic-grey-600 transition-colors ${
+              isNavigationDisabled || isNextDisabled
+                ? 'cursor-not-allowed opacity-50'
+                : 'hover:border-basic-grey-400 hover:text-basic-black'
+            }`}
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
+
         <div className="relative" ref={datePickerRef}>
           <button
             type="button"
@@ -144,6 +198,8 @@ const AnalysisSectionHeader = ({
                 selectsRange
                 startDate={startDate ? startDate.toDate() : null}
                 endDate={endDate ? endDate.toDate() : null}
+                minDate={dayjs('2025-02-12').toDate()}
+                maxDate={dayjs().toDate()}
                 inline
                 className="rounded-8 border border-basic-grey-200 bg-basic-white shadow-lg"
                 locale={ko}
@@ -152,21 +208,6 @@ const AnalysisSectionHeader = ({
               />
             </div>
           )}
-        </div>
-        <div className="h-46 flex items-start rounded-8 bg-basic-white p-4">
-          {FILTER_PERIODS.map((period) => (
-            <button
-              key={period}
-              onClick={() => onChangePeriod(period)}
-              className={`flex h-36 w-56 items-center justify-center rounded-8 text-14 font-500 ${
-                currentPeriod === period
-                  ? 'bg-basic-black text-basic-white'
-                  : 'text-basic-grey-700'
-              }`}
-            >
-              {period}
-            </button>
-          ))}
         </div>
       </div>
     </div>

@@ -192,7 +192,10 @@ export const useGetMonthlyCoreMetrics = ({
  * Daily GMV Metrics
  */
 
-const getDailyGmvMetrics = async (startDate: string, endDate: string) => {
+export const getDailyGmvMetrics = async (
+  startDate: string,
+  endDate: string,
+) => {
   const res = await authInstance.get(
     `/v1/analytics/admin/daily-gmv-metrics?startDate=${startDate}&endDate=${endDate}`,
     {
