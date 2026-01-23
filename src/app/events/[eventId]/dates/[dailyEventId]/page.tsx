@@ -25,6 +25,26 @@ import { AdminShuttleRoutesViewEntity } from '@/types/shuttleRoute.type';
 import ChangeReservationDeadlineDialog from './components/ChangeReservationDeadlineDialog';
 import ChangeMaxPassengerCountDialog from './components/ChangeMaxPassengerCountDialog';
 
+const SHUTTEL_ROUTE_ORDER = [
+  '서울',
+  '경기',
+  '인천',
+  '대전',
+  '대구',
+  '광주',
+  '부산',
+  '경남',
+  '경북',
+  '충남',
+  '충북',
+  '전남',
+  '전북',
+  '강원',
+  '울산',
+  '제주',
+  '세종',
+] as const;
+
 interface Props {
   params: { eventId: string; dailyEventId: string };
 }
@@ -51,7 +71,17 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
 
     const shuttleRoutes = routes.filter((r) => !r.isHandyParty);
     const sortedShuttleRoutes = shuttleRoutes.sort((a, b) => {
-      return a.name.localeCompare(b.name);
+      const aArea = a.name.split('_')[0];
+      const bArea = b.name.split('_')[0];
+      const aIndex = SHUTTEL_ROUTE_ORDER.findIndex((area) => area === aArea);
+      const bIndex = SHUTTEL_ROUTE_ORDER.findIndex((area) => area === bArea);
+      if (aIndex === -1) {
+        return 1;
+      }
+      if (bIndex === -1) {
+        return -1;
+      }
+      return aIndex < bIndex ? -1 : 1;
     });
 
     const handyPartyRoutes = routes.filter((r) => r.isHandyParty);

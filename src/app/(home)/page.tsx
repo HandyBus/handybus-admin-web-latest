@@ -1,111 +1,38 @@
 'use client';
 
 import Heading from '@/components/text/Heading';
-import UserCountChart from './components/UserCountChart';
-import DemandCountChart from './components/DemandCountChart';
-import ReservationPassengerCountChart from './components/ReservationPassengerCountChart';
-import SalesCountChart from './components/SalesCountChart';
-import ReviewCountChart from './components/ReviewCountChart';
-import useCountFilter from './hooks/useCountFilter';
-import CountFilter from './components/CountFilter';
-import { ArrowRight } from 'lucide-react';
-import Link from 'next/link';
-import UserFunnelChart from './components/UserFunnelChart';
-import CancellationCountChart from './components/CancellationCountChart';
-
-const GA_LINK =
-  'https://analytics.google.com/analytics/web/?hl=ko#/p464197268/reports/intelligenthome';
-const GOOGLE_SEARCH_CONSOLE_LINK =
-  'https://search.google.com/search-console?utm_source=about-page&resource_id=https://www.handybus.co.kr/';
-const NAVER_SEARCH_ADVISOR_LINK =
-  'https://searchadvisor.naver.com/console/site/summary?site=https%3A%2F%2Fwww.handybus.co.kr';
+import ExternalAnalysisTools from './components/ExternalAnalysisTools';
+import StatisticsInsights from './components/StatisticsInsights';
+import GrowthMetrics from './components/GrowthMetrics';
+import InflowAndConversionMetrics from './components/InflowAndConversionMetrics';
+import RepurchaseAnalysis from './components/RepurchaseAnalysis';
+import ActiveEvents from './components/ActiveEvents';
 
 const Page = () => {
-  const [countFilter, dispatchCountFilter] = useCountFilter();
-
   return (
     <main className="grow">
-      <Heading>통계 대시보드</Heading>
-      <div className="flex flex-col gap-12">
-        <section className="flex gap-20">
-          <article className="relative flex h-188 w-188 flex-col justify-center gap-4 rounded-[8px] border border-basic-grey-200 bg-basic-white pl-28">
-            <Link
-              href={GA_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-14 font-600 text-basic-blue-400 underline underline-offset-2"
-            >
-              구글 애널리틱스
-            </Link>
-            <Link
-              href={GOOGLE_SEARCH_CONSOLE_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-14 font-600 text-basic-blue-400 underline underline-offset-2"
-            >
-              구글 서치 콘솔
-            </Link>
-            <Link
-              href={NAVER_SEARCH_ADVISOR_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-14 font-600 text-basic-blue-400 underline underline-offset-2"
-            >
-              네이버 서치어드바이저
-            </Link>
-            <ArrowRight
-              className="absolute bottom-4 right-4 text-basic-grey-400"
-              width={20}
-              height={20}
-            />
-          </article>
-          <DashboardCard title="유저 통계" href="/statistics/users" />
-          <DashboardCard title="수요조사 통계" href="/statistics/demands" />
-        </section>
-        <section>
-          <div className="flex w-full">
-            <UserFunnelChart />
+      <div className="flex flex-col gap-80">
+        <div className="flex flex-col gap-48">
+          <Heading className="mb-0 h-auto p-0 text-28 font-600">
+            성과 분석
+          </Heading>
+          <div className="flex gap-16">
+            <ExternalAnalysisTools />
+            <div className="w-[1px] self-stretch bg-basic-grey-200" />
+            <StatisticsInsights />
           </div>
-        </section>
-        <section>
-          <Heading.h2>성과 통계</Heading.h2>
-          <CountFilter
-            countFilter={countFilter}
-            dispatchCountFilter={dispatchCountFilter}
-          />
-          <div className="grid w-full grid-cols-3 gap-8 max-md:grid-cols-2 max-sm:grid-cols-1">
-            <UserCountChart options={countFilter} />
-            <DemandCountChart options={countFilter} />
-            <ReservationPassengerCountChart options={countFilter} />
-            <CancellationCountChart options={countFilter} />
-            <SalesCountChart options={countFilter} />
-            <ReviewCountChart options={countFilter} />
+          <div className="flex w-full min-w-[936px] flex-col gap-48">
+            <GrowthMetrics />
+            <InflowAndConversionMetrics />
           </div>
-        </section>
+        </div>
+        <div className="grid min-w-[936px] grid-cols-2 gap-24">
+          <RepurchaseAnalysis />
+          <ActiveEvents />
+        </div>
       </div>
     </main>
   );
 };
 
 export default Page;
-
-interface DashboardCardProps {
-  title: string;
-  href: string;
-}
-
-const DashboardCard = ({ title, href }: DashboardCardProps) => {
-  return (
-    <Link
-      href={href}
-      className="relative flex h-188 w-188 items-center justify-center rounded-[8px] border border-basic-grey-200 bg-basic-white transition-all hover:bg-basic-grey-50"
-    >
-      <span className="font-600">{title}</span>
-      <ArrowRight
-        className="absolute bottom-4 right-4 text-basic-grey-400"
-        width={20}
-        height={20}
-      />
-    </Link>
-  );
-};

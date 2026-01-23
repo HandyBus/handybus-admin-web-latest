@@ -1,7 +1,7 @@
 'use client';
 
 import ChartBox from '@/components/chart/ChartBox';
-import CustomLineChart from '../../../components/chart/CustomLineChart';
+import CustomLineChart from '@/components/chart/CustomLineChart';
 import { useGetCancelledReservationCounts } from '@/services/reservation.service';
 import { CountFilterOptions, getInterval } from '../hooks/useCountFilter';
 import dayjs from 'dayjs';
