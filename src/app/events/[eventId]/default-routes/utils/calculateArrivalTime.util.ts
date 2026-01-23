@@ -70,21 +70,33 @@ export const calculateFromDestinationArrivalTime = (
       route.fromDestinationArrivalTimes[hubIndex].time,
     );
     const baseDate = dayjs(dailyEventDate);
-    const calculatedTime = baseDate
-      .set('hour', existingTime.hour())
-      .set('minute', existingTime.minute())
+
+    const existingHour = existingTime.hour();
+    const existingMinute = existingTime.minute();
+
+    // dailyEventDate에 시간을 적용
+    let calculatedTime = baseDate
+      .set('hour', existingHour)
+      .set('minute', existingMinute)
       .set('second', 0)
       .set('millisecond', 0);
 
-    // 기존 시간이 dailyEventDate의 다음날인 경우 (예: 오후 11시 출발 -> 다음날 오전 도착)
-    // existingTime의 날짜가 baseDate보다 하루 이후인지 확인
-    const existingDate = existingTime.startOf('day');
-    const baseDateOnly = baseDate.startOf('day');
-    const daysDifference = existingDate.diff(baseDateOnly, 'day');
+    // 출발 시간과 비교하여 자정을 넘어가는지 확인
+    if (!isFirstHub && fromDestinationDepartureTime) {
+      const [departureHours, departureMinutes] = fromDestinationDepartureTime
+        .split(':')
+        .map(Number);
+      const departureTime = baseDate
+        .set('hour', departureHours)
+        .set('minute', departureMinutes)
+        .set('second', 0)
+        .set('millisecond', 0);
 
-    // 날짜 차이가 있으면 그만큼 더해줌
-    if (daysDifference > 0) {
-      return calculatedTime.add(daysDifference, 'day').toISOString();
+      // calculatedTime이 departureTime보다 작으면 다음날로 넘어간 것
+      // (예: 출발 23:00, 도착 01:00 -> 01:00 < 23:00이므로 다음날)
+      if (calculatedTime.isBefore(departureTime)) {
+        calculatedTime = calculatedTime.add(1, 'day');
+      }
     }
 
     return calculatedTime.toISOString();
