@@ -17,7 +17,7 @@ const CommonSettingsSection = () => {
         <section className="grid grid-cols-2 gap-8">
           <div>
             <h5 className="text-16 font-500">
-              예약 마감일{' '}
+              예약 마감일 <br />
               <span className="text-12 text-basic-grey-600">
                 며칠 전까지 예약 가능
               </span>
@@ -36,7 +36,7 @@ const CommonSettingsSection = () => {
           </div>
           <div>
             <h5 className="text-16 font-500">
-              성수기/비수기{' '}
+              성수기/비수기 <br />
               <span className="text-12 text-basic-grey-600">
                 *비수기(12-2월, 7-8월), 성수기(3-6월, 9-11월)
               </span>

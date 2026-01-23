@@ -59,6 +59,22 @@ const Content = ({ event }: ContentProps) => {
     (de) => de.dailyEventId,
   );
 
+  // 현재 날짜를 기준으로 성수기/비수기 자동 설정
+  // 비수기: 12-2월, 7-8월
+  // 성수기: 3-6월, 9-11월
+  const getDefaultSeason = (): '성수기' | '비수기' => {
+    const currentMonth = dayjs().tz('Asia/Seoul').month() + 1; // dayjs month는 0부터 시작하므로 +1
+    if (
+      currentMonth === 12 ||
+      currentMonth <= 2 ||
+      currentMonth === 7 ||
+      currentMonth === 8
+    ) {
+      return '비수기';
+    }
+    return '성수기';
+  };
+
   const methods = useForm<BulkRouteFormValues>({
     defaultValues: {
       selectedDailyEventIds: defaultSelectedDailyEventIds,
@@ -66,7 +82,7 @@ const Content = ({ event }: ContentProps) => {
       reservationDeadlineDays: 5,
       toDestinationArrivalTime: null,
       fromDestinationDepartureTime: null,
-      season: '성수기',
+      season: getDefaultSeason(),
       routes: [],
     },
   });
