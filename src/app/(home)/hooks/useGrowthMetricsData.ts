@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import dayjs from 'dayjs';
 import {
   getDailyGmvMetrics,
   getDailySignupMetrics,
@@ -26,132 +27,309 @@ import { processChartData } from '@/app/(home)/utils/chartData.util';
 interface UseGrowthMetricsDataProps {
   currentStartDate: string;
   currentEndDate: string;
-  prevStartDate: string;
-  prevEndDate: string;
   period: FilterPeriod;
 }
 
 export const useGrowthMetricsData = ({
   currentStartDate,
   currentEndDate,
-  prevStartDate,
-  prevEndDate,
   period,
 }: UseGrowthMetricsDataProps) => {
-  const { currentData: gmvData, prevData: prevGmvData } = useComparisonQuery({
-    queryKey: ['daily-gmv-metrics'],
+  // --- 1. 날짜 계산 로직 (카드용 - 최근 기간) ---
+  // 기간에 따라 "최근 완료된 기간"과 "그 직전 기간"을 계산합니다.
+  const {
+    cardRecentStartDate,
+    cardRecentEndDate,
+    cardPreStartDate,
+    cardPreEndDate,
+    criterionLabel,
+  } = useMemo(() => {
+    const today = dayjs();
+    let rStart: string, rEnd: string;
+    let pStart: string, pEnd: string;
+    let label = '';
+
+    if (period === '월간') {
+      // 최근 완료된 달 (지난달)
+      const lastMonth = today.subtract(1, 'month');
+      rStart = lastMonth.startOf('month').format('YYYY-MM-DD');
+      rEnd = lastMonth.endOf('month').format('YYYY-MM-DD');
+
+      // 그 전달
+      const preMonth = lastMonth.subtract(1, 'month');
+      pStart = preMonth.startOf('month').format('YYYY-MM-DD');
+      pEnd = preMonth.endOf('month').format('YYYY-MM-DD');
+
+      label = '전 달 기준';
+    } else if (period === '주간') {
+      // 최근 완료된 주 (지난주 - ISO 기준 월~일)
+      const lastWeek = today.subtract(1, 'week');
+      rStart = lastWeek.startOf('isoWeek').format('YYYY-MM-DD');
+      rEnd = lastWeek.endOf('isoWeek').format('YYYY-MM-DD');
+
+      // 그 전주
+      const preWeek = lastWeek.subtract(1, 'week');
+      pStart = preWeek.startOf('isoWeek').format('YYYY-MM-DD');
+      pEnd = preWeek.endOf('isoWeek').format('YYYY-MM-DD');
+
+      label = '전 주 기준';
+    } else {
+      // 일간 (어제)
+      const yesterday = today.subtract(1, 'day');
+      rStart = yesterday.format('YYYY-MM-DD');
+      rEnd = yesterday.format('YYYY-MM-DD');
+
+      // 그 전날 (그제)
+      const preDay = yesterday.subtract(1, 'day');
+      pStart = preDay.format('YYYY-MM-DD');
+      pEnd = preDay.format('YYYY-MM-DD');
+
+      label = '전 일 기준';
+    }
+
+    return {
+      cardRecentStartDate: rStart,
+      cardRecentEndDate: rEnd,
+      cardPreStartDate: pStart,
+      cardPreEndDate: pEnd,
+      criterionLabel: label,
+    };
+  }, [period]);
+
+  // --- 2. Chart Data Fetching (기존 로직 유지 - 선택된 기간 기준) ---
+  const { currentData: chartGmvData } = useComparisonQuery({
+    queryKey: ['daily-gmv-metrics-chart'],
     fetcher: getDailyGmvMetrics,
     currentStartDate,
     currentEndDate,
-    prevStartDate,
-    prevEndDate,
+    prevStartDate: '', // 차트에는 비교 데이터 불필요
+    prevEndDate: '',
     enabled: true,
   });
 
-  const { currentData: signupData, prevData: prevSignupData } =
+  const { currentData: chartSignupData } = useComparisonQuery({
+    queryKey: ['daily-signup-metrics-chart'],
+    fetcher: getDailySignupMetrics,
+    currentStartDate,
+    currentEndDate,
+    prevStartDate: '',
+    prevEndDate: '',
+    enabled: true,
+  });
+
+  const { currentData: chartDailyExploreData } = useComparisonQuery({
+    queryKey: ['daily-explore-metrics-chart'],
+    fetcher: getDailyExploreMetrics,
+    currentStartDate,
+    currentEndDate,
+    prevStartDate: '',
+    prevEndDate: '',
+    enabled: period === '일간',
+  });
+  const { currentData: chartWeeklyExploreData } = useComparisonQuery({
+    queryKey: ['weekly-explore-metrics-chart'],
+    fetcher: getWeeklyExploreMetrics,
+    currentStartDate,
+    currentEndDate,
+    prevStartDate: '',
+    prevEndDate: '',
+    enabled: period === '주간',
+  });
+  const { currentData: chartMonthlyExploreData } = useComparisonQuery({
+    queryKey: ['monthly-explore-metrics-chart'],
+    fetcher: getMonthlyExploreMetrics,
+    currentStartDate,
+    currentEndDate,
+    prevStartDate: '',
+    prevEndDate: '',
+    enabled: period !== '일간' && period !== '주간',
+  });
+
+  const { currentData: chartDailyCoreData } = useComparisonQuery({
+    queryKey: ['daily-core-metrics-chart'],
+    fetcher: getDailyCoreMetrics,
+    currentStartDate,
+    currentEndDate,
+    prevStartDate: '',
+    prevEndDate: '',
+    enabled: period === '일간',
+  });
+  const { currentData: chartWeeklyCoreData } = useComparisonQuery({
+    queryKey: ['weekly-core-metrics-chart'],
+    fetcher: getWeeklyCoreMetrics,
+    currentStartDate,
+    currentEndDate,
+    prevStartDate: '',
+    prevEndDate: '',
+    enabled: period === '주간',
+  });
+  const { currentData: chartMonthlyCoreData } = useComparisonQuery({
+    queryKey: ['monthly-core-metrics-chart'],
+    fetcher: getMonthlyCoreMetrics,
+    currentStartDate,
+    currentEndDate,
+    prevStartDate: '',
+    prevEndDate: '',
+    enabled: period !== '일간' && period !== '주간',
+  });
+
+  // --- 3. Card Data Fetching (새로운 로직 - Card Recent Period 기준) ---
+  // GMV & Signup
+  const { currentData: cardGmvData, prevData: cardPreGmvData } =
     useComparisonQuery({
-      queryKey: ['daily-signup-metrics'],
-      fetcher: getDailySignupMetrics,
-      currentStartDate,
-      currentEndDate,
-      prevStartDate,
-      prevEndDate,
+      queryKey: ['daily-gmv-metrics-card', cardRecentStartDate],
+      fetcher: getDailyGmvMetrics,
+      currentStartDate: cardRecentStartDate,
+      currentEndDate: cardRecentEndDate,
+      prevStartDate: cardPreStartDate,
+      prevEndDate: cardPreEndDate,
       enabled: true,
     });
 
-  // Active Users Explore
-  const { currentData: dailyExploreData, prevData: prevDailyExploreData } =
+  const { currentData: cardSignupData, prevData: cardPreSignupData } =
     useComparisonQuery({
-      queryKey: ['daily-explore-metrics'],
-      fetcher: getDailyExploreMetrics,
-      currentStartDate,
-      currentEndDate,
-      prevStartDate,
-      prevEndDate,
-      enabled: period === '일간',
-    });
-  const { currentData: weeklyExploreData, prevData: prevWeeklyExploreData } =
-    useComparisonQuery({
-      queryKey: ['weekly-explore-metrics'],
-      fetcher: getWeeklyExploreMetrics,
-      currentStartDate,
-      currentEndDate,
-      prevStartDate,
-      prevEndDate,
-      enabled: period === '주간',
-    });
-  const { currentData: monthlyExploreData, prevData: prevMonthlyExploreData } =
-    useComparisonQuery({
-      queryKey: ['monthly-explore-metrics'],
-      fetcher: getMonthlyExploreMetrics,
-      currentStartDate,
-      currentEndDate,
-      prevStartDate,
-      prevEndDate,
-      enabled: period !== '일간' && period !== '주간',
+      queryKey: ['daily-signup-metrics-card', cardRecentStartDate],
+      fetcher: getDailySignupMetrics,
+      currentStartDate: cardRecentStartDate,
+      currentEndDate: cardRecentEndDate,
+      prevStartDate: cardPreStartDate,
+      prevEndDate: cardPreEndDate,
+      enabled: true,
     });
 
-  // Active Users Core
-  const { currentData: dailyCoreData, prevData: prevDailyCoreData } =
+  // Explore & Core (Period에 따라 fetcher 달라짐)
+  // 일간
+  const {
+    currentData: cardDailyExploreData,
+    prevData: cardPreDailyExploreData,
+  } = useComparisonQuery({
+    queryKey: ['daily-explore-metrics-card', cardRecentStartDate],
+    fetcher: getDailyExploreMetrics,
+    currentStartDate: cardRecentStartDate,
+    currentEndDate: cardRecentEndDate,
+    prevStartDate: cardPreStartDate,
+    prevEndDate: cardPreEndDate,
+    enabled: period === '일간',
+  });
+  const { currentData: cardDailyCoreData, prevData: cardPreDailyCoreData } =
     useComparisonQuery({
-      queryKey: ['daily-core-metrics'],
+      queryKey: ['daily-core-metrics-card', cardRecentStartDate],
       fetcher: getDailyCoreMetrics,
-      currentStartDate,
-      currentEndDate,
-      prevStartDate,
-      prevEndDate,
+      currentStartDate: cardRecentStartDate,
+      currentEndDate: cardRecentEndDate,
+      prevStartDate: cardPreStartDate,
+      prevEndDate: cardPreEndDate,
       enabled: period === '일간',
     });
-  const { currentData: weeklyCoreData, prevData: prevWeeklyCoreData } =
+
+  // 주간
+  const {
+    currentData: cardWeeklyExploreData,
+    prevData: cardPreWeeklyExploreData,
+  } = useComparisonQuery({
+    queryKey: ['weekly-explore-metrics-card', cardRecentStartDate],
+    fetcher: getWeeklyExploreMetrics,
+    currentStartDate: cardRecentStartDate,
+    currentEndDate: cardRecentEndDate,
+    prevStartDate: cardPreStartDate,
+    prevEndDate: cardPreEndDate,
+    enabled: period === '주간',
+  });
+  const { currentData: cardWeeklyCoreData, prevData: cardPreWeeklyCoreData } =
     useComparisonQuery({
-      queryKey: ['weekly-core-metrics'],
+      queryKey: ['weekly-core-metrics-card', cardRecentStartDate],
       fetcher: getWeeklyCoreMetrics,
-      currentStartDate,
-      currentEndDate,
-      prevStartDate,
-      prevEndDate,
+      currentStartDate: cardRecentStartDate,
+      currentEndDate: cardRecentEndDate,
+      prevStartDate: cardPreStartDate,
+      prevEndDate: cardPreEndDate,
       enabled: period === '주간',
     });
-  const { currentData: monthlyCoreData, prevData: prevMonthlyCoreData } =
+
+  // 월간
+  const {
+    currentData: cardMonthlyExploreData,
+    prevData: cardPreMonthlyExploreData,
+  } = useComparisonQuery({
+    queryKey: ['monthly-explore-metrics-card', cardRecentStartDate],
+    fetcher: getMonthlyExploreMetrics,
+    currentStartDate: cardRecentStartDate,
+    currentEndDate: cardRecentEndDate,
+    prevStartDate: cardPreStartDate,
+    prevEndDate: cardPreEndDate,
+    enabled: period === '월간',
+  });
+  const { currentData: cardMonthlyCoreData, prevData: cardPreMonthlyCoreData } =
     useComparisonQuery({
-      queryKey: ['monthly-core-metrics'],
+      queryKey: ['monthly-core-metrics-card', cardRecentStartDate],
       fetcher: getMonthlyCoreMetrics,
-      currentStartDate,
-      currentEndDate,
-      prevStartDate,
-      prevEndDate,
-      enabled: period !== '일간' && period !== '주간',
+      currentStartDate: cardRecentStartDate,
+      currentEndDate: cardRecentEndDate,
+      prevStartDate: cardPreStartDate,
+      prevEndDate: cardPreEndDate,
+      enabled: period === '월간',
     });
 
-  // 기간에 따른 Active Users 데이터 선택
-  const exploreData = useMemo(() => {
-    if (period === '일간') return dailyExploreData;
-    if (period === '주간') return weeklyExploreData;
-    return monthlyExploreData;
-  }, [period, dailyExploreData, weeklyExploreData, monthlyExploreData]);
+  // --- 4. 데이터 통합 및 가공 ---
 
-  const prevExploreData = useMemo(() => {
-    if (period === '일간') return prevDailyExploreData;
-    if (period === '주간') return prevWeeklyExploreData;
-    return prevMonthlyExploreData;
+  // 차트용 데이터 선택
+  const chartExploreData = useMemo(() => {
+    if (period === '일간') return chartDailyExploreData;
+    if (period === '주간') return chartWeeklyExploreData;
+    return chartMonthlyExploreData;
   }, [
     period,
-    prevDailyExploreData,
-    prevWeeklyExploreData,
-    prevMonthlyExploreData,
+    chartDailyExploreData,
+    chartWeeklyExploreData,
+    chartMonthlyExploreData,
   ]);
 
-  const coreData = useMemo(() => {
-    if (period === '일간') return dailyCoreData;
-    if (period === '주간') return weeklyCoreData;
-    return monthlyCoreData;
-  }, [period, dailyCoreData, weeklyCoreData, monthlyCoreData]);
+  const chartCoreData = useMemo(() => {
+    if (period === '일간') return chartDailyCoreData;
+    if (period === '주간') return chartWeeklyCoreData;
+    return chartMonthlyCoreData;
+  }, [period, chartDailyCoreData, chartWeeklyCoreData, chartMonthlyCoreData]);
 
-  const prevCoreData = useMemo(() => {
-    if (period === '일간') return prevDailyCoreData;
-    if (period === '주간') return prevWeeklyCoreData;
-    return prevMonthlyCoreData;
-  }, [period, prevDailyCoreData, prevWeeklyCoreData, prevMonthlyCoreData]);
+  // 카드용 데이터 선택 (Recent)
+  const cardExploreData = useMemo(() => {
+    if (period === '일간') return cardDailyExploreData;
+    if (period === '주간') return cardWeeklyExploreData;
+    return cardMonthlyExploreData;
+  }, [
+    period,
+    cardDailyExploreData,
+    cardWeeklyExploreData,
+    cardMonthlyExploreData,
+  ]);
+
+  const cardCoreData = useMemo(() => {
+    if (period === '일간') return cardDailyCoreData;
+    if (period === '주간') return cardWeeklyCoreData;
+    return cardMonthlyCoreData;
+  }, [period, cardDailyCoreData, cardWeeklyCoreData, cardMonthlyCoreData]);
+
+  // 카드용 데이터 선택 (Pre-Recent)
+  const cardPreExploreData = useMemo(() => {
+    if (period === '일간') return cardPreDailyExploreData;
+    if (period === '주간') return cardPreWeeklyExploreData;
+    return cardPreMonthlyExploreData;
+  }, [
+    period,
+    cardPreDailyExploreData,
+    cardPreWeeklyExploreData,
+    cardPreMonthlyExploreData,
+  ]);
+
+  const cardPreCoreData = useMemo(() => {
+    if (period === '일간') return cardPreDailyCoreData;
+    if (period === '주간') return cardPreWeeklyCoreData;
+    return cardPreMonthlyCoreData;
+  }, [
+    period,
+    cardPreDailyCoreData,
+    cardPreWeeklyCoreData,
+    cardPreMonthlyCoreData,
+  ]);
 
   // 기간 라벨 접두사 생성
   const getPeriodLabelPrefix = (currentPeriod: FilterPeriod): string => {
@@ -161,8 +339,8 @@ export const useGrowthMetricsData = ({
   };
 
   const calculatePercentage = (current: number, prev: number) => {
-    if (period === '전체') return '-';
     if (!prev || prev === 0) return current > 0 ? '100%' : '-';
+    // (Recent - PreRecent) / PreRecent
     const percent = ((current - prev) / prev) * 100;
     return percent.toFixed(1) + '%';
   };
@@ -171,8 +349,17 @@ export const useGrowthMetricsData = ({
     const metrics: MetricData[] = [];
     const periodPrefix = getPeriodLabelPrefix(period);
 
-    // 활성 사용자 (Explore)
-    const exploreRawData = exploreData?.map(
+    // 1. 활성 사용자 (Explore)
+    // Card Value: cardExploreData의 마지막 값 (단일 값) 사용
+    const lastExploreData = cardExploreData?.[cardExploreData.length - 1];
+    const totalExploreUsers = lastExploreData?.pageReachUserCount || 0;
+
+    const lastPreExploreData =
+      cardPreExploreData?.[cardPreExploreData.length - 1];
+    const preTotalExploreUsers = lastPreExploreData?.pageReachUserCount || 0;
+
+    // Chart Data: chartExploreData 사용
+    const exploreRawData = chartExploreData?.map(
       (
         d:
           | DailyExploreMetricsViewEntity
@@ -190,42 +377,27 @@ export const useGrowthMetricsData = ({
       },
     );
     const exploreChartData = processChartData(exploreRawData, period);
-    const totalExploreUsers =
-      exploreData?.reduce(
-        (
-          acc: number,
-          curr:
-            | DailyExploreMetricsViewEntity
-            | WeeklyExploreMetricsViewEntity
-            | MonthlyExploreMetricsViewEntity,
-        ) => acc + curr.pageReachUserCount,
-        0,
-      ) || 0;
-    const prevTotalExploreUsers =
-      prevExploreData?.reduce(
-        (
-          acc: number,
-          curr:
-            | DailyExploreMetricsViewEntity
-            | WeeklyExploreMetricsViewEntity
-            | MonthlyExploreMetricsViewEntity,
-        ) => acc + curr.pageReachUserCount,
-        0,
-      ) || 0;
 
     metrics.push({
       id: 'activeUsersExplore',
-      title: 'Active Users',
+      title: `${periodPrefix}`, // DAU/WAU/MAU
       subtitle: 'Explore',
       value: totalExploreUsers.toLocaleString(),
       unit: '명',
-      percentage: calculatePercentage(totalExploreUsers, prevTotalExploreUsers),
+      percentage: calculatePercentage(totalExploreUsers, preTotalExploreUsers),
+      criterionLabel: criterionLabel,
       chartData: exploreChartData,
       chartLabel: `${periodPrefix} (Explore)`,
     });
 
-    // 활성 사용자 (Core)
-    const coreRawData = coreData?.map(
+    // 2. 활성 사용자 (Core)
+    const lastCoreData = cardCoreData?.[cardCoreData.length - 1];
+    const totalCoreUsers = lastCoreData?.participationUserCount || 0;
+
+    const lastPreCoreData = cardPreCoreData?.[cardPreCoreData.length - 1];
+    const preTotalCoreUsers = lastPreCoreData?.participationUserCount || 0;
+
+    const coreRawData = chartCoreData?.map(
       (
         d:
           | DailyCoreMetricsViewEntity
@@ -243,55 +415,34 @@ export const useGrowthMetricsData = ({
       },
     );
     const coreChartData = processChartData(coreRawData, period);
-    const totalCoreUsers =
-      coreData?.reduce(
-        (
-          acc: number,
-          curr:
-            | DailyCoreMetricsViewEntity
-            | WeeklyCoreMetricsViewEntity
-            | MonthlyCoreMetricsViewEntity,
-        ) => acc + curr.participationUserCount,
-        0,
-      ) || 0;
-    const prevTotalCoreUsers =
-      prevCoreData?.reduce(
-        (
-          acc: number,
-          curr:
-            | DailyCoreMetricsViewEntity
-            | WeeklyCoreMetricsViewEntity
-            | MonthlyCoreMetricsViewEntity,
-        ) => acc + curr.participationUserCount,
-        0,
-      ) || 0;
 
     metrics.push({
       id: 'activeUsersCore',
-      title: 'Active Users',
+      title: `${periodPrefix}`, // DAU/WAU/MAU
       subtitle: 'Core',
       value: totalCoreUsers.toLocaleString(),
       unit: '명',
-      percentage: calculatePercentage(totalCoreUsers, prevTotalCoreUsers),
+      percentage: calculatePercentage(totalCoreUsers, preTotalCoreUsers),
+      criterionLabel: criterionLabel,
       chartData: coreChartData,
       chartLabel: `${periodPrefix} (Core)`,
     });
 
-    // 신규 가입자
+    // 3. 신규 가입자
     const totalNewUsers =
-      signupData?.reduce(
+      cardSignupData?.reduce(
         (acc: number, curr: DailySignupMetricsViewEntity) =>
           acc + curr.newUserCount,
         0,
       ) || 0;
-    const prevTotalNewUsers =
-      prevSignupData?.reduce(
+    const preTotalNewUsers =
+      cardPreSignupData?.reduce(
         (acc: number, curr: DailySignupMetricsViewEntity) =>
           acc + curr.newUserCount,
         0,
       ) || 0;
 
-    const newUserRawData = signupData?.map(
+    const newUserRawData = chartSignupData?.map(
       (d: DailySignupMetricsViewEntity) => ({
         date: d.date,
         value: d.newUserCount,
@@ -304,24 +455,25 @@ export const useGrowthMetricsData = ({
       title: '신규 가입자 수',
       value: totalNewUsers.toLocaleString(),
       unit: '명',
-      percentage: calculatePercentage(totalNewUsers, prevTotalNewUsers),
+      percentage: calculatePercentage(totalNewUsers, preTotalNewUsers),
+      criterionLabel: criterionLabel,
       chartData: newUsersChartData,
       chartLabel: '신규 가입자 수',
     });
 
-    // GMV (총 거래액)
+    // 4. GMV
     const totalGmv =
-      gmvData?.reduce(
+      cardGmvData?.reduce(
         (acc: number, curr: DailyGmvMetricsViewEntity) => acc + curr.gmvAmount,
         0,
       ) || 0;
-    const prevTotalGmv =
-      prevGmvData?.reduce(
+    const preTotalGmv =
+      cardPreGmvData?.reduce(
         (acc: number, curr: DailyGmvMetricsViewEntity) => acc + curr.gmvAmount,
         0,
       ) || 0;
 
-    const gmvRawData = gmvData?.map((d: DailyGmvMetricsViewEntity) => ({
+    const gmvRawData = chartGmvData?.map((d: DailyGmvMetricsViewEntity) => ({
       date: d.date,
       value: d.gmvAmount,
     }));
@@ -333,22 +485,30 @@ export const useGrowthMetricsData = ({
       subtitle: '매출',
       value: totalGmv.toLocaleString(),
       unit: '원',
-      percentage: calculatePercentage(totalGmv, prevTotalGmv),
+      percentage: calculatePercentage(totalGmv, preTotalGmv),
+      criterionLabel: criterionLabel,
       chartData: gmvChartData,
       chartLabel: 'GMV',
     });
 
     return metrics;
   }, [
-    gmvData,
-    prevGmvData,
-    signupData,
-    prevSignupData,
     period,
-    exploreData,
-    prevExploreData,
-    coreData,
-    prevCoreData,
+    criterionLabel,
+    // Card Data
+    cardExploreData,
+    cardPreExploreData,
+    cardCoreData,
+    cardPreCoreData,
+    cardSignupData,
+    cardPreSignupData,
+    cardGmvData,
+    cardPreGmvData,
+    // Chart Data
+    chartExploreData,
+    chartCoreData,
+    chartSignupData,
+    chartGmvData,
   ]);
 
   return { processedMetrics };

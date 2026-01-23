@@ -3,24 +3,23 @@ import dayjs, { Dayjs } from 'dayjs';
 import { FilterPeriod } from '../types/types';
 
 export const useDateNavigation = () => {
-  const [period, setPeriod] = useState<FilterPeriod>('전체');
-  const [startDate, setStartDate] = useState<Dayjs | null>(null);
-  const [endDate, setEndDate] = useState<Dayjs | null>(null);
+  const [period, setPeriod] = useState<FilterPeriod>('일간');
+  const [startDate, setStartDate] = useState<Dayjs | null>(
+    dayjs().subtract(29, 'day'),
+  );
+  const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
 
   /*
    * 날짜 및 기간 로직:
-   * 1. 전체: 시작일 2025-02-12
-   * 2. 월간: 최근 6개월
-   * 3. 주간: 최근 12주
-   * 4. 일간: 최근 30일
+   * 1. 월간: 최근 6개월
+   * 2. 주간: 최근 12주
+   * 3. 일간: 최근 30일
    */
   const queryStartDate = useMemo(() => {
     if (startDate) return startDate.format('YYYY-MM-DD');
 
     const today = dayjs();
     switch (period) {
-      case '전체':
-        return '2025-02-12';
       case '월간':
         return today.subtract(5, 'month').startOf('month').format('YYYY-MM-DD');
       case '주간':
@@ -28,10 +27,9 @@ export const useDateNavigation = () => {
           .subtract(11, 'week')
           .startOf('isoWeek')
           .format('YYYY-MM-DD');
-      case '일간':
-        return today.subtract(29, 'day').format('YYYY-MM-DD');
+      // case '일간':
       default:
-        return '2025-02-12';
+        return today.subtract(29, 'day').format('YYYY-MM-DD');
     }
   }, [period, startDate]);
 
@@ -40,48 +38,39 @@ export const useDateNavigation = () => {
     return dayjs().format('YYYY-MM-DD');
   }, [endDate]);
 
-  /*
-   * Previous Period Calculation
-   */
-  const { prevStartDate, prevEndDate } = useMemo(() => {
-    if (!startDate && period === '전체')
-      return { prevStartDate: '', prevEndDate: '' };
-
-    const start = dayjs(queryStartDate);
-    const end = dayjs(queryEndDate);
-    const duration = end.diff(start, 'day') + 1;
-
-    const prevEnd = start.subtract(1, 'day');
-    const prevStart = prevEnd.subtract(duration - 1, 'day');
-
-    return {
-      prevStartDate: prevStart.format('YYYY-MM-DD'),
-      prevEndDate: prevEnd.format('YYYY-MM-DD'),
-    };
-  }, [startDate, period, queryStartDate, queryEndDate]);
-
   const changePeriod = (p: FilterPeriod) => {
     setPeriod(p);
     const today = dayjs();
-    if (p === '전체') {
-      setStartDate(null);
-      setEndDate(null);
-    } else if (p === '월간') {
+
+    // Default ranges when switching unit
+    if (p === '월간') {
       setStartDate(today.subtract(5, 'month').startOf('month'));
       setEndDate(today);
     } else if (p === '주간') {
       setStartDate(today.subtract(11, 'week').startOf('isoWeek'));
       setEndDate(today);
-    } else if (p === '일간') {
+    } else {
+      // 일간
       setStartDate(today.subtract(29, 'day'));
       setEndDate(today);
     }
   };
 
+  const setAllTimeRange = () => {
+    setStartDate(dayjs('2025-02-12'));
+    setEndDate(dayjs());
+  };
+
+  const isAllTime = useMemo(() => {
+    if (!startDate || !endDate) return false;
+    const allTimeStart = dayjs('2025-02-12');
+    const today = dayjs();
+    return (
+      startDate.isSame(allTimeStart, 'day') && endDate.isSame(today, 'day')
+    );
+  }, [startDate, endDate]);
+
   const navigatePrev = () => {
-    // startDate, endDate가 null일 때(초기 상태 등)는 queryStartDate 등을 기준으로 셋팅이 필요할 수 있으나,
-    // 현재 로직상 period 변경 시 이미 state가 set되거나 null임.
-    // null 상태에서 이동하려면 현재 계산된 query date를 기준으로 이동해야 함.
     const start = startDate ? startDate : dayjs(queryStartDate);
     const end = endDate ? endDate : dayjs(queryEndDate);
 
@@ -105,8 +94,6 @@ export const useDateNavigation = () => {
   };
 
   const isNextDisabled = useMemo(() => {
-    // startDate, endDate가 null인 경우 (초기 상태 혹은 전체 기간) - query date 기준
-    // 전체 기간일 때는 어차피 AnalysisSectionHeader에서 비활성화 처리됨.
     const currentStart = startDate ? startDate : dayjs(queryStartDate);
     const currentEnd = endDate ? endDate : dayjs(queryEndDate);
     const today = dayjs().startOf('day');
@@ -118,8 +105,6 @@ export const useDateNavigation = () => {
   }, [startDate, endDate, queryStartDate, queryEndDate]);
 
   const isPrevDisabled = useMemo(() => {
-    // startDate, endDate가 null인 경우 (초기 상태 혹은 전체 기간)
-    // 전체 기간일 때는 어차피 AnalysisSectionHeader에서 비활성화 처리됨.
     const currentStart = startDate ? startDate : dayjs(queryStartDate);
     const currentEnd = endDate ? endDate : dayjs(queryEndDate);
     const duration = currentEnd.diff(currentStart, 'day') + 1;
@@ -135,13 +120,13 @@ export const useDateNavigation = () => {
     endDate,
     queryStartDate,
     queryEndDate,
-    prevStartDate,
-    prevEndDate,
     isNextDisabled,
     isPrevDisabled,
+    isAllTime,
     changePeriod,
     navigatePrev,
     navigateNext,
     updateDateRange,
+    setAllTimeRange,
   };
 };

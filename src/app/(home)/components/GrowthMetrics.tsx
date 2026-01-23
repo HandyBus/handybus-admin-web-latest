@@ -4,8 +4,10 @@ import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
-import AnalysisSectionHeader from './AnalysisSectionHeader';
 import MetricCard from './MetricCard';
+import MetricUnitFilter from './MetricUnitFilter';
+import DateRangeControls from './DateRangeControls';
+import Heading from '@/components/text/Heading';
 import { MetricData, MetricId } from '../types/types';
 import { useDateNavigation } from '@/app/(home)/hooks/useDateNavigation';
 import { useGrowthMetricsData } from '../hooks/useGrowthMetricsData';
@@ -23,21 +25,19 @@ const GrowthMetrics = () => {
     endDate,
     queryStartDate,
     queryEndDate,
-    prevStartDate,
-    prevEndDate,
     isNextDisabled,
     isPrevDisabled,
+    isAllTime,
     changePeriod,
     navigatePrev,
     navigateNext,
     updateDateRange,
+    setAllTimeRange,
   } = useDateNavigation();
 
   const { processedMetrics } = useGrowthMetricsData({
     currentStartDate: queryStartDate,
     currentEndDate: queryEndDate,
-    prevStartDate,
-    prevEndDate,
     period,
   });
 
@@ -50,7 +50,7 @@ const GrowthMetrics = () => {
   };
 
   const getPeriodLabel = () => {
-    if (period === '전체') {
+    if (isAllTime) {
       const s = dayjs('2025-02-12').format('YYYY.MM.DD');
       const e = dayjs().format('YYYY.MM.DD');
       return `전체 기간 (${s} - ${e})`;
@@ -65,19 +65,13 @@ const GrowthMetrics = () => {
 
   return (
     <div className="flex flex-col gap-16">
-      <AnalysisSectionHeader
-        title="성장"
-        selectedPeriod={period}
-        onChangePeriod={changePeriod}
-        startDate={startDate}
-        endDate={endDate}
-        onChangeDateRange={updateDateRange}
-        onPrevClick={navigatePrev}
-        onNextClick={navigateNext}
-        isNavigationDisabled={period === '전체'}
-        isNextDisabled={isNextDisabled}
-        isPrevDisabled={isPrevDisabled}
-      />
+      <div className="flex items-center justify-between">
+        <Heading.h2>성장</Heading.h2>
+        <MetricUnitFilter
+          selectedPeriod={period}
+          onChangePeriod={changePeriod}
+        />
+      </div>
 
       <div className="flex w-full gap-16">
         {processedMetrics.map((metric) => (
@@ -89,6 +83,21 @@ const GrowthMetrics = () => {
           />
         ))}
       </div>
+
+      <div className="flex w-full justify-end">
+        <DateRangeControls
+          startDate={startDate}
+          endDate={endDate}
+          onPrevClick={navigatePrev}
+          onNextClick={navigateNext}
+          onDateRangeChange={updateDateRange}
+          onAllTimeClick={setAllTimeRange}
+          isAllTime={isAllTime}
+          isPrevDisabled={isPrevDisabled}
+          isNextDisabled={isNextDisabled}
+        />
+      </div>
+
       <div className="relative w-full overflow-hidden rounded-16 border border-basic-grey-400 bg-basic-white shadow-md">
         <div className="flex items-center justify-between p-24">
           <p className="text-20 font-600 text-basic-black">
