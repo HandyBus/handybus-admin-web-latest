@@ -63,7 +63,7 @@ const Content = ({ event }: ContentProps) => {
     defaultValues: {
       selectedDailyEventIds: defaultSelectedDailyEventIds,
       destinationHub: undefined,
-      reservationDeadlineDays: 4,
+      reservationDeadlineDays: 5,
       toDestinationArrivalTime: null,
       fromDestinationDepartureTime: null,
       season: '성수기',

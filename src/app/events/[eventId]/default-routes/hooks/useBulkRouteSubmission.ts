@@ -54,9 +54,11 @@ export const useBulkRouteSubmission = ({
         const dailyEventDate = dailyEvent.date;
         const reservationDeadline = dayjs(dailyEventDate)
           .subtract(data.reservationDeadlineDays, 'day')
+          .add(1, 'day')
           .toISOString();
 
         // 각 노선에 대해 생성 (활성화된 노선만)
+        // NOTE: Promise.all 사용 시 수요조사 한 사람들에게 알림톡 중복 발송됨
         for (const route of data.routes) {
           // 비활성화된 노선은 건너뛰기
           if (!route.isEnabled) {
@@ -78,7 +80,7 @@ export const useBulkRouteSubmission = ({
           });
         }
       }
-
+      alert('노선 생성이 완료되었습니다.');
       router.push(`/events`);
     } catch (error) {
       setIsSubmitting(false);

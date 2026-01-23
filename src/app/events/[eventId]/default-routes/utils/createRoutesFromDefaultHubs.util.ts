@@ -153,7 +153,9 @@ export const createRoutesFromDefaultHubs = (
 
     // 노선 이름
     const hubBigRegionShortName = BIG_REGIONS_TO_SHORT_NAME[bigRegionName];
-    const shortHubName = hubName.split(' ')[0];
+    const shortHubName = hubName.startsWith('대전')
+      ? hubName.split(' ')[1]
+      : hubName.split(' ')[0];
     const routeName = `${hubBigRegionShortName}_${shortHubName}`;
 
     // 최대 승객 수는 bigRegionName을 기반으로 자동 설정

@@ -27,15 +27,20 @@ const CommonSettingsSection = () => {
               name="reservationDeadlineDays"
               render={({ field: { onChange, value } }) => (
                 <NumberInput
-                  value={value ?? 4}
+                  value={value ?? 5}
                   setValue={onChange}
-                  placeholder="예약 마감일 상대일수 (기본값: 4일)"
+                  placeholder="예약 마감일 상대일수 (기본값: 5일)"
                 />
               )}
             />
           </div>
           <div>
-            <h5 className="text-16 font-500">성수기/비수기</h5>
+            <h5 className="text-16 font-500">
+              성수기/비수기{' '}
+              <span className="text-12 text-basic-grey-600">
+                *비수기(12-2월, 7-8월), 성수기(3-6월, 9-11월)
+              </span>
+            </h5>
             <Controller
               control={control}
               name="season"
