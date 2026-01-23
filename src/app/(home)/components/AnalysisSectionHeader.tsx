@@ -71,9 +71,9 @@ const AnalysisSectionHeader = ({
     const [start, end] = dates;
 
     if (currentPeriod === '주간') {
-      // 주 단위로 스냅 (Snap)
-      const newStart = start ? dayjs(start).startOf('week') : null;
-      const newEnd = end ? dayjs(end).endOf('week') : null;
+      // 주 단위로 스냅 (Snap) - isoWeek는 월요일 시작
+      const newStart = start ? dayjs(start).startOf('isoWeek') : null;
+      const newEnd = end ? dayjs(end).endOf('isoWeek') : null;
 
       onChangeDateRange(newStart, newEnd);
       if (newStart && newEnd) {
@@ -91,8 +91,8 @@ const AnalysisSectionHeader = ({
     (date: Date) => {
       if (currentPeriod !== '주간' || !hoveredDate) return '';
 
-      const startOfWeek = hoveredDate.startOf('week');
-      const endOfWeek = hoveredDate.endOf('week');
+      const startOfWeek = hoveredDate.startOf('isoWeek');
+      const endOfWeek = hoveredDate.endOf('isoWeek');
       const targetDate = dayjs(date);
 
       if (
@@ -202,7 +202,7 @@ const AnalysisSectionHeader = ({
                 maxDate={dayjs().toDate()}
                 inline
                 className="rounded-8 border border-basic-grey-200 bg-basic-white shadow-lg"
-                locale={ko}
+                locale={{ ...ko, options: { ...ko.options, weekStartsOn: 1 } }}
                 showMonthYearPicker={currentPeriod === '월간'}
                 dateFormat={currentPeriod === '월간' ? 'yyyy.MM' : 'yyyy.MM.dd'}
               />

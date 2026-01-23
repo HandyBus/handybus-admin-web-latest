@@ -24,7 +24,10 @@ export const useDateNavigation = () => {
       case '월간':
         return today.subtract(5, 'month').startOf('month').format('YYYY-MM-DD');
       case '주간':
-        return today.subtract(11, 'week').startOf('week').format('YYYY-MM-DD');
+        return today
+          .subtract(11, 'week')
+          .startOf('isoWeek')
+          .format('YYYY-MM-DD');
       case '일간':
         return today.subtract(29, 'day').format('YYYY-MM-DD');
       default:
@@ -67,7 +70,7 @@ export const useDateNavigation = () => {
       setStartDate(today.subtract(5, 'month').startOf('month'));
       setEndDate(today);
     } else if (p === '주간') {
-      setStartDate(today.subtract(11, 'week').startOf('week'));
+      setStartDate(today.subtract(11, 'week').startOf('isoWeek'));
       setEndDate(today);
     } else if (p === '일간') {
       setStartDate(today.subtract(29, 'day'));
