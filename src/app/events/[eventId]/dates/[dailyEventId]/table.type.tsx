@@ -225,16 +225,6 @@ export const getColumns = ({
       return (
         <div className="grid grid-cols-2 items-center gap-x-16">
           <span
-            className={`text-right text-basic-grey-600 ${isReservationDisabledRoundTrip ? 'opacity-30' : ''}`}
-          >
-            왕복:
-          </span>
-          <span
-            className={`font-500 ${isReservationDisabledRoundTrip ? 'opacity-30' : ''}`}
-          >
-            {formattedRegularPriceRoundTrip}
-          </span>
-          <span
             className={`text-right text-basic-grey-600 ${isReservationDisabledToDestination ? 'opacity-30' : ''}`}
           >
             행사장행:
@@ -253,6 +243,16 @@ export const getColumns = ({
             className={`font-500 ${isReservationDisabledFromDestination ? 'opacity-30' : ''}`}
           >
             {formattedRegularPriceFromDestination}
+          </span>
+          <span
+            className={`text-right text-basic-grey-600 ${isReservationDisabledRoundTrip ? 'opacity-30' : ''}`}
+          >
+            왕복:
+          </span>
+          <span
+            className={`font-500 ${isReservationDisabledRoundTrip ? 'opacity-30' : ''}`}
+          >
+            {formattedRegularPriceRoundTrip}
           </span>
         </div>
       );
