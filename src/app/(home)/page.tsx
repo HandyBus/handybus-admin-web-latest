@@ -5,7 +5,7 @@ import ExternalAnalysisTools from './components/ExternalAnalysisTools';
 import StatisticsInsights from './components/StatisticsInsights';
 import GrowthMetrics from './components/GrowthMetrics';
 import InflowAndConversionMetrics from './components/InflowAndConversionMetrics';
-import RepurchaseAnalysis from './components/RepurchaseAnalysis';
+import ReuseAnalysis from './components/ReuseAnalysis';
 import ActiveEvents from './components/ActiveEvents';
 import ExploreToCoreConversionElasticity from './components/ExploreToCoreConversionElasticity';
 
@@ -29,7 +29,7 @@ const Page = () => {
             <ExploreToCoreConversionElasticity />
             <div className="h-24" />
             <InflowAndConversionMetrics />
-            <RepurchaseAnalysis />
+            <ReuseAnalysis />
           </div>
         </div>
       </div>

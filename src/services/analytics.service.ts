@@ -4,6 +4,7 @@ import {
   DailyFirstPurchaseLeadTimeMetricsReadModelSchema,
   DailyGmvMetricsViewEntitySchema,
   DailySignupMetricsViewEntitySchema,
+  EventUserStatisticsSchema,
   MonthlyActiveEventsMetricsReadModelSchema,
   MonthlyCoreMetricsViewEntitySchema,
   MonthlyExploreMetricsViewEntitySchema,
@@ -317,5 +318,37 @@ export const useGetMonthlyActiveEventsMetrics = ({
   return useQuery({
     queryKey: ['monthly-active-events-metrics', startDate, endDate],
     queryFn: () => getMonthlyActiveEventsMetrics(startDate, endDate),
+  });
+};
+
+/**
+ * 행사별 유저 통계 조회
+ */
+
+export const getEventUserStatistics = async (
+  eventId: string,
+  endDate: string,
+) => {
+  const res = await authInstance.get(
+    `/v1/analytics/admin/event-user-statistics?eventId=${eventId}&endDate=${endDate}`,
+    {
+      shape: {
+        eventUserStatistics: EventUserStatisticsSchema.nullable(),
+      },
+    },
+  );
+  return res.eventUserStatistics;
+};
+
+export const useGetEventUserStatistics = ({
+  eventId,
+  endDate,
+}: {
+  eventId: string;
+  endDate: string;
+}) => {
+  return useQuery({
+    queryKey: ['event-user-statistics', eventId, endDate],
+    queryFn: () => getEventUserStatistics(eventId, endDate),
   });
 };

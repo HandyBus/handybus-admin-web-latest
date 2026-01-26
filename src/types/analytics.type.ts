@@ -324,3 +324,19 @@ export const MonthlyActiveEventsMetricsReadModelSchema = z.object({
     .number()
     .describe('Active events 수 (해당 월 실제 운행한 행사 수)'),
 });
+
+/**
+ * 행사별 유저 통계 조회
+ */
+
+export const EventUserStatisticsSchema = z.object({
+  eventId: z.string().describe('행사 ID'),
+  firstParticipationUserCount: z.number().describe('첫 참여 유저 수'),
+  firstReservationUserCount: z.number().describe('첫 예약 유저 수'),
+  firstDemandUserCount: z.number().describe('첫 수요조사 유저 수'),
+  totalParticipationUserCount: z.number().describe('총 참여 유저 수'),
+  totalReservationUserCount: z.number().describe('총 예약 유저 수'),
+  totalDemandUserCount: z.number().describe('총 수요조사 유저 수'),
+});
+
+export type EventUserStatistics = z.infer<typeof EventUserStatisticsSchema>;
