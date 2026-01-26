@@ -293,3 +293,19 @@ export const DailySignupMetricsViewEntitySchema = z.object({
 export type DailySignupMetricsViewEntity = z.infer<
   typeof DailySignupMetricsViewEntitySchema
 >;
+
+/**
+ * 기간 내 일별 첫 구매 리드타임 메트릭
+ */
+export const DailyFirstPurchaseLeadTimeMetricsReadModelSchema = z.object({
+  date: z.string().describe('비즈니스 기준 날짜 (Asia/Seoul, YYYY-MM-DD)'),
+  averageUserTimeToFirstPurchaseHours: z
+    .number()
+    .describe(
+      '첫 구매까지 평균 소요 시간 (hour, 소수점 1자리 반올림, 가입시점=구매시점이면 0.0)',
+    ),
+});
+
+export type DailyFirstPurchaseLeadTimeMetricsReadModel = z.infer<
+  typeof DailyFirstPurchaseLeadTimeMetricsReadModelSchema
+>;

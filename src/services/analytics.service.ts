@@ -1,6 +1,7 @@
 import {
   DailyCoreMetricsViewEntitySchema,
   DailyExploreMetricsViewEntitySchema,
+  DailyFirstPurchaseLeadTimeMetricsReadModelSchema,
   DailyGmvMetricsViewEntitySchema,
   DailySignupMetricsViewEntitySchema,
   MonthlyCoreMetricsViewEntitySchema,
@@ -12,7 +13,7 @@ import { authInstance } from './config';
 import { useQuery } from '@tanstack/react-query';
 
 /**
- * Explore Metrics
+ * Explore 매트릭 조회
  */
 
 export const getDailyExploreMetrics = async (
@@ -101,7 +102,7 @@ export const useGetMonthlyExploreMetrics = ({
 };
 
 /**
- * Core Metrics
+ * Core 매트릭 조회
  */
 
 export const getDailyCoreMetrics = async (
@@ -189,7 +190,7 @@ export const useGetMonthlyCoreMetrics = ({
 };
 
 /**
- * Daily GMV Metrics
+ * 일별 GMV 매트릭 조회
  */
 
 export const getDailyGmvMetrics = async (
@@ -221,7 +222,7 @@ export const useGetDailyGmvMetrics = ({
 };
 
 /**
- * Daily Signup Metrics
+ * 일별 가입 매트릭 조회
  */
 
 export const getDailySignupMetrics = async (
@@ -249,5 +250,38 @@ export const useGetDailySignupMetrics = ({
   return useQuery({
     queryKey: ['daily-signup-metrics', startDate, endDate],
     queryFn: () => getDailySignupMetrics(startDate, endDate),
+  });
+};
+
+/**
+ * 일별 첫 구매 리드타임 매트릭 조회
+ */
+
+export const getDailyFirstPurchaseLeadTimeMetrics = async (
+  startDate: string,
+  endDate: string,
+) => {
+  const res = await authInstance.get(
+    `/v1/analytics/admin/daily-first-purchase-lead-time-metrics?startDate=${startDate}&endDate=${endDate}`,
+    {
+      shape: {
+        dailyFirstPurchaseLeadTimeMetricsList:
+          DailyFirstPurchaseLeadTimeMetricsReadModelSchema.array(),
+      },
+    },
+  );
+  return res.dailyFirstPurchaseLeadTimeMetricsList;
+};
+
+export const useGetDailyFirstPurchaseLeadTimeMetrics = ({
+  startDate,
+  endDate,
+}: {
+  startDate: string;
+  endDate: string;
+}) => {
+  return useQuery({
+    queryKey: ['daily-first-purchase-lead-time-metrics', startDate, endDate],
+    queryFn: () => getDailyFirstPurchaseLeadTimeMetrics(startDate, endDate),
   });
 };
