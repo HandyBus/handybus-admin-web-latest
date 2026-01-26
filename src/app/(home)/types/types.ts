@@ -1,6 +1,6 @@
-export type FilterPeriod = '전체' | '월간' | '주간' | '일간';
+export type FilterPeriod = '월간' | '주간' | '일간';
 
-export const FILTER_PERIODS: FilterPeriod[] = ['전체', '월간', '주간', '일간'];
+export const FILTER_PERIODS: FilterPeriod[] = ['일간', '주간', '월간'];
 
 export type MetricId =
   | 'gmv'
@@ -17,6 +17,7 @@ export interface MetricData {
   subtitle?: string;
   value: string;
   unit: string;
+  criterionLabel?: string;
   percentage: string;
   chartData: { date: string; value: number }[];
   chartLabel: string;

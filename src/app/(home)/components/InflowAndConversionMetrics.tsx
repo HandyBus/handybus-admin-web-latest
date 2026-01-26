@@ -2,10 +2,13 @@
 
 import { useState } from 'react';
 import CustomLineChart from '@/components/chart/CustomLineChart';
-import { Dayjs } from 'dayjs';
-import AnalysisSectionHeader from './AnalysisSectionHeader';
 import MetricCard from './MetricCard';
+import MetricUnitFilter from './MetricUnitFilter';
+import DateRangeControls from './DateRangeControls';
+import Heading from '@/components/text/Heading';
 import { MetricData, MetricId, FilterPeriod } from '../types/types';
+import { useDateNavigation } from '@/app/(home)/hooks/useDateNavigation';
+import dayjs from 'dayjs';
 
 const METRICS: MetricData[] = [
   {
@@ -84,16 +87,39 @@ const INFLOW_METRIC_IDS: MetricId[] = [
 ];
 
 const InflowAndConversionMetrics = () => {
-  const [period, setPeriod] = useState<FilterPeriod>('전체');
-  const [startDate, setStartDate] = useState<Dayjs | null>(null);
-  const [endDate, setEndDate] = useState<Dayjs | null>(null);
+  const {
+    period,
+    startDate,
+    endDate,
+    isNextDisabled,
+    isPrevDisabled,
+    isAllTime,
+    changePeriod,
+    navigatePrev,
+    navigateNext,
+    updateDateRange,
+    setAllTimeRange,
+  } = useDateNavigation();
+
   const [selectedMetricId, setSelectedMetricId] = useState<MetricId>(
     'newUserConversionRate',
   );
 
+  /* static METRICS are defined outside. I will map them inside component to add the dynamic label */
+
+  // Helper to get label
+  const getCriterionLabel = (p: FilterPeriod) => {
+    if (p === '일간') return '전 일 기준';
+    if (p === '주간') return '전 주 기준';
+    return '전 달 기준';
+  };
+
   const metrics = METRICS.filter((metric) =>
     INFLOW_METRIC_IDS.includes(metric.id),
-  );
+  ).map((m) => ({
+    ...m,
+    criterionLabel: getCriterionLabel(period),
+  }));
 
   const selectedMetric =
     metrics.find((metric) => metric.id === selectedMetricId) || metrics[0];
@@ -102,17 +128,15 @@ const InflowAndConversionMetrics = () => {
     return metric.chartData;
   };
 
-  const getPeriodLabel = (
-    period: FilterPeriod,
-    start: Dayjs | null,
-    end: Dayjs | null,
-  ) => {
-    if (period === '전체') {
-      return '전체 기간 (1월 - 12월)';
+  const getPeriodLabel = () => {
+    if (isAllTime) {
+      const s = dayjs('2025-02-12').format('YYYY.MM.DD');
+      const e = dayjs().format('YYYY.MM.DD');
+      return `전체 기간 (${s} - ${e})`;
     }
-    if (start && end) {
-      const s = start.format('YYYY.MM.DD');
-      const e = end.format('YYYY.MM.DD');
+    if (startDate && endDate) {
+      const s = startDate.format('YYYY.MM.DD');
+      const e = endDate.format('YYYY.MM.DD');
       return `${period} (${s} - ${e})`;
     }
     return `${period} (기간 선택 필요)`;
@@ -120,23 +144,13 @@ const InflowAndConversionMetrics = () => {
 
   return (
     <div className="flex flex-col gap-16">
-      <AnalysisSectionHeader
-        title="유입과 전환"
-        selectedPeriod={period}
-        onChangePeriod={(p) => {
-          setPeriod(p);
-          if (p === '전체') {
-            setStartDate(null);
-            setEndDate(null);
-          }
-        }}
-        startDate={startDate}
-        endDate={endDate}
-        onChangeDateRange={(start, end) => {
-          setStartDate(start);
-          setEndDate(end);
-        }}
-      />
+      <div className="flex items-center justify-between">
+        <Heading.h2>유입과 전환</Heading.h2>
+        <MetricUnitFilter
+          selectedPeriod={period}
+          onChangePeriod={changePeriod}
+        />
+      </div>
 
       <div className="flex w-full gap-16">
         {metrics.map((metric) => (
@@ -148,13 +162,28 @@ const InflowAndConversionMetrics = () => {
           />
         ))}
       </div>
+
+      <div className="flex w-full justify-end">
+        <DateRangeControls
+          startDate={startDate}
+          endDate={endDate}
+          onPrevClick={navigatePrev}
+          onNextClick={navigateNext}
+          onDateRangeChange={updateDateRange}
+          onAllTimeClick={setAllTimeRange}
+          isAllTime={isAllTime}
+          isPrevDisabled={isPrevDisabled}
+          isNextDisabled={isNextDisabled}
+        />
+      </div>
+
       <div className="relative w-full overflow-hidden rounded-16 border border-basic-grey-400 bg-basic-white shadow-md">
         <div className="flex items-center justify-between p-24">
           <p className="text-20 font-600 text-basic-black">
             {selectedMetric.chartLabel}
           </p>
           <p className="text-16 font-500 text-basic-grey-600">
-            {getPeriodLabel(period, startDate, endDate)}
+            {getPeriodLabel()}
           </p>
         </div>
         <div className="flex h-[530px] w-full p-24">
