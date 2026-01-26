@@ -233,3 +233,117 @@ export const KSPO_DOME_PRICE_TABLE: HandyPartyPriceTable = [
     earlybirdPrice: 0,
   },
 ];
+
+// 인스파이어 아레나 26.01.26
+export const INSPIRE_ARENA_PRICE_TABLE: HandyPartyPriceTable = [
+  {
+    area: '동북권',
+    regularPrice: 34000,
+    earlybirdPrice: 31000,
+  },
+  {
+    area: '서북권',
+    regularPrice: 29000,
+    earlybirdPrice: 26000,
+  },
+  {
+    area: '중심권',
+    regularPrice: 31000,
+    earlybirdPrice: 29000,
+  },
+  {
+    area: '성동.광진권',
+    regularPrice: 34000,
+    earlybirdPrice: 31000,
+  },
+  {
+    area: '강서권',
+    regularPrice: 26000,
+    earlybirdPrice: 24000,
+  },
+  {
+    area: '서남권',
+    regularPrice: 31000,
+    earlybirdPrice: 29000,
+  },
+  {
+    area: '동남권',
+    regularPrice: 31000,
+    earlybirdPrice: 29000,
+  },
+  {
+    area: '수원',
+    regularPrice: 38000,
+    earlybirdPrice: 35000,
+  },
+  {
+    area: '성남',
+    regularPrice: 36000,
+    earlybirdPrice: 33000,
+  },
+  {
+    area: '고양',
+    regularPrice: 31000,
+    earlybirdPrice: 29000,
+  },
+  {
+    area: '부평',
+    regularPrice: 31000,
+    earlybirdPrice: 29000,
+  },
+  {
+    area: '광명',
+    regularPrice: 31000,
+    earlybirdPrice: 29000,
+  },
+  {
+    area: '동탄',
+    regularPrice: 40000,
+    earlybirdPrice: 37000,
+  },
+  {
+    area: '안양',
+    regularPrice: 35000,
+    earlybirdPrice: 32000,
+  },
+  {
+    area: '안산',
+    regularPrice: 35000,
+    earlybirdPrice: 32000,
+  },
+  {
+    area: '하남',
+    regularPrice: 0,
+    earlybirdPrice: 0,
+  },
+  {
+    area: '남양주',
+    regularPrice: 0,
+    earlybirdPrice: 0,
+  },
+  {
+    area: '용인',
+    regularPrice: 40000,
+    earlybirdPrice: 37000,
+  },
+  {
+    area: '시흥',
+    regularPrice: 0,
+    earlybirdPrice: 0,
+  },
+  {
+    area: '파주',
+    regularPrice: 0,
+    earlybirdPrice: 0,
+  },
+  {
+    area: '평택',
+    regularPrice: 0,
+    earlybirdPrice: 0,
+  },
+  {
+    area: '부천',
+    regularPrice: 0,
+    earlybirdPrice: 0,
+  },
+];

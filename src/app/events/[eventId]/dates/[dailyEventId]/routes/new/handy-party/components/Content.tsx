@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import {
   GOYANG_STADIUM_PRICE_TABLE,
   HandyPartyPriceTable,
+  INSPIRE_ARENA_PRICE_TABLE,
   KSPO_DOME_PRICE_TABLE,
 } from '@/constants/handyPartyPriceTable.const';
 import RegionHubInputWithDropdown from '@/components/input/RegionHubInputWithDropdown';
@@ -209,7 +210,12 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
             <PriceTableButton
               onClick={() => handleApplyPriceTable(KSPO_DOME_PRICE_TABLE)}
             >
-              KSPO DOME 26.01
+              KSPO DOME 26.01.23
+            </PriceTableButton>
+            <PriceTableButton
+              onClick={() => handleApplyPriceTable(INSPIRE_ARENA_PRICE_TABLE)}
+            >
+              INSPIRE ARENA 26.01.26
             </PriceTableButton>
           </div>
         </div>
