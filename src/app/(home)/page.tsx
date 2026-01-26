@@ -23,12 +23,10 @@ const Page = () => {
           </div>
           <div className="flex w-full min-w-[936px] flex-col gap-48">
             <GrowthMetrics />
+            <ActiveEvents />
             <InflowAndConversionMetrics />
+            <RepurchaseAnalysis />
           </div>
-        </div>
-        <div className="grid min-w-[936px] grid-cols-2 gap-24">
-          <RepurchaseAnalysis />
-          <ActiveEvents />
         </div>
       </div>
     </main>

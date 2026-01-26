@@ -42,7 +42,7 @@ const ActiveEvents = () => {
 
   return (
     <div className="flex w-full flex-col gap-32">
-      <Heading.h3>월별 활성 행사 수</Heading.h3>
+      <Heading.h4>월별 활성 행사 수</Heading.h4>
 
       <div className="flex min-h-[420px] w-full flex-col rounded-16 bg-basic-white p-24 shadow-md md:p-32">
         {/* Header Section */}

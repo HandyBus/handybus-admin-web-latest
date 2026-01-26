@@ -132,7 +132,7 @@ const RepurchaseAnalysis = () => {
 
   return (
     <div className="flex w-full flex-col gap-32">
-      <Heading.h3> 행사별 첫 이용 유저 비율</Heading.h3>
+      <Heading.h4> 행사별 첫 이용 유저 비율</Heading.h4>
 
       <div className="flex min-h-[420px] w-full flex-col rounded-16 bg-basic-white p-24 shadow-md md:p-32">
         {/* Header Section */}
