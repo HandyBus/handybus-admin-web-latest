@@ -309,3 +309,18 @@ export const DailyFirstPurchaseLeadTimeMetricsReadModelSchema = z.object({
 export type DailyFirstPurchaseLeadTimeMetricsReadModel = z.infer<
   typeof DailyFirstPurchaseLeadTimeMetricsReadModelSchema
 >;
+
+/**
+ * 기간 내 월별 Active events 메트릭 목록
+ */
+
+export const MonthlyActiveEventsMetricsReadModelSchema = z.object({
+  month: z
+    .string()
+    .describe(
+      '비즈니스 기준 월 (해당 월의 첫 번째 날, YYYY-MM-DD, Asia/Seoul)',
+    ),
+  activeEventCount: z
+    .number()
+    .describe('Active events 수 (해당 월 실제 운행한 행사 수)'),
+});

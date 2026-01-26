@@ -4,6 +4,7 @@ import {
   DailyFirstPurchaseLeadTimeMetricsReadModelSchema,
   DailyGmvMetricsViewEntitySchema,
   DailySignupMetricsViewEntitySchema,
+  MonthlyActiveEventsMetricsReadModelSchema,
   MonthlyCoreMetricsViewEntitySchema,
   MonthlyExploreMetricsViewEntitySchema,
   WeeklyCoreMetricsViewEntitySchema,
@@ -283,5 +284,38 @@ export const useGetDailyFirstPurchaseLeadTimeMetrics = ({
   return useQuery({
     queryKey: ['daily-first-purchase-lead-time-metrics', startDate, endDate],
     queryFn: () => getDailyFirstPurchaseLeadTimeMetrics(startDate, endDate),
+  });
+};
+
+/**
+ * 월별 활성 행사 수 매트릭 조회
+ */
+
+export const getMonthlyActiveEventsMetrics = async (
+  startDate: string,
+  endDate: string,
+) => {
+  const res = await authInstance.get(
+    `/v1/analytics/admin/monthly-active-events-metrics?startDate=${startDate}&endDate=${endDate}`,
+    {
+      shape: {
+        monthlyActiveEventsMetricsList:
+          MonthlyActiveEventsMetricsReadModelSchema.array(),
+      },
+    },
+  );
+  return res.monthlyActiveEventsMetricsList;
+};
+
+export const useGetMonthlyActiveEventsMetrics = ({
+  startDate,
+  endDate,
+}: {
+  startDate: string;
+  endDate: string;
+}) => {
+  return useQuery({
+    queryKey: ['monthly-active-events-metrics', startDate, endDate],
+    queryFn: () => getMonthlyActiveEventsMetrics(startDate, endDate),
   });
 };
