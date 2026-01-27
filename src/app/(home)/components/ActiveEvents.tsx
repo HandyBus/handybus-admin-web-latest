@@ -18,31 +18,48 @@ import {
   ListboxOptions,
 } from '@headlessui/react';
 import Heading from '@/components/text/Heading';
+import { useGetMonthlyActiveEventsMetrics } from '@/services/analytics.service';
+import dayjs from 'dayjs';
 
-// TODO: Replace with actual API call when available
-const MOCK_DATA = [
-  { month: '1월', value: 5 },
-  { month: '2월', value: 8 },
-  { month: '3월', value: 12 },
-  { month: '4월', value: 18 },
-  { month: '5월', value: 15 },
-  { month: '6월', value: 10 },
-  { month: '7월', value: 6 },
-  { month: '8월', value: 14 },
-  { month: '9월', value: 16 },
-  { month: '10월', value: 20 },
-  { month: '11월', value: 22 },
-  { month: '12월', value: 25 },
-];
-
-const YEARS = ['2023', '2024', '2025', '2026'];
+const START_YEAR = 2025;
+const endYear = dayjs().subtract(1, 'month').year();
+const YEARS = Array.from({ length: endYear - START_YEAR + 1 }, (_, i) =>
+  String(START_YEAR + i),
+);
 
 const ActiveEvents = () => {
-  const [selectedYear, setSelectedYear] = useState('2026');
+  const [selectedYear, setSelectedYear] = useState(String(endYear));
+
+  const startDate = dayjs(selectedYear).startOf('year').format('YYYY-MM-DD');
+  const endDate = dayjs(selectedYear).endOf('year').format('YYYY-MM-DD');
+
+  const { data: monthlyActiveEventsMetrics } = useGetMonthlyActiveEventsMetrics(
+    {
+      startDate,
+      endDate,
+    },
+  );
+
+  const chartData = Array.from({ length: 12 }, (_, i) => {
+    const month = i + 1;
+    // Format: YYYY-MM-DD (first day of the month) matches the API response format
+    const dateKey = dayjs(
+      `${selectedYear}-${String(month).padStart(2, '0')}-01`,
+    ).format('YYYY-MM-DD');
+
+    const found = monthlyActiveEventsMetrics?.find(
+      (item) => item.month === dateKey,
+    );
+
+    return {
+      month: `${month}월`,
+      value: found?.activeEventCount ?? 0,
+    };
+  });
 
   return (
     <div className="flex w-full flex-col gap-32">
-      <Heading.h3>월별 활성 행사 수</Heading.h3>
+      <Heading.h4>월별 활성 행사 수</Heading.h4>
 
       <div className="flex min-h-[420px] w-full flex-col rounded-16 bg-basic-white p-24 shadow-md md:p-32">
         {/* Header Section */}
@@ -78,7 +95,7 @@ const ActiveEvents = () => {
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={MOCK_DATA}
+                data={chartData}
                 margin={{ top: 10, right: 0, bottom: 0, left: 0 }}
               >
                 <XAxis

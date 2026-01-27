@@ -23,6 +23,7 @@ import {
 import { useComparisonQuery } from '@/app/(home)/hooks/useComparisonQuery';
 import { MetricData, FilterPeriod } from '@/app/(home)/types/types';
 import { processChartData } from '@/app/(home)/utils/chartData.util';
+import { calculatePercentage } from '@/app/(home)/utils/metrics.util';
 
 interface UseGrowthMetricsDataProps {
   currentStartDate: string;
@@ -336,13 +337,6 @@ export const useGrowthMetricsData = ({
     if (currentPeriod === '일간') return 'DAU';
     if (currentPeriod === '주간') return 'WAU';
     return 'MAU';
-  };
-
-  const calculatePercentage = (current: number, prev: number) => {
-    if (!prev || prev === 0) return current > 0 ? '100%' : '-';
-    // (Recent - PreRecent) / PreRecent
-    const percent = ((current - prev) / prev) * 100;
-    return percent.toFixed(1) + '%';
   };
 
   const processedMetrics: MetricData[] = useMemo(() => {
