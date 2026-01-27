@@ -9,7 +9,10 @@ export type MetricId =
   | 'newUsers'
   | 'newUserConversionRate'
   | 'firstPurchaseTime'
-  | 'firstPaymentContribution';
+  | 'firstPaymentContribution'
+  | 'elasticityDAU'
+  | 'elasticityWAU'
+  | 'elasticityMAU';
 
 export interface MetricData {
   id: MetricId;

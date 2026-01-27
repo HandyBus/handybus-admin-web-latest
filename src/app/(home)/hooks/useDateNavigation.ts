@@ -2,7 +2,14 @@ import { useState, useMemo } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { FilterPeriod } from '../types/types';
 
-export const useDateNavigation = () => {
+interface UseDateNavigationConfig {
+  minDate?: string;
+}
+
+export const useDateNavigation = (config?: UseDateNavigationConfig) => {
+  // 기본값: '2025-02-12' (다른 컴포넌트들을 위한 기본값)
+  const SYSTEM_MIN_DATE = config?.minDate || '2025-02-12';
+
   const [period, setPeriod] = useState<FilterPeriod>('일간');
   const [startDate, setStartDate] = useState<Dayjs | null>(
     dayjs().subtract(1, 'day').subtract(29, 'day'),
@@ -62,18 +69,18 @@ export const useDateNavigation = () => {
   };
 
   const setAllTimeRange = () => {
-    setStartDate(dayjs('2025-02-12'));
+    setStartDate(dayjs(SYSTEM_MIN_DATE));
     setEndDate(dayjs().subtract(1, 'day'));
   };
 
   const isAllTime = useMemo(() => {
     if (!startDate || !endDate) return false;
-    const allTimeStart = dayjs('2025-02-12');
+    const allTimeStart = dayjs(SYSTEM_MIN_DATE);
     const yesterday = dayjs().subtract(1, 'day');
     return (
       startDate.isSame(allTimeStart, 'day') && endDate.isSame(yesterday, 'day')
     );
-  }, [startDate, endDate]);
+  }, [startDate, endDate, SYSTEM_MIN_DATE]);
 
   const navigatePrev = () => {
     const start = startDate ? startDate : dayjs(queryStartDate);
@@ -115,9 +122,9 @@ export const useDateNavigation = () => {
     const duration = currentEnd.diff(currentStart, 'day') + 1;
     const prevStart = currentStart.subtract(duration, 'day');
 
-    // 예측된 이전 시작일이 2025-02-12 이전이라면 비활성화
-    return prevStart.isBefore('2025-02-12');
-  }, [startDate, endDate, queryStartDate, queryEndDate]);
+    // 예측된 이전 시작일이 시스템 최소 날짜 이전이라면 비활성화
+    return prevStart.isBefore(SYSTEM_MIN_DATE);
+  }, [startDate, endDate, queryStartDate, queryEndDate, SYSTEM_MIN_DATE]);
 
   return {
     period,

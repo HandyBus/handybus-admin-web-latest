@@ -5,8 +5,9 @@ import ExternalAnalysisTools from './components/ExternalAnalysisTools';
 import StatisticsInsights from './components/StatisticsInsights';
 import GrowthMetrics from './components/GrowthMetrics';
 import InflowAndConversionMetrics from './components/InflowAndConversionMetrics';
-import RepurchaseAnalysis from './components/RepurchaseAnalysis';
+import ReuseAnalysis from './components/ReuseAnalysis';
 import ActiveEvents from './components/ActiveEvents';
+import ExploreToCoreConversionElasticity from './components/ExploreToCoreConversionElasticity';
 
 const Page = () => {
   return (
@@ -23,12 +24,13 @@ const Page = () => {
           </div>
           <div className="flex w-full min-w-[936px] flex-col gap-48">
             <GrowthMetrics />
+            <ActiveEvents />
+            <Heading.h2>유입과 전환</Heading.h2>
+            <ExploreToCoreConversionElasticity />
+            <div className="h-24" />
             <InflowAndConversionMetrics />
+            <ReuseAnalysis />
           </div>
-        </div>
-        <div className="grid min-w-[936px] grid-cols-2 gap-24">
-          <RepurchaseAnalysis />
-          <ActiveEvents />
         </div>
       </div>
     </main>

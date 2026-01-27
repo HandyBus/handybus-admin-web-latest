@@ -107,7 +107,6 @@ export const createRoutesFromDefaultHubs = (
       // 경유지 도착 시간 = 도착지 도착 시간 - (경유지에서 도착지까지 소요시간)
       const hubArrivalTime = destinationArrivalTimeOnBaseDate
         .subtract(tripTime.eventTripTime, 'minute')
-        .subtract(tripTime.cushionTime, 'minute')
         .toISOString();
 
       toDestinationArrivalTimes.push({ time: hubArrivalTime });
@@ -142,7 +141,6 @@ export const createRoutesFromDefaultHubs = (
       // 경유지 도착 시간 = 도착지 출발 시간 + (도착지에서 경유지까지 소요시간)
       const hubArrivalTime = destinationDepartureTimeOnBaseDate
         .add(tripTime.returnTripTime, 'minute')
-        .add(tripTime.cushionTime, 'minute')
         .toISOString();
 
       fromDestinationArrivalTimes.push({ time: hubArrivalTime });
