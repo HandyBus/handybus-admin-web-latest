@@ -1,39 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
 import { createPortal } from 'react-dom';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { ko } from 'date-fns/locale';
-import {
-  CalendarIcon,
-  RotateCcwIcon,
-  InfoIcon,
-  ArrowUpIcon,
-  ArrowDownIcon,
-} from 'lucide-react';
-import Button from '@/components/button/Button';
+import { InfoIcon, ArrowUpIcon, ArrowDownIcon } from 'lucide-react';
 
-type ChartDataPoint = {
-  name: string;
-  value: number;
-};
-
-type Metric = {
-  id: string;
-  title: string;
-  value: string;
-  chartData: ChartDataPoint[];
-};
+import MetricCard from '@/app/(home)/components/MetricCard';
+import DateRangeControls from '@/app/(home)/components/DateRangeControls';
+import CustomLineChart from '@/components/chart/CustomLineChart';
+import { useDateNavigation } from '@/app/(home)/hooks/useDateNavigation';
+import { useRetentionMetricsData } from '../hooks/useRetentionMetricsData';
 
 type FandomCompetitiveness = {
   rank: number;
@@ -50,74 +26,6 @@ type FandomCompetitiveness = {
   crossInterest: { artist: string; percent: number };
   crossInterestDetails: { artist: string; percent: number }[];
 };
-
-const MOCK_DATA: Metric[] = [
-  {
-    id: 'reparticipation_rate',
-    title: '행사 재참여율',
-    value: '78.5%',
-    chartData: [
-      { name: '1월', value: 65 },
-      { name: '2월', value: 68 },
-      { name: '3월', value: 72 },
-      { name: '4월', value: 70 },
-      { name: '5월', value: 75 },
-      { name: '6월', value: 78.5 },
-    ],
-  },
-  {
-    id: 'reparticipation_cycle',
-    title: '행사 재참여주기',
-    value: '45일',
-    chartData: [
-      { name: '1월', value: 55 },
-      { name: '2월', value: 52 },
-      { name: '3월', value: 50 },
-      { name: '4월', value: 48 },
-      { name: '5월', value: 46 },
-      { name: '6월', value: 45 },
-    ],
-  },
-  {
-    id: 'rebooking_rate',
-    title: '행사 재예매율',
-    value: '42.1%',
-    chartData: [
-      { name: '1월', value: 35 },
-      { name: '2월', value: 38 },
-      { name: '3월', value: 40 },
-      { name: '4월', value: 41 },
-      { name: '5월', value: 41.5 },
-      { name: '6월', value: 42.1 },
-    ],
-  },
-  {
-    id: 'rebooking_cycle',
-    title: '행사 재예매주기',
-    value: '15일',
-    chartData: [
-      { name: '1월', value: 20 },
-      { name: '2월', value: 19 },
-      { name: '3월', value: 18 },
-      { name: '4월', value: 17 },
-      { name: '5월', value: 16 },
-      { name: '6월', value: 15 },
-    ],
-  },
-  {
-    id: 'reboarding_cycle',
-    title: '재탑승주기',
-    value: '22일',
-    chartData: [
-      { name: '1월', value: 25 },
-      { name: '2월', value: 24 },
-      { name: '3월', value: 24 },
-      { name: '4월', value: 23 },
-      { name: '5월', value: 22.5 },
-      { name: '6월', value: 22 },
-    ],
-  },
-];
 
 const MOCK_COMPETITIVENESS_DATA: FandomCompetitiveness[] = [
   {
@@ -218,12 +126,34 @@ const MOCK_COMPETITIVENESS_DATA: FandomCompetitiveness[] = [
 ];
 
 const RetentionFandomsDashboard = () => {
-  const [selectedId, setSelectedId] = useState<string>(MOCK_DATA[0].id);
-  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
-    null,
-    null,
-  ]);
-  const [startDate, endDate] = dateRange;
+  const [selectedMetricId, setSelectedMetricId] = useState<string>(
+    'reparticipation_rate',
+  );
+
+  const {
+    period,
+    startDate,
+    endDate,
+    queryStartDate,
+    queryEndDate,
+    isNextDisabled,
+    isPrevDisabled,
+    isAllTime,
+    navigatePrev,
+    navigateNext,
+    updateDateRange,
+    setAllTimeRange,
+  } = useDateNavigation();
+
+  const { processedMetrics } = useRetentionMetricsData({
+    currentStartDate: queryStartDate,
+    currentEndDate: queryEndDate,
+  });
+
+  const selectedMetric =
+    processedMetrics.find((m) => m.id === selectedMetricId) ||
+    processedMetrics[0];
+
   const [mounted, setMounted] = useState(false);
   const [tooltipState, setTooltipState] = useState<{
     show: boolean;
@@ -234,13 +164,6 @@ const RetentionFandomsDashboard = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const currentMetric =
-    MOCK_DATA.find((m) => m.id === selectedId) || MOCK_DATA[0];
-
-  const handleReset = () => {
-    setDateRange([null, null]);
-  };
 
   const [sortConfig, setSortConfig] = useState<{
     key: keyof FandomCompetitiveness;
@@ -334,120 +257,75 @@ const RetentionFandomsDashboard = () => {
             서비스의 재방문율과 충성 고객(팬덤)의 성장 추이를 분석합니다.
           </p>
         </div>
-
-        {/* Date Filter Controls */}
-        <div className="flex items-center gap-8">
-          <div className="relative flex items-center">
-            <DatePicker
-              selectsRange={true}
-              startDate={startDate}
-              endDate={endDate}
-              onChange={(update) => {
-                setDateRange(update);
-              }}
-              locale={ko}
-              dateFormat="yyyy.MM.dd"
-              placeholderText="기간 선택"
-              className="h-[40px] w-[240px] rounded-8 border border-basic-grey-300 px-12 py-8 text-14 text-basic-black outline-none focus:border-brand-primary-400"
-            />
-            <div className="pointer-events-none absolute right-12 text-basic-grey-400">
-              <CalendarIcon size={16} />
-            </div>
-          </div>
-
-          <Button
-            variant="tertiary"
-            size="medium"
-            className="!h-[40px] !w-auto !px-12"
-            onClick={handleReset}
-          >
-            <div className="flex items-center gap-4">
-              <RotateCcwIcon size={14} />
-              <span className="text-14">초기화</span>
-            </div>
-          </Button>
-        </div>
       </div>
 
       {/* Cards Grid */}
-      <div className="grid grid-cols-5 gap-16">
-        {MOCK_DATA.map((item) => {
-          const isActive = item.id === selectedId;
-          return (
-            <button
-              key={item.id}
-              onClick={() => setSelectedId(item.id)}
-              className={`flex flex-col items-start rounded-16 border p-24 transition-all duration-200 ${
-                isActive
-                  ? 'border-basic-black bg-basic-black text-basic-white shadow-lg'
-                  : 'border-basic-grey-200 bg-basic-white text-basic-black hover:border-basic-grey-400 hover:bg-basic-grey-50'
-              }`}
-            >
-              <span
-                className={`text-16 font-500 ${
-                  isActive ? 'text-basic-grey-200' : 'text-basic-grey-600'
-                }`}
-              >
-                {item.title}
-              </span>
-              <div className="mt-12 flex items-baseline gap-8">
-                <span className="text-28 font-700">{item.value}</span>
-              </div>
-            </button>
-          );
-        })}
+      <div className="flex flex-col gap-16">
+        {/* Row 1: 2 items */}
+        <div className="grid grid-cols-2 gap-16">
+          {[
+            processedMetrics.find((m) => m.id === 'reparticipation_rate'),
+            processedMetrics.find((m) => m.id === 'rebooking_rate'),
+          ]
+            .filter(Boolean)
+            .map((item) => (
+              <MetricCard
+                key={item!.id}
+                metric={item!}
+                isSelected={selectedMetricId === item!.id}
+                onClick={() => setSelectedMetricId(item!.id)}
+              />
+            ))}
+        </div>
+        {/* Row 2: 3 items */}
+        <div className="grid grid-cols-3 gap-16">
+          {[
+            processedMetrics.find((m) => m.id === 'reparticipation_cycle'),
+            processedMetrics.find((m) => m.id === 'rebooking_cycle'),
+            processedMetrics.find((m) => m.id === 'reboarding_cycle'),
+          ]
+            .filter(Boolean)
+            .map((item) => (
+              <MetricCard
+                key={item!.id}
+                metric={item!}
+                isSelected={selectedMetricId === item!.id}
+                onClick={() => setSelectedMetricId(item!.id)}
+              />
+            ))}
+        </div>
+      </div>
+
+      {/* Date Controls */}
+      <div className="flex w-full justify-end">
+        <DateRangeControls
+          startDate={startDate}
+          endDate={endDate}
+          onPrevClick={navigatePrev}
+          onNextClick={navigateNext}
+          onDateRangeChange={updateDateRange}
+          onAllTimeClick={setAllTimeRange}
+          isAllTime={isAllTime}
+          isPrevDisabled={isPrevDisabled}
+          isNextDisabled={isNextDisabled}
+          period={period}
+        />
       </div>
 
       {/* Chart Section */}
-      <div className="flex w-full flex-col gap-24 rounded-24 border border-basic-grey-200 bg-basic-white p-32">
-        <div className="flex items-center justify-between">
-          <h2 className="text-20 font-700 text-basic-black">
-            {currentMetric.title} 추이
-          </h2>
+      <div className="flex w-full flex-col gap-24 rounded-24 border border-basic-grey-200 bg-basic-white shadow-md">
+        <div className="flex items-center justify-between p-24 pb-0">
+          <p className="text-20 font-600 text-basic-black">
+            {selectedMetric?.chartLabel || ''} 추이
+          </p>
         </div>
 
-        <div className="h-[400px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={currentMetric.chartData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-            >
-              <CartesianGrid
-                strokeDasharray="3 3"
-                vertical={false}
-                stroke="#E5E7EB"
-              />
-              <XAxis
-                dataKey="name"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: '#6B7280', fontSize: 14 }}
-                dy={10}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: '#6B7280', fontSize: 14 }}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#fff',
-                  borderRadius: '12px',
-                  border: '1px solid #E5E7EB',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                }}
-                itemStyle={{ color: '#111' }}
-              />
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke="#111111"
-                strokeWidth={3}
-                dot={{ r: 4, fill: '#111111', strokeWidth: 2, stroke: '#fff' }}
-                activeDot={{ r: 6, fill: '#111111' }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+        <div className="flex h-[530px] w-full p-24 pt-0">
+          <CustomLineChart
+            data={selectedMetric?.chartData || []}
+            dataKey={['value']}
+            label={{ value: selectedMetric?.chartLabel || '' }}
+          />
         </div>
       </div>
 

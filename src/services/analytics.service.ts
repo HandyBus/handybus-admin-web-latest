@@ -3,6 +3,7 @@ import {
   DailyExploreMetricsViewEntitySchema,
   DailyFirstPurchaseLeadTimeMetricsReadModelSchema,
   DailyGmvMetricsViewEntitySchema,
+  DailyRetentionMetricsReadModelSchema,
   DailySignupMetricsViewEntitySchema,
   EventUserStatisticsSchema,
   MonthlyActiveEventsMetricsReadModelSchema,
@@ -350,5 +351,37 @@ export const useGetEventUserStatistics = ({
   return useQuery({
     queryKey: ['event-user-statistics', eventId, endDate],
     queryFn: () => getEventUserStatistics(eventId, endDate),
+  });
+};
+
+/**
+ * 행사별 리텐션 매트릭 조회
+ */
+
+export const getDailyRetentionMetrics = async (
+  startDate: string,
+  endDate: string,
+) => {
+  const res = await authInstance.get(
+    `/v1/analytics/admin/daily-retention-metrics?startDate=${startDate}&endDate=${endDate}`,
+    {
+      shape: {
+        dailyRetentionMetricsList: DailyRetentionMetricsReadModelSchema.array(),
+      },
+    },
+  );
+  return res.dailyRetentionMetricsList;
+};
+
+export const useGetDailyRetentionMetrics = ({
+  startDate,
+  endDate,
+}: {
+  startDate: string;
+  endDate: string;
+}) => {
+  return useQuery({
+    queryKey: ['daily-retention-metrics', startDate, endDate],
+    queryFn: () => getDailyRetentionMetrics(startDate, endDate),
   });
 };
