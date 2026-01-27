@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import dayjs from 'dayjs';
 import { useGetEventUserStatistics } from '@/services/analytics.service';
 import { EventsViewEntity } from '@/types/event.type';
-import { ChartData } from '../components/ReuseChart';
-import { CardStats } from '../components/ReuseStatsCards';
+import { ChartData } from '../ReuseChart';
+import { CardStats } from '../ReuseStatsCards';
 
 interface UseReuseStatisticsReturn {
   isLoadingStats: boolean;

@@ -3,11 +3,11 @@
 import Heading from '@/components/text/Heading';
 import ExternalAnalysisTools from './components/ExternalAnalysisTools';
 import StatisticsInsights from './components/StatisticsInsights';
-import GrowthMetrics from './components/GrowthMetrics';
-import InflowAndConversionMetrics from './components/InflowAndConversionMetrics';
-import ReuseAnalysis from './components/ReuseAnalysis';
-import ActiveEvents from './components/ActiveEvents';
-import ExploreToCoreConversionElasticity from './components/ExploreToCoreConversionElasticity';
+import GrowthMetrics from './components/growth/GrowthMetrics';
+import InflowAndConversionMetrics from './components/acquisition-conversion/InflowAndConversionMetrics';
+import ReuseAnalysis from './components/acquisition-conversion/ReuseAnalysis';
+import ActiveEvents from './components/growth/ActiveEvents';
+import ExploreToCoreConversionElasticity from './components/acquisition-conversion/ExploreToCoreConversionElasticity';
 
 const Page = () => {
   return (
