@@ -18,12 +18,12 @@ interface UseRetentionMetricsDataProps {
   currentEndDate: string;
 }
 
-const hoursToDays = (hours: number) => {
+export const hoursToDays = (hours: number) => {
   if (!hours) return 0;
   return parseFloat((hours / 24).toFixed(1));
 };
 
-const safeRate = (numerator: number, denominator: number) => {
+export const safeRate = (numerator: number, denominator: number) => {
   if (!denominator || denominator === 0) return 0;
   return parseFloat(((numerator / denominator) * 100).toFixed(1));
 };
@@ -99,71 +99,6 @@ export const useRetentionMetricsData = ({
       prevEndDate: cardPreEndDate,
       enabled: true,
     });
-
-  // --- 3. 데이터 가공 로직 (Data Processing) ---
-
-  // 차트를 그리기 위한 리스트 데이터 계산
-  const calculateDailyMetrics = (
-    retentionList: DailyRetentionMetricsReadModel[] = [],
-    coreList: DailyCoreMetricsViewEntity[] = [],
-  ) => {
-    const coreMap = new Map(coreList.map((c) => [c.date, c]));
-
-    return retentionList.map((r) => {
-      const core = coreMap.get(r.date);
-      const participationUserCount = core?.participationUserCount || 0;
-      const reservationUserCount = core?.reservationUserCount || 0;
-
-      return {
-        date: r.date,
-        reparticipationRate: safeRate(
-          r.eventReparticipationUserCount,
-          participationUserCount,
-        ),
-        reparticipationCycle: hoursToDays(
-          r.averageUserEventReparticipationHours,
-        ),
-        rebookingRate: safeRate(
-          r.eventRebookingUserCount,
-          reservationUserCount,
-        ),
-        rebookingCycle: hoursToDays(r.averageUserEventRebookingHours),
-        reboardingCycle: r.averageUserReboardingDays, // 응답데이터가 이미 일별
-      };
-    });
-  };
-
-  // 지표카드에 반영하기 위한 단일 데이터 계산
-  const calculateSingleDayMetrics = (
-    retention: DailyRetentionMetricsReadModel | undefined,
-    core: DailyCoreMetricsViewEntity | undefined,
-  ) => {
-    if (!retention || !core) {
-      return {
-        reparticipationRate: 0,
-        reparticipationCycle: 0,
-        rebookingRate: 0,
-        rebookingCycle: 0,
-        reboardingCycle: 0,
-      };
-    }
-
-    return {
-      reparticipationRate: safeRate(
-        retention.eventReparticipationUserCount,
-        core.participationUserCount,
-      ),
-      reparticipationCycle: hoursToDays(
-        retention.averageUserEventReparticipationHours,
-      ),
-      rebookingRate: safeRate(
-        retention.eventRebookingUserCount,
-        core.reservationUserCount,
-      ),
-      rebookingCycle: hoursToDays(retention.averageUserEventRebookingHours),
-      reboardingCycle: retention.averageUserReboardingDays,
-    };
-  };
 
   const processedMetrics: MetricData[] = useMemo(() => {
     // 1. 차트용 일별 시계열 데이터 계산
@@ -285,4 +220,64 @@ export const useRetentionMetricsData = ({
   ]);
 
   return { processedMetrics };
+};
+
+// --- 3. 데이터 가공 로직 (Data Processing) ---
+
+// 차트를 그리기 위한 리스트 데이터 계산
+export const calculateDailyMetrics = (
+  retentionList: DailyRetentionMetricsReadModel[] = [],
+  coreList: DailyCoreMetricsViewEntity[] = [],
+) => {
+  const coreMap = new Map(coreList.map((c) => [c.date, c]));
+
+  return retentionList.map((r) => {
+    const core = coreMap.get(r.date);
+    const participationUserCount = core?.participationUserCount || 0;
+    const reservationUserCount = core?.reservationUserCount || 0;
+
+    return {
+      date: r.date,
+      reparticipationRate: safeRate(
+        r.eventReparticipationUserCount,
+        participationUserCount,
+      ),
+      reparticipationCycle: hoursToDays(r.averageUserEventReparticipationHours),
+      rebookingRate: safeRate(r.eventRebookingUserCount, reservationUserCount),
+      rebookingCycle: hoursToDays(r.averageUserEventRebookingHours),
+      reboardingCycle: r.averageUserReboardingDays, // 응답데이터가 이미 일별
+    };
+  });
+};
+
+// 지표카드에 반영하기 위한 단일 데이터 계산
+export const calculateSingleDayMetrics = (
+  retention: DailyRetentionMetricsReadModel | undefined,
+  core: DailyCoreMetricsViewEntity | undefined,
+) => {
+  if (!retention || !core) {
+    return {
+      reparticipationRate: 0,
+      reparticipationCycle: 0,
+      rebookingRate: 0,
+      rebookingCycle: 0,
+      reboardingCycle: 0,
+    };
+  }
+
+  return {
+    reparticipationRate: safeRate(
+      retention.eventReparticipationUserCount,
+      core.participationUserCount,
+    ),
+    reparticipationCycle: hoursToDays(
+      retention.averageUserEventReparticipationHours,
+    ),
+    rebookingRate: safeRate(
+      retention.eventRebookingUserCount,
+      core.reservationUserCount,
+    ),
+    rebookingCycle: hoursToDays(retention.averageUserEventRebookingHours),
+    reboardingCycle: retention.averageUserReboardingDays,
+  };
 };
