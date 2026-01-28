@@ -109,15 +109,19 @@ const validateTripTypePrice = (regularPrice: FormValues['regularPrice']) => {
     return false;
   }
 
-  const hasRoundTrip = roundTrip !== 0;
-  const hasToDestination = toDestination !== 0;
-  const hasFromDestination = fromDestination !== 0;
+  // const hasRoundTrip = roundTrip && roundTrip !== 0;
+  // const hasToDestination = toDestination && toDestination !== 0;
+  // const hasFromDestination = fromDestination && fromDestination !== 0;
 
-  if (!hasRoundTrip && !hasToDestination && !hasFromDestination) {
-    return false;
-  } else if (hasRoundTrip && (!hasToDestination || !hasFromDestination)) {
-    return false;
-  }
+  // if (!hasRoundTrip && !hasToDestination && !hasFromDestination) {
+  //   return false;
+  // } else if (
+  //   hasRoundTrip &&
+  //   ((hasToDestination && !hasFromDestination) ||
+  //     (!hasToDestination && hasFromDestination))
+  // ) {
+  //   return false;
+  // }
 
   return true;
 };
