@@ -37,11 +37,11 @@ const DateRangeControls = ({
   const datePickerRef = useRef<HTMLDivElement>(null);
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
 
-  // Manual Input State
+  // 수기 입력 상태
   const [startInput, setStartInput] = useState('');
   const [endInput, setEndInput] = useState('');
 
-  // Sync inputs when popup opens or dates change
+  // 팝업이 열리거나 날짜가 변경될 때 입력값 동기화
   useEffect(() => {
     if (isDatePickerOpen) {
       setStartInput(startDate ? startDate.format('YYYY.MM.DD') : '');
@@ -83,7 +83,7 @@ const DateRangeControls = ({
   const handleManualInputSubmit = () => {
     // Validate format YYYY.MM.DD or YYYY-MM-DD or YYYYMMDD
     const parseDate = (input: string) => {
-      // Remove separators
+      // 기호 제거
       const cleanInput = input.replace(/[\.\-\/]/g, '');
       if (cleanInput.length !== 8) return null;
 
@@ -96,7 +96,7 @@ const DateRangeControls = ({
     const newEnd = parseDate(endInput);
 
     if (newStart && newEnd) {
-      // Validate Logic same as handleDateChange but with manual inputs
+      // 기존 handleDateChange 로직과 동일하게 기간별 처리 적용
       if (period === '월간') {
         const s = newStart.startOf('month');
         const e = newEnd.endOf('month');
@@ -133,7 +133,7 @@ const DateRangeControls = ({
       onDateRangeChange(newStart, newEnd);
       if (start && end) setIsDatePickerOpen(false);
     } else {
-      // Daily
+      // 일간
       onDateRangeChange(start ? dayjs(start) : null, end ? dayjs(end) : null);
       if (start && end) setIsDatePickerOpen(false);
     }
@@ -141,7 +141,7 @@ const DateRangeControls = ({
 
   const dayClassName = (date: Date) => {
     if (period === '주간' && hoveredDate) {
-      // Highlight the week of the hovered date
+      // 마우스 오버된 날짜가 포함된 주 강조
       const hovered = dayjs(hoveredDate);
       const current = dayjs(date);
       if (current.isSame(hovered, 'isoWeek')) {
