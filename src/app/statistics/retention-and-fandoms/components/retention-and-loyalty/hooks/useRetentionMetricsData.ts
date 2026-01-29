@@ -49,7 +49,7 @@ export const useRetentionMetricsData = ({
       cardRecentEndDate: yesterday.format('YYYY-MM-DD'),
       cardPreStartDate: dayBeforeYesterday.format('YYYY-MM-DD'),
       cardPreEndDate: dayBeforeYesterday.format('YYYY-MM-DD'),
-      criterionLabel: '전 일 대비',
+      criterionLabel: '전 일 기준',
     };
   }, []);
 
@@ -115,7 +115,7 @@ export const useRetentionMetricsData = ({
     );
 
     // 3. 그저께(이전 1일) 지표 계산
-    // 전 일 대비 변화율 계산을 위해 사용합니다.
+    // 전 일 기준 변화율 계산을 위해 사용합니다.
     const preMetrics = calculateSingleDayMetrics(
       cardPreRetentionData?.[0],
       cardPreCoreData?.[0],
