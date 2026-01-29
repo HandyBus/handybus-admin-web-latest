@@ -198,7 +198,7 @@ const DateRangeControls = ({
             className="absolute left-0 top-full z-50 mt-4 flex flex-col gap-12 rounded-8 border border-basic-grey-200 bg-basic-white p-16 shadow-lg"
             onMouseLeave={() => setHoveredDate(null)}
           >
-            <div className="flex items-center gap-8">
+            <div className="flex items-center justify-between">
               <Input
                 value={startInput}
                 onChange={(e) =>
@@ -206,7 +206,7 @@ const DateRangeControls = ({
                 }
                 onKeyDown={handleKeyDown}
                 placeholder="YYYY.MM.DD"
-                className="h-32 w-120 text-14"
+                className="h-32 w-108 text-14"
               />
               <span className="text-14 text-basic-grey-500">-</span>
               <Input
@@ -214,7 +214,7 @@ const DateRangeControls = ({
                 onChange={(e) => handleManualInputChange('end', e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="YYYY.MM.DD"
-                className="h-32 w-120 text-14"
+                className="h-32 w-108 text-14"
               />
             </div>
             <DatePicker
