@@ -10,6 +10,7 @@ import {
   useGetDailyFandomSnapshotMetrics,
   useGetMonthlyFandomCrossMetrics,
 } from '@/services/analytics.service';
+import { getLatestDataDate } from '@/app/(home)/utils/dateNavigation.util';
 
 import {
   calculateFandomCompetitiveness,
@@ -38,7 +39,7 @@ const FandomCompetitivenessSection = () => {
     twoDaysBeforeYesterday,
   } = useMemo(() => {
     const today = dayjs();
-    const yesterday = today.subtract(1, 'day');
+    const yesterday = getLatestDataDate();
     const dayBeforeYesterday = yesterday.subtract(1, 'day');
     const twoDaysBeforeYesterday = dayBeforeYesterday.subtract(1, 'day');
 

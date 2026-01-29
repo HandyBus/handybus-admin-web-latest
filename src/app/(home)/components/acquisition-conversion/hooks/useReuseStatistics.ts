@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-import dayjs from 'dayjs';
+
 import { useGetEventUserStatistics } from '@/services/analytics.service';
+import { getLatestDataDate } from '@/app/(home)/utils/dateNavigation.util';
 import { EventsViewEntity } from '@/types/event.type';
 import { ChartData } from '../ReuseChart';
 import { CardStats } from '../ReuseStatsCards';
@@ -20,8 +21,8 @@ const COLORS = ['#6366f1', '#e5e7eb'];
 export const useReuseStatistics = (
   selectedEvent: EventsViewEntity | null,
 ): UseReuseStatisticsReturn => {
-  // 3. 통계 조회를 위한 날짜 설정 (오늘 날짜)
-  const endDate = dayjs().format('YYYY-MM-DD');
+  // 3. 통계 조회를 위한 날짜 설정 (최신 데이터 기준)
+  const endDate = getLatestDataDate().format('YYYY-MM-DD');
 
   // 4. 통계 데이터 조회
   const { data: stats, isLoading: isLoadingStats } = useGetEventUserStatistics({

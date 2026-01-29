@@ -10,6 +10,7 @@ import {
   isAllTimeRange,
   isNextDateDisabled,
   isPrevDateDisabled,
+  getLatestDataDate,
 } from '../utils/dateNavigation.util';
 
 interface UseDateNavigationConfig {
@@ -24,9 +25,7 @@ export const useDateNavigation = (config?: UseDateNavigationConfig) => {
   const [startDate, setStartDate] = useState<Dayjs | null>(
     dayjs().subtract(1, 'day').subtract(29, 'day'),
   );
-  const [endDate, setEndDate] = useState<Dayjs | null>(
-    dayjs().subtract(1, 'day'),
-  );
+  const [endDate, setEndDate] = useState<Dayjs | null>(getLatestDataDate());
 
   /*
    * 날짜 및 기간 로직:
@@ -52,7 +51,7 @@ export const useDateNavigation = (config?: UseDateNavigationConfig) => {
 
   const setAllTimeRange = () => {
     setStartDate(dayjs(SYSTEM_MIN_DATE));
-    setEndDate(dayjs().subtract(1, 'day'));
+    setEndDate(getLatestDataDate());
   };
 
   const isAllTime = useMemo(() => {

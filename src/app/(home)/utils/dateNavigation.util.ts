@@ -4,47 +4,58 @@ import { FilterPeriod } from '../types/types';
 
 dayjs.extend(isoWeek);
 
+export const getLatestDataDate = (): Dayjs => {
+  const now = dayjs();
+  // 오전 07:00 업데이트 기준
+  // 현재 시간이 7시 이전이면, 최신 데이터는 그저께(2일 전) 기준
+  // 현재 시간이 7시 이후이면, 최신 데이터는 어제(1일 전) 기준
+  if (now.hour() < 7) {
+    return now.subtract(2, 'day').startOf('day');
+  }
+  return now.subtract(1, 'day').startOf('day');
+};
+
 export const calculateQueryStartDate = (
   period: FilterPeriod,
   startDate: Dayjs | null,
 ): string => {
   if (startDate) return startDate.format('YYYY-MM-DD');
 
-  const yesterday = dayjs().subtract(1, 'day');
+  const latestDate = getLatestDataDate();
   switch (period) {
     case '월간':
-      return yesterday
+      return latestDate
         .subtract(5, 'month')
         .startOf('month')
         .format('YYYY-MM-DD');
     case '주간':
-      return yesterday
+      return latestDate
         .subtract(11, 'week')
         .startOf('isoWeek')
         .format('YYYY-MM-DD');
     // case '일간':
     default:
-      return yesterday.subtract(29, 'day').format('YYYY-MM-DD');
+      return latestDate.subtract(29, 'day').format('YYYY-MM-DD');
   }
 };
 
 export const calculateQueryEndDate = (endDate: Dayjs | null): string => {
   if (endDate) return endDate.format('YYYY-MM-DD');
-  return dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+  return getLatestDataDate().format('YYYY-MM-DD');
 };
 
 export const calculateDateRangeForPeriod = (period: FilterPeriod) => {
-  const yesterday = dayjs().subtract(1, 'day');
+  const latestDate = getLatestDataDate();
   let startDate: Dayjs;
-  const endDate = yesterday;
+  const endDate = latestDate;
 
   if (period === '월간') {
-    startDate = yesterday.subtract(5, 'month').startOf('month');
+    startDate = latestDate.subtract(5, 'month').startOf('month');
   } else if (period === '주간') {
-    startDate = yesterday.subtract(11, 'week').startOf('isoWeek');
+    startDate = latestDate.subtract(11, 'week').startOf('isoWeek');
   } else {
     // 일간
-    startDate = yesterday.subtract(29, 'day');
+    startDate = latestDate.subtract(29, 'day');
   }
   return { startDate, endDate };
 };
@@ -66,12 +77,12 @@ export const calculatePrevDateRange = (startDate: Dayjs, endDate: Dayjs) => {
 };
 
 export const isNextDateDisabled = (startDate: Dayjs, endDate: Dayjs) => {
-  const yesterday = dayjs().subtract(1, 'day').startOf('day');
+  const latestDate = getLatestDataDate().startOf('day');
   const duration = endDate.diff(startDate, 'day') + 1;
   const nextEnd = endDate.add(duration, 'day');
 
-  // 예측된 다음 종료일이 어제보다 미래라면 비활성화
-  return nextEnd.isAfter(yesterday, 'day');
+  // 예측된 다음 종료일이 최신 데이터 날짜보다 미래라면 비활성화
+  return nextEnd.isAfter(latestDate, 'day');
 };
 
 export const isPrevDateDisabled = (
@@ -93,8 +104,8 @@ export const isAllTimeRange = (
 ) => {
   if (!startDate || !endDate) return false;
   const allTimeStart = dayjs(minDate);
-  const yesterday = dayjs().subtract(1, 'day');
+  const latestDate = getLatestDataDate();
   return (
-    startDate.isSame(allTimeStart, 'day') && endDate.isSame(yesterday, 'day')
+    startDate.isSame(allTimeStart, 'day') && endDate.isSame(latestDate, 'day')
   );
 };

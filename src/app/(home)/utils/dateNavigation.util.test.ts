@@ -10,6 +10,7 @@ import {
   isNextDateDisabled,
   isPrevDateDisabled,
   isAllTimeRange,
+  getLatestDataDate,
 } from './dateNavigation.util';
 
 dayjs.extend(isoWeek);
@@ -21,11 +22,34 @@ describe('dateNavigation.util', () => {
 
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.setSystemTime(dayjs(MOCK_TODAY).toDate());
+    // Set time to noon (12:00:00) to ensure it's after 7 AM for general tests
+    vi.setSystemTime(dayjs(MOCK_TODAY).hour(12).minute(0).second(0).toDate());
   });
 
   afterEach(() => {
     vi.useRealTimers();
+  });
+
+  describe('getLatestDataDate', () => {
+    it('should return 2 days ago if current time is before 07:00 AM', () => {
+      // Set time to 06:59:59 on Mock Today (2025-05-15)
+      const beforeSeven = dayjs('2025-05-15 06:59:59').toDate();
+      vi.setSystemTime(beforeSeven);
+
+      // Expected: 2 days ago = 2025-05-13
+      const expected = dayjs('2025-05-13').format('YYYY-MM-DD');
+      expect(getLatestDataDate().format('YYYY-MM-DD')).toBe(expected);
+    });
+
+    it('should return 1 day ago (yesterday) if current time is 07:00 AM or later', () => {
+      // Set time to 07:00:00
+      const atSeven = dayjs('2025-05-15 07:00:00').toDate();
+      vi.setSystemTime(atSeven);
+
+      // Expected: 1 day ago = 2025-05-14
+      const expected = dayjs('2025-05-14').format('YYYY-MM-DD');
+      expect(getLatestDataDate().format('YYYY-MM-DD')).toBe(expected);
+    });
   });
 
   describe('calculateQueryStartDate', () => {
