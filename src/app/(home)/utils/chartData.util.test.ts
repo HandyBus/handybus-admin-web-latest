@@ -15,23 +15,20 @@ describe('processChartData', () => {
       ];
       const result = processChartData(data, '일간');
 
-      // First item usually gets full format "MM월 DD일"
-      expect(result[0].date).toBe('01월 01일');
-      expect(result[1].date).toBe('2일');
-      expect(result[2].date).toBe('3일');
+      expect(result[0].date).toBe('2025-01-01');
+      expect(result[1].date).toBe('2025-01-02');
+      expect(result[2].date).toBe('2025-01-03');
     });
 
-    it('should show Month/Date on 1st day of month', () => {
+    it('should show YYYY-MM-DD even on 1st day of month', () => {
       const data = [
         { date: '2025-01-31', value: 10 },
         { date: '2025-02-01', value: 20 },
       ];
       const result = processChartData(data, '일간');
 
-      // Index 0
-      expect(result[0].date).toBe('01월 31일');
-      // Index 1 (is 1st day) -> should show "2월 1일"
-      expect(result[1].date).toBe('2월 1일');
+      expect(result[0].date).toBe('2025-01-31');
+      expect(result[1].date).toBe('2025-02-01');
     });
   });
 
