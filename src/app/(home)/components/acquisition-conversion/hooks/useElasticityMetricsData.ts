@@ -12,7 +12,7 @@ import { useComparisonQuery } from '@/app/(home)/hooks/useComparisonQuery';
 import { MetricData, FilterPeriod } from '@/app/(home)/types/types';
 import { processChartData } from '@/app/(home)/utils/chartData.util';
 import { getLatestDataDate } from '@/app/(home)/utils/dateNavigation.util';
-
+import { calculatePercentage } from '@/app/(home)/utils/metrics.util';
 import {
   DailyCoreMetricsViewEntity,
   DailyExploreMetricsViewEntity,
@@ -49,6 +49,8 @@ export const useElasticityMetricsData = ({
     cardRecentEndDate,
     cardPreStartDate,
     cardPreEndDate,
+    cardPrePreStartDate,
+    cardPrePreEndDate,
   } = useMemo(() => {
     const today = dayjs();
 
@@ -59,6 +61,10 @@ export const useElasticityMetricsData = ({
     const preD = latestDate.subtract(1, 'day');
     const pdStart = preD.format('YYYY-MM-DD');
     const pdEnd = preD.format('YYYY-MM-DD');
+    // 전전일 (전일 대비 변화율 계산용)
+    const prePreD = preD.subtract(1, 'day');
+    const ppdStart = prePreD.format('YYYY-MM-DD');
+    const ppdEnd = prePreD.format('YYYY-MM-DD');
 
     // 주간 (지난주)
     const lastWeek = today.subtract(1, 'week');
@@ -67,6 +73,10 @@ export const useElasticityMetricsData = ({
     const preW = lastWeek.subtract(1, 'week');
     const pwStart = preW.startOf('isoWeek').format('YYYY-MM-DD');
     const pwEnd = preW.endOf('isoWeek').format('YYYY-MM-DD');
+    // 전전주
+    const prePreW = preW.subtract(1, 'week');
+    const ppwStart = prePreW.startOf('isoWeek').format('YYYY-MM-DD');
+    const ppwEnd = prePreW.endOf('isoWeek').format('YYYY-MM-DD');
 
     // 월간 (지난달)
     const lastMonth = today.subtract(1, 'month');
@@ -75,12 +85,22 @@ export const useElasticityMetricsData = ({
     const preM = lastMonth.subtract(1, 'month');
     const pmStart = preM.startOf('month').format('YYYY-MM-DD');
     const pmEnd = preM.endOf('month').format('YYYY-MM-DD');
+    // 전전달
+    const prePreM = preM.subtract(1, 'month');
+    const ppmStart = prePreM.startOf('month').format('YYYY-MM-DD');
+    const ppmEnd = prePreM.endOf('month').format('YYYY-MM-DD');
 
     return {
       cardRecentStartDate: { daily: dStart, weekly: wStart, monthly: mStart },
       cardRecentEndDate: { daily: dEnd, weekly: wEnd, monthly: mEnd },
       cardPreStartDate: { daily: pdStart, weekly: pwStart, monthly: pmStart },
       cardPreEndDate: { daily: pdEnd, weekly: pwEnd, monthly: pmEnd },
+      cardPrePreStartDate: {
+        daily: ppdStart,
+        weekly: ppwStart,
+        monthly: ppmStart,
+      },
+      cardPrePreEndDate: { daily: ppdEnd, weekly: ppwEnd, monthly: ppmEnd },
     };
   }, []);
 
@@ -108,6 +128,26 @@ export const useElasticityMetricsData = ({
     },
   );
 
+  // 일간 (이전 vs 전전) - 퍼센트 계산용
+  const { prevData: prePreDailyExplore } = useComparisonQuery({
+    queryKey: ['daily-explore-elasticity-card-pre', cardPreStartDate.daily],
+    fetcher: getDailyExploreMetrics,
+    currentStartDate: cardPreStartDate.daily,
+    currentEndDate: cardPreEndDate.daily,
+    prevStartDate: cardPrePreStartDate.daily,
+    prevEndDate: cardPrePreEndDate.daily,
+    enabled: true,
+  });
+  const { prevData: prePreDailyCore } = useComparisonQuery({
+    queryKey: ['daily-core-elasticity-card-pre', cardPreStartDate.daily],
+    fetcher: getDailyCoreMetrics,
+    currentStartDate: cardPreStartDate.daily,
+    currentEndDate: cardPreEndDate.daily,
+    prevStartDate: cardPrePreStartDate.daily,
+    prevEndDate: cardPrePreEndDate.daily,
+    enabled: true,
+  });
+
   // 주간
   const { currentData: weeklyExplore, prevData: preWeeklyExplore } =
     useComparisonQuery({
@@ -129,6 +169,26 @@ export const useElasticityMetricsData = ({
       prevEndDate: cardPreEndDate.weekly,
       enabled: true,
     });
+
+  // 주간 (이전 vs 전전) - 퍼센트 계산용
+  const { prevData: prePreWeeklyExplore } = useComparisonQuery({
+    queryKey: ['weekly-explore-elasticity-card-pre', cardPreStartDate.weekly],
+    fetcher: getWeeklyExploreMetrics,
+    currentStartDate: cardPreStartDate.weekly,
+    currentEndDate: cardPreEndDate.weekly,
+    prevStartDate: cardPrePreStartDate.weekly,
+    prevEndDate: cardPrePreEndDate.weekly,
+    enabled: true,
+  });
+  const { prevData: prePreWeeklyCore } = useComparisonQuery({
+    queryKey: ['weekly-core-elasticity-card-pre', cardPreStartDate.weekly],
+    fetcher: getWeeklyCoreMetrics,
+    currentStartDate: cardPreStartDate.weekly,
+    currentEndDate: cardPreEndDate.weekly,
+    prevStartDate: cardPrePreStartDate.weekly,
+    prevEndDate: cardPrePreEndDate.weekly,
+    enabled: true,
+  });
 
   // 월간
   const { currentData: monthlyExplore, prevData: preMonthlyExplore } =
@@ -154,6 +214,26 @@ export const useElasticityMetricsData = ({
       prevEndDate: cardPreEndDate.monthly,
       enabled: true,
     });
+
+  // 월간 (이전 vs 전전) - 퍼센트 계산용
+  const { prevData: prePreMonthlyExplore } = useComparisonQuery({
+    queryKey: ['monthly-explore-elasticity-card-pre', cardPreStartDate.monthly],
+    fetcher: getMonthlyExploreMetrics,
+    currentStartDate: cardPreStartDate.monthly,
+    currentEndDate: cardPreEndDate.monthly,
+    prevStartDate: cardPrePreStartDate.monthly,
+    prevEndDate: cardPrePreEndDate.monthly,
+    enabled: true,
+  });
+  const { prevData: prePreMonthlyCore } = useComparisonQuery({
+    queryKey: ['monthly-core-elasticity-card-pre', cardPreStartDate.monthly],
+    fetcher: getMonthlyCoreMetrics,
+    currentStartDate: cardPreStartDate.monthly,
+    currentEndDate: cardPreEndDate.monthly,
+    prevStartDate: cardPrePreStartDate.monthly,
+    prevEndDate: cardPrePreEndDate.monthly,
+    enabled: true,
+  });
 
   // --- 2. 차트 데이터 페칭 (날짜 범위) ---
   const chartFetchStartDate = useMemo(() => {
@@ -319,6 +399,8 @@ export const useElasticityMetricsData = ({
     const dauCorePrev = getLastCoreValue(preDailyCore);
     const dauExploreCurr = getLastExploreValue(dailyExplore);
     const dauExplorePrev = getLastExploreValue(preDailyExplore);
+    const dauCorePrePre = getLastCoreValue(prePreDailyCore);
+    const dauExplorePrePre = getLastExploreValue(prePreDailyExplore);
 
     const dauElasticity = calculateElasticity(
       dauCoreCurr,
@@ -327,11 +409,20 @@ export const useElasticityMetricsData = ({
       dauExplorePrev,
     );
 
+    const dauElasticityPrev = calculateElasticity(
+      dauCorePrev,
+      dauCorePrePre,
+      dauExplorePrev,
+      dauExplorePrePre,
+    );
+
     // 2. WAU 탄력성 카드
     const wauCoreCurr = getLastCoreValue(weeklyCore);
     const wauCorePrev = getLastCoreValue(preWeeklyCore);
     const wauExploreCurr = getLastExploreValue(weeklyExplore);
     const wauExplorePrev = getLastExploreValue(preWeeklyExplore);
+    const wauCorePrePre = getLastCoreValue(prePreWeeklyCore);
+    const wauExplorePrePre = getLastExploreValue(prePreWeeklyExplore);
 
     const wauElasticity = calculateElasticity(
       wauCoreCurr,
@@ -340,17 +431,33 @@ export const useElasticityMetricsData = ({
       wauExplorePrev,
     );
 
+    const wauElasticityPrev = calculateElasticity(
+      wauCorePrev,
+      wauCorePrePre,
+      wauExplorePrev,
+      wauExplorePrePre,
+    );
+
     // 3. MAU 탄력성 카드
     const mauCoreCurr = getLastCoreValue(monthlyCore);
     const mauCorePrev = getLastCoreValue(preMonthlyCore);
     const mauExploreCurr = getLastExploreValue(monthlyExplore);
     const mauExplorePrev = getLastExploreValue(preMonthlyExplore);
+    const mauCorePrePre = getLastCoreValue(prePreMonthlyCore);
+    const mauExplorePrePre = getLastExploreValue(prePreMonthlyExplore);
 
     const mauElasticity = calculateElasticity(
       mauCoreCurr,
       mauCorePrev,
       mauExploreCurr,
       mauExplorePrev,
+    );
+
+    const mauElasticityPrev = calculateElasticity(
+      mauCorePrev,
+      mauCorePrePre,
+      mauExplorePrev,
+      mauExplorePrePre,
     );
 
     // 4. 차트 데이터 구성
@@ -398,7 +505,7 @@ export const useElasticityMetricsData = ({
       subtitle: '변환 탄력성',
       value: dauElasticity.toFixed(2),
       unit: '',
-      percentage: '',
+      percentage: calculatePercentage(dauElasticity, dauElasticityPrev),
       chartData: formattedChartData,
       chartLabel: `${selectedUnit} Explore -> Core 전환 탄력성`,
       criterionLabel: '전 일 기준',
@@ -410,7 +517,7 @@ export const useElasticityMetricsData = ({
       subtitle: '변환 탄력성',
       value: wauElasticity.toFixed(2),
       unit: '',
-      percentage: '',
+      percentage: calculatePercentage(wauElasticity, wauElasticityPrev),
       chartData: formattedChartData,
       chartLabel: `${selectedUnit} Explore -> Core 전환 탄력성`,
       criterionLabel: '전 주 기준',
@@ -422,7 +529,7 @@ export const useElasticityMetricsData = ({
       subtitle: '변환 탄력성',
       value: mauElasticity.toFixed(2),
       unit: '',
-      percentage: '',
+      percentage: calculatePercentage(mauElasticity, mauElasticityPrev),
       chartData: formattedChartData,
       chartLabel: `${selectedUnit} Explore -> Core 전환 탄력성`,
       criterionLabel: '전 달 기준',
@@ -432,16 +539,22 @@ export const useElasticityMetricsData = ({
   }, [
     dailyCore,
     preDailyCore,
+    prePreDailyCore,
     dailyExplore,
     preDailyExplore,
+    prePreDailyExplore,
     weeklyCore,
     preWeeklyCore,
+    prePreWeeklyCore,
     weeklyExplore,
     preWeeklyExplore,
+    prePreWeeklyExplore,
     monthlyCore,
     preMonthlyCore,
+    prePreMonthlyCore,
     monthlyExplore,
     preMonthlyExplore,
+    prePreMonthlyExplore,
     chartCore,
     chartExplore,
     selectedUnit,
