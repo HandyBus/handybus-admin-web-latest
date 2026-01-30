@@ -12,7 +12,12 @@ export type MetricId =
   | 'firstPaymentContribution'
   | 'elasticityDAU'
   | 'elasticityWAU'
-  | 'elasticityMAU';
+  | 'elasticityMAU'
+  | 'reparticipation_rate'
+  | 'reparticipation_cycle'
+  | 'rebooking_rate'
+  | 'rebooking_cycle'
+  | 'reboarding_cycle';
 
 export interface MetricData {
   id: MetricId;

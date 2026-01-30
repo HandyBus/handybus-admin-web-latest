@@ -1,15 +1,24 @@
-'use client';
-
 import { useState } from 'react';
 import CustomLineChart from '@/components/chart/CustomLineChart';
-import MetricCard from './MetricCard';
-import DateRangeControls from './DateRangeControls';
-import { MetricData, MetricId } from '../types/types';
-import { useDateNavigation } from '@/app/(home)/hooks/useDateNavigation';
-import { useElasticityMetricsData } from '../hooks/useElasticityMetricsData';
 import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import weekOfYear from 'dayjs/plugin/weekOfYear';
+import MetricCard from '@/app/(home)/components/MetricCard';
+import MetricUnitFilter from './MetricUnitFilter';
+import DateRangeControls from '@/app/(home)/components/DateRangeControls';
+import Heading from '@/components/text/Heading';
+import { MetricData, MetricId } from '@/app/(home)/types/types';
+import { useDateNavigation } from '@/app/(home)/hooks/useDateNavigation';
+import { useGrowthMetricsData } from './hooks/useGrowthMetricsData';
 
-const ExploreToCoreConversionElasticity = () => {
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
+dayjs.extend(weekOfYear);
+
+const GrowthMetrics = () => {
+  const [selectedMetricId, setSelectedMetricId] = useState<MetricId>('gmv');
+
   const {
     period,
     startDate,
@@ -24,32 +33,25 @@ const ExploreToCoreConversionElasticity = () => {
     navigateNext,
     updateDateRange,
     setAllTimeRange,
-  } = useDateNavigation({ minDate: '2025-06-06' });
+  } = useDateNavigation();
 
-  const [selectedMetricId, setSelectedMetricId] =
-    useState<MetricId>('elasticityDAU');
-
-  const { processedMetrics } = useElasticityMetricsData({
+  const { processedMetrics } = useGrowthMetricsData({
     currentStartDate: queryStartDate,
     currentEndDate: queryEndDate,
-    selectedUnit: period,
+    period,
   });
 
   const selectedMetric =
     processedMetrics.find((metric) => metric.id === selectedMetricId) ||
     processedMetrics[0];
 
-  const handleCardClick = (id: MetricId) => {
-    setSelectedMetricId(id);
-    if (id === 'elasticityDAU') changePeriod('일간');
-    if (id === 'elasticityWAU') changePeriod('주간');
-    if (id === 'elasticityMAU') changePeriod('월간');
+  const getChartData = (metric: MetricData) => {
+    return metric.chartData;
   };
 
   const getPeriodLabel = () => {
     if (isAllTime) {
-      // 다른 컴포넌트들처럼 전체 기간 조회를 위한 하드코딩된 시작 날짜?
-      const s = dayjs('2025-06-06').format('YYYY.MM.DD');
+      const s = dayjs('2025-02-12').format('YYYY.MM.DD');
       const e = dayjs().subtract(1, 'day').format('YYYY.MM.DD');
       return `전체 기간 (${s} - ${e})`;
     }
@@ -61,19 +63,23 @@ const ExploreToCoreConversionElasticity = () => {
     return `${period} (기간 선택 필요)`;
   };
 
-  const getChartData = (metric: MetricData) => {
-    return metric?.chartData || [];
-  };
-
   return (
     <div className="flex flex-col gap-16">
+      <div className="flex items-center justify-between">
+        <Heading.h2>성장</Heading.h2>
+        <MetricUnitFilter
+          selectedPeriod={period}
+          onChangePeriod={changePeriod}
+        />
+      </div>
+
       <div className="flex w-full gap-16">
         {processedMetrics.map((metric) => (
           <MetricCard
             key={metric.id}
             metric={metric}
             isSelected={selectedMetricId === metric.id}
-            onClick={() => handleCardClick(metric.id)}
+            onClick={() => setSelectedMetricId(metric.id)}
           />
         ))}
       </div>
@@ -96,7 +102,7 @@ const ExploreToCoreConversionElasticity = () => {
       <div className="relative w-full overflow-hidden rounded-16 border border-basic-grey-400 bg-basic-white shadow-md">
         <div className="flex items-center justify-between p-24">
           <p className="text-20 font-600 text-basic-black">
-            {selectedMetric?.chartLabel || ''}
+            {selectedMetric.chartLabel}
           </p>
           <p className="text-16 font-500 text-basic-grey-600">
             {getPeriodLabel()}
@@ -104,9 +110,9 @@ const ExploreToCoreConversionElasticity = () => {
         </div>
         <div className="flex h-[530px] w-full p-24">
           <CustomLineChart
-            data={selectedMetric ? getChartData(selectedMetric) : []}
+            data={getChartData(selectedMetric)}
             dataKey={['value']}
-            label={{ value: selectedMetric?.chartLabel || '' }}
+            label={{ value: selectedMetric.chartLabel }}
           />
         </div>
       </div>
@@ -114,4 +120,4 @@ const ExploreToCoreConversionElasticity = () => {
   );
 };
 
-export default ExploreToCoreConversionElasticity;
+export default GrowthMetrics;

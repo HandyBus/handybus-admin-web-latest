@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "node_modules/next/dist/bin/next start",
     "lint": "next lint",
+    "test": "vitest",
     "prepare": "husky install",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -65,6 +66,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@vitest/coverage-v8": "^4.0.18",
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
     "eslint-config-prettier": "^9.1.0",
@@ -78,6 +80,7 @@
     "prettier-plugin-tailwindcss": "^0.5.9",
     "storybook": "^8.3.6",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.0.18"
   }
 }

@@ -340,3 +340,37 @@ export const EventUserStatisticsSchema = z.object({
 });
 
 export type EventUserStatistics = z.infer<typeof EventUserStatisticsSchema>;
+
+/**
+ * 기간 내 일별 리텐션 메트릭 목록
+ */
+export const DailyRetentionMetricsReadModelSchema = z.object({
+  date: z.string().describe('비즈니스 기준 날짜 (Asia/Seoul, YYYY-MM-DD)'),
+  eventReparticipationUserCount: z
+    .number()
+    .describe(
+      '행사 재참여 유저 수 (과거 참여 이력이 있는 유저 중 해당 일자에 참여한 유저 수)',
+    ),
+  cumulativeEventReparticipationUserCount: z
+    .number()
+    .describe('누적 행사 재참여 유저 수'),
+  eventRebookingUserCount: z
+    .number()
+    .describe(
+      '행사 재예약 유저 수 (과거 예약 이력이 있는 유저 중 해당 일자에 예약한 유저 수)',
+    ),
+  cumulativeEventRebookingUserCount: z
+    .number()
+    .describe('누적 행사 재예약 유저 수'),
+  averageUserEventReparticipationHours: z
+    .number()
+    .describe('행사 재참여주기 평균 시간 (hour, 소수점 1자리 반올림)'),
+  averageUserEventRebookingHours: z
+    .number()
+    .describe('행사 재예약주기 평균 시간 (hour, 소수점 1자리 반올림)'),
+  averageUserReboardingDays: z.number().describe('재탑승주기 평균 일수'),
+});
+
+export type DailyRetentionMetricsReadModel = z.infer<
+  typeof DailyRetentionMetricsReadModelSchema
+>;

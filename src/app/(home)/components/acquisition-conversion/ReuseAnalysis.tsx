@@ -15,7 +15,7 @@ import { filterByFuzzy } from '@/utils/fuzzy.util';
 import Heading from '@/components/text/Heading';
 import dayjs from 'dayjs';
 import ReuseContent from './ReuseContent';
-import { useReuseStatistics } from '../hooks/useReuseStatistics';
+import { useReuseStatistics } from './hooks/useReuseStatistics';
 
 const ReuseAnalysis = () => {
   const [query, setQuery] = useState('');
