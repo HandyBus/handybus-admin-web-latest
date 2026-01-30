@@ -59,9 +59,19 @@ const MetricCard = ({ metric, isSelected, onClick }: MetricCardProps) => {
         <div className="flex items-center gap-[6px]">
           {percentage !== '-' && (
             <>
-              {parseFloat(percentage) < 0 ? <DecreaseIcon /> : <IncreaseIcon />}
+              {parseFloat(percentage) < 0 ? (
+                <DecreaseIcon />
+              ) : parseFloat(percentage) > 0 ? (
+                <IncreaseIcon />
+              ) : null}
               <span
-                className={`text-16 ${parseFloat(percentage) < 0 ? 'text-basic-red-400' : 'text-brand-primary-400'}`}
+                className={`text-16 ${
+                  parseFloat(percentage) < 0
+                    ? 'text-basic-red-400'
+                    : parseFloat(percentage) > 0
+                      ? 'text-brand-primary-400'
+                      : 'text-basic-grey-400'
+                }`}
               >
                 {percentage}
               </span>
