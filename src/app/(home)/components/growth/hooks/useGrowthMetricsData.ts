@@ -24,6 +24,7 @@ import { useComparisonQuery } from '@/app/(home)/hooks/useComparisonQuery';
 import { MetricData, FilterPeriod } from '@/app/(home)/types/types';
 import { processChartData } from '@/app/(home)/utils/chartData.util';
 import { calculatePercentage } from '@/app/(home)/utils/metrics.util';
+import { getLatestDataDate } from '@/app/(home)/utils/dateNavigation.util';
 
 interface UseGrowthMetricsDataProps {
   currentStartDate: string;
@@ -75,13 +76,13 @@ export const useGrowthMetricsData = ({
 
       label = '전 주 기준';
     } else {
-      // 일간 (어제)
-      const yesterday = today.subtract(1, 'day');
-      rStart = yesterday.format('YYYY-MM-DD');
-      rEnd = yesterday.format('YYYY-MM-DD');
+      // 일간 (최신 데이터 기준)
+      const latestDate = getLatestDataDate();
+      rStart = latestDate.format('YYYY-MM-DD');
+      rEnd = latestDate.format('YYYY-MM-DD');
 
-      // 그 전날 (그제)
-      const preDay = yesterday.subtract(1, 'day');
+      // 그 전날
+      const preDay = latestDate.subtract(1, 'day');
       pStart = preDay.format('YYYY-MM-DD');
       pEnd = preDay.format('YYYY-MM-DD');
 

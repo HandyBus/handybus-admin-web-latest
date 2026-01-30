@@ -73,7 +73,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload as ChartData;
     return (
-      <div className="border-gray-200 bg-white rounded-8 border p-12 shadow-lg">
+      <div className="border-gray-200 rounded-8 border bg-basic-white p-12 shadow-lg">
         <p className="text-gray-900 mb-8 text-14 font-600">
           ({data.name}) 참여 유저수 : {data.participation.toLocaleString()}
         </p>

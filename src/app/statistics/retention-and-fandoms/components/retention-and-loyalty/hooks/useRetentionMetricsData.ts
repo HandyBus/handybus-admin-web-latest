@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import dayjs from 'dayjs';
+
 import {
   getDailyRetentionMetrics,
   getDailyCoreMetrics,
@@ -8,6 +8,7 @@ import { useComparisonQuery } from '@/app/(home)/hooks/useComparisonQuery';
 import { MetricData } from '@/app/(home)/types/types';
 import { processChartData } from '@/app/(home)/utils/chartData.util';
 import { calculatePercentage } from '@/app/(home)/utils/metrics.util';
+import { getLatestDataDate } from '@/app/(home)/utils/dateNavigation.util';
 import {
   DailyRetentionMetricsReadModel,
   DailyCoreMetricsViewEntity,
@@ -40,16 +41,22 @@ export const useRetentionMetricsData = ({
     cardPreEndDate,
     criterionLabel,
   } = useMemo(() => {
-    const today = dayjs();
-    const yesterday = today.subtract(1, 'day');
-    const dayBeforeYesterday = yesterday.subtract(1, 'day');
+    // 일간 (최신 데이터 기준)
+    const latestDate = getLatestDataDate();
+    const rStart = latestDate.format('YYYY-MM-DD');
+    const rEnd = latestDate.format('YYYY-MM-DD');
+
+    // 그 전날
+    const preDay = latestDate.subtract(1, 'day');
+    const pStart = preDay.format('YYYY-MM-DD');
+    const pEnd = preDay.format('YYYY-MM-DD');
 
     return {
-      cardRecentStartDate: yesterday.format('YYYY-MM-DD'),
-      cardRecentEndDate: yesterday.format('YYYY-MM-DD'),
-      cardPreStartDate: dayBeforeYesterday.format('YYYY-MM-DD'),
-      cardPreEndDate: dayBeforeYesterday.format('YYYY-MM-DD'),
-      criterionLabel: '전 일 대비',
+      cardRecentStartDate: rStart,
+      cardRecentEndDate: rEnd,
+      cardPreStartDate: pStart,
+      cardPreEndDate: pEnd,
+      criterionLabel: '전 일 기준',
     };
   }, []);
 
@@ -115,7 +122,7 @@ export const useRetentionMetricsData = ({
     );
 
     // 3. 그저께(이전 1일) 지표 계산
-    // 전 일 대비 변화율 계산을 위해 사용합니다.
+    // 전 일 기준 변화율 계산을 위해 사용합니다.
     const preMetrics = calculateSingleDayMetrics(
       cardPreRetentionData?.[0],
       cardPreCoreData?.[0],

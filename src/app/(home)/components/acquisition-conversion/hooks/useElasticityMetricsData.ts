@@ -11,6 +11,7 @@ import {
 import { useComparisonQuery } from '@/app/(home)/hooks/useComparisonQuery';
 import { MetricData, FilterPeriod } from '@/app/(home)/types/types';
 import { processChartData } from '@/app/(home)/utils/chartData.util';
+import { getLatestDataDate } from '@/app/(home)/utils/dateNavigation.util';
 
 import {
   DailyCoreMetricsViewEntity,
@@ -51,11 +52,11 @@ export const useElasticityMetricsData = ({
   } = useMemo(() => {
     const today = dayjs();
 
-    // 일간 (어제)
-    const yesterday = today.subtract(1, 'day');
-    const dStart = yesterday.format('YYYY-MM-DD');
-    const dEnd = yesterday.format('YYYY-MM-DD');
-    const preD = yesterday.subtract(1, 'day');
+    // 일간 (최신 데이터 기준)
+    const latestDate = getLatestDataDate();
+    const dStart = latestDate.format('YYYY-MM-DD');
+    const dEnd = latestDate.format('YYYY-MM-DD');
+    const preD = latestDate.subtract(1, 'day');
     const pdStart = preD.format('YYYY-MM-DD');
     const pdEnd = preD.format('YYYY-MM-DD');
 

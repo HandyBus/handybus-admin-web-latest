@@ -10,20 +10,12 @@ export const processChartData = (
 ) => {
   if (!data) return [];
 
-  // 일간: 30일 -> "D일" (1일이거나 첫 번째 인덱스인 경우 "MM월 DD일")
+  // 일간: 30일 -> "YYYY-MM-DD"
   if (period === '일간') {
-    return data.map((d, index) => {
+    return data.map((d) => {
       const dateObj = dayjs(d.date);
-      const day = dateObj.date();
-      let label = `${day}일`;
-
-      if (index === 0) {
-        label = dateObj.format('MM월 DD일');
-      } else if (day === 1) {
-        label = `${dateObj.month() + 1}월 ${day}일`;
-      }
       return {
-        date: label,
+        date: dateObj.format('YYYY-MM-DD'),
         value: d.value,
       };
     });
