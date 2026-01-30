@@ -314,15 +314,16 @@ const FandomCompetitivenessSection = () => {
                     }
                   >
                     {row.crossInterest.percent > 0 ? (
-                      <div className="flex items-center gap-4">
-                        <div className="whitespace-normal break-keep">
-                          {row.crossInterest.artist}
-                        </div>
-                        <span className="text-[#3B82F6]">
+                      <div className="whitespace-normal break-keep">
+                        <span className="mr-4">{row.crossInterest.artist}</span>
+                        <span className="mr-4 text-[#3B82F6]">
                           {row.crossInterest.percent}%
                         </span>
                         {row.crossInterestDetails.length > 0 && (
-                          <InfoIcon size={14} className="text-basic-grey-400" />
+                          <InfoIcon
+                            size={14}
+                            className="inline-block align-middle text-basic-grey-400"
+                          />
                         )}
                       </div>
                     ) : (
@@ -344,9 +345,15 @@ const FandomCompetitivenessSection = () => {
           <div
             className="pointer-events-none fixed z-50 flex w-[180px] flex-col gap-8 rounded-8 border border-basic-grey-200 bg-basic-white p-12 shadow-md"
             style={{
-              top: tooltipState.rect.top - 8,
-              left: tooltipState.rect.right,
-              transform: 'translateX(-90%) translateY(-100%)',
+              top:
+                tooltipState.rect.top > tooltipState.details.length * 28 + 50
+                  ? tooltipState.rect.top - 8
+                  : tooltipState.rect.bottom + 8,
+              left: tooltipState.rect.left,
+              transform:
+                tooltipState.rect.top > tooltipState.details.length * 28 + 50
+                  ? 'translateY(-100%)'
+                  : '',
             }}
           >
             <span className="text-12 font-600 text-basic-grey-600">
