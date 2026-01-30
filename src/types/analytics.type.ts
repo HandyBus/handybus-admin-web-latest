@@ -340,3 +340,123 @@ export const EventUserStatisticsSchema = z.object({
 });
 
 export type EventUserStatistics = z.infer<typeof EventUserStatisticsSchema>;
+
+/**
+ * 기간 내 일별 리텐션 메트릭 목록
+ */
+export const DailyRetentionMetricsReadModelSchema = z.object({
+  date: z.string().describe('비즈니스 기준 날짜 (Asia/Seoul, YYYY-MM-DD)'),
+  eventReparticipationUserCount: z
+    .number()
+    .describe(
+      '행사 재참여 유저 수 (과거 참여 이력이 있는 유저 중 해당 일자에 참여한 유저 수)',
+    ),
+  cumulativeEventReparticipationUserCount: z
+    .number()
+    .describe('누적 행사 재참여 유저 수'),
+  eventRebookingUserCount: z
+    .number()
+    .describe(
+      '행사 재예약 유저 수 (과거 예약 이력이 있는 유저 중 해당 일자에 예약한 유저 수)',
+    ),
+  cumulativeEventRebookingUserCount: z
+    .number()
+    .describe('누적 행사 재예약 유저 수'),
+  averageUserEventReparticipationHours: z
+    .number()
+    .describe('행사 재참여주기 평균 시간 (hour, 소수점 1자리 반올림)'),
+  averageUserEventRebookingHours: z
+    .number()
+    .describe('행사 재예약주기 평균 시간 (hour, 소수점 1자리 반올림)'),
+  averageUserReboardingDays: z.number().describe('재탑승주기 평균 일수'),
+});
+
+export type DailyRetentionMetricsReadModel = z.infer<
+  typeof DailyRetentionMetricsReadModelSchema
+>;
+
+/*
+ * 기간 내 일별 팬덤 활동 메트릭 목록
+ */
+
+export const DailyFandomActivityMetricsViewEntity = z.object({
+  date: z.string().describe('비즈니스 기준 날짜 (Asia/Seoul)'),
+  artistId: z.string().describe('아티스트 ID'),
+  artistName: z.string().describe('아티스트 이름'),
+  reservationUserCount: z.number().describe('팬덤 단위 예약 유저 수'),
+  participationUserCount: z.number().describe('팬덤 단위 참여 유저 수'),
+  eventReparticipationUserCount: z
+    .number()
+    .describe('팬덤 단위 행사 재참여 유저 수'),
+  eventRebookingUserCount: z.number().describe('팬덤 단위 행사 재예약 유저 수'),
+  averageUserEventReparticipationHours: z
+    .number()
+    .describe('행사 재참여주기 평균 시간 (hour, 소수점 1자리 반올림)'),
+  averageUserEventRebookingHours: z
+    .number()
+    .describe('행사 재예약주기 평균 시간 (hour, 소수점 1자리 반올림)'),
+  averageUserReboardingDays: z.number().describe('재탑승주기 평균 일수'),
+});
+
+export type DailyFandomActivityMetricsViewEntity = z.infer<
+  typeof DailyFandomActivityMetricsViewEntity
+>;
+
+/*
+ * 기간 내 일별 팬덤 스냅샷 메트릭 목록
+ */
+
+export const DailyFandomSnapshotMetricsViewEntity = z.object({
+  date: z.string().describe('비즈니스 기준 날짜 (Asia/Seoul)'),
+  artistId: z.string().describe('아티스트 ID'),
+  artistName: z.string().describe('아티스트 이름'),
+  cumulativeFandomUserCount: z.number().describe('누적 팬덤 유저 수'),
+  fandomNewUserRolling30dCount: z
+    .number()
+    .describe('해당 일자 기준 팬덤 유저 중, 가입일로부터 30일 이내인 유저 수'),
+  cumulativeEventParticipationUserCount: z
+    .number()
+    .describe('누적 행사 참여 유저 수'),
+  cumulativeEventReparticipationUserCount: z
+    .number()
+    .describe('누적 행사 재참여 유저 수'),
+  cumulativeEventReservationUserCount: z
+    .number()
+    .describe('누적 행사 예약 유저 수'),
+  cumulativeEventRebookingUserCount: z
+    .number()
+    .describe('누적 행사 재예약 유저 수'),
+  createdAt: z.string().describe('생성 일자'),
+  updatedAt: z.string().describe('수정 일자'),
+});
+
+export type DailyFandomSnapshotMetricsViewEntity = z.infer<
+  typeof DailyFandomSnapshotMetricsViewEntity
+>;
+
+/*
+ * 기간 내 월별 팬덤 교차 메트릭 목록
+ */
+
+export const MonthlyFandomCrossMetricsViewEntity = z.object({
+  month: z
+    .string()
+    .describe('비즈니스 기준 월 (해당 월의 첫 번째 날, Asia/Seoul)'),
+  baseArtistId: z
+    .string()
+    .describe('기준 팬덤 아티스트 ID (항상 targetArtistId보다 작은 값)'),
+  baseArtistName: z.string().describe('기준 팬덤 아티스트 이름'),
+  targetArtistId: z
+    .string()
+    .describe('대상 팬덤 아티스트 ID (항상 baseArtistId보다 큰 값)'),
+  targetArtistName: z.string().describe('대상 팬덤 아티스트 이름'),
+  overlapFandomCount: z
+    .number()
+    .describe('base 팬덤과 target 팬덤에 동시에 존재하는 유저 수'),
+  createdAt: z.string().describe('생성 일자'),
+  updatedAt: z.string().describe('수정 일자'),
+});
+
+export type MonthlyFandomCrossMetricsViewEntity = z.infer<
+  typeof MonthlyFandomCrossMetricsViewEntity
+>;

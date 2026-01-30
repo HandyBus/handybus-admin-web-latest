@@ -1,4 +1,4 @@
-import { FILTER_PERIODS, FilterPeriod } from '../types/types';
+import { FILTER_PERIODS, FilterPeriod } from '@/app/(home)/types/types';
 
 interface MetricUnitFilterProps {
   selectedPeriod: FilterPeriod;

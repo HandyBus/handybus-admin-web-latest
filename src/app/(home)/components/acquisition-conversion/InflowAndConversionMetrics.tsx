@@ -1,24 +1,15 @@
+'use client';
+
 import { useState } from 'react';
 import CustomLineChart from '@/components/chart/CustomLineChart';
-import dayjs from 'dayjs';
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import weekOfYear from 'dayjs/plugin/weekOfYear';
-import MetricCard from './MetricCard';
-import MetricUnitFilter from './MetricUnitFilter';
-import DateRangeControls from './DateRangeControls';
-import Heading from '@/components/text/Heading';
-import { MetricData, MetricId } from '../types/types';
+import MetricCard from '@/app/(home)/components/MetricCard';
+import DateRangeControls from '@/app/(home)/components/DateRangeControls';
+import { MetricData, MetricId } from '@/app/(home)/types/types';
 import { useDateNavigation } from '@/app/(home)/hooks/useDateNavigation';
-import { useGrowthMetricsData } from '../hooks/useGrowthMetricsData';
+import dayjs from 'dayjs';
+import { useInflowMetricsData } from './hooks/useInflowMetricsData';
 
-dayjs.extend(isSameOrAfter);
-dayjs.extend(isSameOrBefore);
-dayjs.extend(weekOfYear);
-
-const GrowthMetrics = () => {
-  const [selectedMetricId, setSelectedMetricId] = useState<MetricId>('gmv');
-
+const InflowAndConversionMetrics = () => {
   const {
     period,
     startDate,
@@ -28,17 +19,19 @@ const GrowthMetrics = () => {
     isNextDisabled,
     isPrevDisabled,
     isAllTime,
-    changePeriod,
     navigatePrev,
     navigateNext,
     updateDateRange,
     setAllTimeRange,
   } = useDateNavigation();
 
-  const { processedMetrics } = useGrowthMetricsData({
+  const [selectedMetricId, setSelectedMetricId] = useState<MetricId>(
+    'newUserConversionRate',
+  );
+
+  const { processedMetrics } = useInflowMetricsData({
     currentStartDate: queryStartDate,
     currentEndDate: queryEndDate,
-    period,
   });
 
   const selectedMetric =
@@ -46,7 +39,7 @@ const GrowthMetrics = () => {
     processedMetrics[0];
 
   const getChartData = (metric: MetricData) => {
-    return metric.chartData;
+    return metric?.chartData || [];
   };
 
   const getPeriodLabel = () => {
@@ -65,14 +58,6 @@ const GrowthMetrics = () => {
 
   return (
     <div className="flex flex-col gap-16">
-      <div className="flex items-center justify-between">
-        <Heading.h2>성장</Heading.h2>
-        <MetricUnitFilter
-          selectedPeriod={period}
-          onChangePeriod={changePeriod}
-        />
-      </div>
-
       <div className="flex w-full gap-16">
         {processedMetrics.map((metric) => (
           <MetricCard
@@ -102,7 +87,7 @@ const GrowthMetrics = () => {
       <div className="relative w-full overflow-hidden rounded-16 border border-basic-grey-400 bg-basic-white shadow-md">
         <div className="flex items-center justify-between p-24">
           <p className="text-20 font-600 text-basic-black">
-            {selectedMetric.chartLabel}
+            {selectedMetric?.chartLabel || ''}
           </p>
           <p className="text-16 font-500 text-basic-grey-600">
             {getPeriodLabel()}
@@ -110,9 +95,9 @@ const GrowthMetrics = () => {
         </div>
         <div className="flex h-[530px] w-full p-24">
           <CustomLineChart
-            data={getChartData(selectedMetric)}
+            data={selectedMetric ? getChartData(selectedMetric) : []}
             dataKey={['value']}
-            label={{ value: selectedMetric.chartLabel }}
+            label={{ value: selectedMetric?.chartLabel || '' }}
           />
         </div>
       </div>
@@ -120,4 +105,4 @@ const GrowthMetrics = () => {
   );
 };
 
-export default GrowthMetrics;
+export default InflowAndConversionMetrics;

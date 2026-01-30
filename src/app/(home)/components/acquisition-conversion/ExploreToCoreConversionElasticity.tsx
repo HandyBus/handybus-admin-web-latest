@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 import CustomLineChart from '@/components/chart/CustomLineChart';
-import MetricCard from './MetricCard';
-import DateRangeControls from './DateRangeControls';
-import { MetricData, MetricId } from '../types/types';
+import MetricCard from '@/app/(home)/components/MetricCard';
+import DateRangeControls from '@/app/(home)/components/DateRangeControls';
+import { MetricData, MetricId } from '@/app/(home)/types/types';
 import { useDateNavigation } from '@/app/(home)/hooks/useDateNavigation';
+import { useElasticityMetricsData } from './hooks/useElasticityMetricsData';
 import dayjs from 'dayjs';
-import { useInflowMetricsData } from '../hooks/useInflowMetricsData';
 
-const InflowAndConversionMetrics = () => {
+const ExploreToCoreConversionElasticity = () => {
   const {
     period,
     startDate,
@@ -19,32 +19,37 @@ const InflowAndConversionMetrics = () => {
     isNextDisabled,
     isPrevDisabled,
     isAllTime,
+    changePeriod,
     navigatePrev,
     navigateNext,
     updateDateRange,
     setAllTimeRange,
-  } = useDateNavigation();
+  } = useDateNavigation({ minDate: '2025-06-06' });
 
-  const [selectedMetricId, setSelectedMetricId] = useState<MetricId>(
-    'newUserConversionRate',
-  );
+  const [selectedMetricId, setSelectedMetricId] =
+    useState<MetricId>('elasticityDAU');
 
-  const { processedMetrics } = useInflowMetricsData({
+  const { processedMetrics } = useElasticityMetricsData({
     currentStartDate: queryStartDate,
     currentEndDate: queryEndDate,
+    selectedUnit: period,
   });
 
   const selectedMetric =
     processedMetrics.find((metric) => metric.id === selectedMetricId) ||
     processedMetrics[0];
 
-  const getChartData = (metric: MetricData) => {
-    return metric?.chartData || [];
+  const handleCardClick = (id: MetricId) => {
+    setSelectedMetricId(id);
+    if (id === 'elasticityDAU') changePeriod('일간');
+    if (id === 'elasticityWAU') changePeriod('주간');
+    if (id === 'elasticityMAU') changePeriod('월간');
   };
 
   const getPeriodLabel = () => {
     if (isAllTime) {
-      const s = dayjs('2025-02-12').format('YYYY.MM.DD');
+      // 다른 컴포넌트들처럼 전체 기간 조회를 위한 하드코딩된 시작 날짜?
+      const s = dayjs('2025-06-06').format('YYYY.MM.DD');
       const e = dayjs().subtract(1, 'day').format('YYYY.MM.DD');
       return `전체 기간 (${s} - ${e})`;
     }
@@ -56,6 +61,10 @@ const InflowAndConversionMetrics = () => {
     return `${period} (기간 선택 필요)`;
   };
 
+  const getChartData = (metric: MetricData) => {
+    return metric?.chartData || [];
+  };
+
   return (
     <div className="flex flex-col gap-16">
       <div className="flex w-full gap-16">
@@ -64,7 +73,7 @@ const InflowAndConversionMetrics = () => {
             key={metric.id}
             metric={metric}
             isSelected={selectedMetricId === metric.id}
-            onClick={() => setSelectedMetricId(metric.id)}
+            onClick={() => handleCardClick(metric.id)}
           />
         ))}
       </div>
@@ -105,4 +114,4 @@ const InflowAndConversionMetrics = () => {
   );
 };
 
-export default InflowAndConversionMetrics;
+export default ExploreToCoreConversionElasticity;

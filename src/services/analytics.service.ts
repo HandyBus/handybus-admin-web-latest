@@ -1,8 +1,11 @@
 import {
   DailyCoreMetricsViewEntitySchema,
   DailyExploreMetricsViewEntitySchema,
+  DailyFandomActivityMetricsViewEntity,
+  DailyFandomSnapshotMetricsViewEntity,
   DailyFirstPurchaseLeadTimeMetricsReadModelSchema,
   DailyGmvMetricsViewEntitySchema,
+  DailyRetentionMetricsReadModelSchema,
   DailySignupMetricsViewEntitySchema,
   EventUserStatisticsSchema,
   MonthlyActiveEventsMetricsReadModelSchema,
@@ -10,6 +13,7 @@ import {
   MonthlyExploreMetricsViewEntitySchema,
   WeeklyCoreMetricsViewEntitySchema,
   WeeklyExploreMetricsViewEntitySchema,
+  MonthlyFandomCrossMetricsViewEntity,
 } from '@/types/analytics.type';
 import { authInstance } from './config';
 import { useQuery } from '@tanstack/react-query';
@@ -350,5 +354,136 @@ export const useGetEventUserStatistics = ({
   return useQuery({
     queryKey: ['event-user-statistics', eventId, endDate],
     queryFn: () => getEventUserStatistics(eventId, endDate),
+  });
+};
+
+/**
+ * 행사별 리텐션 매트릭 조회
+ */
+
+export const getDailyRetentionMetrics = async (
+  startDate: string,
+  endDate: string,
+) => {
+  const res = await authInstance.get(
+    `/v1/analytics/admin/daily-retention-metrics?startDate=${startDate}&endDate=${endDate}`,
+    {
+      shape: {
+        dailyRetentionMetricsList: DailyRetentionMetricsReadModelSchema.array(),
+      },
+    },
+  );
+  return res.dailyRetentionMetricsList;
+};
+
+export const useGetDailyRetentionMetrics = ({
+  startDate,
+  endDate,
+}: {
+  startDate: string;
+  endDate: string;
+}) => {
+  return useQuery({
+    queryKey: ['daily-retention-metrics', startDate, endDate],
+    queryFn: () => getDailyRetentionMetrics(startDate, endDate),
+  });
+};
+
+/*
+ * 일별 팬덤 활동 메트릭 조회
+ */
+
+export const getDailyFandomActivityMetrics = async (
+  startDate: string,
+  endDate: string,
+) => {
+  const res = await authInstance.get(
+    `/v1/analytics/admin/daily-fandom-activity-metrics?startDate=${startDate}&endDate=${endDate}`,
+    {
+      shape: {
+        dailyFandomActivityMetricsList:
+          DailyFandomActivityMetricsViewEntity.array(),
+      },
+    },
+  );
+  return res.dailyFandomActivityMetricsList;
+};
+
+export const useGetDailyFandomActivityMetrics = ({
+  startDate,
+  endDate,
+}: {
+  startDate: string;
+  endDate: string;
+}) => {
+  return useQuery({
+    queryKey: ['daily-fandom-activity-metrics', startDate, endDate],
+    queryFn: () => getDailyFandomActivityMetrics(startDate, endDate),
+  });
+};
+
+/*
+ * 기간 내 일별 팬덤 스냅샷 메트릭 조회
+ */
+
+export const getDailyFandomSnapshotMetrics = async (
+  startDate: string,
+  endDate: string,
+) => {
+  const res = await authInstance.get(
+    `/v1/analytics/admin/daily-fandom-snapshot-metrics?startDate=${startDate}&endDate=${endDate}`,
+    {
+      shape: {
+        dailyFandomSnapshotMetricsList:
+          DailyFandomSnapshotMetricsViewEntity.array(),
+      },
+    },
+  );
+  return res.dailyFandomSnapshotMetricsList;
+};
+
+export const useGetDailyFandomSnapshotMetrics = ({
+  startDate,
+  endDate,
+}: {
+  startDate: string;
+  endDate: string;
+}) => {
+  return useQuery({
+    queryKey: ['daily-fandom-snapshot-metrics', startDate, endDate],
+    queryFn: () => getDailyFandomSnapshotMetrics(startDate, endDate),
+  });
+};
+
+/*
+ * 기간 내 월별 팬덤 교차 메트릭 조회
+ */
+
+export const getMonthlyFandomCrossMetrics = async (
+  startDate: string,
+  endDate: string,
+) => {
+  const res = await authInstance.get(
+    `/v1/analytics/admin/monthly-fandom-cross-metrics?startDate=${startDate}&endDate=${endDate}`,
+    {
+      shape: {
+        monthlyFandomCrossMetricsList:
+          MonthlyFandomCrossMetricsViewEntity.array(),
+      },
+    },
+  );
+  return res.monthlyFandomCrossMetricsList;
+};
+
+export const useGetMonthlyFandomCrossMetrics = ({
+  startDate,
+  endDate,
+}: {
+  startDate: string;
+  endDate: string;
+}) => {
+  return useQuery({
+    queryKey: ['monthly-fandom-cross-metrics', startDate, endDate],
+    queryFn: () => getMonthlyFandomCrossMetrics(startDate, endDate),
   });
 };
