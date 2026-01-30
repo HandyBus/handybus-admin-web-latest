@@ -6,6 +6,7 @@ import DateRangeControls from '@/app/(home)/components/DateRangeControls';
 import CustomLineChart from '@/components/chart/CustomLineChart';
 import { useDateNavigation } from '@/app/(home)/hooks/useDateNavigation';
 import { useRetentionMetricsData } from '../hooks/useRetentionMetricsData';
+import Heading from '@/components/text/Heading';
 
 const RetentionLoyaltySection = () => {
   const [selectedMetricId, setSelectedMetricId] = useState<string>(
@@ -38,6 +39,7 @@ const RetentionLoyaltySection = () => {
 
   return (
     <div className="flex w-full flex-col gap-32">
+      <Heading.h2>반복 이용과 충성도</Heading.h2>
       {/* Cards Grid */}
       <div className="flex flex-col gap-16">
         {/* Row 1: 2 items */}
