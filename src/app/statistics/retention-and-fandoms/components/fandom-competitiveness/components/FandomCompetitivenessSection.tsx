@@ -288,12 +288,14 @@ const FandomCompetitivenessSection = () => {
                         <span>{row.inflowMix.new}%</span>
                       </div>
                     </div>
-                    <span
-                      className={`whitespace-nowrap text-14 font-600 ${row.newInflowChangeRate > 0 ? 'text-[#22C55E]' : row.newInflowChangeRate < 0 ? 'text-basic-red-500' : 'text-basic-grey-600'}`}
-                    >
-                      {row.newInflowChangeRate > 0 ? '+' : ''}
-                      {row.newInflowChangeRate}%
-                    </span>
+                    <div className="flex w-[60px] flex-shrink-0 justify-end">
+                      <span
+                        className={`whitespace-nowrap text-14 font-600 ${row.newInflowChangeRate > 0 ? 'text-[#22C55E]' : row.newInflowChangeRate < 0 ? 'text-basic-red-500' : 'text-basic-grey-600'}`}
+                      >
+                        {row.newInflowChangeRate > 0 ? '+' : ''}
+                        {row.newInflowChangeRate}%
+                      </span>
+                    </div>
                   </div>
                 </td>
                 <td className="px-16 py-20 text-14 font-600 text-basic-black">
