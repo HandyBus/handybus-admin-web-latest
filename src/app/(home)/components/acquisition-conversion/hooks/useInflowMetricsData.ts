@@ -157,7 +157,7 @@ export const useInflowMetricsData = ({
 
     metrics.push({
       id: 'newUserConversionRate',
-      title: '신규 유저 구매전환율',
+      title: '신규 유저 당일 구매전환율',
       value: currentConversionRate.toFixed(1),
       unit: '%',
       percentage: calculatePercentage(
@@ -166,7 +166,7 @@ export const useInflowMetricsData = ({
       ),
       criterionLabel,
       chartData: conversionChartData,
-      chartLabel: '신규 유저 구매전환율',
+      chartLabel: '신규 유저 당일 구매전환율',
     });
 
     // 2. 첫 구매 소요시간
@@ -225,13 +225,14 @@ export const useInflowMetricsData = ({
 
     metrics.push({
       id: 'firstPaymentContribution',
-      title: '첫 결제 매출기여도',
+      title: '첫 결제 유저 매출기여도',
+      subtitle: '당일',
       value: currentContribution.toFixed(1),
       unit: '%',
       percentage: calculatePercentage(currentContribution, prevContribution),
       criterionLabel,
       chartData: contributionChartData,
-      chartLabel: '첫 결제 매출기여도',
+      chartLabel: '첫 결제 유저 매출기여도',
     });
 
     return metrics;
