@@ -54,6 +54,7 @@ const ActiveEvents = () => {
     return {
       month: `${month}월`,
       value: found?.activeEventCount ?? 0,
+      hasData: !!found,
     };
   });
 
@@ -113,6 +114,7 @@ const ActiveEvents = () => {
                       const data = payload[0].payload as {
                         month: string;
                         value: number;
+                        hasData: boolean;
                       };
                       return (
                         <div className="rounded-8 border border-basic-grey-200 bg-basic-white p-12 shadow-lg">
@@ -120,7 +122,7 @@ const ActiveEvents = () => {
                             {data.month}
                           </p>
                           <p className="text-indigo-600 text-16 font-600">
-                            {data.value}개
+                            {data.hasData ? `${data.value}개` : '데이터 없음'}
                           </p>
                         </div>
                       );
