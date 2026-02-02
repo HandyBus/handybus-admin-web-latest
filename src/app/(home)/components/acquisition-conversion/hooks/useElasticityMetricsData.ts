@@ -464,22 +464,38 @@ export const useElasticityMetricsData = ({
     const chartPoints: { date: string; value: number }[] = [];
 
     // selectedUnit에 의해 정렬된다는 것을 알고 있으므로 복잡한 TS 캐스팅 방지
-    if (chartCore && chartExplore && chartCore.length === chartExplore.length) {
-      for (let i = 1; i < chartCore.length; i++) {
-        // CoreMetric, ExploreMetric 유니온 타입으로 캐스팅
-        const currCore = chartCore[i] as CoreMetric;
-        const prevCore = chartCore[i - 1] as CoreMetric;
-        const currExplore = chartExplore[i] as ExploreMetric;
-        const prevExplore = chartExplore[i - 1] as ExploreMetric;
+    if (chartCore && chartExplore) {
+      // Core 데이터 매핑
+      const coreMap = new Map<string, CoreMetric>();
+      chartCore.forEach((item) => {
+        const d = getDate(item as CoreMetric);
+        if (d) coreMap.set(d, item as CoreMetric);
+      });
 
-        // 데이터 형태에 따라 date 속성 사용 (공통 함수 이용)
-        const date = getDate(currCore);
+      // Explore 데이터 매핑
+      const exploreMap = new Map<string, ExploreMetric>();
+      chartExplore.forEach((item) => {
+        const d = getDate(item as ExploreMetric);
+        if (d) exploreMap.set(d, item as ExploreMetric);
+      });
 
-        if (!date) continue;
+      // 날짜 정렬 (두 데이터 셋의 합집합)
+      const allDates = Array.from(
+        new Set([...coreMap.keys(), ...exploreMap.keys()]),
+      ).sort();
 
-        // 날짜가 일치하는지 확인
-        const exploreDate = getDate(currExplore);
-        if (exploreDate !== date) continue;
+      for (let i = 1; i < allDates.length; i++) {
+        const date = allDates[i];
+        const prevDate = allDates[i - 1];
+
+        // 현재와 이전 날짜의 데이터가 모두 존재해야 탄력성 계산 가능 (변화율 기반이므로)
+        const currCore = coreMap.get(date);
+        const prevCore = coreMap.get(prevDate);
+        const currExplore = exploreMap.get(date);
+        const prevExplore = exploreMap.get(prevDate);
+
+        // 하나라도 없으면 계산 불가
+        if (!currCore || !prevCore || !currExplore || !prevExplore) continue;
 
         const cVal = currCore.participationUserCount;
         const pCVal = prevCore.participationUserCount;
@@ -498,7 +514,6 @@ export const useElasticityMetricsData = ({
     // 라벨 포맷을 위해 processChartData 적용
     const formattedChartData = processChartData(chartPoints, selectedUnit);
 
-    // 메트릭 데이터 구성
     metrics.push({
       id: 'elasticityDAU',
       title: 'DAU',
@@ -560,7 +575,6 @@ export const useElasticityMetricsData = ({
     selectedUnit,
     currentStartDate,
   ]);
-  // 참고: 위 useMemo 내부에서 모든 계산이 이루어지며, 필요한 외부 값들이 의존성 배열에 포함됨.
 
   return { processedMetrics };
 };
