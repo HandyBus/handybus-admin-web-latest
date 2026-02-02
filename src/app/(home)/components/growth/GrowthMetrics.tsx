@@ -17,7 +17,8 @@ dayjs.extend(isSameOrBefore);
 dayjs.extend(weekOfYear);
 
 const GrowthMetrics = () => {
-  const [selectedMetricId, setSelectedMetricId] = useState<MetricId>('gmv');
+  const [selectedMetricId, setSelectedMetricId] =
+    useState<MetricId>('activeUsersExplore');
 
   const {
     period,
