@@ -4,12 +4,21 @@ import { ArtistsViewEntitySchema } from './artist.type';
 // ----- ENUM -----
 
 export const EventStatusEnum = z.enum([
-  'OPEN', // 행사 수요조사 모집 중
-  'CLOSED', // 행사 수요조사 모집 종료 (dailyEvent의 경우에는 해당 일자의 수요조사 모집 종료)
-  'ENDED', // 행사 종료
-  'INACTIVE', // 행사 비활성
+  'STAND_BY',
+  'OPEN',
+  'CLOSED',
+  'ENDED',
+  'INACTIVE',
 ]);
 export type EventStatus = z.infer<typeof EventStatusEnum>;
+
+export const DailyEventStatusEnum = z.enum([
+  'OPEN',
+  'CLOSED',
+  'ENDED',
+  'INACTIVE',
+]);
+export type DailyEventStatus = z.infer<typeof DailyEventStatusEnum>;
 
 export const EventTypeEnum = z.enum(['CONCERT', 'FESTIVAL', 'SPORTS']);
 export type EventType = z.infer<typeof EventTypeEnum>;
@@ -20,7 +29,7 @@ export const EventDailyShuttlesInEventsViewEntitySchema = z
   .object({
     dailyEventId: z.string(),
     date: z.string(),
-    status: EventStatusEnum,
+    status: DailyEventStatusEnum,
     closeDeadline: z.string(),
     metadata: z.record(z.string(), z.any()).nullable(),
   })
@@ -108,7 +117,7 @@ export const UpdateEventRequestSchema = z
     regionHubId: z.string(),
     dailyEvents: z
       .object({
-        status: EventStatusEnum.optional(),
+        status: DailyEventStatusEnum.optional(),
         dailyEventId: z.string().optional(),
         date: z.string(),
         closeDeadline: z.string(),
