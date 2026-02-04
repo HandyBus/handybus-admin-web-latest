@@ -14,6 +14,7 @@ import Stringifier from '@/utils/stringifier.util';
 import { formatDateString } from '@/utils/date.util';
 import { DEFAULT_EVENT_IMAGE } from '@/constants/common';
 import { useRouter } from 'next/navigation';
+import { useGetEventCheerCampaignByEventId } from '@/services/cheer.service';
 
 const EVENT_PAGINATION_LIMIT = 7;
 
@@ -98,6 +99,7 @@ const Page = () => {
                   {Stringifier.eventType(event.eventType)}
                 </p>
                 <div className="flex items-center justify-end gap-8">
+                  <CheerCampaignButton eventId={event.eventId} />
                   <Button
                     size="small"
                     variant="tertiary"
@@ -258,6 +260,48 @@ const Page = () => {
         <InfiniteScrollTrigger />
       </section>
     </main>
+  );
+};
+
+interface CheerCampaignButtonProps {
+  eventId: string;
+}
+
+const CheerCampaignButton = ({ eventId }: CheerCampaignButtonProps) => {
+  const router = useRouter();
+  const { data: cheerCampaign, isLoading } =
+    useGetEventCheerCampaignByEventId(eventId);
+
+  if (isLoading) {
+    return null;
+  }
+
+  if (cheerCampaign) {
+    return (
+      <Button
+        size="small"
+        variant="tertiary"
+        className="w-116"
+        onClick={() =>
+          router.push(
+            `/events/${eventId}/cheer/${cheerCampaign.eventCheerCampaignId}`,
+          )
+        }
+      >
+        응원 캠페인 상세
+      </Button>
+    );
+  }
+
+  return (
+    <Button
+      size="small"
+      variant="tertiary"
+      className="w-116"
+      onClick={() => router.push(`/events/${eventId}/cheer/new`)}
+    >
+      응원 캠페인 생성
+    </Button>
   );
 };
 
