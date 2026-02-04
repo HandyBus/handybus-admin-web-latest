@@ -6,6 +6,7 @@ import { columns } from './table.type';
 import VerticalTable from '@/components/table/VerticalTable';
 import useTable from '@/hooks/useTable';
 import { EventCheerCampaignsViewEntity } from '@/types/cheer.type';
+import BlueLink from '@/components/link/BlueLink';
 
 interface Props {
   params: {
@@ -21,7 +22,15 @@ const Page = ({ params }: Props) => {
 
   return (
     <main className="flex flex-col">
-      <Heading>응원 캠페인 상세 페이지</Heading>
+      <Heading className="flex items-baseline gap-20">
+        응원 캠페인 상세 페이지
+        <BlueLink
+          href={`/events/${params.eventId}/cheer/${params.cheerCampaignId}/edit`}
+          className="text-12"
+        >
+          수정하기
+        </BlueLink>
+      </Heading>
       {cheerCampaign && <CheerCampaignTable cheerCampaign={cheerCampaign} />}
     </main>
   );

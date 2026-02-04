@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { formatDateString } from '@/utils/date.util';
 import { EventCheerCampaignsViewEntity } from '@/types/cheer.type';
 import { DEFAULT_EVENT_IMAGE } from '@/constants/common';
-import BlueLink from '@/components/link/BlueLink';
 import Stringifier from '@/utils/stringifier.util';
 
 const columnHelper = createColumnHelper<EventCheerCampaignsViewEntity>();
@@ -48,8 +47,6 @@ export const columns = [
         buttonText,
         buttonImageUrl,
         cheerCampaignParticipationTotalCount,
-        eventCheerCampaignId,
-        eventId,
       } = info.row.original;
       return (
         <div className="flex flex-col gap-8 p-8 text-16">
@@ -68,12 +65,6 @@ export const columns = [
               />
             </div>
           )}
-          <BlueLink
-            href={`/events/${eventId}/cheer/${eventCheerCampaignId}/edit`}
-            className="text-12"
-          >
-            수정하기
-          </BlueLink>
         </div>
       );
     },
