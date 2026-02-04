@@ -9,15 +9,15 @@ import {
   AdminUpdateEventCheerDiscountPolicyRequestSchema,
   EventCheerCampaignsViewEntitySchema,
 } from '@/types/cheer.type';
-import { instance } from './config';
+import { authInstance } from './config';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { silentParse } from '@/utils/parse.util';
 
 // ----- GET -----
 
 export const getEventCheerCampaign = async (eventCheerCampaignId: string) => {
-  const res = await instance.get(
-    `/v1/shuttle-operation/cheeer/campaigns/${eventCheerCampaignId}`,
+  const res = await authInstance.get(
+    `/v1/shuttle-operation/admin/cheer/campaigns/${eventCheerCampaignId}`,
     {
       shape: {
         eventCheerCampaign: EventCheerCampaignsViewEntitySchema,
@@ -35,8 +35,8 @@ export const useGetEventCheerCampaign = (eventCheerCampaignId: string) => {
 };
 
 export const getEventCheerCampaignByEventId = async (eventId: string) => {
-  const res = await instance.get(
-    `/v1/shuttle-operation/events/${eventId}/cheer/campaigns`,
+  const res = await authInstance.get(
+    `/v1/shuttle-operation/admin/events/${eventId}/cheer/campaigns`,
     {
       shape: {
         eventCheerCampaign: EventCheerCampaignsViewEntitySchema,
@@ -58,8 +58,8 @@ export const useGetEventCheerCampaignByEventId = (eventId: string) => {
 export const postEventCheerCampaign = async (
   body: AdminCreateEventCheerCampaignRequest,
 ) => {
-  await instance.post(
-    `/v1/shuttle-operation/cheer/campaigns`,
+  await authInstance.post(
+    `/v1/shuttle-operation/admin/cheer/campaigns`,
     silentParse(AdminCreateEventCheerCampaignRequestSchema, body),
   );
 };
@@ -86,8 +86,8 @@ export const putEventCheerCampaign = async (
   eventCheerCampaignId: string,
   body: AdminUpdateEventCheerCampaignRequest,
 ) => {
-  await instance.put(
-    `/v1/shuttle-operation/cheer/campaigns/${eventCheerCampaignId}`,
+  await authInstance.put(
+    `/v1/shuttle-operation/admin/cheer/campaigns/${eventCheerCampaignId}`,
     silentParse(AdminUpdateEventCheerCampaignRequestSchema, body),
   );
 };
@@ -118,11 +118,16 @@ export const usePutEventCheerCampaign = ({
 
 export const postEventCheerDiscountPolicy = async (
   eventCheerCampaignId: string,
-  body: AdminCreateEventCheerDiscountPolicy,
+  body: { policies: Array<AdminCreateEventCheerDiscountPolicy> },
 ) => {
-  await instance.post(
-    `/v1/shuttle-operation/cheer/campaigns/${eventCheerCampaignId}/policies`,
-    silentParse(AdminCreateEventCheerDiscountPolicySchema, body),
+  await authInstance.post(
+    `/v1/shuttle-operation/admin/cheer/campaigns/${eventCheerCampaignId}/policies`,
+    {
+      policies: silentParse(
+        AdminCreateEventCheerDiscountPolicySchema.array(),
+        body.policies,
+      ),
+    },
   );
 };
 
@@ -140,7 +145,7 @@ export const usePostEventCheerDiscountPolicy = ({
       body,
     }: {
       eventCheerCampaignId: string;
-      body: AdminCreateEventCheerDiscountPolicy;
+      body: { policies: Array<AdminCreateEventCheerDiscountPolicy> };
     }) => postEventCheerDiscountPolicy(eventCheerCampaignId, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cheer', 'campaign'] });
@@ -155,8 +160,8 @@ export const putEventCheerDiscountPolicy = async (
   eventCheerDiscountPolicyId: string,
   body: AdminUpdateEventCheerDiscountPolicyRequest,
 ) => {
-  await instance.put(
-    `/v1/shuttle-operation/cheer/campaigns/${eventCheerCampaignId}/policies/${eventCheerDiscountPolicyId}`,
+  await authInstance.put(
+    `/v1/shuttle-operation/admin/cheer/campaigns/${eventCheerCampaignId}/policies/${eventCheerDiscountPolicyId}`,
     silentParse(AdminUpdateEventCheerDiscountPolicyRequestSchema, body),
   );
 };
