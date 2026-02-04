@@ -96,7 +96,7 @@ const EMPTY_EVENT_FILTER: EventFilterOptions = {
   eventLocationName: undefined,
   eventLocationAddress: undefined,
   eventType: undefined,
-  status: 'OPEN,CLOSED',
+  status: 'OPEN,STAND_BY',
 };
 
 export type EventFilterAction =

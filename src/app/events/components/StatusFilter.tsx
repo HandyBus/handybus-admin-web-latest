@@ -63,10 +63,10 @@ export function useEventStatusOptions() {
 const conform = (s: string | undefined | null) => {
   if (s === undefined || s === null) return undefined;
   switch (s) {
+    case 'STAND_BY':
+      return 'STAND_BY';
     case 'OPEN':
       return 'OPEN';
-    case 'CLOSED':
-      return 'CLOSED';
     case 'ENDED':
       return 'ENDED';
     case 'INACTIVE':

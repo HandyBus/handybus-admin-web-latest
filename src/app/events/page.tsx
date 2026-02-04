@@ -39,7 +39,7 @@ const Page = () => {
           ...event,
           dailyEvents: event.dailyEvents
             ? [...event.dailyEvents].sort((a, b) =>
-                dayjs(a.date).diff(dayjs(b.date)),
+                dayjs(a.dailyEventDate).diff(dayjs(b.dailyEventDate)),
               )
             : [],
         })),
@@ -158,7 +158,9 @@ const Page = () => {
               </div>
               <div className="flex w-full flex-col">
                 {event.dailyEvents.map((dailyEvent) => {
-                  const shuttleRouteConfirmDate = dayjs(dailyEvent.date)
+                  const shuttleRouteConfirmDate = dayjs(
+                    dailyEvent.dailyEventDate,
+                  )
                     .tz('Asia/Seoul')
                     .subtract(11, 'day')
                     .startOf('day');
@@ -185,23 +187,26 @@ const Page = () => {
                       className="grid w-full grid-cols-7 items-center border-b border-basic-grey-100 py-16"
                     >
                       <div className="whitespace-nowrap break-keep text-center text-18 font-500">
-                        {formatDateString(dailyEvent.date, 'date')}
+                        {formatDateString(dailyEvent.dailyEventDate, 'date')}
                       </div>
                       <div className="flex flex-col items-center gap-[6px]">
                         <div
                           className={`flex h-[30px] items-center justify-center whitespace-nowrap break-keep rounded-full px-8 text-center text-14 font-500 ${
-                            dailyEvent.status === 'OPEN'
+                            dailyEvent.dailyEventStatus === 'OPEN'
                               ? 'bg-[#E8FFE6] text-[#00C83F]'
-                              : dailyEvent.status === 'CLOSED'
-                                ? 'bg-basic-grey-100 text-basic-grey-700'
-                                : 'bg-basic-grey-700 text-basic-white'
+                              : dailyEvent.dailyEventStatus === 'INACTIVE'
+                                ? 'bg-basic-grey-700 text-basic-white'
+                                : 'bg-basic-grey-100 text-basic-grey-700'
                           }`}
                         >
-                          {Stringifier.eventStatus(dailyEvent.status)}
+                          {Stringifier.dailyEventStatus(
+                            dailyEvent.dailyEventStatus,
+                          )}
                         </div>
                         <span className="text-12 font-500 text-basic-grey-500">
-                          {dayjs(dailyEvent.closeDeadline)
-                            .tz('Asia/Seoul')
+                          {/* NOTE: 수요조사 종료는 행사 14일 전 */}
+                          {dayjs(dailyEvent.dailyEventDate)
+                            .subtract(14, 'day')
                             .format('~ MM.DD')}
                         </span>
                       </div>

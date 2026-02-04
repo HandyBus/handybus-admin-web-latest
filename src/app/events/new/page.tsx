@@ -28,7 +28,7 @@ interface FormValues {
   detailImageUrl: string | null;
   regionHub: RegionHubsViewEntity;
   type: EventType;
-  dailyEvents: { date: string }[];
+  dailyEvents: { dailyEventDate: string }[];
   artistIds: { artistId: string }[];
 }
 
@@ -90,11 +90,11 @@ const CreateEventForm = () => {
           .filter((id) => id !== null && id !== ''),
         isPinned: false,
         dailyEvents: data.dailyEvents.map((dailyEvent) => ({
-          ...dailyEvent,
+          date: dailyEvent.dailyEventDate,
+          // NOTE: 어떻게 반영해야할까? 임시 주석처리
           // NOTE: 수요조사 종료 시간은 행사 시작 전 14일로 설정
-          closeDeadline: dayjs(dailyEvent.date)
-            .subtract(14, 'day')
-            .toISOString(),
+          // dailyEventIsDemandOpen:
+          // dayjs(dailyEvent.dailyEventDate).diff(dayjs(), 'day') > 14,
         })),
       };
 
@@ -183,12 +183,12 @@ const CreateEventForm = () => {
             render={({ field: { onChange, value } }) => (
               <div className="flex flex-col gap-12">
                 {value.map((dailyEvent, index) => {
-                  const dateValue = dayjs(dailyEvent.date)
+                  const dateValue = dayjs(dailyEvent.dailyEventDate)
                     .tz('Asia/Seoul')
                     .format('YYYY-MM-DD');
                   return (
                     <div
-                      key={`daily-event-${index}-${dailyEvent.date}`}
+                      key={`daily-event-${index}-${dailyEvent.dailyEventDate}`}
                       className="flex w-full flex-row items-center gap-8"
                     >
                       <Input
@@ -206,7 +206,9 @@ const CreateEventForm = () => {
                               .toISOString();
                             onChange(
                               value.map((item, i) =>
-                                i === index ? { ...item, date: newDate } : item,
+                                i === index
+                                  ? { ...item, dailyEventDate: newDate }
+                                  : item,
                               ),
                             );
                           } catch (error) {
@@ -230,7 +232,7 @@ const CreateEventForm = () => {
                   variant="tertiary"
                   onClick={() =>
                     appendDaily({
-                      date: dayjs()
+                      dailyEventDate: dayjs()
                         .tz('Asia/Seoul')
                         .startOf('day')
                         .toISOString(),

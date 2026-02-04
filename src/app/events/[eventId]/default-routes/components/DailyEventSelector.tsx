@@ -52,7 +52,7 @@ const DailyEventSelector = ({ dailyEvents }: Props) => {
                   )
                 }
               />
-              <span>{formatDateString(dailyEvent.date)}</span>
+              <span>{formatDateString(dailyEvent.dailyEventDate)}</span>
             </label>
           );
         })}

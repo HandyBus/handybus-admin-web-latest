@@ -20,7 +20,7 @@ export const columns = [
       const date = reservation.shuttleRoute.event?.dailyEvents.find(
         (dailyEvent) =>
           dailyEvent.dailyEventId === reservation.shuttleRoute.dailyEventId,
-      )?.date;
+      )?.dailyEventDate;
       return (
         <p>
           <span className="text-16 font-500">

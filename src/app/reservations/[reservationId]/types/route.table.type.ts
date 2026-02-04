@@ -20,7 +20,7 @@ export const columns = [
         (event) => event.dailyEventId === dailyEventId,
       );
 
-      return dailyEvent ? formatDateString(dailyEvent.date) : '-';
+      return dailyEvent ? formatDateString(dailyEvent.dailyEventDate) : '-';
     },
   }),
   columnHelper.accessor('status', {

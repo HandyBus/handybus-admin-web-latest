@@ -27,7 +27,7 @@ const Page = () => {
     eventIsPinned: true,
   });
   const { data: allNotPinnedEvents } = useGetEvents({
-    status: 'OPEN,CLOSED',
+    status: 'OPEN,STAND_BY',
     eventIsPinned: false,
   });
 
@@ -101,7 +101,7 @@ const Page = () => {
       <Form onSubmit={handleSubmit}>
         {stagedEvents.map((event: EventsViewEntity) => {
           const dates = event.dailyEvents.map((dailyEvent) =>
-            dayjs(dailyEvent.date),
+            dayjs(dailyEvent.dailyEventDate),
           );
           const startDate = dates.sort((a, b) => a.diff(b))[0];
           const endDate = dates.sort((a, b) => b.diff(a))[0];

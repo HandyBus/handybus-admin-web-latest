@@ -91,9 +91,12 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
   };
 
   const previousDailyEvents = event?.dailyEvents?.map((dailyEvent) => ({
-    status: dailyEvent.status,
+    dailyEventStatus: dailyEvent.dailyEventStatus,
     dailyEventId: dailyEvent.dailyEventId,
-    date: dayjs(dailyEvent.date, 'Asia/Seoul').toISOString(),
+    dailyEventDate: dayjs(
+      dailyEvent.dailyEventDate,
+      'Asia/Seoul',
+    ).toISOString(),
   }));
 
   const { control, handleSubmit } = useForm<FormValues>({
@@ -152,9 +155,10 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
           .filter((id) => id !== null && id !== ''),
         dailyEvents: data.dailyEvents.map((dailyEvent) => ({
           ...dailyEvent,
-          closeDeadline: dayjs(dailyEvent.date)
-            .subtract(14, 'day')
-            .toISOString(),
+          // NOTE: 어떻게 반영해야할까? 임시 주석처리
+          // dailyEventIsDemandOpen:
+          //   dailyEvent.dailyEventIsDemandOpen ??
+          //   dayjs(dailyEvent.dailyEventDate).diff(dayjs(), 'day') > 14,
         })),
       };
       putEvent({ eventId: event.eventId, body });
@@ -234,7 +238,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
               >
                 <Input
                   type="date"
-                  value={dayjs(dailyEvent.date)
+                  value={dayjs(dailyEvent.dailyEventDate)
                     .tz('Asia/Seoul')
                     .startOf('day')
                     .format('YYYY-MM-DD')}
@@ -257,7 +261,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                       <Input
                         type="date"
                         className="w-full"
-                        defaultValue={dayjs(value.date)
+                        defaultValue={dayjs(value.dailyEventDate)
                           .tz('Asia/Seoul')
                           .startOf('day')
                           .format('YYYY-MM-DD')}
@@ -299,7 +303,11 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
               variant="tertiary"
               onClick={() =>
                 appendDaily({
-                  date: dayjs().tz('Asia/Seoul').startOf('day').toISOString(),
+                  dailyEventDate: dayjs()
+                    .tz('Asia/Seoul')
+                    .startOf('day')
+                    .toISOString(),
+                  dailyEventIsDemandOpen: true,
                 })
               }
               className="mt-12"
@@ -407,15 +415,14 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
       <Form.section>
         <Form.label required>행사 상태</Form.label>
         <Callout>
-          행사 상태는 수요조사 모집 중 → 수요조사 마감으로 밖에 변경할 수
-          없습니다.
+          종료된 행사 상태는 다른 상태로 변경이 불가하니 참고해주세요.
         </Callout>
         <Controller
           control={control}
           name="status"
           render={({ field: { onChange, value } }) => (
             <div className="flex gap-8">
-              {EventStatusEnum.options.slice(0, 2).map((status) => (
+              {EventStatusEnum.options.slice(0, 3).map((status) => (
                 <Button
                   key={status}
                   type="button"

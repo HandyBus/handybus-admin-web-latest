@@ -28,7 +28,7 @@ const Page = ({ params }: Props) => {
   const dailyEventDate = formatDateString(
     shuttleRoute?.event?.dailyEvents.find(
       (dailyEvent) => dailyEvent.dailyEventId === dailyEventId,
-    )?.date,
+    )?.dailyEventDate,
   );
 
   const shuttleRouteName = shuttleRoute?.name;
