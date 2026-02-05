@@ -221,17 +221,34 @@ const Page = () => {
                             dailyEvent.dailyEventStatus,
                           )}
                         </div>
-                        <span className="text-12 font-500 text-basic-grey-500">
-                          {/* NOTE: 수요조사 종료는 행사 14일 전 */}
-                          {dayjs(dailyEvent.dailyEventDate)
-                            .subtract(14, 'day')
-                            .format('~ MM.DD')}
-                        </span>
                       </div>
-                      <div className="flex flex-col items-center justify-center whitespace-nowrap break-keep text-center text-16 font-500">
-                        {dailyEvent.dailyEventIsDemandOpen
-                          ? '수요조사 중'
-                          : '닫힘'}
+                      <div className="flex flex-col items-center justify-center gap-[6px]">
+                        <div className="flex flex-col items-center justify-center whitespace-nowrap break-keep text-center text-16 font-500">
+                          {dailyEvent.dailyEventIsDemandOpen
+                            ? '수요조사 중'
+                            : '닫힘'}
+                        </div>
+                        {dailyEvent.dailyEventDemandControlMode === 'MANUAL' ? (
+                          <span className="text-12 font-500 text-basic-grey-500">
+                            (수동)
+                          </span>
+                        ) : (
+                          <span className="text-12 font-500 text-basic-grey-500">
+                            (자동)
+                          </span>
+                        )}
+                        {dailyEvent.dailyEventIsDemandOpen &&
+                        dailyEvent.dailyEventDemandControlMode === 'AUTO' ? (
+                          <span className="text-12 font-500 text-basic-grey-500">
+                            {dayjs(
+                              dailyEvent.dailyEventDemandAutoOpenAt,
+                            ).format('MM.DD') +
+                              ' ~ ' +
+                              dayjs(
+                                dailyEvent.dailyEventDemandAutoCloseAt,
+                              ).format('MM.DD')}
+                          </span>
+                        ) : null}
                       </div>
                       <div className="flex flex-col items-center justify-center whitespace-nowrap break-keep text-center text-16 font-500">
                         <div
