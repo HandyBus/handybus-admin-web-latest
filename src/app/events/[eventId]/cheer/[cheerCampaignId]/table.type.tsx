@@ -47,6 +47,7 @@ export const columns = [
         buttonText,
         buttonImageUrl,
         cheerCampaignParticipationTotalCount,
+        cheerCampaignParticipationTotalUserCount,
       } = info.row.original;
       return (
         <div className="flex flex-col gap-8 p-8 text-16">
@@ -54,6 +55,10 @@ export const columns = [
           <p className="font-400 text-basic-grey-700">
             총 참여 수: {cheerCampaignParticipationTotalCount.toLocaleString()}
             명
+          </p>
+          <p className="font-400 text-basic-grey-700">
+            총 참여 유저 수:{' '}
+            {cheerCampaignParticipationTotalUserCount.toLocaleString()}명
           </p>
           {buttonImageUrl && (
             <div className="relative mt-8 h-60 w-100">
@@ -129,10 +134,10 @@ export const columns = [
     },
   }),
   columnHelper.accessor('endDate', {
-    header: '종료 날짜',
+    header: '종료 날짜 및 시간',
     cell: (info) => {
       const endDate = info.getValue();
-      return endDate ? formatDateString(endDate, 'date') : '-';
+      return endDate ? formatDateString(endDate, 'datetime') : '-';
     },
   }),
   columnHelper.accessor('createdAt', {

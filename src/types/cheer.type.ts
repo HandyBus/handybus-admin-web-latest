@@ -41,6 +41,7 @@ export const EventCheerCampaignsViewEntitySchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
   cheerCampaignParticipationTotalCount: z.number(),
+  cheerCampaignParticipationTotalUserCount: z.number(),
   discountPolicies:
     EventCheerDiscountPoliciesInEventCheerCampaignsViewEntitySchema.array(),
   result:
@@ -81,6 +82,7 @@ export const AdminUpdateEventCheerCampaignRequestSchema = z.object({
   buttonImageUrl: z.string().url().nullable().optional(),
   buttonText: z.string().nullable().optional(),
   endDate: z.string().nullable().optional(),
+  status: EventCheerCampaignStatusEnum.optional(),
 });
 export type AdminUpdateEventCheerCampaignRequest = z.infer<
   typeof AdminUpdateEventCheerCampaignRequestSchema

@@ -19,16 +19,29 @@ import {
   AdminUpdateEventCheerDiscountPolicyRequest,
   AdminCreateEventCheerDiscountPolicy,
   EventCheerCampaignsViewEntity,
+  EventCheerCampaignStatus,
+  EventCheerCampaignStatusEnum,
 } from '@/types/cheer.type';
 import dayjs from 'dayjs';
 import Button from '@/components/button/Button';
 import Heading from '@/components/text/Heading';
+import Callout from '@/components/text/Callout';
+import Stringifier from '@/utils/stringifier.util';
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+} from '@headlessui/react';
+import { ChevronDownIcon } from 'lucide-react';
+import { useMemo } from 'react';
 
 interface FormValues {
   imageUrl: string | null;
   buttonImageUrl: string | null;
   buttonText: string | null;
   endDate: string | null;
+  status: EventCheerCampaignStatus;
   discountPolicies: {
     eventCheerDiscountPolicyId?: string;
     minParticipationCount: number;
@@ -87,6 +100,7 @@ const EditCheerCampaignForm = ({
     buttonImageUrl: cheerCampaign.buttonImageUrl,
     buttonText: cheerCampaign.buttonText,
     endDate: cheerCampaign.endDate,
+    status: cheerCampaign.status,
     discountPolicies:
       cheerCampaign.discountPolicies?.map((policy) => ({
         eventCheerDiscountPolicyId: policy.eventCheerDiscountPolicyId,
@@ -115,6 +129,14 @@ const EditCheerCampaignForm = ({
   const { mutateAsync: postEventCheerDiscountPolicy } =
     usePostEventCheerDiscountPolicy();
 
+  const isEnded = cheerCampaign.status === 'ENDED';
+  const availableStatuses = useMemo(() => {
+    if (isEnded) {
+      return ['ENDED'] as const;
+    }
+    return EventCheerCampaignStatusEnum.options;
+  }, [isEnded]);
+
   const onSubmit = useCallback(
     async (data: FormValues) => {
       if (!confirm('응원 캠페인을 수정하시겠습니까?')) {
@@ -129,8 +151,9 @@ const EditCheerCampaignForm = ({
           buttonImageUrl: data.buttonImageUrl || undefined,
           buttonText: data.buttonText || undefined,
           endDate: data.endDate
-            ? dayjs(data.endDate).tz('Asia/Seoul').endOf('day').toISOString()
+            ? dayjs(data.endDate).tz('Asia/Seoul').toISOString()
             : undefined,
+          status: data.status,
         };
 
         await putEventCheerCampaign({
@@ -249,27 +272,29 @@ const EditCheerCampaignForm = ({
         />
       </Form.section>
       <Form.section>
-        <Form.label>종료 날짜</Form.label>
+        <Form.label>종료 날짜 및 시간</Form.label>
         <Controller
           control={control}
           name="endDate"
           render={({ field: { onChange, value } }) => {
-            const dateValue = value
-              ? dayjs(value).tz('Asia/Seoul').format('YYYY-MM-DD')
+            const dateTimeValue = value
+              ? dayjs(value).tz('Asia/Seoul').format('YYYY-MM-DDTHH:00')
               : '';
             return (
               <Input
-                type="date"
-                value={dateValue}
+                type="datetime-local"
+                step="3600"
+                value={dateTimeValue}
                 setValue={(str) => {
                   if (!str) {
                     onChange(null);
                     return;
                   }
                   try {
+                    // 분을 00으로 고정
+                    const dateWithMinuteZero = str.replace(/:\d{2}$/, ':00');
                     const newDate = dayjs
-                      .tz(str, 'Asia/Seoul')
-                      .endOf('day')
+                      .tz(dateWithMinuteZero, 'Asia/Seoul')
                       .toISOString();
                     onChange(newDate);
                   } catch (error) {
@@ -279,6 +304,39 @@ const EditCheerCampaignForm = ({
               />
             );
           }}
+        />
+      </Form.section>
+      <Form.section>
+        <Form.label>상태</Form.label>
+        <Callout>종료 상태에서는 다른 상태로 변경할 수 없습니다.</Callout>
+        <Controller
+          control={control}
+          name="status"
+          render={({ field: { onChange, value } }) => (
+            <Listbox value={value} onChange={onChange} disabled={isEnded}>
+              <ListboxButton
+                className="flex w-256 flex-row items-center justify-between rounded-8 border border-basic-grey-100 bg-basic-white p-8 disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={isEnded}
+              >
+                {Stringifier.eventCheerCampaignStatus(value)}
+                <ChevronDownIcon />
+              </ListboxButton>
+              <ListboxOptions
+                className="w-[var(--button-width)] origin-top rounded-8 border border-basic-grey-100 bg-basic-white"
+                anchor="bottom"
+              >
+                {availableStatuses.map((status) => (
+                  <ListboxOption
+                    key={status}
+                    value={status}
+                    className="p-8 data-[focus]:bg-basic-blue-100"
+                  >
+                    {Stringifier.eventCheerCampaignStatus(status)}
+                  </ListboxOption>
+                ))}
+              </ListboxOptions>
+            </Listbox>
+          )}
         />
       </Form.section>
       <Form.section>

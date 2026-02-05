@@ -33,12 +33,15 @@ interface FormValues {
   }[];
 }
 
-const defaultValues: FormValues = {
-  imageUrl: null,
-  buttonImageUrl: null,
-  buttonText: null,
-  endDate: null,
-  discountPolicies: [],
+const getDefaultValues = (): FormValues => {
+  const tomorrow = dayjs().tz('Asia/Seoul').add(1, 'day').startOf('day');
+  return {
+    imageUrl: null,
+    buttonImageUrl: null,
+    buttonText: null,
+    endDate: tomorrow.toISOString(),
+    discountPolicies: [],
+  };
 };
 
 interface Props {
@@ -50,7 +53,7 @@ const CreateCheerCampaignForm = ({ eventId }: { eventId: string }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { control, handleSubmit } = useForm<FormValues>({
-    defaultValues,
+    defaultValues: getDefaultValues(),
   });
 
   const {
@@ -80,7 +83,7 @@ const CreateCheerCampaignForm = ({ eventId }: { eventId: string }) => {
         buttonImageUrl: data.buttonImageUrl || undefined,
         buttonText: data.buttonText || undefined,
         endDate: data.endDate
-          ? dayjs(data.endDate).tz('Asia/Seoul').endOf('day').toISOString()
+          ? dayjs(data.endDate).tz('Asia/Seoul').toISOString()
           : undefined,
       };
 
@@ -166,27 +169,29 @@ const CreateCheerCampaignForm = ({ eventId }: { eventId: string }) => {
           />
         </Form.section>
         <Form.section>
-          <Form.label>종료 날짜</Form.label>
+          <Form.label>종료 날짜 및 시간</Form.label>
           <Controller
             control={control}
             name="endDate"
             render={({ field: { onChange, value } }) => {
-              const dateValue = value
-                ? dayjs(value).tz('Asia/Seoul').format('YYYY-MM-DD')
+              const dateTimeValue = value
+                ? dayjs(value).tz('Asia/Seoul').format('YYYY-MM-DDTHH:00')
                 : '';
               return (
                 <Input
-                  type="date"
-                  value={dateValue}
+                  type="datetime-local"
+                  step="3600"
+                  value={dateTimeValue}
                   setValue={(str) => {
                     if (!str) {
                       onChange(null);
                       return;
                     }
                     try {
+                      // 분을 00으로 고정
+                      const dateWithMinuteZero = str.replace(/:\d{2}$/, ':00');
                       const newDate = dayjs
-                        .tz(str, 'Asia/Seoul')
-                        .endOf('day')
+                        .tz(dateWithMinuteZero, 'Asia/Seoul')
                         .toISOString();
                       onChange(newDate);
                     } catch (error) {
