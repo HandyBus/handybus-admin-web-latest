@@ -46,7 +46,7 @@ export const columns = [
     },
   }),
   columnHelper.accessor(
-    (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.date),
+    (row) => row.dailyEvents.map((dailyEvent) => dailyEvent.dailyEventDate),
     {
       header: '날짜',
       cell: ({ getValue }) => {

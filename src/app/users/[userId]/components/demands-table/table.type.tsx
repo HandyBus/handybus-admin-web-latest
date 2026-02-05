@@ -20,7 +20,7 @@ export const columns = [
       const date = event?.dailyEvents.find(
         (dailyEvent) =>
           dailyEvent.dailyEventId === props.row.original.dailyEventId,
-      )?.date;
+      )?.dailyEventDate;
       return (
         <p>
           <span className="text-16 font-500">{event?.eventName}</span>

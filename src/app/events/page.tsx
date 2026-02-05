@@ -39,7 +39,7 @@ const Page = () => {
           ...event,
           dailyEvents: event.dailyEvents
             ? [...event.dailyEvents].sort((a, b) =>
-                dayjs(a.date).diff(dayjs(b.date)),
+                dayjs(a.dailyEventDate).diff(dayjs(b.dailyEventDate)),
               )
             : [],
         })),
@@ -76,7 +76,7 @@ const Page = () => {
               key={event.eventId}
               className="rounded-16 bg-basic-white shadow-[0_2px_8px_0_rgba(0,0,0,0.08)]"
             >
-              <div className="grid grid-cols-[60px_2fr_1fr_1fr_1fr] items-center px-28 py-20">
+              <div className="grid grid-cols-[60px_2fr_1fr_1fr_1fr_1fr] items-center px-28 py-20">
                 <div className="relative h-88 w-60 overflow-hidden rounded-8 bg-basic-grey-700">
                   <Image
                     src={event.eventImageUrl || DEFAULT_EVENT_IMAGE}
@@ -93,6 +93,21 @@ const Page = () => {
                       .join(', ')}
                   </span>
                 </h2>
+                <div className="flex items-center justify-center">
+                  <div
+                    className={`flex h-[30px] w-88 items-center justify-center whitespace-nowrap break-keep rounded-full px-8 text-center text-14 font-500 ${
+                      event.eventStatus === 'OPEN'
+                        ? 'bg-[#E8FFE6] text-[#00C83F]'
+                        : event.eventStatus === 'STAND_BY'
+                          ? 'text-basic-blue-500 bg-basic-blue-100'
+                          : event.eventStatus === 'ENDED'
+                            ? 'bg-basic-grey-100 text-basic-grey-700'
+                            : 'bg-basic-grey-700 text-basic-white'
+                    }`}
+                  >
+                    {Stringifier.eventStatus(event.eventStatus)}
+                  </div>
+                </div>
                 <p className="text-16 font-500">{event.eventLocationName}</p>
                 <p className="text-16 font-500">
                   {Stringifier.eventType(event.eventType)}
@@ -133,12 +148,15 @@ const Page = () => {
                   </Button>
                 </div>
               </div>
-              <div className="grid h-[32px] grid-cols-7 items-center bg-basic-grey-100">
+              <div className="grid h-[32px] grid-cols-8 items-center bg-basic-grey-100">
                 <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
                   날짜
                 </h4>
                 <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
                   상태
+                </h4>
+                <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
+                  수요조사
                 </h4>
                 <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
                   노선 확정 상태
@@ -158,7 +176,9 @@ const Page = () => {
               </div>
               <div className="flex w-full flex-col">
                 {event.dailyEvents.map((dailyEvent) => {
-                  const shuttleRouteConfirmDate = dayjs(dailyEvent.date)
+                  const shuttleRouteConfirmDate = dayjs(
+                    dailyEvent.dailyEventDate,
+                  )
                     .tz('Asia/Seoul')
                     .subtract(11, 'day')
                     .startOf('day');
@@ -182,28 +202,36 @@ const Page = () => {
                   return (
                     <div
                       key={dailyEvent.dailyEventId}
-                      className="grid w-full grid-cols-7 items-center border-b border-basic-grey-100 py-16"
+                      className="grid w-full grid-cols-8 items-center border-b border-basic-grey-100 py-16"
                     >
                       <div className="whitespace-nowrap break-keep text-center text-18 font-500">
-                        {formatDateString(dailyEvent.date, 'date')}
+                        {formatDateString(dailyEvent.dailyEventDate, 'date')}
                       </div>
                       <div className="flex flex-col items-center gap-[6px]">
                         <div
                           className={`flex h-[30px] items-center justify-center whitespace-nowrap break-keep rounded-full px-8 text-center text-14 font-500 ${
-                            dailyEvent.status === 'OPEN'
+                            dailyEvent.dailyEventStatus === 'OPEN'
                               ? 'bg-[#E8FFE6] text-[#00C83F]'
-                              : dailyEvent.status === 'CLOSED'
-                                ? 'bg-basic-grey-100 text-basic-grey-700'
-                                : 'bg-basic-grey-700 text-basic-white'
+                              : dailyEvent.dailyEventStatus === 'INACTIVE'
+                                ? 'bg-basic-grey-700 text-basic-white'
+                                : 'bg-basic-grey-100 text-basic-grey-700'
                           }`}
                         >
-                          {Stringifier.eventStatus(dailyEvent.status)}
+                          {Stringifier.dailyEventStatus(
+                            dailyEvent.dailyEventStatus,
+                          )}
                         </div>
                         <span className="text-12 font-500 text-basic-grey-500">
-                          {dayjs(dailyEvent.closeDeadline)
-                            .tz('Asia/Seoul')
+                          {/* NOTE: 수요조사 종료는 행사 14일 전 */}
+                          {dayjs(dailyEvent.dailyEventDate)
+                            .subtract(14, 'day')
                             .format('~ MM.DD')}
                         </span>
+                      </div>
+                      <div className="flex flex-col items-center justify-center whitespace-nowrap break-keep text-center text-16 font-500">
+                        {dailyEvent.dailyEventIsDemandOpen
+                          ? '수요조사 중'
+                          : '닫힘'}
                       </div>
                       <div className="flex flex-col items-center justify-center whitespace-nowrap break-keep text-center text-16 font-500">
                         <div

@@ -5,7 +5,7 @@ import ExcelJS from 'exceljs';
 
 interface ExcelExportData {
   dailyEventId: string;
-  date: string;
+  dailyEventDate: string;
   routeName: string;
   totalSales: number;
   totalSalesWithDiscount: number;
@@ -31,7 +31,7 @@ type ExcelRow = ExcelExportData | EmptyRow;
 export const convertSalesDataToExcelFormat = (
   dailyEventsWithRoutesWithSales: Array<{
     dailyEventId: string;
-    date: string;
+    dailyEventDate: string;
     routesWithSales: RouteWithSales[];
   }>,
   vehicleCosts: Record<string, number>,
@@ -42,7 +42,7 @@ export const convertSalesDataToExcelFormat = (
   const excelData: ExcelRow[] = [];
 
   dailyEventsWithRoutesWithSales.forEach((dailyEvent, index) => {
-    const date = formatDateString(dailyEvent.date);
+    const date = formatDateString(dailyEvent.dailyEventDate);
 
     dailyEvent.routesWithSales.forEach((route) => {
       const vehicleCost = vehicleCosts[route.shuttleRouteId] || 0;
@@ -68,7 +68,7 @@ export const convertSalesDataToExcelFormat = (
 
       excelData.push({
         dailyEventId: dailyEvent.dailyEventId,
-        date,
+        dailyEventDate: date,
         routeName: route.name,
         totalSales: route.totalSales,
         totalSalesWithDiscount: route.totalSalesWithDiscount,
@@ -137,7 +137,7 @@ export const convertSalesDataToExcelFormat = (
 
     excelData.push({
       dailyEventId: dailyEvent.dailyEventId,
-      date,
+      dailyEventDate: date,
       routeName: '합계',
       totalSales,
       totalSalesWithDiscount,
@@ -169,7 +169,7 @@ export const downloadSalesExcel = async (
   event: EventsViewEntity,
   dailyEventsWithRoutesWithSales: Array<{
     dailyEventId: string;
-    date: string;
+    dailyEventDate: string;
     routesWithSales: RouteWithSales[];
   }>,
   vehicleCosts: Record<string, number>,
@@ -192,7 +192,7 @@ export const downloadSalesExcel = async (
 
   // 각 일자별 시트 생성
   dailyEventsWithRoutesWithSales.forEach((dailyEvent) => {
-    const date = formatDateString(dailyEvent.date);
+    const date = formatDateString(dailyEvent.dailyEventDate);
     const worksheetName = date.replace(/\//g, '-'); // 시트명에 사용할 수 없는 문자 제거
     const worksheet = workbook.addWorksheet(worksheetName);
     createDailyEventSheet(
@@ -227,7 +227,7 @@ const createSummarySheet = (
   worksheet: ExcelJS.Worksheet,
   dailyEventsWithRoutesWithSales: Array<{
     dailyEventId: string;
-    date: string;
+    dailyEventDate: string;
     routesWithSales: RouteWithSales[];
   }>,
   vehicleCosts: Record<string, number>,
@@ -289,7 +289,7 @@ const createSummarySheet = (
     }
 
     const dataRow = worksheet.addRow([
-      row.date,
+      row.dailyEventDate,
       row.routeName,
       row.totalSales,
       row.totalSalesWithDiscount,
@@ -363,7 +363,7 @@ const createDailyEventSheet = (
   worksheet: ExcelJS.Worksheet,
   dailyEvent: {
     dailyEventId: string;
-    date: string;
+    dailyEventDate: string;
     routesWithSales: RouteWithSales[];
   },
   vehicleCosts: Record<string, number>,
@@ -371,7 +371,7 @@ const createDailyEventSheet = (
   operationCost: number,
   marketingCost: number,
 ) => {
-  const date = formatDateString(dailyEvent.date);
+  const date = formatDateString(dailyEvent.dailyEventDate);
   const routesWithSales = dailyEvent.routesWithSales;
 
   const titleRow = worksheet.addRow([`${date} 매출현황`]);

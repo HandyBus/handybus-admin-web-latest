@@ -47,7 +47,7 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
   const defaultValues = useMemo(() => {
     const dailyEventDate = event?.dailyEvents.find(
       (de) => de.dailyEventId === dailyEventId,
-    )?.date;
+    )?.dailyEventDate;
     const reservationDeadline = dayjs(dailyEventDate)
       .subtract(4, 'day')
       .toISOString();

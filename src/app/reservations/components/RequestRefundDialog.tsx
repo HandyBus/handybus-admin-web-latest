@@ -273,7 +273,7 @@ const RefundInfo = ({ reservation }: RefundInfoProps) => {
   const ShuttleRouteDate = reservation.shuttleRoute.event?.dailyEvents.find(
     (dailyEvent) =>
       dailyEvent.dailyEventId === reservation.shuttleRoute.dailyEventId,
-  )?.date;
+  )?.dailyEventDate;
 
   const reservationStatusColor = (status: ReservationStatus) => {
     switch (status) {
