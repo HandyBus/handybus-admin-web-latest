@@ -372,7 +372,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
             control={control}
             name="demandControlMode"
             render={({ field: { onChange, value } }) => (
-              <div className="flex gap-4">
+              <div className="flex w-full gap-4">
                 {(['AUTO', 'MANUAL'] as const).map((mode) => (
                   <Button
                     key={mode}
@@ -382,6 +382,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                     onClick={() => {
                       onChange(mode);
                     }}
+                    className="flex-1"
                   >
                     {mode}
                   </Button>
@@ -390,7 +391,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
             )}
           />
 
-          <div className="flex flex-col gap-4">
+          <div className="flex w-full flex-col gap-4">
             <div className="gap-2 flex flex-col">
               <span className="text-12 font-600 text-basic-grey-500">
                 시작일시
@@ -458,13 +459,13 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                 control={control}
                 name="manualDemandOpen"
                 render={({ field: { onChange, value } }) => (
-                  <div className="flex gap-4">
+                  <div className="flex w-full gap-4">
                     <Button
                       type="button"
                       size="small"
                       variant={value ? 'primary' : 'tertiary'}
                       onClick={() => onChange(true)}
-                      className="w-[80px]"
+                      className="flex-1"
                     >
                       열림
                     </Button>
@@ -473,7 +474,7 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                       size="small"
                       variant={!value ? 'primary' : 'tertiary'}
                       onClick={() => onChange(false)}
-                      className="w-[80px]"
+                      className="flex-1"
                     >
                       닫힘
                     </Button>
