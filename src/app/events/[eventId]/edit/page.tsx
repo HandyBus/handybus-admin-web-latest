@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, useWatch } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { Controller } from 'react-hook-form';
 import { ArrowBigRight, XIcon, TrashIcon } from 'lucide-react';
@@ -37,6 +37,10 @@ interface FormValues {
   dailyEvents: EventDailyShuttlesInEventsViewEntity[];
   type: EventType;
   artistIds: { artistId: string }[];
+  demandControlMode: 'AUTO' | 'MANUAL';
+  demandAutoOpenAt: string | undefined;
+  demandAutoCloseAt: string | undefined;
+  manualDemandOpen: boolean | undefined;
 }
 
 interface Props {
@@ -84,10 +88,24 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
       handyParty: false,
     },
     type: event?.eventType,
-    dailyEvents: event?.dailyEvents ?? [],
+    dailyEvents:
+      event?.dailyEvents.map((dailyEvent) => ({
+        dailyEventId: dailyEvent.dailyEventId,
+        dailyEventDate: dailyEvent.dailyEventDate,
+        dailyEventStatus: dailyEvent.dailyEventStatus,
+        dailyEventMetadata: dailyEvent.dailyEventMetadata,
+      })) ?? [],
     artistIds:
       event?.eventArtists?.map((artist) => ({ artistId: artist.artistId })) ??
       [],
+    demandControlMode:
+      event?.dailyEvents?.[0]?.dailyEventDemandControlMode ?? 'MANUAL',
+    demandAutoOpenAt:
+      event?.dailyEvents?.[0]?.dailyEventDemandAutoOpenAt ?? undefined,
+    demandAutoCloseAt:
+      event?.dailyEvents?.[0]?.dailyEventDemandAutoCloseAt ?? undefined,
+    manualDemandOpen:
+      event?.dailyEvents?.[0]?.dailyEventManualDemandOpen ?? false,
   };
 
   const previousDailyEvents = event?.dailyEvents?.map((dailyEvent) => ({
@@ -110,6 +128,11 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
   } = useFieldArray<FormValues>({
     control,
     name: 'dailyEvents',
+  });
+
+  const demandControlMode = useWatch({
+    control,
+    name: 'demandControlMode',
   });
 
   const {
@@ -144,6 +167,21 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
       if (!confirm('행사를 수정하시겠습니까?')) {
         return;
       }
+
+      if (data.demandControlMode === 'AUTO') {
+        if (!data.demandAutoOpenAt || !data.demandAutoCloseAt) {
+          alert(
+            '수요조사 자동 모드에서는 시작일시와 마감일시를 모두 입력해야 합니다.',
+          );
+          return;
+        }
+
+        if (!dayjs(data.demandAutoOpenAt).isBefore(data.demandAutoCloseAt)) {
+          alert('수요조사 시작일시는 마감일시보다 빨라야 합니다.');
+          return;
+        }
+      }
+
       const body: UpdateEventRequest = {
         ...data,
         imageUrl: data.imageUrl || undefined,
@@ -153,13 +191,24 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
         artistIds: data.artistIds
           .map((item) => item.artistId)
           .filter((id) => id !== null && id !== ''),
-        dailyEvents: data.dailyEvents.map((dailyEvent) => ({
-          ...dailyEvent,
-          // NOTE: 어떻게 반영해야할까? 임시 주석처리
-          // dailyEventIsDemandOpen:
-          //   dailyEvent.dailyEventIsDemandOpen ??
-          //   dayjs(dailyEvent.dailyEventDate).diff(dayjs(), 'day') > 14,
-        })),
+        dailyEvents: data.dailyEvents.map((dailyEvent) => {
+          return {
+            ...dailyEvent,
+            demandControlMode: data.demandControlMode,
+            demandAutoOpenAt:
+              data.demandControlMode === 'AUTO'
+                ? data.demandAutoOpenAt
+                : undefined,
+            demandAutoCloseAt:
+              data.demandControlMode === 'AUTO'
+                ? data.demandAutoCloseAt
+                : undefined,
+            manualDemandOpen:
+              data.demandControlMode === 'MANUAL'
+                ? data.manualDemandOpen
+                : undefined,
+          };
+        }),
       };
       putEvent({ eventId: event.eventId, body });
     },
@@ -307,7 +356,6 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
                     .tz('Asia/Seoul')
                     .startOf('day')
                     .toISOString(),
-                  dailyEventIsDemandOpen: true,
                 })
               }
               className="mt-12"
@@ -315,6 +363,125 @@ const EditEventForm = ({ event }: EditEventFormProps) => {
               추가하기
             </Button>
           </div>
+        </div>
+      </Form.section>
+      <Form.section>
+        <Form.label required>수요조사 설정</Form.label>
+        <div className="flex flex-col gap-4">
+          <Controller
+            control={control}
+            name="demandControlMode"
+            render={({ field: { onChange, value } }) => (
+              <div className="flex gap-4">
+                {(['AUTO', 'MANUAL'] as const).map((mode) => (
+                  <Button
+                    key={mode}
+                    type="button"
+                    size="medium"
+                    variant={value === mode ? 'primary' : 'tertiary'}
+                    onClick={() => {
+                      onChange(mode);
+                    }}
+                  >
+                    {mode}
+                  </Button>
+                ))}
+              </div>
+            )}
+          />
+
+          <div className="flex flex-col gap-4">
+            <div className="gap-2 flex flex-col">
+              <span className="text-12 font-600 text-basic-grey-500">
+                시작일시
+              </span>
+              <Controller
+                control={control}
+                name="demandAutoOpenAt"
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    type="datetime-local"
+                    disabled={demandControlMode === 'MANUAL'}
+                    value={
+                      value
+                        ? dayjs(value)
+                            .tz('Asia/Seoul')
+                            .format('YYYY-MM-DDTHH:mm')
+                        : ''
+                    }
+                    setValue={(str) =>
+                      onChange(dayjs.tz(str, 'Asia/Seoul').toISOString())
+                    }
+                    className={
+                      demandControlMode === 'MANUAL' ? 'opacity-50' : ''
+                    }
+                  />
+                )}
+              />
+            </div>
+            <div className="gap-2 flex flex-col">
+              <span className="text-12 font-600 text-basic-grey-500">
+                마감일시
+              </span>
+              <Controller
+                control={control}
+                name="demandAutoCloseAt"
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    type="datetime-local"
+                    disabled={demandControlMode === 'MANUAL'}
+                    value={
+                      value
+                        ? dayjs(value)
+                            .tz('Asia/Seoul')
+                            .format('YYYY-MM-DDTHH:mm')
+                        : ''
+                    }
+                    setValue={(str) =>
+                      onChange(dayjs.tz(str, 'Asia/Seoul').toISOString())
+                    }
+                    className={
+                      demandControlMode === 'MANUAL' ? 'opacity-50' : ''
+                    }
+                  />
+                )}
+              />
+            </div>
+          </div>
+
+          {demandControlMode === 'MANUAL' && (
+            <div className="flex flex-col gap-4">
+              <span className="text-12 font-600 text-basic-grey-500">
+                수요조사 열림/닫힘 설정
+              </span>
+              <Controller
+                control={control}
+                name="manualDemandOpen"
+                render={({ field: { onChange, value } }) => (
+                  <div className="flex gap-4">
+                    <Button
+                      type="button"
+                      size="small"
+                      variant={value ? 'primary' : 'tertiary'}
+                      onClick={() => onChange(true)}
+                      className="w-[80px]"
+                    >
+                      열림
+                    </Button>
+                    <Button
+                      type="button"
+                      size="small"
+                      variant={!value ? 'primary' : 'tertiary'}
+                      onClick={() => onChange(false)}
+                      className="w-[80px]"
+                    >
+                      닫힘
+                    </Button>
+                  </div>
+                )}
+              />
+            </div>
+          )}
         </div>
       </Form.section>
       <Form.section>

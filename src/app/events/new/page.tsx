@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, useWatch } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { Controller } from 'react-hook-form';
 import { TrashIcon } from 'lucide-react';
@@ -30,6 +30,10 @@ interface FormValues {
   type: EventType;
   dailyEvents: { dailyEventDate: string }[];
   artistIds: { artistId: string }[];
+  demandControlMode: 'AUTO' | 'MANUAL';
+  demandAutoOpenAt: string | undefined;
+  demandAutoCloseAt: string | undefined;
+  manualDemandOpen: boolean | undefined;
 }
 
 const defaultValues = {
@@ -40,6 +44,10 @@ const defaultValues = {
   type: undefined,
   dailyEvents: [],
   artistIds: [],
+  demandControlMode: 'MANUAL' as const,
+  demandAutoOpenAt: undefined,
+  demandAutoCloseAt: undefined,
+  manualDemandOpen: false,
 };
 
 const CreateEventForm = () => {
@@ -48,6 +56,11 @@ const CreateEventForm = () => {
 
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues,
+  });
+
+  const demandControlMode = useWatch({
+    control,
+    name: 'demandControlMode',
   });
 
   const { append: appendDaily, remove: removeDaily } =
@@ -77,6 +90,22 @@ const CreateEventForm = () => {
     }
     setIsSubmitting(true);
 
+    if (data.demandControlMode === 'AUTO') {
+      if (!data.demandAutoOpenAt || !data.demandAutoCloseAt) {
+        alert(
+          '수요조사 자동 모드에서는 시작일시와 마감일시를 모두 입력해야 합니다.',
+        );
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!dayjs(data.demandAutoOpenAt).isBefore(data.demandAutoCloseAt)) {
+        alert('수요조사 시작일시는 마감일시보다 빨라야 합니다.');
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
     try {
       const body: CreateEventRequest = {
         name: data.name,
@@ -91,10 +120,19 @@ const CreateEventForm = () => {
         isPinned: false,
         dailyEvents: data.dailyEvents.map((dailyEvent) => ({
           date: dailyEvent.dailyEventDate,
-          // NOTE: 어떻게 반영해야할까? 임시 주석처리
-          // NOTE: 수요조사 종료 시간은 행사 시작 전 14일로 설정
-          // dailyEventIsDemandOpen:
-          // dayjs(dailyEvent.dailyEventDate).diff(dayjs(), 'day') > 14,
+          demandControlMode: data.demandControlMode,
+          demandAutoOpenAt:
+            data.demandControlMode === 'AUTO'
+              ? data.demandAutoOpenAt
+              : undefined,
+          demandAutoCloseAt:
+            data.demandControlMode === 'AUTO'
+              ? data.demandAutoCloseAt
+              : undefined,
+          manualDemandOpen:
+            data.demandControlMode === 'MANUAL'
+              ? data.manualDemandOpen
+              : undefined,
         })),
       };
 
@@ -245,6 +283,125 @@ const CreateEventForm = () => {
               </div>
             )}
           />
+        </Form.section>
+        <Form.section>
+          <Form.label required>수요조사 설정</Form.label>
+          <div className="flex flex-col gap-4">
+            <Controller
+              control={control}
+              name="demandControlMode"
+              render={({ field: { onChange, value } }) => (
+                <div className="flex gap-4">
+                  {(['AUTO', 'MANUAL'] as const).map((mode) => (
+                    <Button
+                      key={mode}
+                      type="button"
+                      size="medium"
+                      variant={value === mode ? 'primary' : 'tertiary'}
+                      onClick={() => {
+                        onChange(mode);
+                      }}
+                    >
+                      {mode}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            />
+
+            <div className="flex flex-col gap-4">
+              <div className="gap-2 flex flex-col">
+                <span className="text-12 font-600 text-basic-grey-500">
+                  시작일시
+                </span>
+                <Controller
+                  control={control}
+                  name="demandAutoOpenAt"
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      type="datetime-local"
+                      disabled={demandControlMode === 'MANUAL'}
+                      value={
+                        value
+                          ? dayjs(value)
+                              .tz('Asia/Seoul')
+                              .format('YYYY-MM-DDTHH:mm')
+                          : ''
+                      }
+                      setValue={(str) =>
+                        onChange(dayjs.tz(str, 'Asia/Seoul').toISOString())
+                      }
+                      className={
+                        demandControlMode === 'MANUAL' ? 'opacity-50' : ''
+                      }
+                    />
+                  )}
+                />
+              </div>
+              <div className="gap-2 flex flex-col">
+                <span className="text-12 font-600 text-basic-grey-500">
+                  마감일시
+                </span>
+                <Controller
+                  control={control}
+                  name="demandAutoCloseAt"
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      type="datetime-local"
+                      disabled={demandControlMode === 'MANUAL'}
+                      value={
+                        value
+                          ? dayjs(value)
+                              .tz('Asia/Seoul')
+                              .format('YYYY-MM-DDTHH:mm')
+                          : ''
+                      }
+                      setValue={(str) =>
+                        onChange(dayjs.tz(str, 'Asia/Seoul').toISOString())
+                      }
+                      className={
+                        demandControlMode === 'MANUAL' ? 'opacity-50' : ''
+                      }
+                    />
+                  )}
+                />
+              </div>
+            </div>
+
+            {demandControlMode === 'MANUAL' && (
+              <div className="flex flex-col gap-4">
+                <span className="text-12 font-600 text-basic-grey-500">
+                  수요조사 열림/닫힘 설정
+                </span>
+                <Controller
+                  control={control}
+                  name="manualDemandOpen"
+                  render={({ field: { onChange, value } }) => (
+                    <div className="flex gap-4">
+                      <Button
+                        type="button"
+                        size="small"
+                        variant={value ? 'primary' : 'tertiary'}
+                        onClick={() => onChange(true)}
+                        className="w-[80px]"
+                      >
+                        열림
+                      </Button>
+                      <Button
+                        type="button"
+                        size="small"
+                        variant={!value ? 'primary' : 'tertiary'}
+                        onClick={() => onChange(false)}
+                        className="w-[80px]"
+                      >
+                        닫힘
+                      </Button>
+                    </div>
+                  )}
+                />
+              </div>
+            )}
+          </div>
         </Form.section>
         <Form.section>
           <Form.label>아티스트</Form.label>

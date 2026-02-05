@@ -231,7 +231,7 @@ const Page = () => {
                       <div className="flex flex-col items-center justify-center whitespace-nowrap break-keep text-center text-16 font-500">
                         {dailyEvent.dailyEventIsDemandOpen
                           ? '수요조사 중'
-                          : '-'}
+                          : '닫힘'}
                       </div>
                       <div className="flex flex-col items-center justify-center whitespace-nowrap break-keep text-center text-16 font-500">
                         <div
