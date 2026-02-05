@@ -43,7 +43,7 @@ const EventDailyShuttlesInEventsViewEntityInput = ({
   const filtered: EventDailyShuttlesInEventsViewEntity[] = useMemo(() => {
     return query
       ? filterByFuzzy(data?.dailyEvents ?? [], query, (p) =>
-          dayjs(p.date).format('YYYY-MM-DD'),
+          dayjs(p.dailyEventDate).format('YYYY-MM-DD'),
         )
       : (data?.dailyEvents ?? []);
   }, [data, query]);
@@ -74,7 +74,7 @@ const EventDailyShuttlesInEventsViewEntityInput = ({
           defaultValue={null}
           displayValue={(
             dailyEvent: EventDailyShuttlesInEventsViewEntity | null,
-          ) => dailyEvent?.date ?? ''}
+          ) => dailyEvent?.dailyEventDate ?? ''}
           onChange={(event) => setQuery(event.target.value)}
         />
 
@@ -89,7 +89,9 @@ const EventDailyShuttlesInEventsViewEntityInput = ({
               className="flex flex-row p-8 data-[focus]:bg-basic-blue-100"
             >
               <div className="flex flex-col">
-                <span>{dayjs(dailyEvent.date).format('YYYY-MM-DD')}</span>
+                <span>
+                  {dayjs(dailyEvent.dailyEventDate).format('YYYY-MM-DD')}
+                </span>
               </div>
             </ComboboxOption>
           ))}

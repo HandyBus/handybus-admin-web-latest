@@ -10,8 +10,8 @@ interface UseBulkRouteSubmissionProps {
   eventId: string;
   dailyEvents: Array<{
     dailyEventId: string;
-    date: string;
-    status: string;
+    dailyEventDate: string;
+    dailyEventStatus: string;
   }>;
 }
 
@@ -51,7 +51,7 @@ export const useBulkRouteSubmission = ({
         );
         if (!dailyEvent) continue;
 
-        const dailyEventDate = dailyEvent.date;
+        const dailyEventDate = dailyEvent.dailyEventDate;
         const reservationDeadline = dayjs(dailyEventDate)
           .subtract(data.reservationDeadlineDays, 'day')
           .add(1, 'day')

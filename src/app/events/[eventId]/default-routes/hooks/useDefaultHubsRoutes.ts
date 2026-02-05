@@ -39,7 +39,7 @@ export const useDefaultHubsRoutes = ({
   const baseDailyEvent = dailyEvents.find(
     (de) => de.dailyEventId === selectedDailyEventIds?.[0],
   );
-  const baseDate = baseDailyEvent?.date || dayjs().toISOString();
+  const baseDate = baseDailyEvent?.dailyEventDate || dayjs().toISOString();
 
   // 모든 default-hub 이름으로 hub 조회
   const { data: allHubsData } = useGetRegionHubs({

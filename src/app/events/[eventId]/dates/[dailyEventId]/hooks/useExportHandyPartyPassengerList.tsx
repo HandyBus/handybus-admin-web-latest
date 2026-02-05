@@ -195,7 +195,7 @@ const useExportHandyPartyPassengerList = ({ eventId, dailyEventId }: Props) => {
     const dailyEventDate = dayjs(
       shuttleRoutesWithReservations?.[0]?.shuttleRoute.event.dailyEvents.find(
         (dailyEvent) => dailyEvent.dailyEventId === dailyEventId,
-      )?.date,
+      )?.dailyEventDate,
     )
       .tz('Asia/Seoul')
       .format('MM/DD');

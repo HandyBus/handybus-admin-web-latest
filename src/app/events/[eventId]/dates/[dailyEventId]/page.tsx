@@ -256,10 +256,10 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
             </List.item>
             <List.item title="장소">{event.eventLocationName}</List.item>
             <List.item title="날짜">
-              {formatDateString(dailyEvent.date)}
+              {formatDateString(dailyEvent.dailyEventDate)}
             </List.item>
             <List.item title="상태">
-              {Stringifier.dailyEventStatus(dailyEvent?.status)}
+              {Stringifier.dailyEventStatus(dailyEvent?.dailyEventStatus)}
             </List.item>
           </List>
         </Callout>

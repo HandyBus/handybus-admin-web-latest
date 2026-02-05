@@ -1,5 +1,5 @@
 import { IssuedCouponStatus } from '@/types/coupon.type';
-import { EventStatus, EventType } from '@/types/event.type';
+import { DailyEventStatus, EventStatus, EventType } from '@/types/event.type';
 import { RefundStatus } from '@/types/payment.type';
 import {
   CancelStatus,
@@ -73,22 +73,20 @@ const Stringifier = Object.freeze({
     switch (v) {
       case 'INACTIVE':
         return '비활성';
+      case 'STAND_BY':
+        return '행사 대기';
       case 'OPEN':
-        return '수요조사 중';
-      case 'CLOSED':
-        return '수요조사 마감';
+        return '행사 오픈';
       case 'ENDED':
         return '종료';
     }
   },
-  dailyEventStatus(v: EventStatus) {
+  dailyEventStatus(v: DailyEventStatus) {
     switch (v) {
       case 'INACTIVE':
         return '이 일자의 행사 비활성';
       case 'OPEN':
-        return '이 일자의 행사 수요조사 모집 중';
-      case 'CLOSED':
-        return '이 일자의 행사 수요조사 모집 종료';
+        return '이 일자의 행사 오픈';
       case 'ENDED':
         return '이 일자의 행사 종료';
     }
