@@ -49,7 +49,7 @@ const Content = ({ eventId, dailyEventId, event }: Props) => {
       (de) => de.dailyEventId === dailyEventId,
     )?.dailyEventDate;
     const reservationDeadline = dayjs(dailyEventDate)
-      .subtract(4, 'day')
+      .subtract(5, 'day') // 핸디팟의 예약 마감일이 4일전 -> 5일전으로 변경되었음
       .toISOString();
 
     const priceOfAreas: HandyPartyPriceTable = HANDY_PARTY_ROUTE_AREA.map(
