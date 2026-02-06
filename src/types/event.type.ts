@@ -4,10 +4,10 @@ import { ArtistsViewEntitySchema } from './artist.type';
 // ----- ENUM -----
 
 export const EventStatusEnum = z.enum([
-  'STAND_BY', // 대기 상태 (수요조사 시작 전)
-  'OPEN', // 행사 수요조사 모집 중
-  'ENDED', // 행사 종료
-  'INACTIVE', // 행사 비활성
+  'STAND_BY',
+  'OPEN',
+  'ENDED',
+  'INACTIVE',
 ]);
 export type EventStatus = z.infer<typeof EventStatusEnum>;
 

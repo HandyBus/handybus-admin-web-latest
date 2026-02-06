@@ -16,6 +16,7 @@ import {
   JobApplicationType,
   JobApplicationStatus,
 } from '@/types/recruitment.type';
+import { EventCheerCampaignStatus } from '@/types/cheer.type';
 
 const Stringifier = Object.freeze({
   gender(v: Gender) {
@@ -232,6 +233,18 @@ const Stringifier = Object.freeze({
         return '합격';
       case 'REJECTED':
         return '불합격';
+    }
+  },
+  eventCheerCampaignStatus(v: EventCheerCampaignStatus) {
+    switch (v) {
+      case 'READY':
+        return '준비';
+      case 'RUNNING':
+        return '진행 중';
+      case 'ENDED':
+        return '종료';
+      case 'INACTIVE':
+        return '비활성';
     }
   },
 });
