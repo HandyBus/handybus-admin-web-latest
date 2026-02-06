@@ -111,7 +111,7 @@ const useHandyPartyReservations = ({
         (item) => item.dailyEventId === dailyEventId,
       );
     const dailyEventDateString = dailyEventDate
-      ? dayjs(dailyEventDate.date).format('YYYY-MM-DD')
+      ? dayjs(dailyEventDate.dailyEventDate).format('YYYY-MM-DD')
       : '';
     return {
       eventName,

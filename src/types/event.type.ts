@@ -4,12 +4,15 @@ import { ArtistsViewEntitySchema } from './artist.type';
 // ----- ENUM -----
 
 export const EventStatusEnum = z.enum([
-  'OPEN', // 행사 수요조사 모집 중
-  'CLOSED', // 행사 수요조사 모집 종료 (dailyEvent의 경우에는 해당 일자의 수요조사 모집 종료)
-  'ENDED', // 행사 종료
-  'INACTIVE', // 행사 비활성
+  'STAND_BY',
+  'OPEN',
+  'ENDED',
+  'INACTIVE',
 ]);
 export type EventStatus = z.infer<typeof EventStatusEnum>;
+
+export const DailyEventStatusEnum = z.enum(['OPEN', 'ENDED', 'INACTIVE']);
+export type DailyEventStatus = z.infer<typeof DailyEventStatusEnum>;
 
 export const EventTypeEnum = z.enum(['CONCERT', 'FESTIVAL', 'SPORTS']);
 export type EventType = z.infer<typeof EventTypeEnum>;
@@ -19,10 +22,14 @@ export type EventType = z.infer<typeof EventTypeEnum>;
 export const EventDailyShuttlesInEventsViewEntitySchema = z
   .object({
     dailyEventId: z.string(),
-    date: z.string(),
-    status: EventStatusEnum,
-    closeDeadline: z.string(),
-    metadata: z.record(z.string(), z.any()).nullable(),
+    dailyEventDate: z.string(),
+    dailyEventStatus: DailyEventStatusEnum,
+    dailyEventIsDemandOpen: z.boolean(),
+    dailyEventDemandAutoOpenAt: z.string(),
+    dailyEventDemandAutoCloseAt: z.string(),
+    dailyEventDemandControlMode: z.enum(['AUTO', 'MANUAL']),
+    dailyEventManualDemandOpen: z.boolean(),
+    dailyEventMetadata: z.record(z.string(), z.any()).nullable(),
   })
   .strict();
 export type EventDailyShuttlesInEventsViewEntity = z.infer<
@@ -83,20 +90,60 @@ export type EventWithStatisticsViewEntity = z.infer<
 
 // ----- POST -----
 
+export const CreateDailyEventPropsSchema = z.object({
+  date: z.string().describe('이벤트 날짜'),
+  demandAutoOpenAt: z
+    .string()
+    .optional()
+    .describe('수요조사 자동 오픈 일시 (UTC)'),
+  demandAutoCloseAt: z
+    .string()
+    .optional()
+    .describe('수요조사 자동 마감 일시 (UTC)'),
+  demandControlMode: z
+    .enum(['AUTO', 'MANUAL'])
+    .optional()
+    .describe('수요조사 제어 모드'),
+  manualDemandOpen: z
+    .boolean()
+    .optional()
+    .describe('수동 수요조사 오픈 여부 (MANUAL 모드에서만 사용)'),
+  metadata: z.record(z.string(), z.any()).nullable().optional(),
+});
+export type CreateDailyEventProps = z.infer<typeof CreateDailyEventPropsSchema>;
+
 export const CreateEventRequestSchema = z.object({
   name: z.string(),
   imageUrl: z.string().url(),
   detailImageUrl: z.string().url().nullable().optional(),
   regionId: z.string(),
   regionHubId: z.string(),
-  dailyEvents: z
-    .object({ date: z.string(), closeDeadline: z.string() })
-    .array(),
+  dailyEvents: CreateDailyEventPropsSchema.array(),
   type: EventTypeEnum,
   artistIds: z.string().array(),
   isPinned: z.boolean(),
 });
 export type CreateEventRequest = z.infer<typeof CreateEventRequestSchema>;
+
+export const UpdateDailyEventRequestSchema = z
+  .object({
+    dailyEventId: z.string().describe('일일 이벤트 ID'),
+    status: DailyEventStatusEnum.describe('일일 이벤트 상태'),
+    date: z.string().describe('일일 이벤트 날짜'),
+    demandAutoOpenAt: z.string().describe('수요조사 자동 오픈 일시 (UTC)'),
+    demandAutoCloseAt: z.string().describe('수요조사 자동 마감 일시 (UTC)'),
+    demandControlMode: z
+      .enum(['AUTO', 'MANUAL'])
+      .describe('수요조사 제어 모드'),
+    manualDemandOpen: z
+      .boolean()
+      .describe('수동 수요조사 오픈 여부 (MANUAL 모드에서만 사용)'),
+    metadata: z.string().describe('일일이벤트 메타데이터').nullable(),
+  })
+  .partial();
+export type UpdateDailyEventRequest = z.infer<
+  typeof UpdateDailyEventRequestSchema
+>;
 
 export const UpdateEventRequestSchema = z
   .object({
@@ -106,19 +153,12 @@ export const UpdateEventRequestSchema = z
     detailImageUrl: z.string().url().nullable(),
     regionId: z.string(),
     regionHubId: z.string(),
-    dailyEvents: z
-      .object({
-        status: EventStatusEnum.optional(),
-        dailyEventId: z.string().optional(),
-        date: z.string(),
-        closeDeadline: z.string(),
-        metadata: z.record(z.string(), z.any()).nullable().optional(),
-      })
-      .partial()
-      .array(),
     type: EventTypeEnum,
+    dailyEvents: UpdateDailyEventRequestSchema.array(),
     artistIds: z.string().array(),
     isPinned: z.boolean(),
+    metadata: z.string().describe('이벤트 메타데이터').nullable(),
+    eventMinRoutePrice: z.number().describe('이벤트 최소 노선 가격').nullable(),
   })
   .partial();
 export type UpdateEventRequest = z.infer<typeof UpdateEventRequestSchema>;

@@ -46,10 +46,10 @@ const Page = ({ params }: Props) => {
           </List.item>
           <List.item title="장소">{event.eventLocationName}</List.item>
           <List.item title="날짜">
-            {formatDateString(dailyEvent.date)}
+            {formatDateString(dailyEvent.dailyEventDate)}
           </List.item>
           <List.item title="상태">
-            {Stringifier.dailyEventStatus(dailyEvent.status)}
+            {Stringifier.dailyEventStatus(dailyEvent.dailyEventStatus)}
           </List.item>
         </List>
       </Callout>
@@ -71,7 +71,7 @@ interface ContentProps {
 }
 
 const Content = ({ dailyEvent, eventId, dailyEventId }: ContentProps) => {
-  const dailyEventDate = dailyEvent.date;
+  const dailyEventDate = dailyEvent.dailyEventDate;
   const reservationDeadline = dayjs(dailyEventDate)
     .subtract(4, 'day')
     .toISOString();

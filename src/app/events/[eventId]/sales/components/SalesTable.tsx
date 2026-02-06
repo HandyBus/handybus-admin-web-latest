@@ -87,10 +87,12 @@ const SalesTable = ({ event, shuttleRoutes }: Props) => {
       {dailyEventsWithRoutesWithSales &&
         dailyEventsWithRoutesWithSales
           .toSorted((a, b) => {
-            return a.date.localeCompare(b.date);
+            return a.dailyEventDate.localeCompare(b.dailyEventDate);
           })
           .map((dailyEventWithRoutesWithSales) => {
-            const date = formatDateString(dailyEventWithRoutesWithSales.date);
+            const date = formatDateString(
+              dailyEventWithRoutesWithSales.dailyEventDate,
+            );
             const routesWithSales =
               dailyEventWithRoutesWithSales.routesWithSales;
 

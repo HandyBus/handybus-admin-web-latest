@@ -28,12 +28,16 @@ export const paymentColumns = [
     header: '할인 금액',
     cell: (info) => info.getValue()?.toLocaleString(),
   }),
-  columnHelper.accessor('couponDiscountAmount', {
-    header: '쿠폰 할인',
-    cell: (info) => info.getValue()?.toLocaleString(),
-  }),
   columnHelper.accessor('earlybirdDiscountAmount', {
     header: '얼리버드 할인',
+    cell: (info) => info.getValue()?.toLocaleString(),
+  }),
+  columnHelper.accessor('cheerDiscountAmount', {
+    header: '응원 캠페인 할인',
+    cell: (info) => info.getValue()?.toLocaleString(),
+  }),
+  columnHelper.accessor('couponDiscountAmount', {
+    header: '쿠폰 할인',
     cell: (info) => info.getValue()?.toLocaleString(),
   }),
   columnHelper.accessor('refundableAmount', {

@@ -1,5 +1,5 @@
 import { IssuedCouponStatus } from '@/types/coupon.type';
-import { EventStatus, EventType } from '@/types/event.type';
+import { DailyEventStatus, EventStatus, EventType } from '@/types/event.type';
 import { RefundStatus } from '@/types/payment.type';
 import {
   CancelStatus,
@@ -16,6 +16,7 @@ import {
   JobApplicationType,
   JobApplicationStatus,
 } from '@/types/recruitment.type';
+import { EventCheerCampaignStatus } from '@/types/cheer.type';
 
 const Stringifier = Object.freeze({
   gender(v: Gender) {
@@ -72,24 +73,22 @@ const Stringifier = Object.freeze({
     switch (v) {
       case 'INACTIVE':
         return '비활성';
+      case 'STAND_BY':
+        return '대기';
       case 'OPEN':
-        return '수요조사 중';
-      case 'CLOSED':
-        return '수요조사 마감';
+        return '오픈';
       case 'ENDED':
         return '종료';
     }
   },
-  dailyEventStatus(v: EventStatus) {
+  dailyEventStatus(v: DailyEventStatus) {
     switch (v) {
       case 'INACTIVE':
-        return '이 일자의 행사 비활성';
+        return '비활성';
       case 'OPEN':
-        return '이 일자의 행사 수요조사 모집 중';
-      case 'CLOSED':
-        return '이 일자의 행사 수요조사 모집 종료';
+        return '오픈';
       case 'ENDED':
-        return '이 일자의 행사 종료';
+        return '종료';
     }
   },
   shuttleRouteStatus(v: ShuttleRouteStatus) {
@@ -234,6 +233,18 @@ const Stringifier = Object.freeze({
         return '합격';
       case 'REJECTED':
         return '불합격';
+    }
+  },
+  eventCheerCampaignStatus(v: EventCheerCampaignStatus) {
+    switch (v) {
+      case 'READY':
+        return '준비';
+      case 'RUNNING':
+        return '진행 중';
+      case 'ENDED':
+        return '종료';
+      case 'INACTIVE':
+        return '비활성';
     }
   },
 });

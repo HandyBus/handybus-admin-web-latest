@@ -49,7 +49,7 @@ const ReuseAnalysis = () => {
         const getLastDate = (e: EventsViewEntity) => {
           if (!e.dailyEvents || e.dailyEvents.length === 0) return '';
           const dates = e.dailyEvents
-            .map((de) => de.date)
+            .map((de) => de.dailyEventDate)
             .sort((d1, d2) => dayjs(d2).diff(dayjs(d1)));
           return dates[0];
         };

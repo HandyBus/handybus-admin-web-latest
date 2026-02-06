@@ -24,7 +24,7 @@ export const useEventInfo = ({ eventId, dailyEventId }: UseEventInfoProps) => {
     return {
       eventName: shuttleRoutes?.[0]?.event.eventName,
       eventLocationName: shuttleRoutes?.[0]?.event.eventLocationName,
-      date: dayjs(dailyEvent?.date).format('YYYY-MM-DD'),
+      date: dayjs(dailyEvent?.dailyEventDate).format('YYYY-MM-DD'),
     };
   }, [shuttleRoutes, dailyEventId]);
 

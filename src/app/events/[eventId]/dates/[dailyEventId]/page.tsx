@@ -13,6 +13,7 @@ import {
   useGetAlertRequests,
 } from '@/services/shuttleRoute.service';
 import { useGetEvent } from '@/services/event.service';
+import { useGetEventCheerCampaignByEventId } from '@/services/cheer.service';
 import Heading from '@/components/text/Heading';
 import Callout from '@/components/text/Callout';
 import List from '@/components/text/List';
@@ -63,6 +64,8 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
     isError: isRoutesError,
     error: routesError,
   } = useGetShuttleRoutesOfDailyEvent(eventId, dailyEventId);
+
+  const { data: cheerCampaign } = useGetEventCheerCampaignByEventId(eventId);
 
   const sortedRoutes = useMemo(() => {
     if (!routes) {
@@ -158,12 +161,14 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
         onSelectShuttleRoute: handleSelectShuttleRoute,
         onSelectAll: handleSelectAllShuttleRoutes,
         alertRequestCounts: alertRequestCountMap,
+        cheerCampaign,
       }),
     [
       selectedShuttleRoutes,
       handleSelectShuttleRoute,
       handleSelectAllShuttleRoutes,
       alertRequestCountMap,
+      cheerCampaign,
     ],
   );
 
@@ -251,10 +256,10 @@ const Page = ({ params: { eventId, dailyEventId } }: Props) => {
             </List.item>
             <List.item title="장소">{event.eventLocationName}</List.item>
             <List.item title="날짜">
-              {formatDateString(dailyEvent.date)}
+              {formatDateString(dailyEvent.dailyEventDate)}
             </List.item>
             <List.item title="상태">
-              {Stringifier.dailyEventStatus(dailyEvent?.status)}
+              {Stringifier.dailyEventStatus(dailyEvent?.dailyEventStatus)}
             </List.item>
           </List>
         </Callout>

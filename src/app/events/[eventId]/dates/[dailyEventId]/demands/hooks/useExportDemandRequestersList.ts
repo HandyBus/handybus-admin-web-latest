@@ -42,7 +42,7 @@ const useExportDemandRequestersList = ({ eventId, dailyEventId }: Props) => {
     const eventName = demands[0].event.eventName;
     const dailyEventDate = demands[0].event.dailyEvents.find(
       (dailyEvent) => dailyEvent.dailyEventId === dailyEventId,
-    )?.date;
+    )?.dailyEventDate;
 
     for (const demand of demands) {
       // 사용자 정보가 없거나 이름/닉네임이 모두 없으면 제외 (탈퇴한 유저)

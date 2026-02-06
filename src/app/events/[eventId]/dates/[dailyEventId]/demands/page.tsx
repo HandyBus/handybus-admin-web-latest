@@ -78,7 +78,7 @@ const DemandContent = () => {
             {formatDateString(
               event?.dailyEvents.find(
                 (dailyEvent) => dailyEvent.dailyEventId === dailyEventId,
-              )?.date,
+              )?.dailyEventDate,
             )}
           </List.item>
         </List>

@@ -30,7 +30,9 @@ export const shuttleRouteColumns = [
       const dailyEvent = dailyEvents.find(
         (dailyEvent) => dailyEvent.dailyEventId === info.getValue(),
       );
-      return dailyEvent ? formatDateString(dailyEvent.date, 'date') : '-';
+      return dailyEvent
+        ? formatDateString(dailyEvent.dailyEventDate, 'date')
+        : '-';
     },
   }),
   shuttleRouteColumnHelper.accessor('name', {

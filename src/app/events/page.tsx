@@ -14,6 +14,7 @@ import Stringifier from '@/utils/stringifier.util';
 import { formatDateString } from '@/utils/date.util';
 import { DEFAULT_EVENT_IMAGE } from '@/constants/common';
 import { useRouter } from 'next/navigation';
+import { useGetEventCheerCampaignByEventId } from '@/services/cheer.service';
 
 const EVENT_PAGINATION_LIMIT = 7;
 
@@ -39,7 +40,7 @@ const Page = () => {
           ...event,
           dailyEvents: event.dailyEvents
             ? [...event.dailyEvents].sort((a, b) =>
-                dayjs(a.date).diff(dayjs(b.date)),
+                dayjs(a.dailyEventDate).diff(dayjs(b.dailyEventDate)),
               )
             : [],
         })),
@@ -76,7 +77,7 @@ const Page = () => {
               key={event.eventId}
               className="rounded-16 bg-basic-white shadow-[0_2px_8px_0_rgba(0,0,0,0.08)]"
             >
-              <div className="grid grid-cols-[60px_2fr_1fr_1fr_1fr] items-center px-28 py-20">
+              <div className="grid grid-cols-[60px_2fr_1fr_1fr_1fr_1fr] items-center px-28 py-20">
                 <div className="relative h-88 w-60 overflow-hidden rounded-8 bg-basic-grey-700">
                   <Image
                     src={event.eventImageUrl || DEFAULT_EVENT_IMAGE}
@@ -93,11 +94,27 @@ const Page = () => {
                       .join(', ')}
                   </span>
                 </h2>
+                <div className="flex items-center justify-center">
+                  <div
+                    className={`flex h-[30px] w-60 items-center justify-center whitespace-nowrap break-keep rounded-full px-8 text-center text-14 font-500 ${
+                      event.eventStatus === 'OPEN'
+                        ? 'bg-[#E8FFE6] text-[#00C83F]'
+                        : event.eventStatus === 'STAND_BY'
+                          ? 'bg-basic-blue-100 text-basic-blue-400'
+                          : event.eventStatus === 'ENDED'
+                            ? 'bg-basic-grey-100 text-basic-grey-700'
+                            : 'bg-basic-grey-700 text-basic-white'
+                    }`}
+                  >
+                    {Stringifier.eventStatus(event.eventStatus)}
+                  </div>
+                </div>
                 <p className="text-16 font-500">{event.eventLocationName}</p>
                 <p className="text-16 font-500">
                   {Stringifier.eventType(event.eventType)}
                 </p>
                 <div className="flex items-center justify-end gap-8">
+                  <CheerCampaignButton eventId={event.eventId} />
                   <Button
                     size="small"
                     variant="tertiary"
@@ -158,11 +175,15 @@ const Page = () => {
               </div>
               <div className="flex w-full flex-col">
                 {event.dailyEvents.map((dailyEvent) => {
-                  const shuttleRouteConfirmDate = dayjs(dailyEvent.date)
-                    .tz('Asia/Seoul')
-                    .subtract(11, 'day')
-                    .startOf('day');
                   const today = dayjs().tz('Asia/Seoul').startOf('day');
+
+                  // 셔틀버스는 7일 전 확정
+                  const shuttleRouteConfirmDate = dayjs(
+                    dailyEvent.dailyEventDate,
+                  )
+                    .tz('Asia/Seoul')
+                    .subtract(7, 'day')
+                    .startOf('day');
                   const isShuttleRouteConfirmDate = today.isSame(
                     shuttleRouteConfirmDate,
                     'day',
@@ -178,6 +199,26 @@ const Page = () => {
                   const ddayBeforeShuttleRouteConfirmDate = Math.abs(
                     today.diff(shuttleRouteConfirmDate, 'days'),
                   );
+                  // 핸디팟은 5일 전 확정
+                  const handyPartyConfirmDate = dayjs(dailyEvent.dailyEventDate)
+                    .tz('Asia/Seoul')
+                    .subtract(5, 'day')
+                    .startOf('day');
+                  const isHandyPartyConfirmDate = today.isSame(
+                    handyPartyConfirmDate,
+                    'day',
+                  );
+                  const isBeforeHandyPartyConfirmDate = today.isBefore(
+                    handyPartyConfirmDate,
+                    'day',
+                  );
+                  const isAfterHandyPartyConfirmDate = today.isAfter(
+                    handyPartyConfirmDate,
+                    'day',
+                  );
+                  const ddayBeforeHandyPartyConfirmDate = Math.abs(
+                    today.diff(handyPartyConfirmDate, 'days'),
+                  );
 
                   return (
                     <div
@@ -185,25 +226,22 @@ const Page = () => {
                       className="grid w-full grid-cols-7 items-center border-b border-basic-grey-100 py-16"
                     >
                       <div className="whitespace-nowrap break-keep text-center text-18 font-500">
-                        {formatDateString(dailyEvent.date, 'date')}
+                        {formatDateString(dailyEvent.dailyEventDate, 'date')}
                       </div>
                       <div className="flex flex-col items-center gap-[6px]">
                         <div
-                          className={`flex h-[30px] items-center justify-center whitespace-nowrap break-keep rounded-full px-8 text-center text-14 font-500 ${
-                            dailyEvent.status === 'OPEN'
+                          className={`flex h-[30px] items-center justify-center whitespace-nowrap break-keep rounded-full px-12 text-center text-14 font-500 ${
+                            dailyEvent.dailyEventStatus === 'OPEN'
                               ? 'bg-[#E8FFE6] text-[#00C83F]'
-                              : dailyEvent.status === 'CLOSED'
-                                ? 'bg-basic-grey-100 text-basic-grey-700'
-                                : 'bg-basic-grey-700 text-basic-white'
+                              : dailyEvent.dailyEventStatus === 'INACTIVE'
+                                ? 'bg-basic-grey-700 text-basic-white'
+                                : 'bg-basic-grey-100 text-basic-grey-700'
                           }`}
                         >
-                          {Stringifier.eventStatus(dailyEvent.status)}
+                          {Stringifier.dailyEventStatus(
+                            dailyEvent.dailyEventStatus,
+                          )}
                         </div>
-                        <span className="text-12 font-500 text-basic-grey-500">
-                          {dayjs(dailyEvent.closeDeadline)
-                            .tz('Asia/Seoul')
-                            .format('~ MM.DD')}
-                        </span>
                       </div>
                       <div className="flex flex-col items-center justify-center whitespace-nowrap break-keep text-center text-16 font-500">
                         <div
@@ -216,22 +254,43 @@ const Page = () => {
                           }`}
                         >
                           {isShuttleRouteConfirmDate
-                            ? '확정 당일'
+                            ? '셔틀 확정 당일'
                             : isAfterShuttleRouteConfirmDate
-                              ? '확정됨'
+                              ? '셔틀 확정됨'
                               : isBeforeShuttleRouteConfirmDate
-                                ? `D-${ddayBeforeShuttleRouteConfirmDate}`
+                                ? `셔틀 D-${ddayBeforeShuttleRouteConfirmDate}`
                                 : '오류 발생'}
                         </div>
-                        <span className="text-12 font-500 text-basic-grey-500">
-                          {shuttleRouteConfirmDate.format('~ MM.DD')}
-                        </span>
+                        <div
+                          className={`flex h-[30px] items-center justify-center whitespace-nowrap break-keep rounded-full px-8 text-center text-14 font-500 ${
+                            isHandyPartyConfirmDate
+                              ? 'bg-basic-red-100 text-basic-red-500'
+                              : isAfterHandyPartyConfirmDate
+                                ? 'bg-basic-grey-100 text-basic-grey-700'
+                                : 'bg-basic-grey-700 text-basic-white'
+                          }`}
+                        >
+                          {isHandyPartyConfirmDate
+                            ? '핸디팟 확정 당일'
+                            : isAfterHandyPartyConfirmDate
+                              ? '핸디팟 확정됨'
+                              : isBeforeHandyPartyConfirmDate
+                                ? `핸디팟 D-${ddayBeforeHandyPartyConfirmDate}`
+                                : '오류 발생'}
+                        </div>
                       </div>
                       <div className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-black">
                         {dailyEvent.shuttleRouteCount}
                       </div>
-                      <div className="whitespace-nowrap break-keep text-center text-16 font-500">
-                        {dailyEvent.totalDemandCount}
+                      <div className="flex flex-col items-center whitespace-nowrap break-keep">
+                        <span className="text-16 font-500">
+                          {dailyEvent.totalDemandCount}
+                        </span>
+                        <span className="text-12 font-500 text-basic-grey-400">
+                          {dailyEvent.dailyEventIsDemandOpen
+                            ? '진행중'
+                            : '종료'}
+                        </span>
                       </div>
                       <div className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-black">
                         {dailyEvent.totalReservationCount}
@@ -258,6 +317,48 @@ const Page = () => {
         <InfiniteScrollTrigger />
       </section>
     </main>
+  );
+};
+
+interface CheerCampaignButtonProps {
+  eventId: string;
+}
+
+const CheerCampaignButton = ({ eventId }: CheerCampaignButtonProps) => {
+  const router = useRouter();
+  const { data: cheerCampaign, isLoading } =
+    useGetEventCheerCampaignByEventId(eventId);
+
+  if (isLoading) {
+    return null;
+  }
+
+  if (cheerCampaign) {
+    return (
+      <Button
+        size="small"
+        variant="tertiary"
+        className="w-116"
+        onClick={() =>
+          router.push(
+            `/events/${eventId}/cheer/${cheerCampaign.eventCheerCampaignId}`,
+          )
+        }
+      >
+        응원 캠페인 상세
+      </Button>
+    );
+  }
+
+  return (
+    <Button
+      size="small"
+      variant="tertiary"
+      className="w-116"
+      onClick={() => router.push(`/events/${eventId}/cheer/new`)}
+    >
+      응원 캠페인 생성
+    </Button>
   );
 };
 
