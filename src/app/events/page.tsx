@@ -243,9 +243,9 @@ const Page = () => {
                           )}
                         </div>
                       </div>
-                      <div className="flex flex-col items-center justify-center whitespace-nowrap break-keep text-center text-16 font-500">
+                      <div className="flex flex-col items-center justify-center gap-[2px] whitespace-nowrap break-keep text-center text-16 font-500">
                         <div
-                          className={`flex h-[30px] items-center justify-center whitespace-nowrap break-keep rounded-full px-8 text-center text-14 font-500 ${
+                          className={`flex h-[24px] items-center justify-center whitespace-nowrap break-keep rounded-full px-8 text-center text-12 font-500 ${
                             isShuttleRouteConfirmDate
                               ? 'bg-basic-red-100 text-basic-red-500'
                               : isAfterShuttleRouteConfirmDate
@@ -262,7 +262,7 @@ const Page = () => {
                                 : '오류 발생'}
                         </div>
                         <div
-                          className={`flex h-[30px] items-center justify-center whitespace-nowrap break-keep rounded-full px-8 text-center text-14 font-500 ${
+                          className={`flex h-[24px] items-center justify-center whitespace-nowrap break-keep rounded-full px-8 text-center text-12 font-500 ${
                             isHandyPartyConfirmDate
                               ? 'bg-basic-red-100 text-basic-red-500'
                               : isAfterHandyPartyConfirmDate
