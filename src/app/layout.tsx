@@ -19,20 +19,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout(
-  {
-    // children,
-  }: Readonly<{
-    children: ReactNode;
-  }>,
-) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: ReactNode;
+}>) {
   return (
     <html lang="ko">
       <body>
         <Provider>
           <TopLevelLayout>
-            {/* {children} */}
-            <div>점검중</div>
+            {children}
+            {/* <div>점검중</div> */}
           </TopLevelLayout>
           <div id="bottom-sheet" />
           <ToastContainer />
