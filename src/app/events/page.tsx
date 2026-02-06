@@ -96,11 +96,11 @@ const Page = () => {
                 </h2>
                 <div className="flex items-center justify-center">
                   <div
-                    className={`flex h-[30px] w-88 items-center justify-center whitespace-nowrap break-keep rounded-full px-8 text-center text-14 font-500 ${
+                    className={`flex h-[30px] w-60 items-center justify-center whitespace-nowrap break-keep rounded-full px-8 text-center text-14 font-500 ${
                       event.eventStatus === 'OPEN'
                         ? 'bg-[#E8FFE6] text-[#00C83F]'
                         : event.eventStatus === 'STAND_BY'
-                          ? 'text-basic-blue-500 bg-basic-blue-100'
+                          ? 'bg-basic-blue-100 text-basic-blue-400'
                           : event.eventStatus === 'ENDED'
                             ? 'bg-basic-grey-100 text-basic-grey-700'
                             : 'bg-basic-grey-700 text-basic-white'
@@ -150,15 +150,12 @@ const Page = () => {
                   </Button>
                 </div>
               </div>
-              <div className="grid h-[32px] grid-cols-8 items-center bg-basic-grey-100">
+              <div className="grid h-[32px] grid-cols-7 items-center bg-basic-grey-100">
                 <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
                   날짜
                 </h4>
                 <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
                   상태
-                </h4>
-                <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
-                  수요조사
                 </h4>
                 <h4 className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-grey-600">
                   노선 확정 상태
@@ -204,14 +201,14 @@ const Page = () => {
                   return (
                     <div
                       key={dailyEvent.dailyEventId}
-                      className="grid w-full grid-cols-8 items-center border-b border-basic-grey-100 py-16"
+                      className="grid w-full grid-cols-7 items-center border-b border-basic-grey-100 py-16"
                     >
                       <div className="whitespace-nowrap break-keep text-center text-18 font-500">
                         {formatDateString(dailyEvent.dailyEventDate, 'date')}
                       </div>
                       <div className="flex flex-col items-center gap-[6px]">
                         <div
-                          className={`flex h-[30px] items-center justify-center whitespace-nowrap break-keep rounded-full px-8 text-center text-14 font-500 ${
+                          className={`flex h-[30px] items-center justify-center whitespace-nowrap break-keep rounded-full px-12 text-center text-14 font-500 ${
                             dailyEvent.dailyEventStatus === 'OPEN'
                               ? 'bg-[#E8FFE6] text-[#00C83F]'
                               : dailyEvent.dailyEventStatus === 'INACTIVE'
@@ -223,34 +220,6 @@ const Page = () => {
                             dailyEvent.dailyEventStatus,
                           )}
                         </div>
-                      </div>
-                      <div className="flex flex-col items-center justify-center gap-[6px]">
-                        <div className="flex flex-col items-center justify-center whitespace-nowrap break-keep text-center text-16 font-500">
-                          {dailyEvent.dailyEventIsDemandOpen
-                            ? '수요조사 중'
-                            : '닫힘'}
-                        </div>
-                        {dailyEvent.dailyEventDemandControlMode === 'MANUAL' ? (
-                          <span className="text-12 font-500 text-basic-grey-500">
-                            (수동)
-                          </span>
-                        ) : (
-                          <span className="text-12 font-500 text-basic-grey-500">
-                            (자동)
-                          </span>
-                        )}
-                        {dailyEvent.dailyEventIsDemandOpen &&
-                        dailyEvent.dailyEventDemandControlMode === 'AUTO' ? (
-                          <span className="text-12 font-500 text-basic-grey-500">
-                            {dayjs(
-                              dailyEvent.dailyEventDemandAutoOpenAt,
-                            ).format('MM.DD') +
-                              ' ~ ' +
-                              dayjs(
-                                dailyEvent.dailyEventDemandAutoCloseAt,
-                              ).format('MM.DD')}
-                          </span>
-                        ) : null}
                       </div>
                       <div className="flex flex-col items-center justify-center whitespace-nowrap break-keep text-center text-16 font-500">
                         <div
@@ -277,8 +246,15 @@ const Page = () => {
                       <div className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-black">
                         {dailyEvent.shuttleRouteCount}
                       </div>
-                      <div className="whitespace-nowrap break-keep text-center text-16 font-500">
-                        {dailyEvent.totalDemandCount}
+                      <div className="flex flex-col items-center whitespace-nowrap break-keep">
+                        <span className="text-16 font-500">
+                          {dailyEvent.totalDemandCount}
+                        </span>
+                        <span className="text-12 font-500 text-basic-grey-400">
+                          {dailyEvent.dailyEventIsDemandOpen
+                            ? '진행중'
+                            : '종료'}
+                        </span>
                       </div>
                       <div className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-black">
                         {dailyEvent.totalReservationCount}

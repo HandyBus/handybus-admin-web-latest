@@ -74,9 +74,9 @@ const Stringifier = Object.freeze({
       case 'INACTIVE':
         return '비활성';
       case 'STAND_BY':
-        return '행사 대기';
+        return '대기';
       case 'OPEN':
-        return '행사 오픈';
+        return '오픈';
       case 'ENDED':
         return '종료';
     }
@@ -84,11 +84,11 @@ const Stringifier = Object.freeze({
   dailyEventStatus(v: DailyEventStatus) {
     switch (v) {
       case 'INACTIVE':
-        return '이 일자의 행사 비활성';
+        return '비활성';
       case 'OPEN':
-        return '이 일자의 행사 오픈';
+        return '오픈';
       case 'ENDED':
-        return '이 일자의 행사 종료';
+        return '종료';
     }
   },
   shuttleRouteStatus(v: ShuttleRouteStatus) {
