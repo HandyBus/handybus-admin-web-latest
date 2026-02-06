@@ -175,13 +175,15 @@ const Page = () => {
               </div>
               <div className="flex w-full flex-col">
                 {event.dailyEvents.map((dailyEvent) => {
+                  const today = dayjs().tz('Asia/Seoul').startOf('day');
+
+                  // 셔틀버스는 7일 전 확정
                   const shuttleRouteConfirmDate = dayjs(
                     dailyEvent.dailyEventDate,
                   )
                     .tz('Asia/Seoul')
-                    .subtract(11, 'day')
+                    .subtract(7, 'day')
                     .startOf('day');
-                  const today = dayjs().tz('Asia/Seoul').startOf('day');
                   const isShuttleRouteConfirmDate = today.isSame(
                     shuttleRouteConfirmDate,
                     'day',
@@ -196,6 +198,26 @@ const Page = () => {
                   );
                   const ddayBeforeShuttleRouteConfirmDate = Math.abs(
                     today.diff(shuttleRouteConfirmDate, 'days'),
+                  );
+                  // 핸디팟은 5일 전 확정
+                  const handyPartyConfirmDate = dayjs(dailyEvent.dailyEventDate)
+                    .tz('Asia/Seoul')
+                    .subtract(5, 'day')
+                    .startOf('day');
+                  const isHandyPartyConfirmDate = today.isSame(
+                    handyPartyConfirmDate,
+                    'day',
+                  );
+                  const isBeforeHandyPartyConfirmDate = today.isBefore(
+                    handyPartyConfirmDate,
+                    'day',
+                  );
+                  const isAfterHandyPartyConfirmDate = today.isAfter(
+                    handyPartyConfirmDate,
+                    'day',
+                  );
+                  const ddayBeforeHandyPartyConfirmDate = Math.abs(
+                    today.diff(handyPartyConfirmDate, 'days'),
                   );
 
                   return (
@@ -232,16 +254,30 @@ const Page = () => {
                           }`}
                         >
                           {isShuttleRouteConfirmDate
-                            ? '확정 당일'
+                            ? '셔틀 확정 당일'
                             : isAfterShuttleRouteConfirmDate
-                              ? '확정됨'
+                              ? '셔틀 확정됨'
                               : isBeforeShuttleRouteConfirmDate
-                                ? `D-${ddayBeforeShuttleRouteConfirmDate}`
+                                ? `셔틀 D-${ddayBeforeShuttleRouteConfirmDate}`
                                 : '오류 발생'}
                         </div>
-                        <span className="text-12 font-500 text-basic-grey-500">
-                          {shuttleRouteConfirmDate.format('~ MM.DD')}
-                        </span>
+                        <div
+                          className={`flex h-[30px] items-center justify-center whitespace-nowrap break-keep rounded-full px-8 text-center text-14 font-500 ${
+                            isHandyPartyConfirmDate
+                              ? 'bg-basic-red-100 text-basic-red-500'
+                              : isAfterHandyPartyConfirmDate
+                                ? 'bg-basic-grey-100 text-basic-grey-700'
+                                : 'bg-basic-grey-700 text-basic-white'
+                          }`}
+                        >
+                          {isHandyPartyConfirmDate
+                            ? '핸디팟 확정 당일'
+                            : isAfterHandyPartyConfirmDate
+                              ? '핸디팟 확정됨'
+                              : isBeforeHandyPartyConfirmDate
+                                ? `핸디팟 D-${ddayBeforeHandyPartyConfirmDate}`
+                                : '오류 발생'}
+                        </div>
                       </div>
                       <div className="whitespace-nowrap break-keep text-center text-16 font-500 text-basic-black">
                         {dailyEvent.shuttleRouteCount}
