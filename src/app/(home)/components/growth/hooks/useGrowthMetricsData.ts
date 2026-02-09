@@ -22,9 +22,15 @@ import {
 } from '@/types/analytics.type';
 import { useComparisonQuery } from '@/app/(home)/hooks/useComparisonQuery';
 import { MetricData, FilterPeriod } from '@/app/(home)/types/types';
-import { processChartData } from '@/app/(home)/utils/chartData.util';
+import {
+  processChartData,
+  mergeChartData,
+} from '@/app/(home)/utils/chartData.util';
 import { calculatePercentage } from '@/app/(home)/utils/metrics.util';
 import { getLatestDataDate } from '@/app/(home)/utils/dateNavigation.util';
+import { getTotalDemandCounts } from '@/services/demand.service';
+import { getTotalReservationPassengerCounts } from '@/services/reservation.service';
+import { ReservationStatus } from '@/types/reservation.type';
 
 interface UseGrowthMetricsDataProps {
   currentStartDate: string;
@@ -192,6 +198,103 @@ export const useGrowthMetricsData = ({
     useComparisonQuery({
       queryKey: ['daily-signup-metrics-card', cardRecentStartDate],
       fetcher: getDailySignupMetrics,
+      currentStartDate: cardRecentStartDate,
+      currentEndDate: cardRecentEndDate,
+      prevStartDate: cardPreStartDate,
+      prevEndDate: cardPreEndDate,
+      enabled: true,
+    });
+
+  // Demand (수요조사) - Daily로 Fetch 후 클라이언트 집계
+  // API는 baseDate, totalRangeDate, intervalDays를 받음 (DashboardOptions)
+  // useComparisonQuery는 startDate, endDate를 받으므로 래퍼 필요
+
+  // Demand Fetcher Wrapper
+  const fetchDemandWrapper = async (start: string, end: string) => {
+    const diffDays = dayjs(end).diff(dayjs(start), 'day');
+    return getTotalDemandCounts({
+      baseDate: dayjs(end).endOf('day').toISOString(),
+      totalRangeDate: diffDays, // 0부터 시작하므로 -1 안함 (오늘 포함 7일이면 totalRangeDate=6 이지만, 여기 로직은 start~end
+      intervalDays: 1, // 일별 데이터 필수
+    });
+  };
+
+  // Chart Data (Demand)
+  const { currentData: chartDemandData } = useComparisonQuery({
+    queryKey: ['demand-counts-chart'],
+    fetcher: fetchDemandWrapper,
+    currentStartDate,
+    currentEndDate,
+    prevStartDate: '',
+    prevEndDate: '',
+    enabled: true,
+  });
+
+  // Card Data (Demand)
+  const { currentData: cardDemandData, prevData: cardPreDemandData } =
+    useComparisonQuery({
+      queryKey: ['demand-counts-card', cardRecentStartDate],
+      fetcher: fetchDemandWrapper,
+      currentStartDate: cardRecentStartDate,
+      currentEndDate: cardRecentEndDate,
+      prevStartDate: cardPreStartDate,
+      prevEndDate: cardPreEndDate,
+      enabled: true,
+    });
+
+  // Reservation - Daily로 Fetch 후 클라이언트 집계
+  // COMPLETE_PAYMENT vs CANCEL 각각 Fetch
+  const fetchReservationWrapper =
+    (status: ReservationStatus) => async (start: string, end: string) => {
+      const diffDays = dayjs(end).diff(dayjs(start), 'day');
+      return getTotalReservationPassengerCounts({
+        baseDate: dayjs(end).endOf('day').toISOString(),
+        totalRangeDate: diffDays,
+        intervalDays: 1,
+        reservationStatus: status,
+      });
+    };
+
+  // Chart Data (Reservation)
+  const { currentData: chartReservedData } = useComparisonQuery({
+    queryKey: ['reservation-counts-chart', 'COMPLETE_PAYMENT'],
+    fetcher: fetchReservationWrapper('COMPLETE_PAYMENT'),
+    currentStartDate,
+    currentEndDate,
+    prevStartDate: '',
+    prevEndDate: '',
+    enabled: true,
+  });
+  const { currentData: chartCancelledData } = useComparisonQuery({
+    queryKey: ['reservation-counts-chart', 'CANCEL'],
+    fetcher: fetchReservationWrapper('CANCEL'),
+    currentStartDate,
+    currentEndDate,
+    prevStartDate: '',
+    prevEndDate: '',
+    enabled: true,
+  });
+
+  // Card Data (Reservation)
+  const { currentData: cardReservedData, prevData: cardPreReservedData } =
+    useComparisonQuery({
+      queryKey: [
+        'reservation-counts-card',
+        'COMPLETE_PAYMENT',
+        cardRecentStartDate,
+      ],
+      fetcher: fetchReservationWrapper('COMPLETE_PAYMENT'),
+      currentStartDate: cardRecentStartDate,
+      currentEndDate: cardRecentEndDate,
+      prevStartDate: cardPreStartDate,
+      prevEndDate: cardPreEndDate,
+      enabled: true,
+    });
+
+  const { currentData: cardCancelledData, prevData: cardPreCancelledData } =
+    useComparisonQuery({
+      queryKey: ['reservation-counts-card', 'CANCEL', cardRecentStartDate],
+      fetcher: fetchReservationWrapper('CANCEL'),
       currentStartDate: cardRecentStartDate,
       currentEndDate: cardRecentEndDate,
       prevStartDate: cardPreStartDate,
@@ -486,6 +589,121 @@ export const useGrowthMetricsData = ({
       chartLabel: 'GMV',
     });
 
+    // 5. 수요조사 (Demand)
+    const totalDemand =
+      cardDemandData?.reduce(
+        (acc: number, curr: { intervalDemandCount: number }) =>
+          acc + curr.intervalDemandCount,
+        0,
+      ) || 0;
+    const preTotalDemand =
+      cardPreDemandData?.reduce(
+        (acc: number, curr: { intervalDemandCount: number }) =>
+          acc + curr.intervalDemandCount,
+        0,
+      ) || 0;
+
+    const demandRawData = chartDemandData?.map(
+      (d: { date: string; intervalDemandCount: number }) => ({
+        date: d.date,
+        value: d.intervalDemandCount,
+      }),
+    );
+    const demandChartData = processChartData(demandRawData, period);
+
+    metrics.push({
+      id: 'demandCount',
+      title: '수요조사',
+      value: totalDemand.toLocaleString(),
+      unit: '건',
+      percentage: calculatePercentage(totalDemand, preTotalDemand),
+      criterionLabel: criterionLabel,
+      chartData: demandChartData,
+      chartLabel: '수요조사',
+    });
+
+    // 6. 예약자 (Reservation) - Multi-line Chart
+    // Card Value: Total (Complete + Cancel)
+    const totalReserved =
+      cardReservedData?.reduce(
+        (acc: number, curr: { intervalReservationPassengerCount: number }) =>
+          acc + curr.intervalReservationPassengerCount,
+        0,
+      ) || 0;
+    const totalCancelled =
+      cardCancelledData?.reduce(
+        (acc: number, curr: { intervalReservationPassengerCount: number }) =>
+          acc + curr.intervalReservationPassengerCount,
+        0,
+      ) || 0;
+    const totalReservationPassenger = totalReserved + totalCancelled;
+
+    const preTotalReserved =
+      cardPreReservedData?.reduce(
+        (acc: number, curr: { intervalReservationPassengerCount: number }) =>
+          acc + curr.intervalReservationPassengerCount,
+        0,
+      ) || 0;
+    const preTotalCancelled =
+      cardPreCancelledData?.reduce(
+        (acc: number, curr: { intervalReservationPassengerCount: number }) =>
+          acc + curr.intervalReservationPassengerCount,
+        0,
+      ) || 0;
+    const preTotalReservationPassenger = preTotalReserved + preTotalCancelled;
+
+    // Chart Data Generation (Multi-line)
+    // 1) Reserved Data
+    const reservedRawData = chartReservedData?.map(
+      (d: { date: string; intervalReservationPassengerCount: number }) => ({
+        date: d.date,
+        value: d.intervalReservationPassengerCount,
+      }),
+    );
+    const reservedChartData = processChartData(reservedRawData, period);
+
+    // 2) Cancelled Data
+    const cancelledRawData = chartCancelledData?.map(
+      (d: { date: string; intervalReservationPassengerCount: number }) => ({
+        date: d.date,
+        value: d.intervalReservationPassengerCount,
+      }),
+    );
+    const cancelledChartData = processChartData(cancelledRawData, period);
+
+    // 3) Merge
+    const mergedReservationChartData = mergeChartData([
+      { key: 'reserved', data: reservedChartData },
+      { key: 'cancelled', data: cancelledChartData },
+    ]).map((item) => {
+      const reserved = typeof item.reserved === 'number' ? item.reserved : 0;
+      const cancelled = typeof item.cancelled === 'number' ? item.cancelled : 0;
+      return {
+        ...item,
+        total: reserved + cancelled,
+      };
+    });
+
+    metrics.push({
+      id: 'reservationPassengerCount',
+      title: '예약자 수',
+      value: totalReservationPassenger.toLocaleString(),
+      unit: '명',
+      percentage: calculatePercentage(
+        totalReservationPassenger,
+        preTotalReservationPassenger,
+      ),
+      criterionLabel: criterionLabel,
+      chartData: mergedReservationChartData,
+      chartLabel: '총 예약자',
+      dataKeys: ['total', 'reserved', 'cancelled'],
+      chartLabels: {
+        total: '총 예약자',
+        reserved: '예약자',
+        cancelled: '취소자',
+      },
+    });
+
     return metrics;
   }, [
     period,
@@ -499,11 +717,20 @@ export const useGrowthMetricsData = ({
     cardPreSignupData,
     cardGmvData,
     cardPreGmvData,
+    cardDemandData,
+    cardPreDemandData,
+    cardReservedData,
+    cardPreReservedData,
+    cardCancelledData,
+    cardPreCancelledData,
     // Chart Data
     chartExploreData,
     chartCoreData,
     chartSignupData,
     chartGmvData,
+    chartDemandData,
+    chartReservedData,
+    chartCancelledData,
   ]);
 
   return { processedMetrics };
