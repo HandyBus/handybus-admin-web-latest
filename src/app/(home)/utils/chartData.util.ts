@@ -1,13 +1,13 @@
 import dayjs, { Dayjs } from 'dayjs';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
-import { FilterPeriod } from '../types/types';
+import { FilterPeriod, ChartDataItem } from '../types/types';
 
 dayjs.extend(weekOfYear);
 
 export const processChartData = (
   data: { date: string; value: number }[] | undefined,
   period: FilterPeriod,
-) => {
+): ChartDataItem[] => {
   if (!data) return [];
 
   // 일간: 30일 -> "YYYY-MM-DD"
@@ -89,4 +89,36 @@ export const processChartData = (
       value,
     };
   });
+};
+
+/**
+ * 여러 개의 차트 데이터를 날짜 기준으로 병합합니다.
+ * @param datasets 병합할 데이터셋 목록. 각 항목은 { key: string, data: ChartDataItem[] } 형태여야 합니다.
+ * @returns 병합된 데이터 배열. { date: string, [key1]: number, [key2]: number, ... } 형태
+ */
+export const mergeChartData = (
+  datasets: { key: string; data: ChartDataItem[] }[],
+): ChartDataItem[] => {
+  if (!datasets || datasets.length === 0) return [];
+
+  const mergedDataMap = new Map<string, ChartDataItem>();
+
+  // reservation, cancel 두개의 데이터를 하나의 집합에 담기위해서 아래처럼 진행
+  datasets.forEach((dataset) => {
+    dataset.data.forEach((item) => {
+      if (!mergedDataMap.has(item.date)) {
+        mergedDataMap.set(item.date, { date: item.date });
+      }
+      const currentObj = mergedDataMap.get(item.date)!;
+
+      if ('value' in item) {
+        currentObj[dataset.key] = item.value;
+      }
+    });
+  });
+
+  // 날짜순 정렬 후 반환 (선택 사항, 차트의 X축 정렬을 위해 권장)
+  return Array.from(mergedDataMap.values()).sort((a, b) =>
+    a.date.localeCompare(b.date),
+  );
 };

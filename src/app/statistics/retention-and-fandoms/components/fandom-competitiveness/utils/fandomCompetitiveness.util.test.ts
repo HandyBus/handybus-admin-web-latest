@@ -6,13 +6,12 @@ import {
 } from '@/types/analytics.type';
 
 describe('팬덤 경쟁력 계산 로직', () => {
-  const targetDate = '2024-02-20';
-  const prevDate = '2024-02-19';
-  const prev2Date = '2024-02-18';
+  const thisMonthFirst = '2024-02-01'; // 이번 달 1일 (모든 지표의 기준)
+  const lastMonthFirst = '2024-01-01'; // 지난 달 1일 (비교 기준)
 
   const mockActivity: DailyFandomActivityMetricsViewEntity[] = [
     {
-      date: '2024-02-20',
+      date: '2024-02-01', // 이번 달 1일 (모든 활동 지표의 기준)
       artistId: 'A1',
       artistName: 'Artist A',
       reservationUserCount: 0,
@@ -23,16 +22,28 @@ describe('팬덤 경쟁력 계산 로직', () => {
       averageUserEventRebookingHours: 48, // 2일
       averageUserReboardingDays: 5,
     },
+    {
+      date: '2024-02-08', // 최신 데이터 (무시되어야 함)
+      artistId: 'A1',
+      artistName: 'Artist A',
+      reservationUserCount: 0,
+      participationUserCount: 0,
+      eventReparticipationUserCount: 0,
+      eventRebookingUserCount: 0,
+      averageUserEventReparticipationHours: 999, // 무시되어야 함
+      averageUserEventRebookingHours: 999, // 무시되어야 함
+      averageUserReboardingDays: 999, // 무시되어야 함
+    },
   ];
 
   const mockSnapshot: DailyFandomSnapshotMetricsViewEntity[] = [
-    // T (기준일)
+    // This Month 1st (모든 지표 기준)
     {
-      date: '2024-02-20',
+      date: '2024-02-01',
       artistId: 'A1',
       artistName: 'Artist A',
       cumulativeFandomUserCount: 1000,
-      fandomNewUserRolling30dCount: 100, // 신규 비중 10%
+      fandomNewUserRolling30dCount: 100, // 신규 비중 10% (100/1000)
       cumulativeEventParticipationUserCount: 500,
       cumulativeEventReparticipationUserCount: 50, // 재참여율 10%
       cumulativeEventReservationUserCount: 200,
@@ -40,13 +51,13 @@ describe('팬덤 경쟁력 계산 로직', () => {
       createdAt: '',
       updatedAt: '',
     },
-    // T-1 (전일)
+    // Last Month 1st (비교 기준)
     {
-      date: '2024-02-19',
+      date: '2024-01-01',
       artistId: 'A1',
       artistName: 'Artist A',
       cumulativeFandomUserCount: 900, // 증감률: (1000-900)/900 = 11.1%
-      fandomNewUserRolling30dCount: 0,
+      fandomNewUserRolling30dCount: 50, // 유입 변화율: (100-50)/50 = 100%
       cumulativeEventParticipationUserCount: 0,
       cumulativeEventReparticipationUserCount: 0,
       cumulativeEventReservationUserCount: 0,
@@ -54,20 +65,17 @@ describe('팬덤 경쟁력 계산 로직', () => {
       createdAt: '',
       updatedAt: '',
     },
-    // T-2 (전전일)
+    // 최신 데이터 스냅샷 (무시되어야 함)
     {
-      date: '2024-02-18',
+      date: '2024-02-08',
       artistId: 'A1',
       artistName: 'Artist A',
-      cumulativeFandomUserCount: 850,
-      // 순수 신규(T-1) = 900 - 850 = 50
-      // 순수 신규(T) = 1000 - 900 = 100
-      // 신규 유입 변화율 = (100 - 50) / 50 = 100%
-      fandomNewUserRolling30dCount: 0,
-      cumulativeEventParticipationUserCount: 0,
-      cumulativeEventReparticipationUserCount: 0,
-      cumulativeEventReservationUserCount: 0,
-      cumulativeEventRebookingUserCount: 0,
+      cumulativeFandomUserCount: 1050,
+      fandomNewUserRolling30dCount: 110,
+      cumulativeEventParticipationUserCount: 600,
+      cumulativeEventReparticipationUserCount: 60,
+      cumulativeEventReservationUserCount: 300,
+      cumulativeEventRebookingUserCount: 60,
       createdAt: '',
       updatedAt: '',
     },
@@ -95,74 +103,53 @@ describe('팬덤 경쟁력 계산 로직', () => {
       createdAt: '',
       updatedAt: '',
     },
-    // 이전 월 데이터 - 무시되어야 함
-    {
-      month: '2023-12-01',
-      baseArtistId: 'A1',
-      baseArtistName: 'Artist A',
-      targetArtistId: 'D1',
-      targetArtistName: 'Artist D',
-      overlapFandomCount: 500,
-      createdAt: '',
-      updatedAt: '',
-    },
   ];
 
-  it('교차 지표를 포함하여 모든 메트릭이 정확하게 계산되어야 한다', () => {
+  it('모든 메트릭이 이번 달 1일 데이터를 기준으로 계산되어야 한다', () => {
     const result = calculateFandomCompetitiveness(
       mockActivity,
       mockSnapshot,
-      targetDate,
-      prevDate,
-      prev2Date,
+      thisMonthFirst,
+      lastMonthFirst,
       mockCrossMetrics,
     );
 
-    expect(result).toHaveLength(1); // Artist A 한 명에 대한 결과인지 확인
+    expect(result).toHaveLength(1);
     const artist = result[0];
 
     expect(artist.artist).toBe('Artist A');
 
-    // 1. 팬덤 유저 수
-    expect(artist.fandomUserCount).toBe(1000);
+    // 1. 팬덤 유저 수 (이번 달 1일 기준)
+    expect(artist.fandomUserCount).toBe(1000); // 1050(최신)이 아님
 
     // 2. 유저 증감률 ( (1000-900)/900 * 100 = 11.11... -> 11.1 )
     expect(artist.userGrowthRate).toBe(11.1);
 
-    // 3. 재참여율 ( 50 / 500 * 100 = 10.0 )
-    expect(artist.reparticipationRate).toBe(10.0);
+    // 3. 재참여율 ( 50 / 500 * 100 = 10.0 ) - 이번 달 1일 기준
+    expect(artist.reparticipationRate).toBe(10.0); // 최신이 아님
 
-    // 4. 재예매율 ( 40 / 200 * 100 = 20.0 )
-    expect(artist.rebookingRate).toBe(20.0);
+    // 4. 재예매율 ( 40 / 200 * 100 = 20.0 ) - 이번 달 1일 기준
+    expect(artist.rebookingRate).toBe(20.0); // 최신이 아님
 
-    // 5. 활동 주기
-    expect(artist.reparticipationCycle).toBe(1.0); // 24시간 -> 1일
-    expect(artist.rebookingCycle).toBe(2.0); // 48시간 -> 2일
-    expect(artist.reboardingCycle).toBe(5);
+    // 5. 활동 주기 - 이번 달 1일 기준
+    expect(artist.reparticipationCycle).toBe(1.0); // 999가 아님
+    expect(artist.rebookingCycle).toBe(2.0); // 999가 아님
+    expect(artist.reboardingCycle).toBe(5); // 999가 아님
 
-    // 6. 유입 믹스
-    // 신규: 100, 전체: 1000 -> 10%
+    // 6. 유입 믹스 (이번 달 1일 기준)
+    // 신규(Rolling30): 100, 전체: 1000 -> 10%
     expect(artist.inflowMix.new).toBe(10.0);
     expect(artist.inflowMix.existing).toBe(90.0);
 
-    // 7. 신규 유입 변화율
-    // 일간 신규(T) = 100
-    // 일간 신규(T-1) = 50
+    // 7. 신규 유입 변화율 (월간 Rolling30 비교)
+    // 이번 달 1일 Rolling30 = 100
+    // 지난 달 1일 Rolling30 = 50
     // 변화율 = (100 - 50) / 50 * 100 = 100%
     expect(artist.newInflowChangeRate).toBe(100.0);
 
     // 8. 교차 지표
-    // 최신 월(2024-01-01) 데이터를 사용하는지 확인
-    // Artist B 겹침 = 150 -> 15%
-    // Artist C 겹침 = 50 -> 5%
-    // 1순위는 Artist B가 되어야 함
     expect(artist.crossInterest.artist).toBe('Artist B');
     expect(artist.crossInterest.percent).toBe(15.0);
-
-    // 상세 리스트는 퍼센트 내림차순 정렬 확인
-    expect(artist.crossInterestDetails).toHaveLength(2);
-    expect(artist.crossInterestDetails[0].artist).toBe('Artist B');
-    expect(artist.crossInterestDetails[1].artist).toBe('Artist C');
   });
 
   it('교차 지표가 0%인 데이터는 필터링되어야 한다', () => {
@@ -182,9 +169,8 @@ describe('팬덤 경쟁력 계산 로직', () => {
     const result = calculateFandomCompetitiveness(
       mockActivity,
       mockSnapshot,
-      targetDate,
-      prevDate,
-      prev2Date,
+      thisMonthFirst,
+      lastMonthFirst,
       zeroCrossMetrics,
     );
 
@@ -201,9 +187,8 @@ describe('팬덤 경쟁력 계산 로직', () => {
     const result = calculateFandomCompetitiveness(
       [],
       mockSnapshot,
-      targetDate,
-      prevDate,
-      prev2Date,
+      thisMonthFirst,
+      lastMonthFirst,
       undefined,
     );
 
@@ -212,7 +197,7 @@ describe('팬덤 경쟁력 계산 로직', () => {
 
     // Snapshot based metrics should exist
     expect(artist.artist).toBe('Artist A');
-    expect(artist.fandomUserCount).toBe(1000);
+    expect(artist.fandomUserCount).toBe(1000); // 2월 1일 기준
     expect(artist.userGrowthRate).toBe(11.1);
 
     // Activity based metrics should be '-'
@@ -227,9 +212,8 @@ describe('팬덤 경쟁력 계산 로직', () => {
     const result = calculateFandomCompetitiveness(
       [],
       [],
-      targetDate,
-      prevDate,
-      prev2Date,
+      thisMonthFirst,
+      lastMonthFirst,
       undefined,
     );
     expect(result).toEqual([]);

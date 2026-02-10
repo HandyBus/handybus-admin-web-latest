@@ -74,7 +74,7 @@ const GrowthMetrics = () => {
         />
       </div>
 
-      <div className="flex w-full gap-16">
+      <div className="grid w-full grid-cols-3 gap-16">
         {processedMetrics.map((metric) => (
           <MetricCard
             key={metric.id}
@@ -112,8 +112,16 @@ const GrowthMetrics = () => {
         <div className="flex h-[530px] w-full p-24">
           <CustomLineChart
             data={getChartData(selectedMetric)}
-            dataKey={['value']}
-            label={{ value: selectedMetric.chartLabel }}
+            dataKey={
+              selectedMetric.dataKeys && selectedMetric.dataKeys.length > 0
+                ? selectedMetric.dataKeys
+                : ['value']
+            }
+            label={
+              selectedMetric.chartLabels || {
+                value: selectedMetric.chartLabel,
+              }
+            }
           />
         </div>
       </div>

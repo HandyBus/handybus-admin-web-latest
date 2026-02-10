@@ -38,9 +38,8 @@ export const safeGrowthRate = (current: number, previous: number) => {
 export const calculateFandomCompetitiveness = (
   activityData: DailyFandomActivityMetricsViewEntity[] | undefined,
   snapshotData: DailyFandomSnapshotMetricsViewEntity[] | undefined,
-  targetDate: string, // yesterday
-  prevDate: string, // dayBeforeYesterday
-  prev2Date: string, // twoDaysAgo
+  thisMonthFirst: string, // 이번 달 1일 (기준일)
+  lastMonthFirst: string, // 지난 달 1일 (비교일)
   crossMetricsData: MonthlyFandomCrossMetricsViewEntity[] | undefined,
 ): FandomCompetitiveness[] => {
   if (!snapshotData) return [];
@@ -66,38 +65,38 @@ export const calculateFandomCompetitiveness = (
   const artistIds = Array.from(new Set(snapshotData.map((d) => d.artistId)));
 
   const data = artistIds.map((artistId) => {
-    // 어제 날짜의 활동 데이터 찾기
+    // 어제 날짜의 활동 데이터 찾기 (활동 지표는 최신 일자 기준 유지 -> 월간 1일 기준 변경)
+    // activityData는 외부에서 dailyStartDate ~ endDate로 조회하므로,
+    // 이번 달 1일(thisMonthFirst) 데이터가 있는지 확인해야 함.
     const activity = activityData?.find(
-      (d) => d.artistId === artistId && d.date === targetDate,
+      (d) => d.artistId === artistId && d.date === thisMonthFirst,
     );
 
-    // 어제(T), 그제(T-1), 그그제(T-2) 스냅샷 찾기
-    const snapshotT = snapshotData.find(
-      (d) => d.artistId === artistId && d.date === targetDate,
+    // 이번달 1일(T), 지난달 1일(T-1) 스냅샷 찾기
+    const snapshotThisMonth = snapshotData.find(
+      (d) => d.artistId === artistId && d.date === thisMonthFirst,
     );
-    const snapshotTMinus1 = snapshotData.find(
-      (d) => d.artistId === artistId && d.date === prevDate,
-    );
-    const snapshotTMinus2 = snapshotData.find(
-      (d) => d.artistId === artistId && d.date === prev2Date,
+    const snapshotLastMonth = snapshotData.find(
+      (d) => d.artistId === artistId && d.date === lastMonthFirst,
     );
 
     const artistName =
-      snapshotT?.artistName || activity?.artistName || 'Unknown';
+      snapshotThisMonth?.artistName || activity?.artistName || 'Unknown';
 
-    // 1. 팬덤 유저 수 (어제 기준)
-    const fandomUserCount = snapshotT?.cumulativeFandomUserCount || 0;
-    const fandomUserCountPrev = snapshotTMinus1?.cumulativeFandomUserCount || 0;
+    // 1. 팬덤 유저 수 (이번 달 1일 기준)
+    const fandomUserCount = snapshotThisMonth?.cumulativeFandomUserCount || 0;
+    const fandomUserCountPrev =
+      snapshotLastMonth?.cumulativeFandomUserCount || 0;
 
-    // 2. 유저 증감률 ( (Total(T) - Total(T-1)) / Total(T-1) )
+    // 2. 유저 증감률 ( (Total(This) - Total(Last)) / Total(Last) )
     const userGrowthRate = safeGrowthRate(fandomUserCount, fandomUserCountPrev);
 
-    // 3. 활동 메트릭 (어제 기준)
+    // 3. 활동 메트릭 (이번 달 1일 기준)
     // Activity 데이터가 없으면 '-' (0이 아님)
     const reparticipationRate = activity
       ? safeRate(
-          snapshotT?.cumulativeEventReparticipationUserCount || 0,
-          snapshotT?.cumulativeEventParticipationUserCount || 0,
+          snapshotThisMonth?.cumulativeEventReparticipationUserCount || 0,
+          snapshotThisMonth?.cumulativeEventParticipationUserCount || 0,
         )
       : '-';
 
@@ -107,8 +106,8 @@ export const calculateFandomCompetitiveness = (
 
     const rebookingRate = activity
       ? safeRate(
-          snapshotT?.cumulativeEventRebookingUserCount || 0,
-          snapshotT?.cumulativeEventReservationUserCount || 0,
+          snapshotThisMonth?.cumulativeEventRebookingUserCount || 0,
+          snapshotThisMonth?.cumulativeEventReservationUserCount || 0,
         )
       : '-';
 
@@ -121,23 +120,23 @@ export const calculateFandomCompetitiveness = (
       : '-';
 
     // 4. 유입 믹스 및 변화율
-    // 믹스: "신규" = 30일 이동 유저 수 (신규 구성 비중의 대리 지표)
-    const newUsersCount30d = snapshotT?.fandomNewUserRolling30dCount || 0;
+    // 믹스: "신규" = 30일 이동 유저 수 (이번 달 1일 기준)
+    const newUsersCount30d =
+      snapshotThisMonth?.fandomNewUserRolling30dCount || 0;
     const newRatio = safeRate(newUsersCount30d, fandomUserCount);
     // 기존 Ratio는 (100 - newRatio)
     const existingRatio = parseFloat((100 - newRatio).toFixed(1));
 
-    // 변화율: "일간 순수 신규" 증감률 (Total(T) - Total(T-1))
-    const dailyNewUsersT = Math.max(0, fandomUserCount - fandomUserCountPrev);
-    const fandomUserCountPrev2 =
-      snapshotTMinus2?.cumulativeFandomUserCount || 0;
-    const dailyNewUsersTMinus1 = Math.max(
-      0,
-      fandomUserCountPrev - fandomUserCountPrev2,
-    );
+    // 변화율: "신규 유저 유입" 변화 (This Month Rolling30 - Last Month Rolling30)
+    // 2월 1일의 Rolling30 = 1월 한달간의 신규 유입
+    // 1월 1일의 Rolling30 = 12월 한달간의 신규 유입
+    // 따라서 이 둘을 비교하면 전월 대비 신규 유입 증감을 알 수 있음.
+    const newUsersCount30dPrev =
+      snapshotLastMonth?.fandomNewUserRolling30dCount || 0;
+
     const newInflowChangeRate = safeGrowthRate(
-      dailyNewUsersT,
-      dailyNewUsersTMinus1,
+      newUsersCount30d,
+      newUsersCount30dPrev,
     );
 
     // 5. 교차 지표 (월별 데이터 기반)
