@@ -37,6 +37,10 @@ export const transformToShuttleRouteRequest = (
       dirtyFields?.shuttleRouteHubsFromDestination
         ? (returnHubs ?? []).concat(forwardHubs ?? [])
         : undefined,
+    hasEarlybird: dirtyFields?.hasEarlybird ? data.hasEarlybird : undefined,
+    earlybirdDeadline: dirtyFields?.earlybirdDeadline
+      ? data.earlybirdDeadline
+      : undefined,
     regularPrice: dirtyFields?.regularPrice ? data.regularPrice : undefined,
     earlybirdPrice: dirtyFields?.earlybirdPrice
       ? data.earlybirdPrice
