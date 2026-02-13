@@ -26,13 +26,12 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 
 describe('FandomCompetitivenessSection', () => {
   beforeEach(() => {
-    // 고정 날짜 설정: 2024-05-15 (수요일)
-    // 오늘: 2024-05-15
-    // 어제 (대상): 2024-05-14
-    // 그저께 (이전): 2024-05-13
-    // 2일 전 (이전2): 2024-05-12
     vi.useFakeTimers();
-    vi.setSystemTime(new Date('2024-02-20'));
+    // 시스템 시간: 2024-02-09
+    // -> 최신 데이터 날짜: 2024-02-08 (LOGIC상 -1일)
+    // -> 이번 달 1일: 2024-02-01
+    // -> 지난 달 1일: 2024-01-01
+    vi.setSystemTime(new Date('2024-02-09T10:00:00'));
   });
 
   afterEach(() => {
@@ -40,44 +39,27 @@ describe('FandomCompetitivenessSection', () => {
     vi.clearAllMocks();
   });
 
-  it('renders new user inflow change rate correctly when data exists', () => {
-    // Mock 데이터 설정
-    // 시나리오:
-    // T-2 (2024-02-18): 100명
-    // T-1 (2024-02-19): 110명 (일간 신규 = 10명)
-    // T   (2024-02-20): 125명 (일간 신규 = 15명)
-    // 성장률 = (15 - 10) / 10 * 100 = 50%
-    // 가급적 util 테스트와 일관성을 유지하기 위해 2024-02-20을 대상일로 사용합니다.
-
+  it('월간 유저 증감률과 유입 변화율이 올바르게 렌더링되어야 한다', () => {
     const mockSnapshotData = [
+      // 이번 달 1일 (2024-02-01)
       {
         artistId: 'artist-1',
         artistName: 'Test Artist',
-        date: '2024-02-18', // T-2
+        date: '2024-02-01',
+        cumulativeFandomUserCount: 120, // 증감률: (120-100)/100 = 20%
+        fandomNewUserRolling30dCount: 40, // 유입 변화율: (40-20)/20 = 100%
+        cumulativeEventReparticipationUserCount: 0,
+        cumulativeEventParticipationUserCount: 0,
+        cumulativeEventRebookingUserCount: 0,
+        cumulativeEventReservationUserCount: 0,
+      },
+      // 지난 달 1일 (2024-01-01)
+      {
+        artistId: 'artist-1',
+        artistName: 'Test Artist',
+        date: '2024-01-01',
         cumulativeFandomUserCount: 100,
-        fandomNewUserRolling30dCount: 30,
-        cumulativeEventReparticipationUserCount: 0,
-        cumulativeEventParticipationUserCount: 0,
-        cumulativeEventRebookingUserCount: 0,
-        cumulativeEventReservationUserCount: 0,
-      },
-      {
-        artistId: 'artist-1',
-        artistName: 'Test Artist',
-        date: '2024-02-19', // T-1
-        cumulativeFandomUserCount: 110,
-        fandomNewUserRolling30dCount: 35,
-        cumulativeEventReparticipationUserCount: 0,
-        cumulativeEventParticipationUserCount: 0,
-        cumulativeEventRebookingUserCount: 0,
-        cumulativeEventReservationUserCount: 0,
-      },
-      {
-        artistId: 'artist-1',
-        artistName: 'Test Artist',
-        date: '2024-02-20', // T (Target)
-        cumulativeFandomUserCount: 125,
-        fandomNewUserRolling30dCount: 40,
+        fandomNewUserRolling30dCount: 20,
         cumulativeEventReparticipationUserCount: 0,
         cumulativeEventParticipationUserCount: 0,
         cumulativeEventRebookingUserCount: 0,
@@ -89,7 +71,7 @@ describe('FandomCompetitivenessSection', () => {
       {
         artistId: 'artist-1',
         artistName: 'Test Artist',
-        date: '2024-02-20',
+        date: '2024-02-01', // 이번 달 1일 (이제 모든 활동 지표에 사용됨)
         averageUserEventReparticipationHours: 0,
         averageUserEventRebookingHours: 0,
         averageUserReboardingDays: 0,
@@ -111,50 +93,31 @@ describe('FandomCompetitivenessSection', () => {
       isLoading: false,
     });
 
-    // FandomCompetitivenessSection의 날짜를 조정해야 합니다.
-    // 컴포넌트 하드코딩:
-    // startDate: '2024-02-12',
-    // endDate: 어제(yesterday) 날짜 (YYYY-MM-DD 형식)
-    //
-    // 시스템 시간이 2024-02-20인 경우:
-    // 어제 = 2024-02-19
-    // 컴포넌트 코드상:
-    // const today = dayjs();
-    // const yesterday = today.subtract(1, 'day');
-    // ...
-
-    // 대상일(Target Date)을 2024-02-20으로 설정하려면 '어제'가 2024-02-20이어야 합니다.
-    // 따라서 '오늘'은 2024-02-21로 설정해야 합니다.
-
-    // 시스템 시간을 2024-02-21로 설정합니다.
-    vi.setSystemTime(new Date('2024-02-21'));
-
     render(<FandomCompetitivenessSection />);
 
-    // 아티스트 이름이 렌더링되는지 확인
+    // 아티스트 이름 확인
     expect(screen.getByText('Test Artist')).toBeDefined();
 
-    // Check for "Test Artist"
+    // 1. 팬덤 유저 증감률 확인 : +20%
+    // 텍스트 매칭이 복잡할 수 있으므로 contains로 확인
+    const growthElements = screen.getAllByText((content, element) => {
+      return element?.tagName.toLowerCase() === 'td' && content.includes('20%');
+    });
+    // 증감률 컬럼이 있는지 확인 (단순 contains로는 다른 20%와 겹칠 수 있으니 주의)
+    // 여기서는 간단히 값 존재 여부만 체크
+    expect(growthElements.length).toBeGreaterThan(0);
+    expect(growthElements[0].textContent).toContain('+20%');
 
-    // 시나리오 요약:
-    // 대상일 (어제, 2월 20일): 125명
-    // 이전 (2월 19일): 110명
-    // 전전 (2월 18일): 100명
-    // 일간 신규 T: 15명
-    // 일간 신규 T-1: 10명
-    // 비율: (15-10)/10 = 50%
-
-    // 기대 결과: "+50%"
-    // 텍스트가 여러 부분으로 나뉘어 렌더링될 수 있으므로 포함 여부를 확인합니다.
-    // 컴포넌트 렌더링 예: <span>+</span>50% 등
-    // 실제 코드: {row.newInflowChangeRate > 0 ? '+' : ''}{row.newInflowChangeRate}%
-
-    const changeRateElement = screen.getByText((content, element) => {
+    // 2. 신규 유저 유입 변화율 확인 : +100%
+    const inflowChangeElements = screen.getAllByText((content, element) => {
       return (
-        element?.tagName.toLowerCase() === 'span' && content.includes('50%')
+        element?.tagName.toLowerCase() === 'span' && content.includes('100%')
       );
     });
-    expect(changeRateElement).toBeDefined();
-    expect(changeRateElement.textContent).toContain('+50%');
+    // 변화율은 span으로 감싸져 있음 (+기호 포함)
+    const inflowChange = inflowChangeElements.find((el) =>
+      el.textContent?.includes('+100%'),
+    );
+    expect(inflowChange).toBeDefined();
   });
 });

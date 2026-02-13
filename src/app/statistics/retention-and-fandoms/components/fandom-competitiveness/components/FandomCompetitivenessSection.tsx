@@ -34,25 +34,32 @@ const FandomCompetitivenessSection = () => {
     dailyStartDate,
     crossMetricsStartDate,
     endDate,
-    yesterday,
-    dayBeforeYesterday,
-    twoDaysBeforeYesterday,
+    thisMonthFirst,
+    lastMonthFirst,
   } = useMemo(() => {
-    const today = dayjs();
-    const yesterday = getLatestDataDate();
-    const dayBeforeYesterday = yesterday.subtract(1, 'day');
-    const twoDaysBeforeYesterday = dayBeforeYesterday.subtract(1, 'day');
+    // 월간 지표 기준일 계산
+    // 1. 최신 데이터 날짜 (보통 어제)
+    const latestDate = getLatestDataDate();
+
+    // 2. 이번 달 1일 (기준일)
+    const thisMonthFirst = latestDate.startOf('month').format('YYYY-MM-DD');
+
+    // 3. 지난 달 1일 (비교일)
+    const lastMonthFirst = latestDate
+      .subtract(1, 'month')
+      .startOf('month')
+      .format('YYYY-MM-DD');
 
     return {
-      dailyStartDate: twoDaysBeforeYesterday.format('YYYY-MM-DD'), // 3일치 데이터만 필요 (T, T-1, T-2)
-      crossMetricsStartDate: today
+      dailyStartDate: lastMonthFirst, // 스냅샷 비교를 위해 지난달 1일부터 조회 필요
+      crossMetricsStartDate: dayjs()
         .subtract(1, 'month')
         .startOf('month')
-        .format('YYYY-MM-DD'), // 전월 1일부터 조회
-      endDate: yesterday.format('YYYY-MM-DD'),
-      yesterday: yesterday.format('YYYY-MM-DD'),
-      dayBeforeYesterday: dayBeforeYesterday.format('YYYY-MM-DD'),
-      twoDaysBeforeYesterday: twoDaysBeforeYesterday.format('YYYY-MM-DD'),
+        .format('YYYY-MM-DD'),
+      endDate: latestDate.format('YYYY-MM-DD'),
+      yesterday: latestDate.format('YYYY-MM-DD'),
+      thisMonthFirst,
+      lastMonthFirst,
     };
   }, []);
 
@@ -81,18 +88,16 @@ const FandomCompetitivenessSection = () => {
     return calculateFandomCompetitiveness(
       activityData,
       snapshotData,
-      yesterday,
-      dayBeforeYesterday,
-      twoDaysBeforeYesterday,
+      thisMonthFirst,
+      lastMonthFirst,
       crossMetricsData,
     );
   }, [
     activityData,
     snapshotData,
     crossMetricsData,
-    yesterday,
-    dayBeforeYesterday,
-    twoDaysBeforeYesterday,
+    thisMonthFirst,
+    lastMonthFirst,
   ]);
 
   useEffect(() => {
@@ -180,7 +185,7 @@ const FandomCompetitivenessSection = () => {
       key: 'newInflowChangeRate',
       width: 'w-[240px]',
     },
-    { label: '월간 팬덤 교차 지표 (지난 달 기준)', key: 'crossInterest' },
+    { label: '월간 팬덤 교차 지표', key: 'crossInterest' },
   ];
 
   if (isLoading) {
@@ -194,7 +199,7 @@ const FandomCompetitivenessSection = () => {
   return (
     <div className="flex w-full flex-col gap-16">
       <h3 className="text-20 font-600 text-basic-black">
-        팬덤별 경쟁력 (1일 전 기준, 비교 단위 1일)
+        팬덤별 경쟁력 (월간 기준, 전월 대비)
       </h3>
       <div className="overflow-x-auto rounded-16 border border-basic-grey-200 bg-basic-white">
         <table className="w-full min-w-[1200px] table-auto text-left">

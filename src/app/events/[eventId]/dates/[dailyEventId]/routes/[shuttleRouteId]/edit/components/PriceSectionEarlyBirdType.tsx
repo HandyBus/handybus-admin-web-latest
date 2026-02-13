@@ -27,8 +27,12 @@ const PriceSectionEarlybirdType = ({
       <Controller
         control={control}
         name="earlybirdDeadline"
-        render={({ field: { value } }) => (
-          <DateInput disabled={true} value={value} />
+        render={({ field: { onChange, value } }) => (
+          <DateInput
+            value={value}
+            setValue={onChange}
+            disabled={!hasEarlybird}
+          />
         )}
       />
       <TripPriceInputEarlybird
