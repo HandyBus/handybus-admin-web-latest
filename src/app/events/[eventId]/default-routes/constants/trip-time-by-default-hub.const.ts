@@ -395,13 +395,13 @@ export const DESTINATION_TRIP_TIME_BY_DEFAULT_HUB: {
       cushionTime: 40,
     },
     '반월당역 18번 출구 더현대 대구 앞': {
-      eventTripTime: 280,
-      returnTripTime: 240,
+      eventTripTime: 300,
+      returnTripTime: 260,
       cushionTime: 40,
     },
     '용산역 5번 출구 뒤 20m': {
-      eventTripTime: 300,
-      returnTripTime: 260,
+      eventTripTime: 280,
+      returnTripTime: 240,
       cushionTime: 40,
     },
     '대전 복합터미널 건너편 대덕약국': {
@@ -569,13 +569,13 @@ export const DESTINATION_TRIP_TIME_BY_DEFAULT_HUB: {
       cushionTime: 40,
     },
     '반월당역 18번 출구 더현대 대구 앞': {
-      eventTripTime: 270,
-      returnTripTime: 230,
+      eventTripTime: 290,
+      returnTripTime: 250,
       cushionTime: 40,
     },
     '용산역 5번 출구 뒤 20m': {
-      eventTripTime: 290,
-      returnTripTime: 250,
+      eventTripTime: 270,
+      returnTripTime: 230,
       cushionTime: 40,
     },
     '대전 복합터미널 건너편 대덕약국': {
@@ -656,8 +656,8 @@ export const DESTINATION_TRIP_TIME_BY_DEFAULT_HUB: {
       cushionTime: 40,
     },
     '반월당역 18번 출구 더현대 대구 앞': {
-      eventTripTime: 290,
-      returnTripTime: 250,
+      eventTripTime: 300,
+      returnTripTime: 260,
       cushionTime: 40,
     },
     '용산역 5번 출구 뒤 20m': {
@@ -917,8 +917,8 @@ export const DESTINATION_TRIP_TIME_BY_DEFAULT_HUB: {
       cushionTime: 50,
     },
     '반월당역 18번 출구 더현대 대구 앞': {
-      eventTripTime: 320,
-      returnTripTime: 270,
+      eventTripTime: 330,
+      returnTripTime: 280,
       cushionTime: 50,
     },
     '용산역 5번 출구 뒤 20m': {
@@ -1004,8 +1004,8 @@ export const DESTINATION_TRIP_TIME_BY_DEFAULT_HUB: {
       cushionTime: 50,
     },
     '반월당역 18번 출구 더현대 대구 앞': {
-      eventTripTime: 320,
-      returnTripTime: 270,
+      eventTripTime: 330,
+      returnTripTime: 280,
       cushionTime: 50,
     },
     '용산역 5번 출구 뒤 20m': {
@@ -1178,8 +1178,8 @@ export const DESTINATION_TRIP_TIME_BY_DEFAULT_HUB: {
       cushionTime: 50,
     },
     '반월당역 18번 출구 더현대 대구 앞': {
-      eventTripTime: 300,
-      returnTripTime: 250,
+      eventTripTime: 310,
+      returnTripTime: 260,
       cushionTime: 50,
     },
     '용산역 5번 출구 뒤 20m': {
@@ -1265,8 +1265,8 @@ export const DESTINATION_TRIP_TIME_BY_DEFAULT_HUB: {
       cushionTime: 50,
     },
     '반월당역 18번 출구 더현대 대구 앞': {
-      eventTripTime: 300,
-      returnTripTime: 250,
+      eventTripTime: 320,
+      returnTripTime: 270,
       cushionTime: 50,
     },
     '용산역 5번 출구 뒤 20m': {
