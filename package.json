@@ -79,7 +79,7 @@
     "jsdom": "^27.4.0",
     "kakao.maps.d.ts": "^0.1.40",
     "lint-staged": "^15.2.10",
-    "next-mdx-remote": "^5.0.0",
+    "next-mdx-remote": "^6.0.0",
     "postcss": "^8",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.5.9",
