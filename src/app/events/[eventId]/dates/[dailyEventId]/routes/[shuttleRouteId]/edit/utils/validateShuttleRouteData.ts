@@ -6,9 +6,14 @@ export const validateShuttleRouteData = (
   forwardHubs: Array<UpdateShuttleRouteHubProps>,
   returnHubs: Array<UpdateShuttleRouteHubProps>,
   regularPrice: FormValues['regularPrice'],
+  hasEarlybird: boolean,
+  earlybirdPrice: FormValues['earlybirdPrice'],
 ): void => {
   if (!validateTripTypePrice(regularPrice)) {
     throw new Error('가격이 올바르지 않습니다.');
+  }
+  if (hasEarlybird && !validateEarlybirdPrice(regularPrice, earlybirdPrice)) {
+    throw new Error('얼리버드 예약 가격이 올바르지 않습니다.');
   }
 
   const tripType = checkTripType(forwardHubs, returnHubs);
@@ -96,6 +101,57 @@ const validateHubsMatch = (
     return true;
   }
   return false;
+};
+
+const validateEarlybirdPrice = (
+  regularPrice: FormValues['regularPrice'],
+  earlybirdPrice: FormValues['earlybirdPrice'],
+) => {
+  if (!earlybirdPrice) {
+    return false;
+  }
+
+  if (
+    !earlybirdPrice.roundTrip &&
+    !earlybirdPrice.toDestination &&
+    !earlybirdPrice.fromDestination
+  ) {
+    return false;
+  }
+
+  if (
+    regularPrice.roundTrip &&
+    earlybirdPrice.roundTrip &&
+    regularPrice.roundTrip < earlybirdPrice.roundTrip
+  ) {
+    return false;
+  }
+  if (
+    regularPrice.toDestination &&
+    earlybirdPrice.toDestination &&
+    regularPrice.toDestination < earlybirdPrice.toDestination
+  ) {
+    return false;
+  }
+  if (
+    regularPrice.fromDestination &&
+    earlybirdPrice.fromDestination &&
+    regularPrice.fromDestination < earlybirdPrice.fromDestination
+  ) {
+    return false;
+  }
+
+  if (!regularPrice.roundTrip && earlybirdPrice.roundTrip) {
+    return false;
+  }
+  if (!regularPrice.toDestination && earlybirdPrice.toDestination) {
+    return false;
+  }
+  if (!regularPrice.fromDestination && earlybirdPrice.fromDestination) {
+    return false;
+  }
+
+  return true;
 };
 
 const validateTripTypePrice = (regularPrice: FormValues['regularPrice']) => {

@@ -169,6 +169,8 @@ export type UpdateShuttleRouteHubProps = z.infer<
 export const UpdateShuttleRouteRequestSchema = z.object({
   name: z.string().optional(),
   reservationDeadline: z.string().optional(),
+  hasEarlybird: z.boolean().optional(),
+  earlybirdDeadline: z.string().optional(),
   maxPassengerCount: z.number().int().optional(),
   shuttleRouteHubs: UpdateShuttleRouteHubPropsSchema.array().optional(),
   regularPrice: z

@@ -32,12 +32,20 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
   } = useForm<FormValues>({
     defaultValues,
   });
-  const hasEarlybird = defaultValues.hasEarlybird;
-  const [watchRegularPrice, watchEarlybirdPrice, watchIsReservationDisabled] =
-    useWatch({
-      control,
-      name: ['regularPrice', 'earlybirdPrice', 'isReservationDisabled'],
-    });
+  const [
+    watchHasEarlybird,
+    watchRegularPrice,
+    watchEarlybirdPrice,
+    watchIsReservationDisabled,
+  ] = useWatch({
+    control,
+    name: [
+      'hasEarlybird',
+      'regularPrice',
+      'earlybirdPrice',
+      'isReservationDisabled',
+    ],
+  });
 
   const onSubmit = async (data: FormValues) => {
     if (!confirm('수정하시겠습니까?')) {
@@ -47,7 +55,13 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
     setIsSubmitting(true);
     try {
       const { forwardHubs, returnHubs } = extractHubs(data);
-      validateShuttleRouteData(forwardHubs, returnHubs, data.regularPrice);
+      validateShuttleRouteData(
+        forwardHubs,
+        returnHubs,
+        data.regularPrice,
+        data.hasEarlybird,
+        data.earlybirdPrice,
+      );
       const shuttleRouteRequest = transformToShuttleRouteRequest(
         dirtyFields,
         data,
@@ -108,7 +122,8 @@ const EditForm = ({ params, defaultValues, defaultDate }: Props) => {
       <PriceSection
         control={control}
         errors={errors}
-        hasEarlybird={hasEarlybird}
+        hasEarlybird={watchHasEarlybird}
+        setValue={setValue}
         watchRegularPrice={watchRegularPrice}
         watchEarlybirdPrice={watchEarlybirdPrice}
       />
