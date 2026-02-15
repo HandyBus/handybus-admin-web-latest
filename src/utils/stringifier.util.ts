@@ -1,6 +1,5 @@
 import { IssuedCouponStatus } from '@/types/coupon.type';
 import { DailyEventStatus, EventStatus, EventType } from '@/types/event.type';
-import { RefundStatus } from '@/types/payment.type';
 import {
   CancelStatus,
   HandyStatus,
@@ -9,7 +8,8 @@ import {
 import { BusType } from '@/types/shuttleBus.type';
 import { ShuttleRouteStatus, TripType } from '@/types/shuttleRoute.type';
 import { Gender } from '@/types/user.type';
-import { RefundRequestType } from '@/types/payment.type';
+import { RefundRequestType, RefundStatus } from '@/types/refund-request.type';
+import { RefundExecutionCapability } from '@/types/payment.type';
 import {
   JobCategory,
   CareerType,
@@ -169,6 +169,16 @@ const Stringifier = Object.freeze({
         return 'ADMIN_RETRIEVAL (무산 등 관리자 회수로 인한 예약 취소 및 환불)';
       case 'PAYBACK':
         return 'PAYBACK (핸디 및 기타 환급)';
+    }
+  },
+  refundExecutionCapability(v: RefundExecutionCapability) {
+    switch (v) {
+      case 'UNKNOWN':
+        return '알 수 없음';
+      case 'AUTO':
+        return '자동';
+      case 'MANUAL':
+        return '수동';
     }
   },
   eventType(v: EventType) {

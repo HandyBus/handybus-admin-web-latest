@@ -17,6 +17,25 @@ import { z } from 'zod';
 
 // ----- GET -----
 
+export const getPayment = async (paymentId: string) => {
+  const res = await authInstance.get(
+    `/v1/billing/admin/payments/${paymentId}`,
+    {
+      shape: {
+        payment: PaymentsViewEntitySchema.nullable(),
+      },
+    },
+  );
+  return res.payment;
+};
+
+export const useGetPayment = (paymentId: string) => {
+  return useQuery({
+    queryKey: ['payment', paymentId],
+    queryFn: () => getPayment(paymentId),
+  });
+};
+
 export const getUserPayment = async (userId: string, paymentId: string) => {
   const res = await authInstance.get(
     `/v2/user-management/admin/users/${userId}/payments/${paymentId}`,

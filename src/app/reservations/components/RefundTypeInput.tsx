@@ -1,4 +1,4 @@
-import { RefundRequestType } from '@/types/payment.type';
+import { RefundRequestType } from '@/types/refund-request.type';
 import {
   Combobox,
   ComboboxButton,
