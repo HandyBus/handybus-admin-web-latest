@@ -1,6 +1,5 @@
 import { IssuedCouponStatus } from '@/types/coupon.type';
 import { DailyEventStatus, EventStatus, EventType } from '@/types/event.type';
-import { RefundStatus } from '@/types/payment.type';
 import {
   CancelStatus,
   HandyStatus,
@@ -9,7 +8,7 @@ import {
 import { BusType } from '@/types/shuttleBus.type';
 import { ShuttleRouteStatus, TripType } from '@/types/shuttleRoute.type';
 import { Gender } from '@/types/user.type';
-import { RefundRequestType } from '@/types/payment.type';
+import { RefundRequestType, RefundStatus } from '@/types/refund-request.type';
 import {
   JobCategory,
   CareerType,

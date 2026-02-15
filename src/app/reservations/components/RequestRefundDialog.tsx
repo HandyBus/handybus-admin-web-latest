@@ -13,7 +13,6 @@ import { useForm } from 'react-hook-form';
 import {
   AdminRequestRefundRequest,
   PaymentsViewEntity,
-  RefundStatus,
 } from '@/types/payment.type';
 import {
   useGetUserPayment,
@@ -21,10 +20,11 @@ import {
   usePostCompleteRefundRequest,
 } from '@/services/payment.service';
 import { useQueryClient } from '@tanstack/react-query';
-import { RefundRequestTypeEnum } from '@/types/payment.type';
 import RefundTypeInput from './RefundTypeInput';
 import Stringifier from '@/utils/stringifier.util';
 import { formatDateString } from '@/utils/date.util';
+import { RefundRequestTypeEnum } from '@/types/refund-request.type';
+import { RefundStatus } from '@/types/refund-request.type';
 
 interface Props {
   reservation: ReservationViewEntity;
