@@ -3,6 +3,18 @@ import { RefundRequestTypeEnum, RefundStatusEnum } from './refund-request.type';
 
 // ----- ENUM -----
 
+export const RefundExecutionCapabilityEnum = z.enum([
+  'UNKNOWN',
+  'AUTO',
+  'MANUAL',
+]);
+export type RefundExecutionCapability = z.infer<
+  typeof RefundExecutionCapabilityEnum
+>;
+
+export const MerchantTypeEnum = z.enum(['LEGACY', 'CURRENT']);
+export type MerchantType = z.infer<typeof MerchantTypeEnum>;
+
 // ----- GET -----
 
 const RefundRequestsInPaymentsViewEntitySchema = z.object({
@@ -43,6 +55,7 @@ export const PaymentsViewEntitySchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
   refundRequests: RefundRequestsInPaymentsViewEntitySchema.array().nullable(),
+  refundExecutionCapability: RefundExecutionCapabilityEnum,
 });
 export type PaymentsViewEntity = z.infer<typeof PaymentsViewEntitySchema>;
 
@@ -68,6 +81,7 @@ export type TossPaymentsCancelsEntity = z.infer<
 
 export const TossPaymentsCashReceiptsEntitySchema = z.array(
   z.object({
+    merchantType: MerchantTypeEnum,
     receiptKey: z.string(),
     orderId: z.string(),
     orderName: z.string(),
