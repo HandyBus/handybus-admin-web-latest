@@ -130,3 +130,31 @@ export const usePostCompleteManualRefundRequest = (onSuccess?: () => void) => {
     },
   });
 };
+
+export const postDeactivateRefundRequest = async (
+  paymentId: string,
+  refundRequestId: string,
+) => {
+  return await authInstance.post(
+    `/v1/billing/admin/payments/${paymentId}/refunds/${refundRequestId}/deactivate`,
+  );
+};
+
+export const usePostDeactivateRefundRequest = (onSuccess?: () => void) => {
+  return useMutation({
+    mutationFn: ({
+      paymentId,
+      refundRequestId,
+    }: {
+      paymentId: string;
+      refundRequestId: string;
+    }) => postDeactivateRefundRequest(paymentId, refundRequestId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['refund-request'],
+        refetchType: 'active',
+      });
+      onSuccess?.();
+    },
+  });
+};
