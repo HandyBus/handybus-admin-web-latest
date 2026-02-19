@@ -17,6 +17,7 @@ export const processChartData = (
       return {
         date: dateObj.format('YYYY-MM-DD'),
         value: d.value,
+        _rawDate: dateObj.format('YYYY-MM-DD'), // 정렬용 원본 날짜
       };
     });
   }
@@ -52,6 +53,7 @@ export const processChartData = (
       return {
         date: label,
         value,
+        _rawDate: dateObj.format('YYYY-MM-DD'), // 정렬용 원본 날짜 (해당 주의 대표 날짜)
       };
     });
   }
@@ -87,6 +89,7 @@ export const processChartData = (
     return {
       date: label,
       value,
+      _rawDate: dateObj.format('YYYY-MM-DD'), // 정렬용 원본 날짜
     };
   });
 };
@@ -107,18 +110,30 @@ export const mergeChartData = (
   datasets.forEach((dataset) => {
     dataset.data.forEach((item) => {
       if (!mergedDataMap.has(item.date)) {
-        mergedDataMap.set(item.date, { date: item.date });
+        mergedDataMap.set(item.date, {
+          date: item.date,
+          _rawDate: item._rawDate, // _rawDate 보존 (있는 경우)
+        });
       }
       const currentObj = mergedDataMap.get(item.date)!;
 
       if ('value' in item) {
         currentObj[dataset.key] = item.value;
       }
+      // 혹시 나중에 들어온 항목에 _rawDate가 있고 기존에 없었다면 업데이트 (보통은 동일 라벨이면 동일 rawDate일 것임)
+      if (item._rawDate && !currentObj._rawDate) {
+        currentObj._rawDate = item._rawDate;
+      }
     });
   });
 
   // 날짜순 정렬 후 반환 (선택 사항, 차트의 X축 정렬을 위해 권장)
-  return Array.from(mergedDataMap.values()).sort((a, b) =>
-    a.date.localeCompare(b.date),
-  );
+  return Array.from(mergedDataMap.values()).sort((a, b) => {
+    // _rawDate가 있으면 그것으로 비교
+    if (a._rawDate && b._rawDate) {
+      return String(a._rawDate).localeCompare(String(b._rawDate));
+    }
+    // 없으면 기존대로 라벨 비교 (fallback)
+    return a.date.localeCompare(b.date);
+  });
 };
