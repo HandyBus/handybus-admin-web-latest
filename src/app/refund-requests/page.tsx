@@ -41,7 +41,14 @@ const AllRefundRequests = () => {
   });
 
   const flatData = useMemo(
-    () => data.pages.flatMap((page) => page.refundRequests),
+    () =>
+      data.pages.flatMap((page) =>
+        page.items.map((item) => ({
+          ...item.refundRequest,
+          payment: item.payment,
+          reservation: item.reservation,
+        })),
+      ),
     [data],
   );
 

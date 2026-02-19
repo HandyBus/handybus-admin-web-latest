@@ -2,17 +2,39 @@
 
 import { createColumnHelper } from '@tanstack/react-table';
 import { RefundRequestReadModel } from '@/types/refund-request.type';
+import { PaymentsViewEntity } from '@/types/payment.type';
+import { ReservationViewEntity } from '@/types/reservation.type';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
 import RefundExecutionCapabilityCell from './components/RefundExecutionCapabilityCell';
 import CompleteRefundCell from './components/CompleteRefundCell';
 
-const columnHelper = createColumnHelper<RefundRequestReadModel>();
+export type RefundRequestTableRow = RefundRequestReadModel & {
+  payment?: PaymentsViewEntity;
+  reservation?: ReservationViewEntity;
+};
+
+const columnHelper = createColumnHelper<RefundRequestTableRow>();
 
 export const columns = [
-  columnHelper.accessor('id', {
-    header: () => '환불 요청 ID',
-    cell: (info) => <span className="text-12">{info.getValue()}</span>,
+  columnHelper.display({
+    id: 'info',
+    header: () => '정보',
+    cell: (info) => {
+      const { id } = info.row.original;
+      const reservation = info.row.original.reservation;
+      const reservationName =
+        reservation?.userName ?? reservation?.userNickname ?? '-';
+      const phoneNumber = reservation?.userPhoneNumber ?? '-';
+      return (
+        <div className="flex flex-col gap-[2px]">
+          <span className="text-14">
+            이름: {reservationName} / 전화번호: {phoneNumber}
+          </span>
+          <span className="text-12 text-basic-grey-600">{id}</span>
+        </div>
+      );
+    },
   }),
   columnHelper.accessor('principalAmount', {
     header: () => '원금',
@@ -60,7 +82,7 @@ export const columns = [
     id: 'refundExecutionCapability',
     header: () => '환불 실행 유형',
     cell: (info) => (
-      <RefundExecutionCapabilityCell paymentId={info.row.original.paymentId} />
+      <RefundExecutionCapabilityCell payment={info.row.original.payment} />
     ),
   }),
   columnHelper.accessor('refundAt', {
@@ -72,8 +94,13 @@ export const columns = [
     cell: (info) => formatDateString(info.getValue(), 'datetime'),
   }),
   columnHelper.display({
-    id: 'completeManualRefund',
+    id: 'actions',
     header: () => '액션',
-    cell: (info) => <CompleteRefundCell refundRequest={info.row.original} />,
+    cell: (info) => (
+      <CompleteRefundCell
+        refundRequest={info.row.original}
+        payment={info.row.original.payment}
+      />
+    ),
   }),
 ];
