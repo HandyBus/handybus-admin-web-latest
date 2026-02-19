@@ -5,11 +5,15 @@ import { RefundRequestReadModel } from '@/types/refund-request.type';
 import { formatDateString } from '@/utils/date.util';
 import Stringifier from '@/utils/stringifier.util';
 import RefundExecutionCapabilityCell from './components/RefundExecutionCapabilityCell';
-import CompleteManualRefundCell from './components/CompleteManualRefundCell';
+import CompleteRefundCell from './components/CompleteRefundCell';
 
 const columnHelper = createColumnHelper<RefundRequestReadModel>();
 
 export const columns = [
+  columnHelper.accessor('id', {
+    header: () => '환불 요청 ID',
+    cell: (info) => <span className="text-12">{info.getValue()}</span>,
+  }),
   columnHelper.accessor('principalAmount', {
     header: () => '원금',
     cell: (info) => `${info.getValue().toLocaleString()}원`,
@@ -47,7 +51,7 @@ export const columns = [
   columnHelper.accessor('type', {
     header: () => '유형',
     cell: (info) => (
-      <span className="text-14">
+      <span className="text-12">
         {Stringifier.refundRequestType(info.getValue())}
       </span>
     ),
@@ -69,9 +73,7 @@ export const columns = [
   }),
   columnHelper.display({
     id: 'completeManualRefund',
-    header: () => '수동 환불 처리',
-    cell: (info) => (
-      <CompleteManualRefundCell refundRequest={info.row.original} />
-    ),
+    header: () => '액션',
+    cell: (info) => <CompleteRefundCell refundRequest={info.row.original} />,
   }),
 ];
