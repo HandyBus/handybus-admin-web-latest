@@ -68,6 +68,9 @@ const Page = () => {
         <BlueLink href="/artists" className="text-14">
           아티스트 관리
         </BlueLink>
+        <BlueLink href="/events/reservation-chart" className="text-14">
+          행사별 예약자 수 차트 보기
+        </BlueLink>
       </Heading>
       <EventFilter option={option} dispatch={dispatch} />
       <section className="flex flex-col gap-32">
