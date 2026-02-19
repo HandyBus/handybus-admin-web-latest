@@ -9,8 +9,13 @@ import {
   useInfiniteQuery,
   useMutation,
 } from '@tanstack/react-query';
-import { CompleteRefundRequest } from '@/types/payment.type';
+import {
+  CompleteRefundRequest,
+  PaymentsViewEntitySchema,
+} from '@/types/payment.type';
 import { queryClient } from '@/components/Provider';
+import { ReservationViewEntitySchema } from '@/types/reservation.type';
+import { z } from 'zod';
 
 export interface GetRefundRequestsOptions {
   paymentId: string | undefined;
@@ -34,7 +39,13 @@ export const getRefundRequests = async (
     `/v1/billing/admin/payments/refunds/all${toSearchParamString({ ...option }, '?')}`,
     {
       shape: withPagination({
-        refundRequests: RefundRequestReadModelSchema.array(),
+        items: z
+          .object({
+            refundRequest: RefundRequestReadModelSchema,
+            payment: PaymentsViewEntitySchema,
+            reservation: ReservationViewEntitySchema,
+          })
+          .array(),
       }),
     },
   );

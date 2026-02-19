@@ -7,13 +7,13 @@ import {
   DialogTitle,
 } from '@headlessui/react';
 import { RefundRequestReadModel } from '@/types/refund-request.type';
-import { getPayment } from '@/services/payment.service';
+import { PaymentsViewEntity } from '@/types/payment.type';
 import { usePostCompleteAutoRefundRequest } from '@/services/refund-request.service';
-import { useQuery } from '@tanstack/react-query';
 import Stringifier from '@/utils/stringifier.util';
 
 interface CompleteAutoRefundDialogProps {
   refundRequest: RefundRequestReadModel | null;
+  payment?: PaymentsViewEntity | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -24,16 +24,10 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
 
 const CompleteAutoRefundDialog = ({
   refundRequest,
+  payment,
   isOpen,
   onClose,
 }: CompleteAutoRefundDialogProps) => {
-  const paymentId = refundRequest?.paymentId ?? '';
-  const { data: payment, isPending: isPaymentPending } = useQuery({
-    queryKey: ['payment', paymentId],
-    queryFn: () => getPayment(paymentId),
-    enabled: isOpen && Boolean(paymentId),
-  });
-
   const { mutateAsync: postCompleteAutoRefund, isPending: isSubmitting } =
     usePostCompleteAutoRefundRequest(onClose);
 
@@ -70,13 +64,11 @@ const CompleteAutoRefundDialog = ({
         <div className="space-y-6 rounded-8 border border-basic-grey-100 bg-basic-white p-12 text-14 font-500 text-basic-grey-700">
           <SectionTitle>환불 실행 유형:</SectionTitle>
           <p className="text-basic-grey-800 pb-8">
-            {isPaymentPending
-              ? '조회 중...'
-              : payment
-                ? Stringifier.refundExecutionCapability(
-                    payment.refundExecutionCapability,
-                  )
-                : '-'}
+            {payment
+              ? Stringifier.refundExecutionCapability(
+                  payment.refundExecutionCapability,
+                )
+              : '-'}
           </p>
           <SectionTitle>환불 금액:</SectionTitle>
           <p className="text-basic-grey-800">
