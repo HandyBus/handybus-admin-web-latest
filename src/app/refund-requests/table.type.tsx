@@ -21,7 +21,7 @@ export const columns = [
     id: 'info',
     header: () => '정보',
     cell: (info) => {
-      const { id } = info.row.original;
+      const { id, payment } = info.row.original;
       const reservation = info.row.original.reservation;
       const reservationName =
         reservation?.userName ?? reservation?.userNickname ?? '-';
@@ -31,7 +31,16 @@ export const columns = [
           <span className="text-14">
             이름: {reservationName} / 전화번호: {phoneNumber}
           </span>
-          <span className="text-12 text-basic-grey-600">{id}</span>
+          <span className="text-12 text-basic-grey-600">
+            총 결제 금액 : {payment?.paymentAmount?.toLocaleString()}원 / 환불
+            가능 금액: {payment?.refundableAmount?.toLocaleString()}원
+          </span>
+          <span className="text-10 text-basic-grey-600">
+            Payment ID: {payment?.paymentId}
+          </span>
+          <span className="text-10 text-basic-grey-600">
+            Refund Request ID: {id}
+          </span>
         </div>
       );
     },
