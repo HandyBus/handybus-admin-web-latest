@@ -3,8 +3,8 @@
 import {
   getUserPayment,
   postAdminRequestRefund,
-  postCompleteRefundRequest,
 } from '@/services/payment.service';
+import { postCompleteAutoRefundRequest } from '@/services/refund-request.service';
 import {
   sendHandyPartyCancelled,
   sendShuttleBusCancelled,
@@ -55,13 +55,15 @@ const useCancelMultipleReservations = ({ onSuccess }: Props) => {
           type: 'ADMIN_RETRIEVAL',
         },
       );
-      await postCompleteRefundRequest(
-        reservation.paymentId,
-        refundRequest.refundRequestId,
-        {
-          refundAmount: payments.refundableAmount,
-        },
-      );
+      if (payments.refundExecutionCapability === 'AUTO') {
+        await postCompleteAutoRefundRequest(
+          reservation.paymentId,
+          refundRequest.refundRequestId,
+          {
+            refundAmount: payments.refundableAmount,
+          },
+        );
+      }
     } catch (error) {
       console.error(error);
       alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.\n' + error);
