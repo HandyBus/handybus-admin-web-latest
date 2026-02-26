@@ -89,7 +89,7 @@ const CustomBarChart = ({
                       </p>
                     </div>
                     {onBarClick && (
-                      <p className="pt-3 text-12 text-basic-grey-500">
+                      <p className="pt-4 text-12 text-basic-grey-500">
                         {barActionLabel ??
                           '클릭하면 상세 사유를 볼 수 있습니다.'}
                       </p>
