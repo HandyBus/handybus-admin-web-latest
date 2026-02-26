@@ -18,11 +18,21 @@ interface Props {
   data: { name: string; value: number }[];
   colors?: string[];
   isLoading?: boolean;
+  onBarClick?: (name: string) => void;
+  activeBar?: string | null;
+  barActionLabel?: string;
 }
 
-const CustomBarChart = ({ data, colors, isLoading }: Props) => {
+const CustomBarChart = ({
+  data,
+  colors,
+  isLoading,
+  onBarClick,
+  activeBar,
+  barActionLabel,
+}: Props) => {
   const dataWithPercent = useMemo(() => {
-    const maxValue = Math.max(...data.map((d) => d.value));
+    const maxValue = Math.max(1, ...data.map((d) => d.value));
     return data.map((d) => ({
       ...d,
       percent: Math.round((d.value / maxValue) * 100),
@@ -57,17 +67,19 @@ const CustomBarChart = ({ data, colors, isLoading }: Props) => {
           <Tooltip
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
-                const data: {
+                const payloadData: {
                   name: string;
                   value: number;
                   percent: number;
                 } = payload[0].payload;
-                const totalCount = data.value;
-                const percentage = data.percent;
+                const totalCount = payloadData.value;
+                const percentage = payloadData.percent;
 
                 return (
                   <div className="min-w-60 rounded-[4px] border border-basic-grey-200 bg-basic-white p-4 shadow-[0_0_10px_0_rgba(0,0,0,0.1)]">
-                    <h5 className="pb-4 text-14 font-500">{data.name}</h5>
+                    <h5 className="pb-4 text-14 font-500">
+                      {payloadData.name}
+                    </h5>
                     <div className="flex items-baseline gap-4">
                       <p className="text-16 text-basic-grey-700">
                         {percentage}%
@@ -76,16 +88,28 @@ const CustomBarChart = ({ data, colors, isLoading }: Props) => {
                         {totalCount.toLocaleString()}명
                       </p>
                     </div>
+                    {onBarClick && (
+                      <p className="pt-3 text-12 text-basic-grey-500">
+                        {barActionLabel ??
+                          '클릭하면 상세 사유를 볼 수 있습니다.'}
+                      </p>
+                    )}
                   </div>
                 );
               }
             }}
           />
-          <Bar dataKey="percent" animationDuration={ANIMATION_DURATION}>
-            {data.map((_, index) => (
+          <Bar
+            dataKey="percent"
+            animationDuration={ANIMATION_DURATION}
+            cursor={onBarClick ? 'pointer' : undefined}
+          >
+            {dataWithPercent.map((d, index) => (
               <Cell
                 key={`cell-${index}`}
                 fill={getColorByIndex(index, colors)}
+                opacity={activeBar != null && activeBar !== d.name ? 0.3 : 1}
+                onClick={() => onBarClick?.(d.name)}
               />
             ))}
           </Bar>
