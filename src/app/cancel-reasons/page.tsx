@@ -8,7 +8,7 @@ import BaseTable from '@/components/table/BaseTable';
 import Heading from '@/components/text/Heading';
 import type { AdminFeedbackResponseModel } from '@/types/feedback.type';
 import { useEffect, useMemo, useState } from 'react';
-import { parseCancelReasonContent } from './cancel-reason-content.util';
+import { parseCancelReasonContent } from './cancelReasonContent.util';
 import { cancelReasonColumns } from './table.type';
 
 type ChartData = { name: string; value: number };

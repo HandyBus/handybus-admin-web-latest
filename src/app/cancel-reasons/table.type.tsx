@@ -2,7 +2,7 @@ import BlueLink from '@/components/link/BlueLink';
 import { AdminFeedbackResponseModel } from '@/types/feedback.type';
 import { formatDateString } from '@/utils/date.util';
 import { createColumnHelper } from '@tanstack/react-table';
-import { parseCancelReasonContent } from './cancel-reason-content.util';
+import { parseCancelReasonContent } from './cancelReasonContent.util';
 
 const cancelReasonColumnHelper =
   createColumnHelper<AdminFeedbackResponseModel>();
