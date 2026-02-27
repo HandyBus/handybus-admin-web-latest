@@ -4,10 +4,8 @@ import {
   getDailyGmvMetrics,
   getDailySignupMetrics,
   getDailyExploreMetrics,
-  getWeeklyExploreMetrics,
   getMonthlyExploreMetrics,
   getDailyCoreMetrics,
-  getWeeklyCoreMetrics,
   getMonthlyCoreMetrics,
 } from '@/services/analytics.service';
 import {
@@ -17,8 +15,6 @@ import {
   DailySignupMetricsViewEntity,
   MonthlyCoreMetricsViewEntity,
   MonthlyExploreMetricsViewEntity,
-  WeeklyCoreMetricsViewEntity,
-  WeeklyExploreMetricsViewEntity,
 } from '@/types/analytics.type';
 import { useComparisonQuery } from '@/app/(home)/hooks/useComparisonQuery';
 import { MetricData, FilterPeriod } from '@/app/(home)/types/types';
@@ -30,8 +26,10 @@ import {
 import { calculatePercentage } from '@/app/(home)/utils/metrics.util';
 import { getLatestDataDate } from '@/app/(home)/utils/dateNavigation.util';
 import { getTotalDemandCounts } from '@/services/demand.service';
-import { getTotalReservationPassengerCounts } from '@/services/reservation.service';
-import { ReservationStatus } from '@/types/reservation.type';
+import {
+  getTotalReservationPassengerCounts,
+  getCancelledReservationCounts,
+} from '@/services/reservation.service';
 
 interface DemandIntervalData {
   date: string;
@@ -41,6 +39,11 @@ interface DemandIntervalData {
 interface ReservationIntervalData {
   date: string;
   intervalReservationPassengerCount: number;
+}
+
+interface CancellationIntervalData {
+  date: string;
+  intervalCancellationCount: number;
 }
 
 interface UseGrowthMetricsDataProps {
@@ -143,16 +146,7 @@ export const useGrowthMetricsData = ({
     currentEndDate,
     prevStartDate: '',
     prevEndDate: '',
-    enabled: period === '일간',
-  });
-  const { currentData: chartWeeklyExploreData } = useComparisonQuery({
-    queryKey: ['weekly-explore-metrics-chart'],
-    fetcher: getWeeklyExploreMetrics,
-    currentStartDate,
-    currentEndDate,
-    prevStartDate: '',
-    prevEndDate: '',
-    enabled: period === '주간',
+    enabled: period === '일간' || period === '주간',
   });
   const { currentData: chartMonthlyExploreData } = useComparisonQuery({
     queryKey: ['monthly-explore-metrics-chart'],
@@ -161,7 +155,7 @@ export const useGrowthMetricsData = ({
     currentEndDate,
     prevStartDate: '',
     prevEndDate: '',
-    enabled: period !== '일간' && period !== '주간',
+    enabled: period === '월간',
   });
 
   const { currentData: chartDailyCoreData } = useComparisonQuery({
@@ -171,16 +165,7 @@ export const useGrowthMetricsData = ({
     currentEndDate,
     prevStartDate: '',
     prevEndDate: '',
-    enabled: period === '일간',
-  });
-  const { currentData: chartWeeklyCoreData } = useComparisonQuery({
-    queryKey: ['weekly-core-metrics-chart'],
-    fetcher: getWeeklyCoreMetrics,
-    currentStartDate,
-    currentEndDate,
-    prevStartDate: '',
-    prevEndDate: '',
-    enabled: period === '주간',
+    enabled: period === '일간' || period === '주간',
   });
   const { currentData: chartMonthlyCoreData } = useComparisonQuery({
     queryKey: ['monthly-core-metrics-chart'],
@@ -254,22 +239,31 @@ export const useGrowthMetricsData = ({
     });
 
   // Reservation - Daily로 Fetch 후 클라이언트 집계
-  // COMPLETE_PAYMENT vs CANCEL 각각 Fetch
-  const fetchReservationWrapper =
-    (status: ReservationStatus) => async (start: string, end: string) => {
-      const diffDays = dayjs(end).diff(dayjs(start), 'day');
-      return getTotalReservationPassengerCounts({
-        baseDate: dayjs(end).endOf('day').toISOString(),
-        totalRangeDate: diffDays,
-        intervalDays: 1,
-        reservationStatus: status,
-      });
-    };
+  // 예약 탑승객: COMPLETE_PAYMENT만
+  const fetchReservationWrapper = async (start: string, end: string) => {
+    const diffDays = dayjs(end).diff(dayjs(start), 'day');
+    return getTotalReservationPassengerCounts({
+      baseDate: dayjs(end).endOf('day').toISOString(),
+      totalRangeDate: diffDays,
+      intervalDays: 1,
+      reservationStatus: 'COMPLETE_PAYMENT',
+    });
+  };
+
+  // 취소자: /total-cancellations 엔드포인트 (취소 시점 기준 → 멱등성 보장)
+  const fetchCancellationWrapper = async (start: string, end: string) => {
+    const diffDays = dayjs(end).diff(dayjs(start), 'day');
+    return getCancelledReservationCounts({
+      baseDate: dayjs(end).endOf('day').toISOString(),
+      totalRangeDate: diffDays,
+      intervalDays: 1,
+    });
+  };
 
   // Chart Data (Reservation)
   const { currentData: chartReservedData } = useComparisonQuery({
     queryKey: ['reservation-counts-chart', 'COMPLETE_PAYMENT'],
-    fetcher: fetchReservationWrapper('COMPLETE_PAYMENT'),
+    fetcher: fetchReservationWrapper,
     currentStartDate,
     currentEndDate,
     prevStartDate: '',
@@ -277,8 +271,8 @@ export const useGrowthMetricsData = ({
     enabled: true,
   });
   const { currentData: chartCancelledData } = useComparisonQuery({
-    queryKey: ['reservation-counts-chart', 'CANCEL'],
-    fetcher: fetchReservationWrapper('CANCEL'),
+    queryKey: ['cancellation-counts-chart'],
+    fetcher: fetchCancellationWrapper,
     currentStartDate,
     currentEndDate,
     prevStartDate: '',
@@ -294,7 +288,7 @@ export const useGrowthMetricsData = ({
         'COMPLETE_PAYMENT',
         cardRecentStartDate,
       ],
-      fetcher: fetchReservationWrapper('COMPLETE_PAYMENT'),
+      fetcher: fetchReservationWrapper,
       currentStartDate: cardRecentStartDate,
       currentEndDate: cardRecentEndDate,
       prevStartDate: cardPreStartDate,
@@ -302,18 +296,7 @@ export const useGrowthMetricsData = ({
       enabled: true,
     });
 
-  const { currentData: cardCancelledData } = useComparisonQuery({
-    queryKey: ['reservation-counts-card', 'CANCEL', cardRecentStartDate],
-    fetcher: fetchReservationWrapper('CANCEL'),
-    currentStartDate: cardRecentStartDate,
-    currentEndDate: cardRecentEndDate,
-    prevStartDate: cardPreStartDate,
-    prevEndDate: cardPreEndDate,
-    enabled: true,
-  });
-
-  // Explore & Core (Period에 따라 fetcher 달라짐)
-  // 일간
+  // Explore & Core — 일간/주간 모두 일별 API 사용 (주간 배치 지연 방지)
   const {
     currentData: cardDailyExploreData,
     prevData: cardPreDailyExploreData,
@@ -324,7 +307,7 @@ export const useGrowthMetricsData = ({
     currentEndDate: cardRecentEndDate,
     prevStartDate: cardPreStartDate,
     prevEndDate: cardPreEndDate,
-    enabled: period === '일간',
+    enabled: period === '일간' || period === '주간',
   });
   const { currentData: cardDailyCoreData, prevData: cardPreDailyCoreData } =
     useComparisonQuery({
@@ -334,32 +317,12 @@ export const useGrowthMetricsData = ({
       currentEndDate: cardRecentEndDate,
       prevStartDate: cardPreStartDate,
       prevEndDate: cardPreEndDate,
-      enabled: period === '일간',
+      enabled: period === '일간' || period === '주간',
     });
 
   // 주간
-  const {
-    currentData: cardWeeklyExploreData,
-    prevData: cardPreWeeklyExploreData,
-  } = useComparisonQuery({
-    queryKey: ['weekly-explore-metrics-card', cardRecentStartDate],
-    fetcher: getWeeklyExploreMetrics,
-    currentStartDate: cardRecentStartDate,
-    currentEndDate: cardRecentEndDate,
-    prevStartDate: cardPreStartDate,
-    prevEndDate: cardPreEndDate,
-    enabled: period === '주간',
-  });
-  const { currentData: cardWeeklyCoreData, prevData: cardPreWeeklyCoreData } =
-    useComparisonQuery({
-      queryKey: ['weekly-core-metrics-card', cardRecentStartDate],
-      fetcher: getWeeklyCoreMetrics,
-      currentStartDate: cardRecentStartDate,
-      currentEndDate: cardRecentEndDate,
-      prevStartDate: cardPreStartDate,
-      prevEndDate: cardPreEndDate,
-      enabled: period === '주간',
-    });
+  // 주간 카드도 일별 API 사용 (백엔드 주간 배치 지연 방지, 일별 데이터 합산)
+  // cardDailyExploreData / cardDailyCoreData가 주간에도 활성화됨
 
   // 월간
   const {
@@ -388,63 +351,38 @@ export const useGrowthMetricsData = ({
   // --- 4. 데이터 통합 및 가공 ---
 
   // 차트용 데이터 선택
+  // 주간: 일별 API 데이터를 processChartData에서 ISO 주 단위로 집계 (백엔드 주간 API 배치 지연 방지)
   const chartExploreData = useMemo(() => {
-    if (period === '일간') return chartDailyExploreData;
-    if (period === '주간') return chartWeeklyExploreData;
+    if (period === '일간' || period === '주간') return chartDailyExploreData;
     return chartMonthlyExploreData;
-  }, [
-    period,
-    chartDailyExploreData,
-    chartWeeklyExploreData,
-    chartMonthlyExploreData,
-  ]);
+  }, [period, chartDailyExploreData, chartMonthlyExploreData]);
 
   const chartCoreData = useMemo(() => {
-    if (period === '일간') return chartDailyCoreData;
-    if (period === '주간') return chartWeeklyCoreData;
+    if (period === '일간' || period === '주간') return chartDailyCoreData;
     return chartMonthlyCoreData;
-  }, [period, chartDailyCoreData, chartWeeklyCoreData, chartMonthlyCoreData]);
+  }, [period, chartDailyCoreData, chartMonthlyCoreData]);
 
-  // 카드용 데이터 선택 (Recent)
+  // 카드용 데이터 선택 (Recent) — 일간/주간 모두 일별 데이터 사용
   const cardExploreData = useMemo(() => {
-    if (period === '일간') return cardDailyExploreData;
-    if (period === '주간') return cardWeeklyExploreData;
+    if (period === '일간' || period === '주간') return cardDailyExploreData;
     return cardMonthlyExploreData;
-  }, [
-    period,
-    cardDailyExploreData,
-    cardWeeklyExploreData,
-    cardMonthlyExploreData,
-  ]);
+  }, [period, cardDailyExploreData, cardMonthlyExploreData]);
 
   const cardCoreData = useMemo(() => {
-    if (period === '일간') return cardDailyCoreData;
-    if (period === '주간') return cardWeeklyCoreData;
+    if (period === '일간' || period === '주간') return cardDailyCoreData;
     return cardMonthlyCoreData;
-  }, [period, cardDailyCoreData, cardWeeklyCoreData, cardMonthlyCoreData]);
+  }, [period, cardDailyCoreData, cardMonthlyCoreData]);
 
   // 카드용 데이터 선택 (Pre-Recent)
   const cardPreExploreData = useMemo(() => {
-    if (period === '일간') return cardPreDailyExploreData;
-    if (period === '주간') return cardPreWeeklyExploreData;
+    if (period === '일간' || period === '주간') return cardPreDailyExploreData;
     return cardPreMonthlyExploreData;
-  }, [
-    period,
-    cardPreDailyExploreData,
-    cardPreWeeklyExploreData,
-    cardPreMonthlyExploreData,
-  ]);
+  }, [period, cardPreDailyExploreData, cardPreMonthlyExploreData]);
 
   const cardPreCoreData = useMemo(() => {
-    if (period === '일간') return cardPreDailyCoreData;
-    if (period === '주간') return cardPreWeeklyCoreData;
+    if (period === '일간' || period === '주간') return cardPreDailyCoreData;
     return cardPreMonthlyCoreData;
-  }, [
-    period,
-    cardPreDailyCoreData,
-    cardPreWeeklyCoreData,
-    cardPreMonthlyCoreData,
-  ]);
+  }, [period, cardPreDailyCoreData, cardPreMonthlyCoreData]);
 
   // 기간 라벨 접두사 생성
   const getPeriodLabelPrefix = (currentPeriod: FilterPeriod): string => {
@@ -468,15 +406,9 @@ export const useGrowthMetricsData = ({
 
     // Chart Data: chartExploreData 사용
     const exploreRawData = chartExploreData?.map(
-      (
-        d:
-          | DailyExploreMetricsViewEntity
-          | WeeklyExploreMetricsViewEntity
-          | MonthlyExploreMetricsViewEntity,
-      ) => {
+      (d: DailyExploreMetricsViewEntity | MonthlyExploreMetricsViewEntity) => {
         let dateField: string;
         if ('date' in d) dateField = d.date;
-        else if ('week' in d) dateField = d.week;
         else dateField = d.month;
         return {
           date: dateField,
@@ -509,15 +441,9 @@ export const useGrowthMetricsData = ({
     const preTotalCoreUsers = lastPreCoreData?.participationUserCount || 0;
 
     const coreRawData = chartCoreData?.map(
-      (
-        d:
-          | DailyCoreMetricsViewEntity
-          | WeeklyCoreMetricsViewEntity
-          | MonthlyCoreMetricsViewEntity,
-      ) => {
+      (d: DailyCoreMetricsViewEntity | MonthlyCoreMetricsViewEntity) => {
         let dateField: string;
         if ('date' in d) dateField = d.date;
-        else if ('week' in d) dateField = d.week;
         else dateField = d.month;
         return {
           date: dateField,
@@ -670,9 +596,9 @@ export const useGrowthMetricsData = ({
     const reservedChartData = processChartData(reservedRawData, period);
 
     const cancelledRawData = chartCancelledData?.map(
-      (d: ReservationIntervalData) => ({
+      (d: CancellationIntervalData) => ({
         date: d.date,
-        value: d.intervalReservationPassengerCount,
+        value: d.intervalCancellationCount,
       }),
     );
     const cancelledChartData = processChartData(cancelledRawData, period);
@@ -718,7 +644,6 @@ export const useGrowthMetricsData = ({
     cardPreDemandData,
     cardReservedData,
     cardPreReservedData,
-    cardCancelledData,
     // Chart Data
     chartExploreData,
     chartCoreData,

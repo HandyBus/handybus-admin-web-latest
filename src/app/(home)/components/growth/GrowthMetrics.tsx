@@ -5,7 +5,6 @@ import CustomMultiBarChart from '@/components/chart/CustomMultiBarChart';
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import weekOfYear from 'dayjs/plugin/weekOfYear';
 import MetricCard from '@/app/(home)/components/MetricCard';
 import MetricUnitFilter from './MetricUnitFilter';
 import DateRangeControls from '@/app/(home)/components/DateRangeControls';
@@ -16,7 +15,6 @@ import { useGrowthMetricsData } from './hooks/useGrowthMetricsData';
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
-dayjs.extend(weekOfYear);
 
 const GrowthMetrics = () => {
   const [selectedMetricId, setSelectedMetricId] =
