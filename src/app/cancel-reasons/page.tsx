@@ -13,6 +13,7 @@ import {
   filterCancelReasonFeedbacks,
 } from './utils/cancelReasonAnalytics.util';
 import { cancelReasonColumns } from './table.type';
+import CancelReasonDetailList from './components/CancelReasonDetailList';
 
 const DRILL_DOWN_GUIDE_TEXT =
   '막대를 클릭하면 해당 사유의 상세 차트를 볼 수 있습니다.';
@@ -97,24 +98,14 @@ const Page = () => {
         >
           {!selectedReason ? (
             <p className="flex grow items-center justify-center text-14 text-basic-grey-500">
-              위 차트에서 사유를 선택하면 상세 분포를 볼 수 있습니다.
+              위 차트에서 사유를 선택하면 상세 내역을 볼 수 있습니다.
             </p>
           ) : isLoading ? (
             <div className="flex grow items-center justify-center">
               <Loading />
             </div>
           ) : selectedReasonDetailChartData.length > 0 ? (
-            <>
-              <p className="mb-4 px-4 text-12 text-basic-grey-500">
-                선택된 사유에 해당하는 상세 이유 분포입니다.
-              </p>
-              <CustomBarChart
-                data={selectedReasonDetailChartData}
-                isLoading={false}
-                percentMode="total"
-                animated={false}
-              />
-            </>
+            <CancelReasonDetailList data={selectedReasonDetailChartData} />
           ) : (
             <p className="flex grow items-center justify-center text-14 text-basic-grey-500">
               {selectedReason} 상세 사유 데이터가 없습니다.
