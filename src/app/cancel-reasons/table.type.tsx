@@ -15,9 +15,9 @@ const getCancelReasonDisplayData = (content: string) => {
   const parsed = parseCancelReasonContent(content);
 
   return {
-    reservationId: parsed?.reservationId ?? '',
-    reason: parsed?.reason ?? UNKNOWN_REASON,
-    detail: parsed?.detail ?? UNKNOWN_DETAIL,
+    reservationId: parsed.reservationId ?? '',
+    reason: parsed.reason || UNKNOWN_REASON,
+    detail: parsed.detail || UNKNOWN_DETAIL,
   };
 };
 

@@ -42,8 +42,8 @@ export const buildCancelReasonChartData = (
 
   for (const feedback of feedbacks) {
     const parsed = parseCancelReasonContent(feedback.content);
-    const reason = parsed?.reason ?? UNKNOWN_REASON;
-    const detail = parsed?.detail ?? UNKNOWN_DETAIL;
+    const reason = parsed.reason || UNKNOWN_REASON;
+    const detail = parsed.detail || UNKNOWN_DETAIL;
 
     reasonCountByName[reason] = (reasonCountByName[reason] ?? 0) + 1;
     detailCountByReason[reason] ??= {};
