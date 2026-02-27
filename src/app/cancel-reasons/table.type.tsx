@@ -2,10 +2,24 @@ import BlueLink from '@/components/link/BlueLink';
 import { AdminFeedbackResponseModel } from '@/types/feedback.type';
 import { formatDateString } from '@/utils/date.util';
 import { createColumnHelper } from '@tanstack/react-table';
-import { parseCancelReasonContent } from './cancelReasonContent.util';
+import {
+  parseCancelReasonContent,
+  UNKNOWN_DETAIL,
+  UNKNOWN_REASON,
+} from './cancelReasonContent.util';
 
 const cancelReasonColumnHelper =
   createColumnHelper<AdminFeedbackResponseModel>();
+
+const getCancelReasonDisplayData = (content: string) => {
+  const parsed = parseCancelReasonContent(content);
+
+  return {
+    reservationId: parsed?.reservationId ?? '',
+    reason: parsed?.reason ?? UNKNOWN_REASON,
+    detail: parsed?.detail ?? UNKNOWN_DETAIL,
+  };
+};
 
 export const cancelReasonColumns = [
   cancelReasonColumnHelper.accessor('createdAt', {
@@ -19,30 +33,34 @@ export const cancelReasonColumns = [
   cancelReasonColumnHelper.accessor('content', {
     header: () => '취소 사유',
     cell: (info) => {
-      const { reason } = parseCancelReasonContent(info.getValue());
+      const { reason } = getCancelReasonDisplayData(info.getValue());
       return <span className="whitespace-nowrap break-keep">{reason}</span>;
     },
   }),
   cancelReasonColumnHelper.accessor('content', {
     header: () => '상세 내용',
     cell: (info) => {
-      const { detail } = parseCancelReasonContent(info.getValue());
-      return detail === '상세 미입력' ? '-' : detail;
+      const { detail } = getCancelReasonDisplayData(info.getValue());
+      return detail === UNKNOWN_DETAIL ? '-' : detail;
     },
   }),
   cancelReasonColumnHelper.accessor('userId', {
     header: () => '상세보기',
     cell: (info) => {
       const userId = info.getValue();
-      const { reservationId } = parseCancelReasonContent(
+      const { reservationId } = getCancelReasonDisplayData(
         info.row.original.content,
       );
       return (
         <div className="flex flex-col items-center">
           <BlueLink href={`/users/${userId}`}>유저 상세보기</BlueLink>
-          <BlueLink href={`/reservations/${reservationId}`}>
-            예약 상세보기
-          </BlueLink>
+          {reservationId ? (
+            <BlueLink href={`/reservations/${reservationId}`}>
+              예약 상세보기
+            </BlueLink>
+          ) : (
+            <span className="text-12 text-basic-grey-400">예약 정보 없음</span>
+          )}
         </div>
       );
     },

@@ -6,57 +6,15 @@ import useTable from '@/hooks/useTable';
 import { useGetFeedbacks } from '@/services/feedback.service';
 import BaseTable from '@/components/table/BaseTable';
 import Heading from '@/components/text/Heading';
-import type { AdminFeedbackResponseModel } from '@/types/feedback.type';
 import { useEffect, useMemo, useState } from 'react';
-import { parseCancelReasonContent } from './cancelReasonContent.util';
+import {
+  buildCancelReasonChartData,
+  filterCancelReasonFeedbacks,
+} from './cancelReasonAnalytics.util';
 import { cancelReasonColumns } from './table.type';
 
-type ChartData = { name: string; value: number };
 const DRILL_DOWN_GUIDE_TEXT =
   '막대를 클릭하면 해당 사유의 상세 차트를 볼 수 있습니다.';
-
-const toSortedChartData = (
-  countByName: Record<string, number>,
-): ChartData[] => {
-  return Object.entries(countByName)
-    .map(([name, value]) => ({
-      name,
-      value,
-    }))
-    .sort((a, b) => b.value - a.value);
-};
-
-const buildCancelReasonChartData = (
-  feedbacks: AdminFeedbackResponseModel[],
-) => {
-  const reasonCountByName: Record<string, number> = {};
-  const detailCountByReason: Record<string, Record<string, number>> = {};
-
-  for (const feedback of feedbacks) {
-    const { reason, detail } = parseCancelReasonContent(feedback.content);
-
-    reasonCountByName[reason] = (reasonCountByName[reason] ?? 0) + 1;
-
-    if (!detailCountByReason[reason]) {
-      detailCountByReason[reason] = {};
-    }
-
-    detailCountByReason[reason][detail] =
-      (detailCountByReason[reason][detail] ?? 0) + 1;
-  }
-
-  const detailChartDataByReason = Object.fromEntries(
-    Object.entries(detailCountByReason).map(([reason, detailCountByName]) => [
-      reason,
-      toSortedChartData(detailCountByName),
-    ]),
-  ) as Record<string, ChartData[]>;
-
-  return {
-    reasonChartData: toSortedChartData(reasonCountByName),
-    detailChartDataByReason,
-  };
-};
 
 const ChartLoadingBars = () => {
   return (
@@ -76,13 +34,10 @@ const Page = () => {
   const { data, isLoading } = useGetFeedbacks();
   const [selectedReason, setSelectedReason] = useState<string | null>(null);
 
-  const cancelReasons = useMemo(() => {
-    return (
-      data
-        ?.filter((feedback) => feedback.subject.includes('취소 사유'))
-        .toReversed() ?? []
-    );
-  }, [data]);
+  const cancelReasons = useMemo(
+    () => filterCancelReasonFeedbacks(data),
+    [data],
+  );
 
   const { reasonChartData, detailChartDataByReason } = useMemo(
     () => buildCancelReasonChartData(cancelReasons),
@@ -142,6 +97,7 @@ const Page = () => {
             <CustomBarChart
               data={reasonChartData}
               isLoading={false}
+              percentMode="total"
               onBarClick={handleReasonBarClick}
               activeBar={selectedReason}
               barActionLabel={DRILL_DOWN_GUIDE_TEXT}
@@ -163,6 +119,7 @@ const Page = () => {
               <CustomBarChart
                 data={selectedReasonDetailChartData}
                 isLoading={false}
+                percentMode="total"
               />
             ) : (
               <p className="flex h-full items-center justify-center text-14 text-basic-grey-500">

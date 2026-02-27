@@ -21,6 +21,7 @@ interface Props {
   onBarClick?: (name: string) => void;
   activeBar?: string | null;
   barActionLabel?: string;
+  percentMode?: 'max' | 'total';
 }
 
 const CustomBarChart = ({
@@ -30,14 +31,20 @@ const CustomBarChart = ({
   onBarClick,
   activeBar,
   barActionLabel,
+  percentMode = 'max',
 }: Props) => {
   const dataWithPercent = useMemo(() => {
-    const maxValue = Math.max(1, ...data.map((d) => d.value));
+    const denominator =
+      percentMode === 'total'
+        ? data.reduce((sum, chartData) => sum + chartData.value, 0)
+        : Math.max(...data.map((chartData) => chartData.value));
+    const safeDenominator = Math.max(1, denominator);
+
     return data.map((d) => ({
       ...d,
-      percent: Math.round((d.value / maxValue) * 100),
+      percent: Math.round((d.value / safeDenominator) * 100),
     }));
-  }, [data]);
+  }, [data, percentMode]);
 
   if (!data || isLoading) {
     return null;
