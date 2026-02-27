@@ -22,6 +22,7 @@ interface Props {
   activeBar?: string | null;
   barActionLabel?: string;
   percentMode?: 'max' | 'total';
+  animated?: boolean;
 }
 
 const CustomBarChart = ({
@@ -32,6 +33,7 @@ const CustomBarChart = ({
   activeBar,
   barActionLabel,
   percentMode = 'max',
+  animated = true,
 }: Props) => {
   const dataWithPercent = useMemo(() => {
     const denominator =
@@ -108,15 +110,25 @@ const CustomBarChart = ({
           />
           <Bar
             dataKey="percent"
+            isAnimationActive={animated}
             animationDuration={ANIMATION_DURATION}
             cursor={onBarClick ? 'pointer' : undefined}
+            onClick={
+              onBarClick
+                ? (barData: { name: string }) => onBarClick(barData.name)
+                : undefined
+            }
+            background={
+              onBarClick
+                ? { fill: 'transparent', cursor: 'pointer' }
+                : undefined
+            }
           >
             {dataWithPercent.map((d, index) => (
               <Cell
                 key={`cell-${index}`}
                 fill={getColorByIndex(index, colors)}
                 opacity={activeBar != null && activeBar !== d.name ? 0.3 : 1}
-                onClick={() => onBarClick?.(d.name)}
               />
             ))}
           </Bar>
