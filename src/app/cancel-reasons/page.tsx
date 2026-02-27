@@ -10,7 +10,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   buildCancelReasonChartData,
   filterCancelReasonFeedbacks,
-} from './cancelReasonAnalytics.util';
+} from './utils/cancelReasonAnalytics.util';
 import { cancelReasonColumns } from './table.type';
 
 const DRILL_DOWN_GUIDE_TEXT =

@@ -6,7 +6,7 @@ import {
   parseCancelReasonContent,
   UNKNOWN_DETAIL,
   UNKNOWN_REASON,
-} from './cancelReasonContent.util';
+} from './utils/cancelReasonContent.util';
 
 const cancelReasonColumnHelper =
   createColumnHelper<AdminFeedbackResponseModel>();
