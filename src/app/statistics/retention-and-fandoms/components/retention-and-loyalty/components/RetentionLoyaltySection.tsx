@@ -3,7 +3,9 @@
 import { useState } from 'react';
 import MetricCard from '@/app/(home)/components/MetricCard';
 import DateRangeControls from '@/app/(home)/components/DateRangeControls';
+import ChartTypeToggle, { ChartType } from '@/components/chart/ChartTypeToggle';
 import CustomLineChart from '@/components/chart/CustomLineChart';
+import CustomMultiBarChart from '@/components/chart/CustomMultiBarChart';
 import { useDateNavigation } from '@/app/(home)/hooks/useDateNavigation';
 import { useRetentionMetricsData } from '../hooks/useRetentionMetricsData';
 import Heading from '@/components/text/Heading';
@@ -12,6 +14,7 @@ const RetentionLoyaltySection = () => {
   const [selectedMetricId, setSelectedMetricId] = useState<string>(
     'reparticipation_rate',
   );
+  const [chartType, setChartType] = useState<ChartType>('line');
 
   const {
     period,
@@ -96,17 +99,31 @@ const RetentionLoyaltySection = () => {
       {/* Chart Section */}
       <div className="flex w-full flex-col gap-24 rounded-24 border border-basic-grey-200 bg-basic-white shadow-md">
         <div className="flex items-center justify-between p-24 pb-0">
-          <p className="text-20 font-600 text-basic-black">
-            {selectedMetric?.chartLabel || ''} 추이
-          </p>
+          <div className="flex items-center gap-12">
+            <p className="text-20 font-600 text-basic-black">
+              {selectedMetric?.chartLabel || ''} 추이
+            </p>
+            <ChartTypeToggle
+              chartType={chartType}
+              onChangeChartType={setChartType}
+            />
+          </div>
         </div>
 
         <div className="flex h-[530px] w-full p-24 pt-0">
-          <CustomLineChart
-            data={selectedMetric?.chartData || []}
-            dataKey={['value']}
-            label={{ value: selectedMetric?.chartLabel || '' }}
-          />
+          {chartType === 'line' ? (
+            <CustomLineChart
+              data={selectedMetric?.chartData || []}
+              dataKey={['value']}
+              label={{ value: selectedMetric?.chartLabel || '' }}
+            />
+          ) : (
+            <CustomMultiBarChart
+              data={selectedMetric?.chartData || []}
+              dataKey={['value']}
+              label={{ value: selectedMetric?.chartLabel || '' }}
+            />
+          )}
         </div>
       </div>
     </div>

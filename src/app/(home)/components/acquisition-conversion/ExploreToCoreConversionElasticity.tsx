@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import ChartTypeToggle, { ChartType } from '@/components/chart/ChartTypeToggle';
 import CustomLineChart from '@/components/chart/CustomLineChart';
+import CustomMultiBarChart from '@/components/chart/CustomMultiBarChart';
 import MetricCard from '@/app/(home)/components/MetricCard';
 import DateRangeControls from '@/app/(home)/components/DateRangeControls';
 import { MetricData, MetricId } from '@/app/(home)/types/types';
@@ -28,6 +30,7 @@ const ExploreToCoreConversionElasticity = () => {
 
   const [selectedMetricId, setSelectedMetricId] =
     useState<MetricId>('elasticityDAU');
+  const [chartType, setChartType] = useState<ChartType>('line');
 
   const { processedMetrics } = useElasticityMetricsData({
     currentStartDate: queryStartDate,
@@ -95,19 +98,33 @@ const ExploreToCoreConversionElasticity = () => {
 
       <div className="relative w-full overflow-hidden rounded-16 border border-basic-grey-400 bg-basic-white shadow-md">
         <div className="flex items-center justify-between p-24">
-          <p className="text-20 font-600 text-basic-black">
-            {selectedMetric?.chartLabel || ''}
-          </p>
+          <div className="flex items-center gap-12">
+            <p className="text-20 font-600 text-basic-black">
+              {selectedMetric?.chartLabel || ''}
+            </p>
+            <ChartTypeToggle
+              chartType={chartType}
+              onChangeChartType={setChartType}
+            />
+          </div>
           <p className="text-16 font-500 text-basic-grey-600">
             {getPeriodLabel()}
           </p>
         </div>
         <div className="flex h-[530px] w-full p-24">
-          <CustomLineChart
-            data={selectedMetric ? getChartData(selectedMetric) : []}
-            dataKey={['value']}
-            label={{ value: selectedMetric?.chartLabel || '' }}
-          />
+          {chartType === 'line' ? (
+            <CustomLineChart
+              data={selectedMetric ? getChartData(selectedMetric) : []}
+              dataKey={['value']}
+              label={{ value: selectedMetric?.chartLabel || '' }}
+            />
+          ) : (
+            <CustomMultiBarChart
+              data={selectedMetric ? getChartData(selectedMetric) : []}
+              dataKey={['value']}
+              label={{ value: selectedMetric?.chartLabel || '' }}
+            />
+          )}
         </div>
       </div>
     </div>

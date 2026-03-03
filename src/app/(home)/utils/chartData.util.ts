@@ -1,8 +1,8 @@
 import dayjs, { Dayjs } from 'dayjs';
-import weekOfYear from 'dayjs/plugin/weekOfYear';
+import isoWeek from 'dayjs/plugin/isoWeek';
 import { FilterPeriod, ChartDataItem } from '../types/types';
 
-dayjs.extend(weekOfYear);
+dayjs.extend(isoWeek);
 
 export const processChartData = (
   data: { date: string; value: number }[] | undefined,
@@ -29,9 +29,8 @@ export const processChartData = (
 
     data.forEach((d) => {
       const dateObj = dayjs(d.date);
-      const year = dateObj.year();
-      const week = dateObj.week();
-      const key = `${year}-${week}`;
+      // ISO 주 기준 (월~일) 으로 그룹핑 — 나머지 코드의 isoWeek 사용과 일관성 유지
+      const key = dateObj.startOf('isoWeek').format('YYYY-MM-DD');
 
       if (!aggregatedData[key]) {
         aggregatedData[key] = { value: 0, dateObj };
@@ -135,5 +134,34 @@ export const mergeChartData = (
     }
     // 없으면 기존대로 라벨 비교 (fallback)
     return a.date.localeCompare(b.date);
+  });
+};
+
+/**
+ * 현재 진행 중인 미완성 기간(이번 주/이번 달)의 데이터를 차트에서 제거합니다.
+ * 주간/월간 필터 시 아직 완료되지 않은 현재 기간이 불완전한 수치로 표시되는 것을 방지합니다.
+ */
+export const filterCurrentIncompletePeriod = (
+  data: ChartDataItem[],
+  period: FilterPeriod,
+): ChartDataItem[] => {
+  if (period === '일간' || !data.length) return data;
+
+  const now = dayjs();
+
+  return data.filter((item) => {
+    if (!item._rawDate) return true;
+    const rawDate = dayjs(String(item._rawDate));
+
+    if (period === '주간') {
+      // 현재 ISO 주에 속하는 데이터 제거
+      return (
+        rawDate.startOf('isoWeek').format('YYYY-MM-DD') !==
+        now.startOf('isoWeek').format('YYYY-MM-DD')
+      );
+    }
+
+    // 월간: 현재 달에 속하는 데이터 제거
+    return rawDate.format('YYYY-MM') !== now.format('YYYY-MM');
   });
 };

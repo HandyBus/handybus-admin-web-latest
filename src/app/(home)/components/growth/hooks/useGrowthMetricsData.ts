@@ -25,6 +25,7 @@ import { MetricData, FilterPeriod } from '@/app/(home)/types/types';
 import {
   processChartData,
   mergeChartData,
+  filterCurrentIncompletePeriod,
 } from '@/app/(home)/utils/chartData.util';
 import { calculatePercentage } from '@/app/(home)/utils/metrics.util';
 import { getLatestDataDate } from '@/app/(home)/utils/dateNavigation.util';
@@ -483,7 +484,10 @@ export const useGrowthMetricsData = ({
         };
       },
     );
-    const exploreChartData = processChartData(exploreRawData, period);
+    const exploreChartData = filterCurrentIncompletePeriod(
+      processChartData(exploreRawData, period),
+      period,
+    );
 
     metrics.push({
       id: 'activeUsersExplore',
@@ -521,7 +525,10 @@ export const useGrowthMetricsData = ({
         };
       },
     );
-    const coreChartData = processChartData(coreRawData, period);
+    const coreChartData = filterCurrentIncompletePeriod(
+      processChartData(coreRawData, period),
+      period,
+    );
 
     metrics.push({
       id: 'activeUsersCore',
@@ -555,7 +562,10 @@ export const useGrowthMetricsData = ({
         value: d.newUserCount,
       }),
     );
-    const newUsersChartData = processChartData(newUserRawData, period);
+    const newUsersChartData = filterCurrentIncompletePeriod(
+      processChartData(newUserRawData, period),
+      period,
+    );
 
     metrics.push({
       id: 'newUsers',
@@ -584,7 +594,10 @@ export const useGrowthMetricsData = ({
       date: d.date,
       value: d.gmvAmount,
     }));
-    const gmvChartData = processChartData(gmvRawData, period);
+    const gmvChartData = filterCurrentIncompletePeriod(
+      processChartData(gmvRawData, period),
+      period,
+    );
 
     metrics.push({
       id: 'gmv',
@@ -616,7 +629,10 @@ export const useGrowthMetricsData = ({
       date: d.date,
       value: d.intervalDemandCount,
     }));
-    const demandChartData = processChartData(demandRawData, period);
+    const demandChartData = filterCurrentIncompletePeriod(
+      processChartData(demandRawData, period),
+      period,
+    );
 
     metrics.push({
       id: 'demandCount',
@@ -661,10 +677,13 @@ export const useGrowthMetricsData = ({
     );
     const cancelledChartData = processChartData(cancelledRawData, period);
 
-    const mergedReservationChartData = mergeChartData([
-      { key: 'reserved', data: reservedChartData },
-      { key: 'cancelled', data: cancelledChartData },
-    ]);
+    const mergedReservationChartData = filterCurrentIncompletePeriod(
+      mergeChartData([
+        { key: 'reserved', data: reservedChartData },
+        { key: 'cancelled', data: cancelledChartData },
+      ]),
+      period,
+    );
 
     metrics.push({
       id: 'reservationPassengerCount',
