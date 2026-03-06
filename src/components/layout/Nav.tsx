@@ -67,6 +67,7 @@ const NavItems = () => {
       <NavItem href="/events">행사</NavItem>
       <NavItem href="/reservations">예약</NavItem>
       <NavItem href="/refund-requests">환불요청</NavItem>
+      <NavItem href="/artists">아티스트</NavItem>
       <NavItem href="/locations">장소</NavItem>
       <NavItem href="/coupons">쿠폰</NavItem>
       <NavItem href="/banners">배너</NavItem>
